@@ -13,19 +13,8 @@ import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 
 
 @Repository
-public interface RepositorioCliente extends JpaRepository<Persona, String> {
+public interface RepositorioCliente extends JpaRepository<Cliente, String> {
 
-	/*@Query("SELECT p FROM persona p WHERE p.email = :email")
-    public List<Persona> buscarPorEmail(@Param("email") String email);*/
-	
-	/* @Query("SELECT c FROM registro_usuario c WHERE c.dni = :dni")
-	    public Cliente buscarPorDni(@Param("dni") String dni);
-	 
-	 @Query("SELECT c FROM registro_usuario c WHERE c.dni = :dni")
-	 public Optional<Cliente> buscarPorDniOptional(@Param("dni") String dni);
-	    
-	 @Query("SELECT c FROM registro_usuario c WHERE c.id = :id")
-	    public Cliente buscarPorId(@Param("id") String id);*/
     
 	
 }

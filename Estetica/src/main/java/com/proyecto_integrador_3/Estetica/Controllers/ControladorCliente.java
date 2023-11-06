@@ -19,6 +19,8 @@ import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 
+import jakarta.persistence.EntityManager;
+
 @Controller
 @RequestMapping("/cliente")
 public class ControladorCliente {
@@ -29,9 +31,9 @@ public class ControladorCliente {
 	public ServicioCliente servicioCliente;
 	
 	@PostMapping("/ingresar")
-	public String ingresarAdmin( @RequestBody Cliente nuevo_cliente) throws SQLException {
+	public String ingresarCliente( @RequestBody Cliente nuevo_cliente) throws SQLException {
 		
-		System.out.println("ID CLIENTE REGISTRAR " + nuevo_cliente.getId());
+		
 			try {
 				servicioCliente.registrarCliente(nuevo_cliente);
 				System.out.println("Agregado con exito");
@@ -51,7 +53,7 @@ public class ControladorCliente {
 		try {
 			servicioCliente.modificarCliente(cliente);
 			System.out.println("Actualizado con exito!!!");
-		} catch (MiExcepcion e) {
+		} catch (Exception e) {
 			System.out.println("No se actualizo....");
 			e.printStackTrace();
 		}
@@ -100,6 +102,8 @@ public class ControladorCliente {
 		
 		return "index.html";
 	}
+	
+	
 		
 		
 		
