@@ -23,6 +23,7 @@ public abstract class Persona{
     protected String id;
     protected String dni;
     protected String email;
+    protected String contrasena;
 
     @Enumerated(EnumType.STRING)
     protected Rol rol;
