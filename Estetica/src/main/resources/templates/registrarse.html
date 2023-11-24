@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -62,24 +62,24 @@
           <div class="logo-registrarse text-center  ">
             <img class="img-logo-final-home" src="./imagenes/Nani-removebg-preview.png" alt="">
           </div>
-          <form action="action">
+          <form th:action="@{/registro}" method="post">
             <p class="ps-0 fs-1 ">Registrarse</p>
 
               <div class="mb-3">
                 
               <label for="email" class="form-label texto-label">Email</label>
-              <input type="email" class="form-control" id="email" placeholder="Email">
+              <input type="email" class="form-control" name="email" id="email" placeholder="Email">
                
               <label for="contraseña" class="form-label texto-label mt-2">Contraseña</label>
-              <input type="number" class="form-control" id="contarseña" placeholder="Contraseña">
+              <input type="number" class="form-control" name="contrasena" id="contrasena" placeholder="Contraseña">
 
               <label for="contraseña2" class="form-label texto-label mt-2">Repetir contraseña</label>
-              <input type="number" class="form-control" id="contarseña2" placeholder="Repetir contraseña">
+              <input type="number" class="form-control" name="contrasena2" id="contrasena2" placeholder="Repetir contraseña">
 
             </div>
 
             <div class="boton-de-registro text-center boton-pag-regi ">
-                <a href="#"><button class="bn632-hover bn26">Enviar</button></a>
+                <a href="#"><button type="submit" class="bn632-hover bn26">Enviar</button></a>
               </div>
               <div class="text-center fs-5 ">
                 <a class="m-2 " href="./login.html">¿Ya esta registrado?</a>

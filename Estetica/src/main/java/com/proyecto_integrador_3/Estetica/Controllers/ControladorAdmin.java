@@ -19,11 +19,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
+import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioAdmin;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioAdmin;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
 import jakarta.transaction.Transactional;
 
@@ -36,6 +39,10 @@ public class ControladorAdmin {
 	public RepositorioAdmin repositorioAdmin;
 	@Autowired
 	public ServicioAdmin servicioAdmin;
+	@Autowired
+	public ServicioUsuario servicioUsuario;
+	@Autowired
+	public RepositorioUsuario repositorioUsuario;
 	@Autowired
 	public ServicioCliente servicioCliente;
 	
@@ -56,20 +63,6 @@ public class ControladorAdmin {
 		return "login";
 	}
 	
-	//Eliminamos un admin de la base de datos
-	/*@PostMapping("/eliminarAdmin")
-	public String eliminarAdmin(@RequestBody Admin admin) {
-		
-		try {
-			servicioAdmin.borrarAdmin(admin);
-			System.out.println("Eliminado Admin con exito!!!");
-		} catch (Exception e) {
-			System.out.println("No se actualizo....");
-			e.printStackTrace();
-		}
-		return "index";
-	}*/
-		
 	
 	@PostMapping("/modificarAdmin")
 	public String actualizarAdmin(@RequestBody Admin admin) {
@@ -85,41 +78,13 @@ public class ControladorAdmin {
 		return "index";
 	}
 	
-	/*@PostMapping("/bajaAdmin")
-	public String bajaAdmin(@RequestParam(name = "seleccionados") String seleccionados) {
-		
-		System.out.println("ID: " + seleccionados);
-		
-		try {
-			servicioAdmin.bajaAdmin(seleccionados);
-			System.out.println("baja admin con exito!!!");
-		} catch (Exception e) {
-			System.out.println("No se actualizo....");
-			e.printStackTrace();
-		}
-		
-		return "/pagina_admin/portalAdmin";
-	}
 	
-	@PostMapping("/altaAdmin")
-	public String altaAdmin(@RequestParam(name = "seleccionados") String seleccionados) {
-		
-		try {
-			servicioAdmin.altaAdmin(seleccionados);
-			System.out.println("alta admin con exito!!!");
-		} catch (Exception e) {
-			System.out.println("No se actualizo....");
-			e.printStackTrace();
-		}
-		return "/pagina_admin/portalAdmin";
-	}*/
-		
-	
-	@GetMapping("listarAdmin")
-    public String listarAdmins(Model model) throws MiExcepcion {
+	@GetMapping("listarUsuarios")
+    public String listarUsuarios(Model model) throws MiExcepcion {
 
-        List<Admin> administradores = servicioAdmin.listarAdmins();
-        model.addAttribute("administradores", administradores);
+        List<Usuario> usuarios = repositorioUsuario.listarUsuarios();
+        System.out.println(usuarios.size());
+        model.addAttribute("usuarios", usuarios);
 
         return "/pagina_admin/portalAdmin";
 	}
@@ -128,8 +93,8 @@ public class ControladorAdmin {
 	// y luego cuando apretamos el boton buscar este nos conecta con la pag de buscarDNIoNombre
 	@GetMapping("ocultarLista")
     public String ocultarLista(Model model) throws MiExcepcion {
-        List<Admin> administradores = servicioAdmin.listarAdmins();
-        model.addAttribute("administradores", false);
+        List<Usuario> usuarios = repositorioUsuario.listarUsuarios();
+        model.addAttribute("usuarios", false);
 
         return "/pagina_admin/portalAdmin";
 	}
@@ -137,23 +102,32 @@ public class ControladorAdmin {
 	//Metodo para buscar por nombre o dni
 	@PostMapping("buscarDNIoNombre")
 	public String buscarDNI(@RequestParam(name = "dato") String dato, Model model) {
-		List<Admin> administradoresDni = servicioAdmin.buscarDni(dato);
-		List<Admin>	administradoresNombre = servicioAdmin.buscarNombre(dato);
+		List<Usuario> usuarioDni = servicioUsuario.buscarDni(dato);
+		List<Usuario>	usuarioNombre = servicioUsuario.buscarNombre(dato);
+		List<Usuario> usuarioEmail = servicioUsuario.buscarPorEmail(dato);
 		
-		if (administradoresDni.isEmpty()) {
-			administradoresDni = null;
+		if (usuarioDni.isEmpty()) {
+			usuarioDni = null;
 		}
 		
-		if (administradoresNombre.isEmpty()) {
-			administradoresNombre = null;
+		if (usuarioNombre.isEmpty()) {
+			usuarioNombre = null;
 		}
 		
-		if (administradoresDni != null) {
-			model.addAttribute("administradores", administradoresDni); // asignamos el valor de la variable administradoresDni a la variable html administradores y asi poder iterarla en el documento 
+		if (usuarioEmail.isEmpty()) {
+			usuarioEmail = null;
 		}
 		
-		if (administradoresNombre != null) {
-			model.addAttribute("administradores", administradoresNombre);
+		if (usuarioDni != null) {
+			model.addAttribute("usuarios", usuarioDni); // asignamos el valor de la variable administradoresDni a la variable html administradores y asi poder iterarla en el documento 
+		}
+		
+		if (usuarioNombre != null) {
+			model.addAttribute("usuarios", usuarioNombre);
+		}
+		
+		if (usuarioEmail != null) {
+			model.addAttribute("usuarios", usuarioEmail);
 		}
 		
 		return "/pagina_admin/portalAdmin";
@@ -161,8 +135,8 @@ public class ControladorAdmin {
 	
 	// En este metodo unificamos la edicion y eliminacion de un usuario a traves de un solo formulario
 	// usanso el action como valor para las diferentes condiciones
-	@PostMapping("modificarRol")
-	public String modificarRol(@RequestParam(name = "seleccionados") String id,
+	@PostMapping("modificarUsuario")
+	public String modificarUsuario(@RequestParam(name = "seleccionados") String id,
             @RequestParam(name = "nuevoRol") String nuevoRolNombre, @RequestParam(name = "action") String action,
             Model model) {
 		
@@ -181,13 +155,13 @@ public class ControladorAdmin {
 		
 		if (action.equals("modificarRol")) {
 			//metodo para moficar el rol
-			servicioAdmin.modificarRol(id, nuevoRol);
+			servicioUsuario.modificarRol(id, nuevoRol);
 		}
 		
-		if (action.equals("altaAdmin")) {
+		if (action.equals("altaUsuario")) {
 			try {
 				//metodo para modificar el activo del usuario a True
-				servicioAdmin.altaAdmin(id);
+				servicioUsuario.altaUsuario(id);
 				System.out.println("alta admin con exito!!!");
 			} catch (Exception e) {
 				System.out.println("No se actualizo....");
@@ -195,10 +169,10 @@ public class ControladorAdmin {
 			}
 		}
 		
-		if (action.equals("bajaAdmin")) {
+		if (action.equals("bajaUsuario")) {
 			try {
 				//metodo para modificar el activo del usuario a False
-				servicioAdmin.bajaAdmin(id);
+				servicioUsuario.bajaUsuario(id);
 				System.out.println("baja admin con exito!!!");
 			} catch (Exception e) {
 				System.out.println("No se actualizo....");
@@ -207,10 +181,10 @@ public class ControladorAdmin {
 			
 		}
 			
-		if (action.equals("eliminarAdmin")) {
+		if (action.equals("eliminarUsuario")) {
 			//Meotod para eliminar a un usuario de la base de datos
 			try {
-				servicioAdmin.borrarAdmin(id);
+				servicioUsuario.borrarUsuario(id);
 				System.out.println("Eliminado Admin con exito!!!");
 			} catch (Exception e) {
 				System.out.println("No se actualizo....");
@@ -219,76 +193,6 @@ public class ControladorAdmin {
 		}
 		
 		return "/pagina_admin/portalAdmin";
-	}
-	
-	
-	@GetMapping("listaCliente")
-    public List<Cliente> listaCliente() throws MiExcepcion {
-
-        List<Cliente> clientes = servicioCliente.listarClientes();
-       // modelo.addAttribute("administradores", administradores);
-
-        return clientes;
-
-    }
-	
-	
-	@PostMapping("/modificarCliente")
-	public String actualizarCliente(@RequestBody Cliente cliente) {
-		
-		try {
-			servicioCliente.modificarCliente(cliente);
-			System.out.println("Actualizado con exito!!!");
-		} catch (Exception e) {
-			System.out.println("No se actualizo....");
-			e.printStackTrace();
-		}
-		
-		return "index";
-	}
-	
-	@PostMapping("/eliminarCliente")
-	public String eliminarCliente(@RequestBody Cliente cliente) {
-		
-		try {
-			servicioAdmin.borrarCliente(cliente);
-			System.out.println("Eliminado Cliente con exito!!!");
-		} catch (Exception e) {
-			System.out.println("No se actualizo....");
-			e.printStackTrace();
-		}
-		
-		return "index";
-	}
-	
-
-	
-	@PostMapping("/bajaCliente")
-	public String bajaCliente(@RequestBody Cliente cliente) {
-		
-		try {
-			servicioCliente.bajaCliente(cliente);
-			System.out.println("baja con exito!!!");
-		} catch (Exception e) {
-			System.out.println("No se actualizo....");
-			e.printStackTrace();
-		}
-		
-		return "index";
-	}
-	
-	@PostMapping("/altaCliente")
-	public String altaCliente(@RequestBody Cliente cliente) {
-		
-		try {
-			servicioCliente.altaCliente(cliente);
-			System.out.println("alta con exito!!!");
-		} catch (Exception e) {
-			System.out.println("No se actualizo....");
-			e.printStackTrace();
-		}
-		
-		return "index.html";
 	}
 	
 	

@@ -138,13 +138,13 @@ public class ServicioAdmin {
 	 
 	 @Transactional()
 	    public List<Admin> listarAdmins() {
+		 List<Admin> admins = new ArrayList();
+		 admins = repositorioAdmin.listarAdmin();
+		 return admins;
+	 }
 
-	        List<Admin> admins = new ArrayList();
 
-	        admins = repositorioAdmin.findAll();
 
-	        return admins;
-	    }
 	 
 	     
 	 //SERVICIOS PARA LOS CLIENTES

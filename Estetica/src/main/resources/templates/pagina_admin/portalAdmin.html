@@ -75,31 +75,33 @@
   </div>
 </div>
 </section> 
-     <section th:if = "${administradores}">
-<form class="alinear-tabla" th:action="@{/modificarRol}" method="post">
+     <section th:if = "${usuarios}">
+<form class="alinear-tabla" th:action="@{/modificarUsuario}" method="post">
       <table class="table ">
         <thead>
           <tr class="text-center fs-5 ">
             <th scope="col"></th>
             <th class="esconder-col" scope="col">ID</th>
-            <th scope="col">DNI</th>
-            <th scope="col">Nombre</th>
+          <!--  <th scope="col">DNI</th> -->
+        <!--    <th scope="col">Nombre</th> -->
             <th scope="col">Rol</th>
             <th scope="col">Activo</th>
+            <th scope="col">Email</th>
           </tr>
         </thead>
         <tbody>
-          <tr class="text-center radius" th:each="administradores : ${administradores}">
+          <tr class="text-center radius" th:each="usuarios : ${usuarios}">
    	 		<th class=" ">
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="seleccionados" th:value="${administradores.id}" id="seleccionados">
+                <input class="form-check-input" type="radio" name="seleccionados" th:value="${usuarios.id}" id="seleccionados">
               </div>
             </th>
-            <th class="esconder-col" th:text="${administradores.id}"></th>
-            <th th:text="${administradores.dni}"></th>
-            <th th:text="${administradores.nombre}"></th>
-            <th th:text="${administradores.rol}"></th>
-            <th th:text="${administradores.activo}"></th>
+            <th class="esconder-col" th:text="${usuarios.id}"></th>
+    <!--    <th th:text="${usuarios.dni}"></th> -->
+      <!--      <th th:text="${usuarios.nombre}"></th> -->
+            <th th:text="${usuarios.rol}"></th>
+            <th th:text="${usuarios.activo}"></th>
+            <th th:text="${usuarios.email}"></th>
            
           </tr>
         </tbody>
@@ -122,17 +124,17 @@
       <div class="d-flex justify-content-center">
         <div class="filas-tabla-baja">
           <a href="">
-              <button type="submit" name="action" value="altaAdmin" class="btn btn-primary  ">Alta</button>
+              <button type="submit" name="action" value="altaUsuario" class="btn btn-primary  ">Alta</button>
           </a>
         </div>
         <div class="filas-tabla-baja">
           <a href="">
-              <button type="submit" name="action" value="bajaAdmin" class="btn btn-warning">Baja</button>
+              <button type="submit" name="action" value="bajaUsuario" class="btn btn-warning">Baja</button>
           </a>
         </div>
       <div class="filas-tabla-baja">
           <a href="">
-              <button name="action" value="eliminarAdmin" class="btn btn-danger ">Eliminar</button>
+              <button name="action" value="eliminarUsuario" class="btn btn-danger ">Eliminar</button>
           </a>
         </div>
       </div>

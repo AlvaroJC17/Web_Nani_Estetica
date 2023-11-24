@@ -19,4 +19,7 @@ public interface RepositorioAdmin extends JpaRepository<Admin, String> {
 	//Metodo para buscar por Nombre
 	@Query("SELECT p FROM Persona p WHERE p.nombre = :nombre")
     List<Admin> buscarPorNombre(@Param("nombre") String nombre);
+	
+	@Query("SELECT u FROM Usuario u")
+	List<Admin> listarAdmin();
 }

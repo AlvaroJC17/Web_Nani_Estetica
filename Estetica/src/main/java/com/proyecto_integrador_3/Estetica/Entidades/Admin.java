@@ -14,11 +14,14 @@ public class Admin extends Persona {
 		
 	}
 
-	public Admin(String id, String dni, String email, Rol rol, Boolean activo, String nombre, String apellido,
-			Sexo sexo, Date fechaNacimiento, String domicilio, Integer telefono) {
-		super(id, dni, email, rol, activo, nombre, apellido, sexo, fechaNacimiento, domicilio, telefono);
-		// TODO Auto-generated constructor stub
+	public Admin(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, String nombre,
+			String apellido, Sexo sexo, Date fechaNacimiento, String domicilio, Integer telefono) {
+		super(id, dni, contrasena, email, rol, activo, nombre, apellido, sexo, fechaNacimiento, domicilio, telefono);
+		
 	}
+
+	
+	
 	
 	
 	

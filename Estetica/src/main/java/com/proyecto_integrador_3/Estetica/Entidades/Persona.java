@@ -19,24 +19,11 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "Persona")
-public abstract class Persona{
+public abstract class Persona extends Usuario{
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(name = "id")
-    protected String id;
 	@Column(name = "dni")
     protected String dni;
-	@Column(name = "email")
-    protected String email;
-	@Column(name = "contrasena")
-    protected String contrasena;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "rol")
-    protected Rol rol;
-    @Column(name = "activo")
-    protected Boolean activo;
     @Column(name = "nombre")
 	protected String nombre;
     @Column(name = "apellido")
@@ -58,14 +45,22 @@ public abstract class Persona{
 	//Constructores
 	public Persona() {}
 
-	public Persona(String id, String dni, String email, Rol rol, Boolean activo, String nombre, String apellido,
+	public Persona(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, String nombre, String apellido,
 			Sexo sexo, Date fechaNacimiento, String domicilio, Integer telefono) {
-		super();
-		this.id = id;
+		super(id, email, contrasena, rol, activo);
 		this.dni = dni;
-		this.email = email;
-		this.rol = rol;
-		this.activo = activo;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.sexo = sexo;
+		this.fechaNacimiento = fechaNacimiento;
+		this.domicilio = domicilio;
+		this.telefono = telefono;
+	}
+	
+	public Persona(String dni, String nombre, String apellido, Sexo sexo, Date fechaNacimiento, String domicilio,
+			Integer telefono) {
+		super();
+		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.sexo = sexo;
@@ -74,6 +69,10 @@ public abstract class Persona{
 		this.telefono = telefono;
 	}
 
+	public Persona(String id, String email, String contrasena, Rol rol, Boolean activo) {
+		super(id, email, contrasena, rol, activo);
+	}
+		
 	public String getId() {
 		return id;
 	}
@@ -164,7 +163,7 @@ public abstract class Persona{
 
 	@Override
 	public String toString() {
-		return "Persona [id=" + id + ", dni=" + dni + ", email=" + email + ", rol=" + rol + ", activo=" + activo
+		return super.toString() +  "Persona [id=" + id + ", dni=" + dni + ", email=" + email + ", rol=" + rol + ", activo=" + activo
 				+ ", nombre=" + nombre + ", apellido=" + apellido + ", sexo=" + sexo + ", fechaNacimiento="
 				+ fechaNacimiento + ", domicilio=" + domicilio + ", telefono=" + telefono + "]";
 	}
