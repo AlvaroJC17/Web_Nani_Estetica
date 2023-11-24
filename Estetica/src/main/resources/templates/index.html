@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
@@ -8,7 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="/css/styles.css">
   <title>Home</title>
 </head>
 
@@ -19,18 +19,16 @@
     <i class="fa-brands fa-whatsapp"></i>
   </a>
   
-
-  <!--------- NAV ------------->
   <nav class="container-fluid row p-0 m-0">
     <div class=" d-flex justify-content-end">
       <p class="tituloredes">SIGUENOS EN NUESTRAS REDES: &nbsp</p>
       <div class="iconos3">
-        <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-instagram-50 black.png" alt=""></a>
+        <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
         </div>
-        <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-tik-tok-50 black.png" alt=""></a></div>
-        <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-facebook-50 black.png" alt=""></a>
+        <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a></div>
+        <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
         </div>
-        <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+        <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
         </div>
       </div>
     </div>
@@ -44,7 +42,7 @@
         <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
           <a href="">
             <div class="imagen-logo alvaro">
-              <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo" alt="">
+              <img src="/imagenes/Nani-removebg-preview.png" class=" img-logo" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
@@ -52,7 +50,7 @@
              <a class="nav-link active py-1 ajuste-texto-menu" aria-current="page" href="#">HOME</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" href="./tablamisdatos.html">NOSOTROS</a>
+              <a class="nav-link py-1 ajuste-texto-menu" href="/tablamisdatos.html">NOSOTROS</a>
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" href="#">TRATAMIENTOS</a>
@@ -61,13 +59,13 @@
               <a class="nav-link  py-1 ajuste-texto-menu" href="#">RESULTADOS</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" href="./login.html">TURNOS</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" href="/login.html">TURNOS</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" href="#">PRODUCTOS</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin}">PRODUCTOS</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" href="./home.html">CONTACTOS</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeCliente}">CONTACTOS</a>
             </li>
           </ul>
         </div>
@@ -77,20 +75,20 @@
     
     <div class=" cabecera navbar1 col-6 col-sm-4">
       <div class="d-flex justify-content-center  align-items-center">
-        <a class="registrarse" href="./login.html">LOGIN</a>
+        <a class="registrarse" th:href="@{/login}">LOGIN</a>
       </div>
         <div class="d-flex justify-content-center  align-items-center">
-          <a class="registrarse" href="./registrarse.html">REGISTRARSE</a>
+          <a class="registrarse" href="/registrarse.html">REGISTRARSE</a>
         </div>
       </div>
     </nav>
     
-<!--------  HEADER ------------->
+
   <header class="header1">
     <div class="contenido-header">
       <div class="header-flex">
         <div class="img-fondo-header">
-          <img class="img-header-banner img-fluid" src="./imagenes/Nani-removebg-preview.png" alt="">
+          <img class="img-header-banner img-fluid" src="/imagenes/Nani-removebg-preview.png" alt="">
         </div>
         <div class="titulo1">
           <h1 class=" h1estetica">NANI ESTETICA</h1>
@@ -101,7 +99,7 @@
       <H2 class="titulo2 m-0">Tramientos faciales con resultados reales</H2>
     </div>
   </header>
-<!---------- MAIN -------------->
+
   <main>
     <div class="imagen-fija-fondo">
       <h3 class="text-center pt-3">NOSOTROS</h3>
@@ -120,7 +118,7 @@
       <h3 class="text-center">BENEFICIOS DE LOS TRATAMIENTOS FACIALES</h3>
       <div class="tarjetas-centrales">
         <div class="card my-3 text-center tarjeta1 borde border-0" style="width: 40rem;">
-          <img src="./imagenes/istockphoto-968940310-1024x1024.jpg" class="card-img-top" alt="...">
+          <img src="/imagenes/istockphoto-968940310-1024x1024.jpg" class="card-img-top" alt="...">
         </div>
         <div class="div-parrafos">
           <p class="text-center parrafos-main">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Sed repellendus
@@ -134,7 +132,7 @@
 
       <div class="tarjetas-centrales">
         <div class="card my-3 text-center tarjeta2 borde border-0" style="width: 40rem;">
-          <img src="./imagenes/istockphoto-968940310-1024x1024.jpg" class="card-img-top" alt="...">
+          <img src="/imagenes/istockphoto-968940310-1024x1024.jpg" class="card-img-top" alt="...">
         </div>
         <div class="div-parrafos">
           <p class="text-center parrafos-main">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Tempora
@@ -147,7 +145,7 @@
 
       <div class="tarjetas-centrales">
         <div class="card my-3 text-center tarjeta1 borde border-0" style="width: 40rem;">
-          <img src="./imagenes/istockphoto-968940310-1024x1024.jpg" class="card-img-top" alt="...">
+          <img src="/imagenes/istockphoto-968940310-1024x1024.jpg" class="card-img-top" alt="...">
         </div>
         <div class="div-parrafos">
           <p class="text-center parrafos-main">Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi
@@ -161,7 +159,7 @@
 
       <div class="tarjetas-centrales">
         <div class="card my-3 text-center tarjeta2 borde border-0" style="width: 40rem;">
-          <img src="./imagenes/istockphoto-968940310-1024x1024.jpg" class="card-img-top" alt="...">
+          <img src="/imagenes/istockphoto-968940310-1024x1024.jpg" class="card-img-top" alt="...">
         </div>
         <div class="div-parrafos">
           <p class="text-center parrafos-main">Lorem ipsum dolor sit amet consectetur adipisicing elit. Nostrum ullam
@@ -261,31 +259,31 @@
     <div class="divfooter col-lg-4">
       <p class="mb-3 text-center titulos-footer">CONTACTOS</p>
       <div class="mb-4">
-        <p class="mb-0 text-center"><img class="iconos" src="./imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
+        <p class="mb-0 text-center"><img class="iconos" src="/imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
           B1625 Belén de Escobar</p>
         <p class="text-center mt-0">Provincia de Buenos Aires</p>
       </div>
       <div class="mb-4 text-center">
-        <p><img class="iconos" src="./imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
+        <p><img class="iconos" src="/imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
       </div>
       <div class="mb-4 text-center">
-        <p><img class="iconos" src="./imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
+        <p><img class="iconos" src="/imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
       </div>
       <div class="mb-4 text-center">
-        <p class=""><img class="iconos pe-1" src="./imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+        <p class=""><img class="iconos pe-1" src="/imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
       </div>
       <div class="text-center iconos3 mt-5 pb-4">
         <div class="">
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-instagram-50 black.png" alt=""></a>
+          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
         </div>
         <div>
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a>
         </div>
         <div>
-          <a class="link" href="#"> <img class=" iconos2" src="./imagenes/icons8-facebook-50 black.png" alt=""></a>
+          <a class="link" href="#"> <img class=" iconos2" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
         </div>
         <div>
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
         </div>
       </div>
     </div>
@@ -320,7 +318,7 @@
     </div>
 
     <div class="contenedor-logo-final">
-      <img class="img-logo-final" src="./imagenes/Nani-removebg-preview.png" alt="">
+      <img class="img-logo-final" src="/imagenes/Nani-removebg-preview.png" alt="">
     </div>
 
     <div class="diseñado">

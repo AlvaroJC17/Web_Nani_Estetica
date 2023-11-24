@@ -9,6 +9,7 @@ h1, h2, h3, h4 {
     font-size: 80px;
     font-weight: 100;
     color: #78340f !important;
+    margin-bottom: 30px;
 }
 
 a, p, label {
@@ -241,16 +242,14 @@ nav {
 }
 
 /*------- FOOTER GENERAL MENOS EL DE INDEX ---------*/
-.contenedor-logo-final-general {
-    text-align: center;
-    border-top: 1px solid;
-     margin-top: 0px; 
-    padding-top: 0px;
-     padding-bottom: 0px;
+
+iframe{
+    height: 330px;
 }
 
-.img-logo-final-general {
-    width: 70px;
+.titulos-footer-general {
+    font-size: 30px;
+    margin-bottom: 0px;
 }
 
 /*---------- FOOTER ----------*/
@@ -319,11 +318,6 @@ footer {
     /*Le quita los margenes a las etiquetas que usen esta clase*/
     margin-left: 0px !important;
     margin-right: 0px !important;
-}
-
-.main-home{
-    /*Le da altura al main y ajusta todo en el centro de la pagina*/ 
-    padding: 70px 0px 70px 0px;
 }
 
 .body-interno{
@@ -531,6 +525,14 @@ footer {
 
   /*PAGINA DE REGISTRO DE USUARIOS*/
 
+  .section-registrarse{
+    border-radius: 40px 0px 40px 0px;
+    background-color: #db9e42;
+    box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
+    width: 50%;
+    margin: 30px
+}
+
   .main-registrarse-2{
     padding-bottom: 35px;
     padding-top: 35px;
@@ -565,7 +567,7 @@ footer {
 
 /*BOTON DE FORM COMPLETAR DATOS*/
 .bn632-hover {
-    width: 70%;
+    width: 50%;
     font-size: 18px !important;
     font-weight: 600;
     color: #fff;
@@ -647,11 +649,17 @@ footer {
     box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
   }
 
-  /*-----------  PAGINA MIS DATOS -----------*/
+  /*-----------  PAGINA DATOS PERSONALES -----------*/
 .main-misdatos{
   padding-top: 20px;
   padding-bottom: 20px;
+}
 
+.form-misdatos .bn632-hover {
+    margin-top: 10px;
+    height: 50px;
+    width: 20%;
+    font-size: 18px;
 }
 
   .body-misdatos{
@@ -665,7 +673,6 @@ footer {
   .form-misdatos{
     width: 80%;
     background-color:#ebdf9d ;
-    margin: 70px 10px 50px 10px;
     border-radius: 20px;
     padding: 30px 30px 30px 30px;
   }
@@ -679,9 +686,6 @@ footer {
     margin-bottom: 30px;
     padding-left: 12px;
   }
-  .form-misdatos .text-center{
-    font-size: 20px;
-  }
 
   .footer-misdatos {
     /*Le da el color degradado al footer, el ancho y los maregenes*/
@@ -692,79 +696,126 @@ footer {
     position: absolute;
 }
 
-/*-------- MEDIAS PARA RESPONSIVE ---------*/
+/*-------- RESERVA DE TURNOS ----------*/
 
-@media(max-width: 1440px){
-
-    .titulos-footer-general {
-        font-size: 30px;
-        margin-bottom: 0px;
-    }
-
-    .section-registrarse {
-        width: 100%;
-    }
-
-    .bn632-hover {
-        font-size: 25px;
-        
-    }
-    .container{
-        margin-bottom: 65px;
-    }
-
-    .form-misdatos h4{
-        font-size: 60px;
-        margin-bottom: 40px;
-        padding-left: 0px;
-        text-align: center;
-      }
-
-    .footer-misdatos{
-        position: static;
-    }
-
-    .form-misdatos{
-        width: 95%;
-        margin: 5px;
-        padding: 10px;
-      }
-
-      .form-misdatos .bn632-hover{
-        margin-top: 10px;
-        height: 60px;
-        width: 40%;
-      }
-
-      .form-misdatos .text-center{
-        font-size: 25px;
-        margin-top: 15px;
-      }
-
-      .texto-label {
-        font-size: 25px;
-        margin-bottom: 0px;
-    }
- 
-    .main-home{
-        /*Le da altura al main y ajusta todo en el centro de la pagina*/ 
-        padding: 45px 0px 45px 0px;
-    }
-
-    .ft .iconos{
-        height: 30px;
-        margin: 0;
-    }
+.texto-solicitar-turno{
+    font-size: 18px;
+    text-align: center;
+    display: flex;
+    align-items: center;
 }
+
+.boton-pag-turno .bn632-hover{
+    width: 120px;
+    font-size: 17px;
+    height: 50px;
+}
+
+.form-check .form-check-input {
+
+    width: 23px;
+    height: 23px;
+    float: left;
+    margin-left: -30px;
+
+}
+
+.input-seleccion-check .form-check{
+    display: block;
+    min-height: 1.9rem;
+    padding-left: 1.5em;
+    margin-bottom: 0.425rem;
+    margin-left: 1rem;
+}
+
+.info-silicitar-turno {
+    border-left: 1px solid white;
+}
+
+.input-seleccion-check {
+    display: flex;
+}
+
+.main-interno{
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 50px;
+}
+
+/*-------- LISTA USUARIOS --------------*/
+.alinear-tabla{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.fila-tabla-select{
+    width: 160px !important;
+    
+}
+    
+.table{
+    width: 90%;
+}
+
+.filas-tabla-baja {
+    width: 101px !important;
+    margin-right: 10px;
+}
+
+.fila-tabla-select .form-select {
+    background-color: white;
+}
+
+.table>:not(caption)>*>* {
+    padding: 0.5rem 0.5rem;
+    color: var(--bs-table-color-state,var(--bs-table-color-type,var(--bs-table-color)));
+    background-color: #ebdf9d;
+    border-bottom-width: var(--bs-border-width);
+    box-shadow: inset 0 0 0 9999px var(--bs-table-bg-state,var(--bs-table-bg-type,var(--bs-table-accent-bg)));
+}
+
+tr {
+    border-color: black;
+    border-style: none;
+  
+}
+
+.radius .form-check{
+    display: flex;
+    flex-direction:row-reverse ;
+}
+
+.filas-tabla-baja .btn{
+    width: 100px;
+}
+
+.boton-listado .bn632-hover{
+    border-radius: 0px;
+    font-size: 1rem;
+    font-weight: initial;
+    width: 100px;
+    height: 37px;
+    border-radius: 0.375rem;
+}
+
+/*-------- MEDIAS PARA RESPONSIVE ---------*/
 
 @media(max-width: 1280px){
 
-    .form-select .select-tabla{
-        width: 140px !important;
+    .input-seleccion-check{
+            min-height: 1.5rem;
+            padding-left: 1.5em;
+            margin-bottom: 0.125rem;
+            margin-left: 0.5rem;
     }
 
-    .table{
-        width: 90%;
+    iframe{
+        height: 303px;
+    }
+
+    .form-select .select-tabla{
+        width: 140px !important;
     }
 
     .fila-tabla-select{
@@ -772,26 +823,10 @@ footer {
         
     }
 
-    .fila-tabla-select .form-select{
-        background-color: greenyellow;
-    }
-
-    .filas-tabla-baja{
-        width: 101px !important;
-    }
-
     .main-turnos{
         padding-left: 20px;
         padding-right: 20px;
-    }
-
-    .form-check .form-check-input {
-        margin-top: 18px;
-        width: 20px;
-        height: 20px;
-        float: left;
-        margin-left: -30px;
-    
+        padding-bottom: 50px;
     }
   
     .info-silicitar-turno{
@@ -815,34 +850,11 @@ footer {
     align-items: center;
     justify-content: center;
     border-radius: 40px 0px 40px 0px;
-    font-size: 30px;
     background-color: #ebdf9d;
     border: 2px solid white;
     box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
     padding: 15px 0px 15px 0px;
 }
-
-    .section-registrarse{
-        border-radius: 40px 0px 40px 0px;
-        background-color: #db9e42;
-        box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
-        width: 45%;
-        margin: 30px
-    }
-
-    .boton-pag-turno .bn632-hover{
-        width: 90px;
-        font-size: 17px;
-        height: 40px;
-    }
-   
-    .boton-pag-regi .bn632-hover{
-        width: 50%;
-        font-size: 16px;
-        font-weight: 600;
-    }
-       
-        
     .form-misdatos h4 {
         font-size: 50px;
         margin-bottom: 20px;
@@ -855,11 +867,6 @@ footer {
         padding-bottom: 50px;
       
       }
-
-    .form-misdatos .text-center {
-        font-size: 18px;
-        margin-top: 15px;
-    }
 
     .form-misdatos .bn632-hover {
         margin-top: 10px;
@@ -889,11 +896,7 @@ footer {
     .iconos2 {
         width: 80%;
     }
-
-    .main-home{
-        padding: 15px 0px 15px 0px;
-    }
-
+  
     .container {
         margin-bottom: 0px;
     }
@@ -970,13 +973,6 @@ footer {
   .login-box label {
   font-size: 20px;
   }
-   
-
-    h3 {
-        /*Disminuyr el tamaño de la letra h3 y le da grosor*/
-        font-size: 40px;
-        font-weight: 100;
-    }
 
     .parrafos-main {
         /*disminuye el tamaño de la letra de los parrafos de las card*/
@@ -987,15 +983,19 @@ footer {
 
 @media(max-width: 992px) {
 
+    .section-completar-datos{
+        width: 95%;
+        margin: 15px
+    }
+    .section-registrarse{
+        width: 95%;
+        margin: 15px
+    }
+
     .form-misdatos h4 {
         margin-bottom: 40px;
         text-align: center;
       
-    }
-
-    .form-misdatos .text-center {
-        margin-top: 0px;
-        font-size: 20px;
     }
 
     .texto-label {
@@ -1012,6 +1012,14 @@ footer {
 
 @media(max-width: 767px) {
 
+    .esconder-col{
+        display: none ;
+    }
+
+    h3{
+        text-align: center;
+    }
+
     .login-box{
         border-radius: 40px 0px 40px 0px;
         width: 370px;
@@ -1027,11 +1035,6 @@ footer {
     .h1estetica {
         /*Tamaño de letra al titulo principal del header*/
         font-size: 40px
-    }
-
-    h3 {
-        /*disminuye el tamaño del texto h3 en este tamaño de pantalla*/
-        font-size: 50px;
     }
 
     .tarjeta2,
@@ -1087,6 +1090,11 @@ footer {
 
 @media(max-width: 576px) {
 
+    .input-seleccion-check {
+        display: block;
+    }
+    
+
     .form-misdatos .bn632-hover {
         width: 35%;
     }
@@ -1129,11 +1137,6 @@ footer {
         text-align: center;
     }
 
-    h3 {
-        /*tamaño de letra de los h3 para este tamaño de pantalla*/
-        font-size: 30px;
-    }
-
     .tarjeta2,
     .tarjeta1 {
         /*disminuye el tamano de la imagen de las card para esta media*/
@@ -1146,14 +1149,17 @@ footer {
         padding: 5px 5px 5px 5px;
     
       }
-    
-    
-       
       
 }
 
 @media (max-width: 400px) {
-    
+   
+    .boton-pag-turno .bn632-hover{
+        width: 90px;
+        font-size: 17px;
+        height: 40px;
+    }
+
     .ft {
         height: 150px;
         width: 360px;
@@ -1167,7 +1173,7 @@ footer {
     }
 
     .bn632-hover {
-        width: 180px;
+        width: 75%;
     
       }
 
@@ -1220,12 +1226,6 @@ footer {
     .titulo2 {
         /*Posiciona el segundo texto (el mas pequeño) de la imagen del header en ese posicion debajo del titulo, ademas de bajarle el tamaño a la letra*/
         font-size: 15px;
-    }
-
-
-    h3 {
-        /*disminuye el tamaño de letra de los h3 para esta medida de pantalla*/
-        font-size: 30px;
     }
 
 
@@ -1293,8 +1293,8 @@ footer {
     margin-left: 15px;
 }
 
-.form-misdatos .text-center {
-    font-size: 20px;
+h3{
+    font-size: 50px;
 }
   
 }

@@ -30,6 +30,18 @@ public class ServicioAdmin {
 	@Autowired
 	public RepositorioCliente repositorioCliente;
 	
+	@Transactional
+	public List<Admin> buscarDni(String dni) {
+		List<Admin> dniAdmin = repositorioAdmin.buscarPorDni(dni);
+	return dniAdmin;
+	}
+	
+	@Transactional
+	public List<Admin> buscarNombre(String nombre) {
+		List<Admin> nombreAdmin = repositorioAdmin.buscarPorNombre(nombre);
+	return nombreAdmin;
+	}
+	
 	//Registra un admin en la base de datos
 	@Transactional
 	public void registrarAdmin(Admin admin) throws MiExcepcion {
@@ -75,8 +87,8 @@ public class ServicioAdmin {
 	}
 			
 	//Borra un admin de la base de datos
-	public void borrarAdmin(Admin admin) {
-		Optional <Admin> identificarAdmin = repositorioAdmin.findById(admin.getId());
+	public void borrarAdmin(String id) {
+		Optional <Admin> identificarAdmin = repositorioAdmin.findById(id);
 		
 		if (identificarAdmin.isPresent()) {
 			Admin adminDelete = identificarAdmin.get();
@@ -86,8 +98,8 @@ public class ServicioAdmin {
 	}
 	
 	 @Transactional
-	    public void bajaAdmin(Admin admin) {
-	        Optional<Admin> presente = repositorioAdmin.findById(admin.getId());
+	    public void bajaAdmin(String id) {
+	        Optional<Admin> presente = repositorioAdmin.findById(id);
 
 	        if (presente.isPresent()) {
 	        	Admin admin_baja = new Admin();
@@ -99,14 +111,27 @@ public class ServicioAdmin {
 	 
 	 //Metodo para cambiar a usuarios que estaban inactivos a activos
 	 @Transactional
-	    public void altaAdmin(Admin admin) {
+	    public void altaAdmin(String id) {
 
-	        Optional<Admin> presente = repositorioAdmin.findById(admin.getId());
+	        Optional<Admin> presente = repositorioAdmin.findById(id);
 
 	        if (presente.isPresent()) {
 	        	Admin admin_alta = new Admin();
 	            admin_alta = presente.get();
 	            admin_alta.setActivo(TRUE);
+	            repositorioAdmin.save(admin_alta);
+	        }
+	    }
+	 
+	 @Transactional
+	    public void modificarRol(String id, Rol rol) {
+
+	        Optional<Admin> presente = repositorioAdmin.findById(id);
+
+	        if (presente.isPresent()) {
+	        	Admin admin_alta = new Admin();
+	            admin_alta = presente.get();
+	            admin_alta.setRol(rol);
 	            repositorioAdmin.save(admin_alta);
 	        }
 	    }
@@ -121,7 +146,7 @@ public class ServicioAdmin {
 	        return admins;
 	    }
 	 
-	 
+	     
 	 //SERVICIOS PARA LOS CLIENTES
 	 
 	 @Transactional

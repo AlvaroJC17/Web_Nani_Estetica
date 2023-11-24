@@ -8,7 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link rel="stylesheet" href="./css/styles.css">
+  <link rel="stylesheet" href="../css/styles.css">
   <title>Reserva de turno</title>
 </head>
 
@@ -18,69 +18,60 @@
   <a href="#" target="_blank" class="boton-flotante">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
-<nav>
-  <div class=" d-flex justify-content-end">
-    <p class="tituloredes">SIGUENOS EN NUESTRAS REDES: &nbsp</p>
-    <div class="iconos3">
-      <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-instagram-50 black.png" alt=""></a>
-      </div>
-      <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-tik-tok-50 black.png" alt=""></a></div>
-      <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-facebook-50 black.png" alt=""></a>
-      </div>
-      <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-youtube-play-50 black.png" alt=""></a>
-      </div>
-    </div>
-  </div>
-  <nav class="navbar navbar1 navbar-expand-md">
-    <div class="container-fluid navbar2">
-      <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
-        aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-        <a href="">
-          <div class="imagen-logo ajuste-texto-menu">
-            <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
-          </div>
-        </a>
-        <ul class="navbar-nav navbar4 container-fluid p-0">
-          <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" href="./misdatos.html">Mis Datos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" href="./solicitartuno.html">Solicitar Turno</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./misturnos.html">Mis Turnos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Mis consultas</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./index.html">Cerrar Sesion</a>
-          </li>
-        </ul>
+  <nav>
+    <div class="navbar navbar1 navbar-expand-md">
+      <div class="container-fluid navbar2">
+        <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+          aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+          <a href="./homeCliente.html">
+            <div class="imagen-logo ajuste-texto-menu">
+              <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
+            </div>
+          </a>
+          <ul class="navbar-nav navbar4 container-fluid p-0">
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" href="./misdatosCliente.html">Mis Datos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" href="./reservaDeTurnoCliente.html">Solicitar Turno</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" href="./misturnos.html">Mis Turnos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Mis consultas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" href="./index.html">Cerrar Sesion</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
-</nav>
+
 
 <main class="">
-  <div class="main-turnos">
+  <div class="main-interno">
     <h3>Reserva de turnos</h3>
   <div class=" container">
       <div class="  ft-reserva-turno row ">
         <div class="col-md-4 texto-solicitar-turno ">
+          <div>
           <div class="logo-registrarse text-center  ">
-            <img class="img-logo-final-home" src="./imagenes/Nani-removebg-preview.png" alt="">
+            <img class="img-logo-final-home" src="../imagenes/Nani-removebg-preview.png" alt="">
           </div>
-          <p>Por favor seleccione todas las opciones a continuación para completar la reserva de turno</p>
-          <p>Todos nustros tratamientos incluyen una limpieza facila profunda con extracciones</p>
+          <p class="fs-4">Por favor complete todas las opciones a continuación para realizar la reserva de turno</p>
+          <p class="fs-4">Todos nustros tratamientos incluyen una limpieza facila profunda con extracciones</p>
+        </div>
         </div>
         <div class="col-md-8 info-silicitar-turno ">
           <form action="">
             <div>
-              <label for="provincia" class="form-label texto-label">Seleccione provincia <span class="text-danger ">*</span> </label>
+              <label for="provincia" class="form-label mb-0 fs-4">Seleccione provincia <span class="text-danger ">*</span> </label>
               <select class="form-select" id="provincia" aria-label="Default select example">
                 <option selected>Provincia</option>
                 <option value="1">One</option>
@@ -89,7 +80,7 @@
               </select>
             </div>
             <div>
-              <label for="profesional" class="form-label texto-label">Seleccione profesional <span class="text-danger ">*</span></label>
+              <label for="profesional" class="form-label mb-0 mt-2 fs-4">Seleccione profesional <span class="text-danger ">*</span></label>
               <select class="form-select" id="profesional" aria-label="Default select example">
                 <option selected>Profesional</option>
                 <option value="1">One</option>
@@ -98,11 +89,11 @@
               </select>
             </div>
             <div>
-              <label for="fecha" class="form-label texto-label">Seleccionar fecha <span class="text-danger ">*</span></label>
+              <label for="fecha" class="form-label mb-0 mt-2  fs-4">Seleccionar fecha <span class="text-danger ">*</span></label>
               <input type="date" class="form-control" id="fecha" placeholder="Fecha">
             </div>
             <div>
-              <label for="horario" class="form-label texto-label">Seleccionar hora <span class="text-danger ">*</span></label>
+              <label for="horario" class="form-label mb-0 mt-2 fs-4">Seleccionar hora <span class="text-danger ">*</span></label>
               <select class="form-select" id="horario" aria-label="Default select example">
                 <option selected>Hora</option>
                 <option value="1">One</option>
@@ -112,7 +103,7 @@
             </div>
             <p class="mt-4 mb-0 fs-4">Seleccionar tratamientos<span class="text-danger ">*</span></p>
             <p class="fs-6">Max. Dos servicios por turno</p>
-            <div class="d-flex ">
+            <div class="input-seleccion-check ">
               <div>
                 <div class="form-check">
                   <input class="form-check-input" type="checkbox" value="" id="antiage">
@@ -142,6 +133,12 @@
                   <input class="form-check-input" type="checkbox" value="" id="antiacne">
                   <label class="form-check-label fs-6" for="antiacne">
                     Facial antiacne
+                  </label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="" id="microneedling">
+                  <label class="form-check-label fs-6" for="microneedling">
+                    Microneedling
                   </label>
                 </div>
               </div>
@@ -176,15 +173,9 @@
                     Limpieza espalda
                   </label>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="microneedling">
-                  <label class="form-check-label fs-6" for="microneedling">
-                    Microneedling
-                  </label>
-                </div>
               </div>
             </div>
-            <div class="d-flex justify-content-start  text-center ">
+            <div class="d-flex justify-content-center mt-4  text-center ">
             <div class="boton-de-registro text-center me-1 boton-pag-turno ">
               <a href="#"><button class="bn632-hover bn26">Enviar</button></a>
             </div>
@@ -195,8 +186,6 @@
           </form>
         </div>
       </div>
-
-      
 </div>
 </div>
   </main>
@@ -205,31 +194,31 @@
     <div class="divfooter col-lg-4">
       <p class="mb-3 text-center titulos-footer-general">CONTACTOS</p>
       <div class="mb-4">
-        <p class="mb-0 text-center"><img class="iconos" src="./imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
+        <p class="mb-0 text-center"><img class="iconos" src="../imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
           B1625 Belén de Escobar</p>
         <p class="text-center mt-0">Provincia de Buenos Aires</p>
       </div>
       <div class="mb-4 text-center">
-        <p><img class="iconos" src="./imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
+        <p><img class="iconos" src="../imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
       </div>
       <div class="mb-4 text-center">
-        <p><img class="iconos" src="./imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
+        <p><img class="iconos" src="../imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
       </div>
       <div class="mb-4 text-center">
-        <p class=""><img class="iconos pe-1" src="./imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+        <p class=""><img class="iconos pe-1" src="../imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
       </div>
-      <div class="text-center iconos3 pb-2">
+      <div class="text-center iconos3  pb-2">
         <div class="">
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-instagram-50 black.png" alt=""></a>
+          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-instagram-50 black.png" alt=""></a>
         </div>
         <div>
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-tik-tok-50 black.png" alt=""></a>
         </div>
         <div>
-          <a class="link" href="#"> <img class=" iconos2" src="./imagenes/icons8-facebook-50 black.png" alt=""></a>
+          <a class="link" href="#"> <img class=" iconos2" src="../imagenes/icons8-facebook-50 black.png" alt=""></a>
         </div>
         <div>
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-youtube-play-50 black.png" alt=""></a>
         </div>
       </div>
     </div>
@@ -261,10 +250,6 @@
         width="600" height="303" style="border:0;" allowfullscreen="" loading="lazy"
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
-    </div>
-  
-    <div class="contenedor-logo-final-general">
-      <img class="img-logo-final-general" src="./imagenes/Nani-removebg-preview.png" alt="">
     </div>
   </footer>
 

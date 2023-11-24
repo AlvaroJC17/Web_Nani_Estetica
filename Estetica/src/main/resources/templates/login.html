@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +8,7 @@
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
-        <link rel="stylesheet" href="./css/styles.css">
+        <link rel="stylesheet" href="/css/styles.css">
         <title>Iniciar Sesion</title>
       </head>
 <body class="">
@@ -20,12 +20,12 @@
       <div class=" d-flex justify-content-end">
         <p class="tituloredes">SIGUENOS EN NUESTRAS REDES: &nbsp</p>
         <div class="iconos3">
-          <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-instagram-50 black.png" alt=""></a>
+          <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
           </div>
-          <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-tik-tok-50 black.png" alt=""></a></div>
-          <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-facebook-50 black.png" alt=""></a>
+          <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a></div>
+          <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
           </div>
-          <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+          <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
           </div>
         </div>
       </div>
@@ -37,9 +37,9 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-            <a href="./index.html">
+            <a href="/index.html">
               <div class="imagen-logo ajuste-texto-menu">
-                <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
+                <img src="/imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
               </div>
             </a>
           </div>
@@ -56,7 +56,7 @@
         </div>
         <div class="col-md-6 px-0">
           <div class="login-box">
-            <img src="./imagenes/Nani-removebg-preview.png" class="avatar" alt="Avatar Image">
+            <img src="/imagenes/Nani-removebg-preview.png" class="avatar" alt="Avatar Image">
             <h1 class="py-2">Iniciar sesion</h1>
             <form class="form-login">
               <!-- USERNAME INPUT -->
@@ -66,13 +66,13 @@
               <label for="password">Contraseña</label>
               <input type="password" id="password" placeholder="Ingresar contraseña">
               <div class="d-flex justify-content-center align-items-center ">
-              <a href="#"><button class="bn632-hover-login bn26">Iniciar sesion</button></a>
+              <a href="/pagina_cliente/homeCliente.html"><button class="bn632-hover-login bn26">Iniciar sesion</button></a>
               </div>
               <div class="texto-recuperar1">
               <a class="texto"  href="#">Recuperar contraseña</a><br>
             </div>
             <div class="texto-recuperar2">
-              <a class="texto" href="./registrarse.html">¿No tienes cuenta?</a>
+              <a class="texto" href="/registrarse.html">¿No tienes cuenta?</a>
             </div>
             </form>
           </div>
@@ -85,31 +85,31 @@
       <div class="divfooter col-lg-4">
         <p class="mb-3 text-center titulos-footer-general">CONTACTOS</p>
         <div class="mb-4">
-          <p class="mb-0 text-center"><img class="iconos" src="./imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
+          <p class="mb-0 text-center"><img class="iconos" src="/imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
             B1625 Belén de Escobar</p>
           <p class="text-center mt-0">Provincia de Buenos Aires</p>
         </div>
         <div class="mb-4 text-center">
-          <p><img class="iconos" src="./imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
+          <p><img class="iconos" src="/imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
         </div>
         <div class="mb-4 text-center">
-          <p><img class="iconos" src="./imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
+          <p><img class="iconos" src="/imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
         </div>
         <div class="mb-4 text-center">
-          <p class=""><img class="iconos pe-1" src="./imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+          <p class=""><img class="iconos pe-1" src="/imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
         </div>
         <div class="text-center iconos3 pb-2">
           <div class="">
-            <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-instagram-50 black.png" alt=""></a>
+            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
           </div>
           <div>
-            <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a>
           </div>
           <div>
-            <a class="link" href="#"> <img class=" iconos2" src="./imagenes/icons8-facebook-50 black.png" alt=""></a>
+            <a class="link" href="#"> <img class=" iconos2" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
           </div>
           <div>
-            <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
           </div>
         </div>
       </div>
@@ -136,7 +136,7 @@
     
       <div class="divfooter col-lg-4">
         <p class=" text-center mb-4 titulos-footer-general">UBICACIÓN</p>
-        <iframe class="w-100 rounded rounded-2"
+        <iframe class="w-100 rounded rounded-2 footer"
           src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4400.61749400772!2d-58.79359358225364!3d-34.353920874961496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61b6066f6bc1%3A0xdc195365f6a5a98d!2sPablo%20Podesta%20451%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1697767903353!5m2!1ses-419!2sar"
           width="600" height="303" style="border:0;" allowfullscreen="" loading="lazy"
           referrerpolicy="no-referrer-when-downgrade">
@@ -144,7 +144,7 @@
       </div>
     
       <div class="contenedor-logo-final-general">
-        <img class="img-logo-final-general" src="./imagenes/Nani-removebg-preview.png" alt="">
+        <img class="img-logo-final-general" src="/imagenes/Nani-removebg-preview.png" alt="">
       </div>
     </footer>
 

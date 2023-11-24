@@ -7,68 +7,57 @@
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-        <link rel="stylesheet" href="./css/styles.css">
-        <title>Datos Admin</title>
+        <link rel="stylesheet" href="../css/styles.css">
+        <title>Datos Cliente</title>
       </head>
 <body class="body-misdatos">
 
   <a href="#" target="_blank" class="boton-flotante">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
-<nav>
-  <div class=" d-flex justify-content-end">
-    <p class="tituloredes">SIGUENOS EN NUESTRAS REDES: &nbsp</p>
-    <div class="iconos3">
-      <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-instagram-50 black.png" alt=""></a>
-      </div>
-      <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-tik-tok-50 black.png" alt=""></a></div>
-      <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-facebook-50 black.png" alt=""></a>
-      </div>
-      <div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-youtube-play-50 black.png" alt=""></a>
-      </div>
-    </div>
-  </div>
-  <nav class="navbar navbar1 navbar-expand-md">
-    <div class="container-fluid navbar2">
-      <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
-        aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-        <a href="./home.html">
-          <div class="imagen-logo ajuste-texto-menu">
-            <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
-          </div>
-        </a>
-        <ul class="navbar-nav navbar4 container-fluid p-0">
-          <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" href="./misdatos.html">Mis Datos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" href="./solicitartuno.html">Solicitar Turno</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./misturnos.html">Mis Turnos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Mis consultas</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./index.html">Cerrar Sesion</a>
-          </li>
-        </ul>
+  <nav>
+    <div class="navbar navbar1 navbar-expand-md">
+      <div class="container-fluid navbar2">
+        <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+          aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+          <a href="./homeCliente.html">
+            <div class="imagen-logo ajuste-texto-menu">
+              <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
+            </div>
+          </a>
+          <ul class="navbar-nav navbar4 container-fluid p-0">
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" href="./misdatosCliente.html">Mis Datos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" href="./reservaDeTurnoCliente.html">Solicitar Turno</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" href="./misturnos.html">Mis Turnos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Mis consultas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" href="./index.html">Cerrar Sesion</a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </nav>
-</nav>
 
-<main class="main-misdatos">
+
+
+<main class="main-interno">
+    <h3 class="">Datos personales</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
         <form action="action">
-          <div>
-            <h4 class="">Datos personales</h4>
-          </div>
+         
           <div class="row">
           <div class="mb-3 col-lg-4">
             <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
@@ -89,8 +78,8 @@
             <input type="date" class="form-control" id="nacimiento" placeholder="Fecha Nacimineto" disabled>
           </div>
           <div class="mb-3 col-lg-6 ">
-            <label for="edad" class="form-label texto-label">Edad</label>
-            <input type="number" class="form-control" id="edad" placeholder="">
+            <label for="edad" class="form-label texto-label">Ocupación</label>
+            <input type="text" class="form-control" id="edad" placeholder="">
           </div>
         </div>
         <div class="row">
@@ -113,11 +102,11 @@
             <input type="number" class="form-control" id="telefono" placeholder="">
           </div>
         </div>
-        <div class="boton-de-registro text-center">
+        <div class="boton-de-registro mt-4  text-center">
           <a href="#"><button class="bn632-hover bn26">Guardar</button></a>
         </div>
         <div class="text-center mt-2 ">
-          <a class="m-2 " href="">¿Olvido su contraseña?</a>
+          <a class="m-2 " href="">Cambiar contraseña</a>
         </div>
         </form>
       </div>
@@ -129,31 +118,31 @@
     <div class="divfooter col-lg-4">
       <p class="mb-3 text-center titulos-footer-general">CONTACTOS</p>
       <div class="mb-4">
-        <p class="mb-0 text-center"><img class="iconos" src="./imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
+        <p class="mb-0 text-center"><img class="iconos" src="../imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
           B1625 Belén de Escobar</p>
         <p class="text-center mt-0">Provincia de Buenos Aires</p>
       </div>
       <div class="mb-4 text-center">
-        <p><img class="iconos" src="./imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
+        <p><img class="iconos" src="../imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
       </div>
       <div class="mb-4 text-center">
-        <p><img class="iconos" src="./imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
+        <p><img class="iconos" src="../imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
       </div>
       <div class="mb-4 text-center">
-        <p class=""><img class="iconos pe-1" src="./imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+        <p class=""><img class="iconos pe-1" src="../imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
       </div>
-      <div class="text-center iconos3 pb-2">
+      <div class="text-center iconos3  pb-2">
         <div class="">
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-instagram-50 black.png" alt=""></a>
+          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-instagram-50 black.png" alt=""></a>
         </div>
         <div>
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-tik-tok-50 black.png" alt=""></a>
         </div>
         <div>
-          <a class="link" href="#"> <img class=" iconos2" src="./imagenes/icons8-facebook-50 black.png" alt=""></a>
+          <a class="link" href="#"> <img class=" iconos2" src="../imagenes/icons8-facebook-50 black.png" alt=""></a>
         </div>
         <div>
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-youtube-play-50 black.png" alt=""></a>
         </div>
       </div>
     </div>
@@ -185,10 +174,6 @@
         width="600" height="303" style="border:0;" allowfullscreen="" loading="lazy"
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
-    </div>
-  
-    <div class="contenedor-logo-final-general">
-      <img class="img-logo-final-general" src="./imagenes/Nani-removebg-preview.png" alt="">
     </div>
   </footer>
 
