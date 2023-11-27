@@ -30,14 +30,14 @@
         </div>
       </div>
       <div class="row">
-      <nav class="navbar navbar1 navbar-expand-md col-12 col-sm-10 ">
+      <div class="navbar navbar1 navbar-expand-md col-12 col-sm-10 ">
         <div class="container-fluid navbar2">
           <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
             aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-            <a href="/index.html">
+            <a th:href="@{/index}">
               <div class="imagen-logo ajuste-texto-menu">
                 <img src="/imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
               </div>
@@ -46,10 +46,11 @@
         </div>
       </nav>
       <div class="d-flex justify-content-center  align-items-center col-12 col-sm-2 cabecera">
-        <a class="registrarse" href="./registrarse.html">INICIAR SESION</a>
+        <a class="registrarse" th:href="@{/registrarse}">REGISTRARSE</a>
       </div>
     </div>
   </nav>
+  
     <main class="main-login">
        <div class="row">
         <div class=" imagen-formulario-login col-md-6">
@@ -58,21 +59,24 @@
           <div class="login-box">
             <img src="/imagenes/Nani-removebg-preview.png" class="avatar" alt="Avatar Image">
             <h1 class="py-2">Iniciar sesion</h1>
-            <form class="form-login">
+            <form th:action="@{/loginUsuario}" method="post" class="form-login">
               <!-- USERNAME INPUT -->
-              <label for="mail">Email</label>
-              <input type="text" id="mail" placeholder="Ingresar mail">
+              <label for="email">Email</label>
+              <input type="text" name="email" id="email" placeholder="Ingresar email">
               <!-- PASSWORD INPUT -->
               <label for="password">Contraseña</label>
-              <input type="password" id="password" placeholder="Ingresar contraseña">
+              <input type="password" name="password" id="password" placeholder="Ingresar contraseña">
+	          <div th:if="${Error}" class="fs-5 mt-2 text-center">
+	          	<p th:text="${Error}"></p>
+	    	  </div>
               <div class="d-flex justify-content-center align-items-center ">
-              <a href="/pagina_cliente/homeCliente.html"><button class="bn632-hover-login bn26">Iniciar sesion</button></a>
+              <a href=""><button type="submit" class="bn632-hover-login bn26">Iniciar sesion</button></a>
               </div>
               <div class="texto-recuperar1">
-              <a class="texto"  href="#">Recuperar contraseña</a><br>
+              <a class="texto"  th:href="@{/olvidoContrasena}">Recuperar contraseña</a><br>
             </div>
             <div class="texto-recuperar2">
-              <a class="texto" href="/registrarse.html">¿No tienes cuenta?</a>
+              <a class="texto" th:href="@{/registrarse}">¿No tienes cuenta?</a>
             </div>
             </form>
           </div>

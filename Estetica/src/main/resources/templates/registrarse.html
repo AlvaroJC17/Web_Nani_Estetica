@@ -37,7 +37,7 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-            <a href="./index.html">
+            <a th:href="@{/index}">
               <div class="imagen-logo ajuste-texto-menu">
                 <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
               </div>
@@ -46,7 +46,7 @@
         </div>
       </nav>
       <div class="d-flex justify-content-center  align-items-center col-12 col-sm-2 cabecera">
-        <a class="registrarse" href="./registrarse.html">INICIAR SESION</a>
+        <a class="registrarse" th:href="@{/login}">INICIAR SESION</a>
       </div>
     </div>
   </nav>
@@ -71,21 +71,24 @@
               <input type="email" class="form-control" name="email" id="email" placeholder="Email">
                
               <label for="contraseña" class="form-label texto-label mt-2">Contraseña</label>
-              <input type="number" class="form-control" name="contrasena" id="contrasena" placeholder="Contraseña">
+              <input type="password" class="form-control" name="contrasena" id="contrasena" placeholder="Contraseña">
 
               <label for="contraseña2" class="form-label texto-label mt-2">Repetir contraseña</label>
-              <input type="number" class="form-control" name="contrasena2" id="contrasena2" placeholder="Repetir contraseña">
+              <input type="password" class="form-control" name="contrasena2" id="contrasena2" placeholder="Repetir contraseña">
 
+				<div th:if="${error}" class="fs-5 mt-2 text-center">
+	          	<p th:text="${error}"></p>
+	    	  	</div>
             </div>
 
             <div class="boton-de-registro text-center boton-pag-regi ">
                 <a href="#"><button type="submit" class="bn632-hover bn26">Enviar</button></a>
               </div>
               <div class="text-center fs-5 ">
-                <a class="m-2 " href="./login.html">¿Ya esta registrado?</a>
+                <a class="m-2 " th:href="@{/login}">¿Ya esta registrado?</a>
               </div>
               <div class="text-center fs-5  mt-2 ">
-                <a class="m-2 " href="">¿Olvido su contraseña?</a>
+                <a class="m-2 " th:href="@{/olvidocontrasena}">¿Olvido su contraseña?</a>
               </div>
               
             </form>

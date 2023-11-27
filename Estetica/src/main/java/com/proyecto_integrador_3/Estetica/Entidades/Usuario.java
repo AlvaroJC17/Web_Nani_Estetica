@@ -3,6 +3,7 @@ package com.proyecto_integrador_3.Estetica.Entidades;
 
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -12,6 +13,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 
@@ -38,14 +41,22 @@ public class Usuario {
 	@Column(name = "activo")
 	protected Boolean activo;
 	
+	@Column(name = "ValidacionForm")
+	protected boolean ValidacionForm;
+	
+	@OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "persona_id", referencedColumnName = "id")
+	private Persona persona;
+	
 	public Usuario() {};
 	
-	public Usuario(String id, String email, String contrasena, Rol rol, Boolean activo) {
+	public Usuario(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm) {
 		this.id = id;
 		this.email = email;
 		this.contrasena = contrasena;
 		this.rol = rol;
 		this.activo = activo;
+		this.ValidacionForm = ValidacionForm;
 	}
 
 	public String getId() {
@@ -86,6 +97,14 @@ public class Usuario {
 
 	public void setActivo(Boolean activo) {
 		this.activo = activo;
+	}
+	
+	public Boolean getValidacionForm() {
+		return ValidacionForm;
+	}
+	
+	public void setValidacionForm(Boolean ValidacionForm) {
+		this.ValidacionForm = ValidacionForm;
 	}
 
 	@Override

@@ -26,26 +26,23 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a href="./homeCliente.html">
+          <a th:href="@{/homeAdmin}">
             <div class="imagen-logo ajuste-texto-menu">
               <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" href="./misdatosCliente.html">Mis Datos</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" href="./reservaDeTurnoCliente.html">Solicitar Turno</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin}">Mis datos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" href="./misturnos.html">Mis Turnos</a>
-            </li>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaAdmin}">Cambiar contraseña</a>
+            </li> 
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Mis consultas</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" href="../index.html">Cerrar Sesion</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
             </li>
           </ul>
         </div>
@@ -82,8 +79,9 @@
           <tr class="text-center fs-5 ">
             <th scope="col"></th>
             <th class="esconder-col" scope="col">ID</th>
-          <!--  <th scope="col">DNI</th> -->
-        <!--    <th scope="col">Nombre</th> -->
+          	<th scope="col">DNI</th>
+        	<th scope="col">Nombre</th>
+            <th scope="col">Apellido</th>
             <th scope="col">Rol</th>
             <th scope="col">Activo</th>
             <th scope="col">Email</th>
@@ -97,11 +95,13 @@
               </div>
             </th>
             <th class="esconder-col" th:text="${usuarios.id}"></th>
-    <!--    <th th:text="${usuarios.dni}"></th> -->
-      <!--      <th th:text="${usuarios.nombre}"></th> -->
+    		<th th:text="${usuarios.dni}"></th>
+      		<th th:text="${usuarios.nombre}"></th>
+            <th th:text="${usuarios.apellido}"></th>
             <th th:text="${usuarios.rol}"></th>
             <th th:text="${usuarios.activo}"></th>
             <th th:text="${usuarios.email}"></th>
+            
            
           </tr>
         </tbody>
@@ -137,6 +137,9 @@
               <button name="action" value="eliminarUsuario" class="btn btn-danger ">Eliminar</button>
           </a>
         </div>
+        <div th:if="${error}" class="fs-5 mt-2 text-center">
+	          	<p th:text="${error}"></p>
+	    	  </div>
       </div>
      </form>
     </section>

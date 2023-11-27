@@ -5,6 +5,7 @@ import java.util.Date;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -13,21 +14,27 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "Persona")
-public abstract class Persona extends Usuario{
+public class Persona extends Usuario{
 
 	@Column(name = "dni")
     protected String dni;
 
     @Column(name = "nombre")
 	protected String nombre;
+    
     @Column(name = "apellido")
 	protected String apellido;
+    
+    @Column(name = "ocupacion")
+    protected String ocupacion;
 
 	@Enumerated(EnumType.STRING)
 	@Column(name = "sexo")
@@ -42,35 +49,37 @@ public abstract class Persona extends Usuario{
 	@Column(name = "telefono")
 	private Integer telefono;
 	
+	
 	//Constructores
 	public Persona() {}
 
-	public Persona(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, String nombre, String apellido,
-			Sexo sexo, Date fechaNacimiento, String domicilio, Integer telefono) {
-		super(id, email, contrasena, rol, activo);
+	public Persona(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm, String nombre, String apellido,
+			String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, Integer telefono) {
+		super(id, email, contrasena, rol, activo, ValidacionForm);
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
+		this.ocupacion = ocupacion;
 		this.sexo = sexo;
 		this.fechaNacimiento = fechaNacimiento;
 		this.domicilio = domicilio;
 		this.telefono = telefono;
 	}
 	
-	public Persona(String dni, String nombre, String apellido, Sexo sexo, Date fechaNacimiento, String domicilio,
+	public Persona(String dni, String nombre, String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio,
 			Integer telefono) {
-		super();
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
+		this.ocupacion = ocupacion;
 		this.sexo = sexo;
 		this.fechaNacimiento = fechaNacimiento;
 		this.domicilio = domicilio;
 		this.telefono = telefono;
 	}
 
-	public Persona(String id, String email, String contrasena, Rol rol, Boolean activo) {
-		super(id, email, contrasena, rol, activo);
+	public Persona(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm) {
+		super(id, email, contrasena, rol, activo, ValidacionForm);
 	}
 		
 	public String getId() {
@@ -123,6 +132,14 @@ public abstract class Persona extends Usuario{
 
 	public String getApellido() {
 		return apellido;
+	}
+	
+	public void setOcupacion(String ocupacion) {
+		this.ocupacion = ocupacion;
+	}
+	
+	public String getOcupacion() {
+		return ocupacion;
 	}
 
 	public void setApellido(String apellido) {

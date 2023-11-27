@@ -15,6 +15,6 @@ import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 @Repository
 public interface RepositorioCliente extends JpaRepository<Cliente, String> {
 
-    
+    //Todavia no tiene metodos, pero se puden usar los propios de JPA
 	
 }

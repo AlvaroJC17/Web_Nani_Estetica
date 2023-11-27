@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
@@ -26,26 +26,29 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a href="./homeCliente.html">
+          <a th:href="@{/homeCliente}">
             <div class="imagen-logo ajuste-texto-menu">
               <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" href="./misdatosCliente.html">Mis Datos</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente}">Mis Datos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" href="./reservaDeTurnoCliente.html">Solicitar Turno</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente}">Solicitar Turno</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" href="./misturnos.html">Mis Turnos</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Mis Turnos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Mis consultas</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas}">Mis consultas</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" href="../index.html">Cerrar Sesion</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente}">Cambiar contraseña</a>
+            </li> 
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
             </li>
           </ul>
         </div>
@@ -58,7 +61,7 @@
     <h3>Hola, Sheshanys</h3>
   <div class=" container">
       <div class="  ft">
-        <a href="./misdatosCliente.html">
+        <a th:href="@{/misdatosCliente}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Mis datos</p>
@@ -66,7 +69,7 @@
         </a>
       </div>
       <div class=" ft ">
-        <a href="./reservaDeTurnoCliente.html">
+        <a th:href="@{/reservaDeTurnoCliente}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="../imagenes/icons8-más-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Solicitar turno</p>
@@ -74,7 +77,7 @@
         </a>
       </div>
       <div class=" ft">
-        <a href="./misturnos.html">
+        <a th:href="@{/misturnos}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="../imagenes/icons8-calendario-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Mis turnos</p>
@@ -83,7 +86,7 @@
       </div>
 
       <div class=" ft">
-        <a  href="./misconsultas.html">
+        <a  th:href="@{/misconsultas}">
           <div class="d-flex justify-content-center align-items-center">
           <img class="iconos" src="../imagenes/icons8-boleta-de-calificaciones-50.png" alt="">
           <p class="texto-tarjetas-main-home ms-1 hover">Mis consultas</p>

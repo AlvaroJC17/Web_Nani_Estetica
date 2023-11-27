@@ -10,9 +10,11 @@ import java.util.List;
 import java.util.Optional;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
+import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 
 import jakarta.transaction.Transactional;
@@ -23,17 +25,31 @@ public class ServicioUsuario {
 	  @Autowired
 	    public RepositorioUsuario repositorioUsuario;
 	  
+	  @Autowired
+	  public RepositorioPersona repositorioPersona;
+	  
 	  @Transactional
 	    public void guardarUsuario(String email, String password, String password2) throws MiExcepcion {
 
 	        verificarEmail(email);
 	        verificarPassword(password, password2);
+	        
 	        Usuario usuario = new Usuario();
 	        usuario.setEmail(email);
 	        usuario.setContrasena(password);
 	        usuario.setActivo(TRUE);
 	        usuario.setRol(Rol.CLIENTE);
+	        usuario.setValidacionForm(FALSE);
 	        repositorioUsuario.save(usuario);
+	        
+	       /* Persona persona = new Persona();
+	        System.out.println("ID USUARIO: " + usuario.getId());
+	        System.out.println("ID PERSONA: " + persona.getId());
+	        String idComun = usuario.getId();
+	        persona.setId(idComun);
+	        System.out.println("ID PERSONA: " + persona.getId());
+	        repositorioPersona.save(persona);*/
+	        
 	    }
 	  
 	  @Transactional
@@ -60,20 +76,40 @@ public class ServicioUsuario {
 
 		@Transactional
 		public List<Usuario> buscarDni(String dni) {
-			List<Usuario> dniUsuario = repositorioUsuario.buscarPorDni(dni);
+			List<Usuario> dniUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorDNI(dni);
 		return dniUsuario;
 		}
 		
 		@Transactional
 		public List<Usuario> buscarNombre(String nombre) {
-			List<Usuario> nombreUsuario = repositorioUsuario.buscarPorNombre(nombre);
+			List<Usuario> nombreUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorNombre(nombre);
 		return nombreUsuario;
 		}
 		
 		@Transactional
 		public List<Usuario> buscarPorEmail(String email) {
-			List<Usuario> emailUsuario = repositorioUsuario.buscarPorEmail(email);
+			List<Usuario> emailUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorEmail(email);
 		return emailUsuario;
+		}
+		
+		@Transactional
+		public Optional<Usuario> buscarPorEmailOptional(String email) {
+			Optional<Usuario> emailUsuario = repositorioUsuario.buscarPorEmailOptional(email);
+		return emailUsuario;
+		}
+		
+		@Transactional
+		public Optional<Usuario> buscarContrasena(String contrasena) {
+			Optional<Usuario> contrasenaUsuario = repositorioUsuario.buscarContrasena(contrasena);
+		return contrasenaUsuario;
+		}
+		
+	
+		
+		@Transactional
+		public List<Rol> buscarRol() {
+			List<Rol> rolUsuario = repositorioUsuario.buscarRol();
+		return rolUsuario;
 		}
 
 		//Borra un admin de la base de datos

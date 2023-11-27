@@ -22,7 +22,7 @@ import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import jakarta.persistence.EntityManager;
 
 @Controller
-@RequestMapping("/cliente")
+//@RequestMapping(")
 public class ControladorCliente {
 
 	@Autowired
@@ -30,7 +30,40 @@ public class ControladorCliente {
 	@Autowired
 	public ServicioCliente servicioCliente;
 	
-	@PostMapping("/ingresar")
+	
+	@GetMapping("homeCliente")
+	public String homeCliente() {
+	return "/pagina_cliente/homeCliente";	
+	}
+	
+	@GetMapping("misdatosCliente")
+	public String misdatosCliente() {
+	return "/pagina_cliente/misdatosCliente";	
+	}
+	
+	@GetMapping("reservaDeTurnoCliente")
+	public String reservaDeTurnoCliente() {
+	return "/pagina_cliente/reservaDeTurnoCliente";	
+	}
+	
+	@GetMapping("misturnos")
+	public String misturnos() {
+	return "/pagina_cliente/misturnos";	
+	}
+	
+	@GetMapping("misconsultas")
+	public String misconsultas() {
+	return "/pagina_cliente/misconsultas";	
+	}
+	
+	@GetMapping("cambiarContrasenaCliente")
+	public String cambiarContrasenaCliente() {
+	return "/pagina_cliente/cambiarContrasenaCliente";	
+	}
+	
+	
+	/*
+	@PostMapping("/ingresarCliente")
 	public String ingresarCliente( @RequestBody Cliente nuevo_cliente) throws SQLException {
 		
 		
@@ -103,7 +136,7 @@ public class ControladorCliente {
 		return "index.html";
 	}
 	
-	
+	*/
 		
 		
 		

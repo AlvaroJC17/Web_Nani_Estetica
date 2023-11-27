@@ -40,7 +40,7 @@ public class ServicioCliente {
 			cliente.setDni(cliente_nuevo.getDni());
 			cliente.setNombre(cliente_nuevo.getNombre());
 			cliente.setApellido(cliente_nuevo.getApellido());
-			cliente.setEdad(cliente_nuevo.getEdad());
+			cliente.setOcupacion(cliente_nuevo.getOcupacion());
 			cliente.setTelefono(cliente_nuevo.getTelefono());
 			cliente.setDomicilio(cliente_nuevo.getDomicilio());
 			cliente.setFechaNacimiento(cliente_nuevo.getFechaNacimiento());
@@ -62,7 +62,7 @@ public class ServicioCliente {
         	cliente_actualizado.setActivo(cliente.getActivo());
         	cliente_actualizado.setNombre(cliente.getNombre());
         	cliente_actualizado.setApellido(cliente.getApellido());
-        	cliente_actualizado.setEdad(cliente.getEdad());
+        	cliente.setOcupacion(cliente.getOcupacion());
         	cliente_actualizado.setSexo(cliente.getSexo());
         	cliente_actualizado.setFechaNacimiento(cliente.getFechaNacimiento());
         	cliente_actualizado.setDomicilio(cliente.getDomicilio());

@@ -12,14 +12,17 @@ import com.proyecto_integrador_3.Estetica.Entidades.Admin;
 @Repository
 public interface RepositorioAdmin extends JpaRepository<Admin, String> {
 	
-	//Metodo para buscar por DNI
+	/*
+	//Metodo para buscar un admin por DNI
 	@Query("SELECT p FROM Persona p WHERE p.dni = :dni")
     List<Admin> buscarPorDni(@Param("dni") String dni);
 	
-	//Metodo para buscar por Nombre
+	//Metodo para buscar un admin por Nombre
 	@Query("SELECT p FROM Persona p WHERE p.nombre = :nombre")
     List<Admin> buscarPorNombre(@Param("nombre") String nombre);
 	
+	//Metodos para listar a los admins
 	@Query("SELECT u FROM Usuario u")
 	List<Admin> listarAdmin();
+	*/
 }

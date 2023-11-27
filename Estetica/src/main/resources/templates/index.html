@@ -40,7 +40,7 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a href="">
+          <a th:href="@{/index}">
             <div class="imagen-logo alvaro">
               <img src="/imagenes/Nani-removebg-preview.png" class=" img-logo" alt="">
             </div>
@@ -59,7 +59,7 @@
               <a class="nav-link  py-1 ajuste-texto-menu" href="#">RESULTADOS</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" href="/login.html">TURNOS</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/login}">TURNOS</a>
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin}">PRODUCTOS</a>

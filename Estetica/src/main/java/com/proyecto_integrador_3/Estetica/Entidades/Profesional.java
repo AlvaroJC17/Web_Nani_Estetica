@@ -43,10 +43,10 @@ public class Profesional extends Persona {
 		this.precioConsulta = precioConsulta;
 	}
 
-	public Profesional(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, String nombre,
-			String apellido, Sexo sexo, Date fechaNacimiento, String domicilio, Integer telefono) {
-		super(id, dni, contrasena, email, rol, activo, nombre, apellido, sexo, fechaNacimiento, domicilio, telefono);
-		// TODO Auto-generated constructor stub
+	public Profesional(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm, String nombre,
+			String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, Integer telefono) {
+		super(id, dni, contrasena, email, rol, activo, ValidacionForm, nombre, apellido, ocupacion, sexo, fechaNacimiento, domicilio, telefono);
+
 	}
 
 	public String getMatricula() {

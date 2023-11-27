@@ -23,9 +23,11 @@ import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioAdmin;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioAdmin;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
 import jakarta.transaction.Transactional;
@@ -37,17 +39,49 @@ public class ControladorAdmin {
 
 	@Autowired
 	public RepositorioAdmin repositorioAdmin;
+	
 	@Autowired
 	public ServicioAdmin servicioAdmin;
+	
 	@Autowired
 	public ServicioUsuario servicioUsuario;
+	
 	@Autowired
 	public RepositorioUsuario repositorioUsuario;
+	
+	@Autowired
+	public RepositorioPersona repositorioPersona;
+	
+	@Autowired
+	public ServicioPersona servicioPersona;
+	
 	@Autowired
 	public ServicioCliente servicioCliente;
 	
+	
+	@GetMapping("homeAdmin")
+	public String homeAdmin() {
+	return "/pagina_admin/homeAdmin";	
+	}
+	
+	@GetMapping("portalAdmin")
+	public String portalAdmin() {
+	return "/pagina_admin/portalAdmin";	
+	}
+	
+	@GetMapping("misdatosAdmin")
+	public String misdatosAdmin() {
+	return "/pagina_admin/misdatosAdmin";	
+	}
+	
+	@GetMapping("cambiarContrasenaAdmin")
+	public String cambiarContrasenaAdmin() {
+	return "/pagina_admin/cambiarContrasenaAdmin";	
+	}
+	
+	/*
 	//Agregamos un admin a la base de datos
-	@PostMapping("/ingresar")
+	@PostMapping("/ingresarAdmin")
 	public String ingresarAdmin(@RequestBody Admin admin) throws SQLException {
 		
 			try {
@@ -61,10 +95,10 @@ public class ControladorAdmin {
 		
 		
 		return "login";
-	}
+	}*/
 	
 	
-	@PostMapping("/modificarAdmin")
+/*	@PostMapping("/modificarAdmin")
 	public String actualizarAdmin(@RequestBody Admin admin) {
 		
 		try {
@@ -76,14 +110,13 @@ public class ControladorAdmin {
 		}
 		
 		return "index";
-	}
+	}*/
 	
 	
 	@GetMapping("listarUsuarios")
     public String listarUsuarios(Model model) throws MiExcepcion {
 
-        List<Usuario> usuarios = repositorioUsuario.listarUsuarios();
-        System.out.println(usuarios.size());
+        List<Usuario> usuarios = repositorioUsuario.joinUsuarioPersona();
         model.addAttribute("usuarios", usuarios);
 
         return "/pagina_admin/portalAdmin";
@@ -93,7 +126,7 @@ public class ControladorAdmin {
 	// y luego cuando apretamos el boton buscar este nos conecta con la pag de buscarDNIoNombre
 	@GetMapping("ocultarLista")
     public String ocultarLista(Model model) throws MiExcepcion {
-        List<Usuario> usuarios = repositorioUsuario.listarUsuarios();
+        List<Usuario> usuarios = repositorioUsuario.joinUsuarioPersona();
         model.addAttribute("usuarios", false);
 
         return "/pagina_admin/portalAdmin";
@@ -102,7 +135,9 @@ public class ControladorAdmin {
 	//Metodo para buscar por nombre o dni
 	@PostMapping("buscarDNIoNombre")
 	public String buscarDNI(@RequestParam(name = "dato") String dato, Model model) {
+		System.out.println("DATO: " + dato);
 		List<Usuario> usuarioDni = servicioUsuario.buscarDni(dato);
+		System.out.println("DNILISTA" + usuarioDni.size());
 		List<Usuario>	usuarioNombre = servicioUsuario.buscarNombre(dato);
 		List<Usuario> usuarioEmail = servicioUsuario.buscarPorEmail(dato);
 		
@@ -150,6 +185,7 @@ public class ControladorAdmin {
 	        } catch (IllegalArgumentException e) {
 	            // Manejar el caso donde nuevoRolNombre no es un valor válido de Rol
 	            model.addAttribute("error", "Valor de rol no válido.");
+	            
 	        }
 		}
 		
@@ -185,7 +221,8 @@ public class ControladorAdmin {
 			//Meotod para eliminar a un usuario de la base de datos
 			try {
 				servicioUsuario.borrarUsuario(id);
-				System.out.println("Eliminado Admin con exito!!!");
+				servicioPersona.borrarPersona(id);
+				System.out.println("Eliminado con exito!!!");
 			} catch (Exception e) {
 				System.out.println("No se actualizo....");
 				e.printStackTrace();
