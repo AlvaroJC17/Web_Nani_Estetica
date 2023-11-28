@@ -113,12 +113,7 @@
              <div  class="fs-5 mt-2 text-center"> <!--La variable emailUsuario viene del formulario login y del controlador loginUsuario-->
 	          	<input type="hidden" th:value="${emailUsuario}" class="form-control" name="emailUsuario" id="emailUsuario" placeholder="">
 	    	  </div>
-            <div th:if="${error}" class="fs-5 mt-2 text-center">
-	          	<p th:text="${error}"></p>
-	    	  </div>
-	    	  <div th:if="${exito}" class="fs-5 mt-2 text-center">
-	          	<p th:text="${exito}"></p>
-	    	  </div>
+            
           </div>
           <div class="boton-de-registro text-center ">
             <a class="" href="./registrarse2.html"><button type="submit" class="bn632-hover bn26">Guardar</button></a>
@@ -134,6 +129,12 @@
 </div>
 </div>
 </section>
+		<div th:if="${error}" class="fs-5 mt-2 text-center">
+	     <p th:text="${error}"></p>
+	  </div>
+	  <div th:if="${exito}" class="fs-5 mt-2 text-center">
+	      <p th:text="${exito}"></p>
+	   </div>
 </div>   
 </main>
 

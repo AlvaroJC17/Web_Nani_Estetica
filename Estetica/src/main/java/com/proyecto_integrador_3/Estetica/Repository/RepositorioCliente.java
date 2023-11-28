@@ -10,11 +10,11 @@ import org.springframework.stereotype.Repository;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
+import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 
 
 @Repository
 public interface RepositorioCliente extends JpaRepository<Cliente, String> {
 
-    //Todavia no tiene metodos, pero se puden usar los propios de JPA
-	
+
 }

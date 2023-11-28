@@ -66,19 +66,23 @@ public class ServicioPersona {
 	@Transactional
 	public void validarForm(String email, String idPersona) {
 		
+		//Buscamos el usuario por mail y obtenemos sus valores
 		Optional<Usuario> usuarioOptional = repositorioUsuario.buscarPorEmailOptional(email);
 		if (usuarioOptional.isPresent()) {
 			Usuario usuario = usuarioOptional.get();
 	
+		//Buscamos el usuario que jpa genero en blanco por el id, que viene siedno el mismo id de la tabla de persona
+		//Le asiganamos a este nuevoUsuario  los valores obtenidos de usuario y los actualizamos en la base de datos
+		// Por ultimo borramos el usuario anterior	
 		Optional<Usuario> nuevoUsuarioOptional = repositorioUsuario.findById(idPersona);
 		if (nuevoUsuarioOptional.isPresent()) {
-			Usuario Nuevousuario = nuevoUsuarioOptional.get() ;
-			Nuevousuario.setEmail(usuario.getEmail());
-			Nuevousuario.setContrasena(usuario.getContrasena());
-			Nuevousuario.setActivo(TRUE);
-			Nuevousuario.setRol(Rol.CLIENTE);
-			Nuevousuario.setValidacionForm(TRUE);
-	        repositorioUsuario.save(Nuevousuario);
+			Usuario nuevoUsuario = nuevoUsuarioOptional.get() ;
+			nuevoUsuario.setEmail(usuario.getEmail());
+			nuevoUsuario.setContrasena(usuario.getContrasena());
+			nuevoUsuario.setActivo(TRUE);
+			nuevoUsuario.setRol(Rol.CLIENTE);
+			nuevoUsuario.setValidacionForm(TRUE);
+	        repositorioUsuario.save(nuevoUsuario);
 	        repositorioUsuario.delete(usuario);
 		}
 		}
@@ -94,6 +98,8 @@ public class ServicioPersona {
 					
 				}
 			}
+			
+
 	
 	 public static void validarDatosPersona(String dni, String email, String nombre, String apellido,
 			 String ocupacion, String domicilio, Integer telefono) throws MiExcepcion {
@@ -111,7 +117,7 @@ public class ServicioPersona {
 			throw new MiExcepcion("El apellido no puede estar vacio");
 		}
 	 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
-			throw new MiExcepcion("EL telefono no puede estar vacio");
+			throw new MiExcepcion("La ocupacion no puede estar vacio");
 		}
 	 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {
 			throw new MiExcepcion("El domicilio no puede estar vacio");

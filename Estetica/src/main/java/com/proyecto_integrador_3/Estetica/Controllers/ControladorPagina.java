@@ -48,6 +48,8 @@ public class ControladorPagina {
 	return "cambiarContrasena";	
 	}
 	
+	
+	// Registro un usuario en la base de datos
 	 @PostMapping("/registro")
 	    public String registroUsuario(@RequestParam(name = "email") String email, @RequestParam(name = "contrasena") String password,
 	           @RequestParam(name = "contrasena2") String password2, ModelMap modelo) throws MiExcepcion {
@@ -56,17 +58,18 @@ public class ControladorPagina {
 	        try {
 
 	        	servicioUsuario.guardarUsuario(email, password, password2);
+	        	return "index.html";
 	        
-	            return "index.html";
 	        } catch (MiExcepcion e) {
 	            System.out.println(e.getMessage());
 	            modelo.put("error", e.getMessage());
-	            modelo.put("email", email);
 	            return "registrarse";
 	        }
 
 	    }
 	 
+	 	//Login de un usuario, dependiendo de su rol lo redireccion a un home y si es logueo
+	 	// por primera vez lo redirecciona a una formulario de datos
 		@PostMapping("/loginUsuario")
 		 public String loginUsuario(
 		         @RequestParam(name = "email") String email,
@@ -78,20 +81,30 @@ public class ControladorPagina {
 
 		     if (usuarioOptional.isPresent()) {
 		    	 
-		         Usuario usuario = usuarioOptional.get();
+		         Usuario usuario = usuarioOptional.get(); //con el metodo get, asociamos al usuario encontrado a la variable usuario y asi poder acceder a sus atributos
 		         String emailUsuario = usuario.getEmail();
 		         password = usuario.getContrasena();
 		         Boolean activo = usuario.getActivo();
 		         Boolean validarForm = usuario.getValidacionForm();
 		         Rol rol = usuario.getRol();
 		         
+		         if (!activo) {
+						model.addAttribute("Error", "Usuario no se encuentra activo");
+						return "login";
+					}
+			         
+		      
 		         try {
-		        	  if (servicioUsuario.verificarPassword(contrasena, password) && activo) {
-		        		  				        	 
+		        	 //verificamos que los password esten correcto y sean iguales ademas de que el usuario este activo
+		        	  if (servicioUsuario.verificarPassword(contrasena, password)) {
+		        		  
+		        		  //Buscamos los datos pertenecientes a ese email en la table de persona y los pasamos a homeAdmin, en este caso solo usamos el nombre
+		        		  List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(emailUsuario);
+		        		  
 				             if ("ADMIN".equals(rol.toString())) {
 				       
 				            	 if (validarForm) {
-				            		 modelo.addAttribute("datosAdmin", usuarioOptional);
+				            		 modelo.addAttribute("datosAdmin", datosPersonaUsuario);
 				            		 return "pagina_admin/homeAdmin";
 				            	 }else if(!validarForm) {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario);
@@ -102,17 +115,17 @@ public class ControladorPagina {
 				             } else if ("CLIENTE".equals(rol.toString())) {
 				            	
 				            	 if (validarForm) {
-				            		 modelo.addAttribute("datosCliente", usuarioOptional);
+				            		 modelo.addAttribute("datosCliente", datosPersonaUsuario);
 				            		 return "pagina_cliente/homeCliente";
 				            	 }else if(!validarForm) {
-				            		 modelo.addAttribute("emailUsuario", emailUsuario);
+				            		 modelo.addAttribute("emailUsuario", emailUsuario); //Esta variable envia el email en un input oculto hacia el metodo guardarDatosPersona
 				            		 return "completarDatos";
 				            	 }
 				            	 
 				             } else if ("PROFESIONAL".equals(rol.toString())) {
 				            	 
 				            	 if (validarForm) {
-				            		 modelo.addAttribute("datosProfesional", usuarioOptional);
+				            		 modelo.addAttribute("datosProfesional", datosPersonaUsuario);
 				            		 return "pagina_profesional/homeProfesional";
 				            	 }else if(!validarForm) {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario);
@@ -124,7 +137,7 @@ public class ControladorPagina {
 		        	 model.put("Error", "Usuario o contraseña incorrecta");
 		         }
 		     }else {
-		    	 model.put("Error", "Usuario o contraseña incorrecta");
+		    	 model.put("Error", "Usuario no se encuentra registrado");
 		     }
 		     return "login";
 		}

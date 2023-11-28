@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -79,24 +80,6 @@ public class ControladorAdmin {
 	return "/pagina_admin/cambiarContrasenaAdmin";	
 	}
 	
-	/*
-	//Agregamos un admin a la base de datos
-	@PostMapping("/ingresarAdmin")
-	public String ingresarAdmin(@RequestBody Admin admin) throws SQLException {
-		
-			try {
-				servicioAdmin.registrarAdmin(admin);
-				System.out.println("Admin Agregado con exito");
-				
-			} catch (Exception e) {
-				System.out.println(e.getMessage());
-				System.out.println("no se agrego");
-			}
-		
-		
-		return "login";
-	}*/
-	
 	
 /*	@PostMapping("/modificarAdmin")
 	public String actualizarAdmin(@RequestBody Admin admin) {
@@ -112,95 +95,91 @@ public class ControladorAdmin {
 		return "index";
 	}*/
 	
+
+	@GetMapping("/listarUsuariosVisibles")
+    public String listarUsuariosVisibles(Model model) throws MiExcepcion {
+		List<Usuario> usuarios = repositorioUsuario.joinUsuarioPersona();
+		model.addAttribute("usuarios", usuarios);
+		return "/pagina_admin/portalAdmin";
+	}
 	
-	@GetMapping("listarUsuarios")
+	//Muestra una pagina con la lista de usuarios oculta, esto porque queremos que el admin
+	//busque los usuarios por nombre, dni o email y no que los busque en una lista
+	@GetMapping("/listarUsuarios")
     public String listarUsuarios(Model model) throws MiExcepcion {
-
-        List<Usuario> usuarios = repositorioUsuario.joinUsuarioPersona();
-        model.addAttribute("usuarios", usuarios);
-
-        return "/pagina_admin/portalAdmin";
+		List<Usuario> usuarios = repositorioUsuario.joinUsuarioPersona();
+		model.addAttribute("usuarios", false);
+		return "/pagina_admin/portalAdmin";
 	}
-	
-	//Este metodo trabaja conjunto con el de buscar nombre o dni, este se encarga de mostrar la pag con la tabla oculta
-	// y luego cuando apretamos el boton buscar este nos conecta con la pag de buscarDNIoNombre
-	@GetMapping("ocultarLista")
-    public String ocultarLista(Model model) throws MiExcepcion {
-        List<Usuario> usuarios = repositorioUsuario.joinUsuarioPersona();
-        model.addAttribute("usuarios", false);
 
-        return "/pagina_admin/portalAdmin";
-	}
-	
-	//Metodo para buscar por nombre o dni
-	@PostMapping("buscarDNIoNombre")
-	public String buscarDNI(@RequestParam(name = "dato") String dato, Model model) {
-		System.out.println("DATO: " + dato);
+	//Buscamos usuario por dni, nombre o email
+	@PostMapping("/buscarDNIoNombre")
+	public String buscarDniNombreEmail(@RequestParam(name = "dato") String dato, Model model) {
+
+		//Validamos que la busqueda no se haya hecho en blanco y mostramos un mensaje
+		if (dato.isEmpty() || dato == null) {
+			model.addAttribute("error", "Indique un numero de DNI, nombre o email para realizar la busqueda");
+			return "/pagina_admin/portalAdmin";
+		}
+		
 		List<Usuario> usuarioDni = servicioUsuario.buscarDni(dato);
-		System.out.println("DNILISTA" + usuarioDni.size());
 		List<Usuario>	usuarioNombre = servicioUsuario.buscarNombre(dato);
 		List<Usuario> usuarioEmail = servicioUsuario.buscarPorEmail(dato);
 		
-		if (usuarioDni.isEmpty()) {
-			usuarioDni = null;
-		}
-		
-		if (usuarioNombre.isEmpty()) {
-			usuarioNombre = null;
-		}
-		
-		if (usuarioEmail.isEmpty()) {
-			usuarioEmail = null;
-		}
-		
-		if (usuarioDni != null) {
+		if (!usuarioDni.isEmpty()) {
 			model.addAttribute("usuarios", usuarioDni); // asignamos el valor de la variable administradoresDni a la variable html administradores y asi poder iterarla en el documento 
-		}
-		
-		if (usuarioNombre != null) {
+		}	
+		if (!usuarioNombre.isEmpty()) {
 			model.addAttribute("usuarios", usuarioNombre);
-		}
-		
-		if (usuarioEmail != null) {
+		}	
+		if (!usuarioEmail.isEmpty()) {
 			model.addAttribute("usuarios", usuarioEmail);
 		}
 		
 		return "/pagina_admin/portalAdmin";
 	}
 	
+	
 	// En este metodo unificamos la edicion y eliminacion de un usuario a traves de un solo formulario
 	// usanso el action como valor para las diferentes condiciones
-	@PostMapping("modificarUsuario")
-	public String modificarUsuario(@RequestParam(name = "seleccionados") String id,
+	
+	@PostMapping("/modificarUsuario")
+	public String modificarUsuario(@RequestParam(name = "idUsuario", required = false) String id,
             @RequestParam(name = "nuevoRol") String nuevoRolNombre, @RequestParam(name = "action") String action,
             Model model) {
 		
-		Rol nuevoRol = null;
+		//Validamos que el id no venga vacio, esto pasa cuando le dan a una opcion sin seleccionar a un usuario
+		if (id == null) {
+			model.addAttribute("error", "Es necesario seleccionar un usuario!!");
+			return "/pagina_admin/portalAdmin";
+		}
 		
+		//Validamos que la opcion rol no sea "Modifical rol" y pasamos el valor de String a Rol
+		Rol nuevoRol = null;
 		if (!"Modifical rol".equals(nuevoRolNombre)) {
 			try {
 	            // Convertir el nuevoRol solo si no es "Modificar Rol"
 	            nuevoRol = Rol.valueOf(nuevoRolNombre.toUpperCase());
 	            
 	        } catch (IllegalArgumentException e) {
-	            // Manejar el caso donde nuevoRolNombre no es un valor válido de Rol
-	            model.addAttribute("error", "Valor de rol no válido.");
-	            
+	            System.out.println(e.getMessage());
 	        }
 		}
-		
-		if (action.equals("modificarRol")) {
+	            
+		if (action.equals("modificarRol") && nuevoRol != null) {
 			//metodo para moficar el rol
 			servicioUsuario.modificarRol(id, nuevoRol);
+			return "redirect:/listarUsuariosPorId?id=" + id; //redireciona al metodo listarUsuariosPorId y le pasa el valor del id,
 		}
-		
+															 //Esto ayuda a que cuando  cambiemos el rol nos cargue de vuelta la pagina con el valor nuevo		
 		if (action.equals("altaUsuario")) {
 			try {
 				//metodo para modificar el activo del usuario a True
 				servicioUsuario.altaUsuario(id);
-				System.out.println("alta admin con exito!!!");
+				return "redirect:/listarUsuariosPorId?id=" + id;
+				
 			} catch (Exception e) {
-				System.out.println("No se actualizo....");
+				System.out.println("No se actualizo el alta del Usuario....");
 				e.printStackTrace();
 			}
 		}
@@ -209,30 +188,49 @@ public class ControladorAdmin {
 			try {
 				//metodo para modificar el activo del usuario a False
 				servicioUsuario.bajaUsuario(id);
-				System.out.println("baja admin con exito!!!");
+				return "redirect:/listarUsuariosPorId?id=" + id;
+				
 			} catch (Exception e) {
-				System.out.println("No se actualizo....");
+				System.out.println("No se actualizo la baja del usuario....");
 				e.printStackTrace();
 			}
-			
 		}
-			
+						
 		if (action.equals("eliminarUsuario")) {
 			//Meotod para eliminar a un usuario de la base de datos
 			try {
 				servicioUsuario.borrarUsuario(id);
 				servicioPersona.borrarPersona(id);
-				System.out.println("Eliminado con exito!!!");
+				model.addAttribute("exito2", "Usuario eliminado correctamente!!");
+				return "/pagina_admin/portalAdmin";
 			} catch (Exception e) {
-				System.out.println("No se actualizo....");
-				e.printStackTrace();
+				model.addAttribute("error", "No se pudo borrar el usuario");
+				return "/pagina_admin/portalAdmin";
 			}
 		}
 		
 		return "/pagina_admin/portalAdmin";
 	}
 	
+	//Lista usuarios y persona haciendo un join de tablas por ID
+	//Este metodo esta relacionado con el de modificarUsuario
+	@GetMapping("/listarUsuariosPorId")
+	public String listarUsuariosPorId( String id, Model model) {
+		List<Usuario> usuarios = servicioUsuario.buscarId(id);
+		model.addAttribute("usuarios", usuarios);
+		model.addAttribute("exito", "Modificación realizada exitosamente!!");
+		return "/pagina_admin/portalAdmin";
+	}
+	
+		
 	
 	
-	
+		
 }
+		
+		
+			
+		
+		
+	
+	

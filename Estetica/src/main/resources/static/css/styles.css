@@ -57,7 +57,7 @@ a, p, label {
     padding-top: 0px;
 }
 
-nav {
+nav, .subnav {
     /*Le da la iamgen degradada de fondo del menu principal*/
     background-image: linear-gradient(to right, #d4af37, #724921);
 }

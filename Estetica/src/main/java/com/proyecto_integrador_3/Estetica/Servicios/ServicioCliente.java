@@ -29,8 +29,7 @@ public class ServicioCliente {
 	public void registrarCliente(Cliente cliente_nuevo) throws MiExcepcion {
 		
 		
-			/*SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-			Date dataFormateada = formato.parse();*/   
+			  
 		if (cliente_nuevo != null) {
 			
 			Cliente cliente = new Cliente();
@@ -71,49 +70,10 @@ public class ServicioCliente {
 		}
 	}
         		
-	@Transactional
-    public void borrarCliente(Cliente cliente) {
-		
-		Optional<Cliente> identificarCliente = repositorioCliente.findById(cliente.getId());
-		if (identificarCliente.isPresent()) {
-			Cliente cliente_actualizado = identificarCliente.get();
-			repositorioCliente.delete(cliente_actualizado);
-		}
-	}
-		
-	 @Transactional
-	    public void bajaCliente(Cliente cliente) {
-	        
-		 Optional<Cliente> identificarCliente = repositorioCliente.findById(cliente.getId());
-				
-		 if (identificarCliente.isPresent()) {
-			 Cliente cliente_actualizado = identificarCliente.get();
-			 cliente_actualizado.setActivo(FALSE);
-			 repositorioCliente.save(cliente_actualizado);
-		 }
-	 }
-			
-	      
-	 @Transactional
-	    public void altaCliente(Cliente cliente) {
-	        
-		 Optional<Cliente> identificarCliente = repositorioCliente.findById(cliente.getId());
-				
-		 if (identificarCliente.isPresent()) {
-			 Cliente cliente_actualizado = identificarCliente.get();
-			 cliente_actualizado.setActivo(TRUE);
-			 repositorioCliente.save(cliente_actualizado);
-		 }
-	 }
+
 	 
-	 @Transactional()
-	    public List<Cliente> listarClientes() {
+	 
 
-	        List<Cliente> clientes = new ArrayList();
 
-	        clientes = repositorioCliente.findAll();
-
-	        return clientes;
-	    }
 
 }

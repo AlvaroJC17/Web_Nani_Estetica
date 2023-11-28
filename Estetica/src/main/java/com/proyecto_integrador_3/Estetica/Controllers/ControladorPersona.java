@@ -1,6 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Boolean.FALSE;
@@ -49,34 +50,37 @@ public class ControladorPersona {
 			@RequestParam(name = "telefono") Integer telefono,
 			@RequestParam(name = "direccion") String direccion,
 			@RequestParam(name = "ocupacion") String ocupacion,
-			@RequestParam(name = "emailUsuario") String emailUsuario,
+			@RequestParam(name = "emailUsuario") String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
 			ModelMap model
 			) {
 		
-		System.out.println("NAME: " + nombre + "\n" + "APELLIDO: " + apellido + "\n" 
-		+ "NUMERODOC: " + dni + "\n" + "SEXO: " + sexo + "\n" + "FECHA: " + fechaNacimiento
-		+ "\n" + "TELEFONO: " + telefono + "\n" + "DIRECCION: " + direccion + "\n" 
-		+ "OCUPACION: " + ocupacion + "\n" + "EMAILUSUARIO: " + emailUsuario);
 		
 		String idPersona = null;
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailUsuario);
 		
 		try {
+			//Con este metodo obtenemos el id de la persona que se registro
 			idPersona = servicioPersona.registrarPersona(dni, direccion, nombre, apellido, ocupacion, ocupacion, telefono, fechaNacimiento, sexo);
-			System.out.println("IDPERSONA: " + idPersona);
+
+			// Con este metodo buscamos al usuario que se logue a traves de email
+			//Y los datos que lleno del form a traves de id
+			//jpa crea un usario con el mismo dni de la persona que llena el form
+			//Con este metodo asiganamos los valos del usario que se logue al mismo id
+			// de la persona que lleno el form y borramos el usuario repetido
 			servicioPersona.validarForm(emailUsuario, idPersona);
-			model.put("exito", "GUARDADO CORRECTAMENTE");
+			
 		
 		} catch (MiExcepcion e) {
-			System.out.println("NO SE REGISTRO");
-			model.put("error", "NO SE REGISTRO");
 			e.printStackTrace();
+			model.put("error", "NO SE REGISTRO");
+			return "completarDatos";
 		}
-		
-		
-		return"completarDatos";
+		return "redirect:/homeCliente?email=" + emailUsuario; //redirecionamos al metodo homeCliente enviando la varibale mail
 	}
-	
-	
-	
-	
 }
+		
+		
+	
+	
+	
+	

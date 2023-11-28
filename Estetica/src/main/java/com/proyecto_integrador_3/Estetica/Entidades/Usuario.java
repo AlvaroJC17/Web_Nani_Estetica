@@ -24,8 +24,8 @@ import jakarta.persistence.Table;
 public class Usuario {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.UUID)
-	@Column(name = "id")
+	@GeneratedValue(strategy = GenerationType.UUID) // genera valores alfanumericos como id
+	@Column(name = "id") //Identifica este campo como id en la tabla
 	protected String id;
 	
 	@Column(name = "email")

@@ -42,14 +42,6 @@ public class ServicioUsuario {
 	        usuario.setValidacionForm(FALSE);
 	        repositorioUsuario.save(usuario);
 	        
-	       /* Persona persona = new Persona();
-	        System.out.println("ID USUARIO: " + usuario.getId());
-	        System.out.println("ID PERSONA: " + persona.getId());
-	        String idComun = usuario.getId();
-	        persona.setId(idComun);
-	        System.out.println("ID PERSONA: " + persona.getId());
-	        repositorioPersona.save(persona);*/
-	        
 	    }
 	  
 	  @Transactional
@@ -67,12 +59,18 @@ public class ServicioUsuario {
 	    }
 	  
 	  @Transactional()
-	    public List<Usuario> listarAdmins() {
+	    public List<Usuario> listarUsuarios() {
 		  List<Usuario> usuario = new ArrayList();
 		  usuario = repositorioUsuario.listarUsuarios();
 		  return usuario;
 	  }
 
+	  
+		@Transactional
+		public List<Usuario> buscarId(String dni) {
+			List<Usuario> idUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorId(dni);
+		return idUsuario;
+		}
 
 		@Transactional
 		public List<Usuario> buscarDni(String dni) {

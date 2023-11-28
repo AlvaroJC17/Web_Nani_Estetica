@@ -31,6 +31,7 @@ public class ServicioAdmin {
 	public RepositorioCliente repositorioCliente;
 	
 	
+	
 	/*
 	@Transactional
 	public List<Admin> buscarDni(String dni) {

@@ -51,8 +51,8 @@
   </nav>
 
 <main class="">
-  <div class="main-interno">
-    <h3>Hola, Admin</h3>
+  <div class="main-interno" th:each="datosAdmin : ${datosAdmin}">
+    <h3 th:text="'Hola, ' + ${datosAdmin.nombre}"></h3>
   <div class=" container">
       <div class="  ft">
         <a th:href="@{/misdatosAdmin}">
@@ -64,10 +64,19 @@
       </div>
 
       <div class=" ft ">
-        <a th:href="@{/ocultarLista}">
+        <a th:href="@{/listarUsuarios}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="../imagenes/icons8-más-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Usuarios</p>
+          </div>
+        </a>
+      </div>
+      
+      <div class="  ft">
+        <a th:href="@{/listarUsuariosVisibles}">
+          <div class="d-flex justify-content-center align-items-center">
+            <img class="iconos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
+            <p class="texto-tarjetas-main-home ms-1 hover">Lista usuarios</p>
           </div>
         </a>
       </div>

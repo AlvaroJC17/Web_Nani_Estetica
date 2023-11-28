@@ -47,6 +47,9 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, String>  {
 	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id")
 	List<Usuario> joinUsuarioPersona();
 	
+	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.id = :id")
+	List<Usuario> obtenerDatosPersonaUsuarioPorId(@Param("id") String id);
+	
 	//Metodo para buscar todos los campos de persona y usuario usando el dni
 	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.dni = :dni")
 	public List<Usuario> obtenerDatosPersonaUsuarioPorDNI(@Param("dni") String dni);
@@ -58,4 +61,8 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, String>  {
 	//Metodo para buscar todos los campos de persona y usuario usando el email
 	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.email = :email")
 	public List<Usuario> obtenerDatosPersonaUsuarioPorEmail(@Param("email") String email);
+	
+	//Metodo para buscar todos los campos de persona y usuario usando el email
+		@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.email = :email")
+		public Optional<Usuario> obtenerDatosPersonaUsuarioPorEmailOptional(@Param("email") String email);
 }

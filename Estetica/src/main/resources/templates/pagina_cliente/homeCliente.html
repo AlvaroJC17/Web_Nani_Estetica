@@ -57,8 +57,8 @@
   </nav>
 
 <main class="">
-  <div class="main-interno">
-    <h3>Hola, Sheshanys</h3>
+  <div class="main-interno" th:each="datosCliente : ${datosCliente}">
+    <h3 th:text="'Hola, ' + ${datosCliente.nombre}"></h3>
   <div class=" container">
       <div class="  ft">
         <a th:href="@{/misdatosCliente}">
@@ -77,7 +77,7 @@
         </a>
       </div>
       <div class=" ft">
-        <a th:href="@{/misturnos}">
+        <a th:href="@{/listarCliente}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="../imagenes/icons8-calendario-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Mis turnos</p>

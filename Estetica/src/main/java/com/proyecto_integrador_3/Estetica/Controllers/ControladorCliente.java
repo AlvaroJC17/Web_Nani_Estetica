@@ -2,10 +2,12 @@ package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,11 +15,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
+import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
 import jakarta.persistence.EntityManager;
 
@@ -27,14 +31,13 @@ public class ControladorCliente {
 
 	@Autowired
 	public RepositorioCliente repositorioCliente;
+	
 	@Autowired
 	public ServicioCliente servicioCliente;
 	
+	@Autowired
+	public ServicioUsuario servicioUsuario;
 	
-	@GetMapping("homeCliente")
-	public String homeCliente() {
-	return "/pagina_cliente/homeCliente";	
-	}
 	
 	@GetMapping("misdatosCliente")
 	public String misdatosCliente() {
@@ -60,6 +63,16 @@ public class ControladorCliente {
 	public String cambiarContrasenaCliente() {
 	return "/pagina_cliente/cambiarContrasenaCliente";	
 	}
+	
+	//Devuelve la pagina homeCLiente con los datos del usuario que le pasemos por mmail
+	@GetMapping("/homeCliente")
+	public String homeCliente(String email, Model model) {
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		model.addAttribute("datosCliente", datosCliente);
+		return "/pagina_cliente/homeCliente";	
+		
+	}
+
 	
 	
 	/*
