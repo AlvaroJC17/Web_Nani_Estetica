@@ -22,6 +22,9 @@ public interface RepositorioPersona extends JpaRepository<Persona, String>{
 	@Query("SELECT p FROM Persona p WHERE p.dni = :dni")
 	List<Persona> buscarPorDni(@Param("dni") String dni);
 	
+	@Query("SELECT p FROM Persona p WHERE p.dni = :dni")
+	Optional<Persona> buscarPorDniOptional(@Param("dni") String dni);
+	
 	//Metodo para buscar a una persona por Nombre
 	@Query("SELECT p FROM Persona p WHERE p.nombre = :nombre")
 	List<Persona> buscarPorNombre(@Param("nombre") String nombre);

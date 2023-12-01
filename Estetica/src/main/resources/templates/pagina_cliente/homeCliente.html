@@ -61,7 +61,7 @@
     <h3 th:text="'Hola, ' + ${datosCliente.nombre}"></h3>
   <div class=" container">
       <div class="  ft">
-        <a th:href="@{/misdatosCliente}">
+        <a th:href="@{/misdatosCliente(email=${datosCliente.email})}"> <!--Le pasamos el dato email a la pagian misdatosCliente, especificamente al metodo misdatosCliente en el controlador cliente-->
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Mis datos</p>

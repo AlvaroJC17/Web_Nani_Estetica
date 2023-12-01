@@ -1,6 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,7 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
@@ -38,11 +39,6 @@ public class ControladorCliente {
 	@Autowired
 	public ServicioUsuario servicioUsuario;
 	
-	
-	@GetMapping("misdatosCliente")
-	public String misdatosCliente() {
-	return "/pagina_cliente/misdatosCliente";	
-	}
 	
 	@GetMapping("reservaDeTurnoCliente")
 	public String reservaDeTurnoCliente() {
@@ -71,6 +67,17 @@ public class ControladorCliente {
 		model.addAttribute("datosCliente", datosCliente);
 		return "/pagina_cliente/homeCliente";	
 		
+	}
+	
+	//Muestra todos los datos personales de la persona en la pagina misdatosCliente
+	@GetMapping("misdatosCliente")
+	public String misdatosCliente(@RequestParam("email") String email, Model model) { // el valor del parametro email viene del html homeCliente
+		List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(email);
+		List <Usuario> dastosEnMayuscula = new ArrayList();
+	
+		
+		model.addAttribute("datosCliente", datosPersonaUsuario);
+	return "/pagina_cliente/misdatosCliente";	
 	}
 
 	

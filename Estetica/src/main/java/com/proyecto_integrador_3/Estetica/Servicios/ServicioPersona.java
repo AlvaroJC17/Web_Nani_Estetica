@@ -33,9 +33,9 @@ public class ServicioPersona {
 	
 	@Transactional
 	public String registrarPersona(String dni, String email, String nombre, String apellido, String ocupacion,
-			String domicilio, Integer telefono, String fechaNacimiento, String sexo) throws MiExcepcion {
+			String direccion, Integer telefono, String fechaNacimiento, String sexo) throws MiExcepcion {
 		
-		validarDatosPersona(dni, email, nombre, apellido,ocupacion, domicilio, telefono);
+		validarDatosPersona(nombre, apellido, dni, sexo, fechaNacimiento, telefono, direccion, ocupacion);
 
 			Sexo nuevoSexo = null;
 			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
@@ -53,13 +53,14 @@ public class ServicioPersona {
 			nueva_persona.setNombre(nombre);
 			nueva_persona.setApellido(apellido);
 			nueva_persona.setTelefono(telefono);
-			nueva_persona.setDomicilio(domicilio);
+			nueva_persona.setDomicilio(direccion);
 			nueva_persona.setFechaNacimiento(fecha);
 			nueva_persona.setSexo(nuevoSexo);
 			nueva_persona.setOcupacion(ocupacion);
 			repositorioPersona.save(nueva_persona);
 		
 			String idPersona = nueva_persona.getId();
+			System.out.println("IDPERSONA: " + idPersona);
 			return idPersona;
 		}
 	
@@ -95,37 +96,40 @@ public class ServicioPersona {
 				if (identificarPersona.isPresent()) {
 					Persona personaDelete = identificarPersona.get();
 					repositorioPersona.delete(personaDelete);
-					
 				}
 			}
-			
-
+					
+	 public void validarDatosPersona(String nombre, String apellido, String dni,  String sexo,
+			 String fechaNacimiento, Integer telefono, String direccion, String ocupacion) throws MiExcepcion {
 	
-	 public static void validarDatosPersona(String dni, String email, String nombre, String apellido,
-			 String ocupacion, String domicilio, Integer telefono) throws MiExcepcion {
-	 
-	 if (dni == null || dni.isEmpty() || dni.trim().isEmpty()) {
-		throw new MiExcepcion("El dni no puede estar vacio");
-	}
-	 if (email == null || email.isEmpty() || email.trim().isEmpty()) {
-			throw new MiExcepcion("El email no puede estar vacio");
-		}
-	 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
-			throw new MiExcepcion("El nombre no puede estar vacio");
-		}
-	 if (apellido == null || apellido.isEmpty() || apellido.trim().isEmpty()) {
-			throw new MiExcepcion("El apellido no puede estar vacio");
-		}
-	 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
-			throw new MiExcepcion("La ocupacion no puede estar vacio");
-		}
-	 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {
-			throw new MiExcepcion("El domicilio no puede estar vacio");
-		}
-	 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
-			throw new MiExcepcion("EL telefono no puede estar vacio");
-		}
-	 
+		 
+		 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
+			 throw new MiExcepcion("El nombre no puede estar vacio");
+		 }
+		 if (apellido == null || apellido.isEmpty() || apellido.trim().isEmpty()) {
+			 throw new MiExcepcion("El apellido no puede estar vacio");
+		 }
+		 if (dni == null || dni.isEmpty() || dni.trim().isEmpty()) {
+			 throw new MiExcepcion("El dni no puede estar vacio");
+		 } 
+		 if(repositorioPersona.buscarPorDniOptional(dni).isPresent()) {
+			 throw new MiExcepcion("El numero de dni ya está registrado");
+		 }
+		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
+			 throw new MiExcepcion("El sexo no puede estar vacio");
+		 }
+		 if (fechaNacimiento == null || fechaNacimiento.toString().isEmpty() || fechaNacimiento.trim().isEmpty()) {
+			 throw new MiExcepcion("La fecha de nacimiento no puede estar vacia");
+		 }
+		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
+			 throw new MiExcepcion("EL telefono no puede estar vacio");
+		 }
+		 if (direccion == null || direccion.isEmpty() || direccion.trim().isEmpty()) {
+			 throw new MiExcepcion("La dirección no puede estar vacia");
+		 }
+		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
+			 throw new MiExcepcion("La ocupacion no puede estar vacio");
+		 }
 	 
  }
 }
