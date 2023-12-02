@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="../css/styles.css">
         <title>Datos Admin</title>
       </head>
-<body class="body-interno">
+<body class="body-interno" th:each="datosAdmin : ${datosAdmin}">
 
   <a href="#" target="_blank" class="boton-flotante">
     <i class="fa-brands fa-whatsapp"></i>
@@ -23,17 +23,17 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a th:href="@{/homeAdmin}">
+          <a th:href="@{/homeAdmin(email=${datosAdmin.email})}">
             <div class="imagen-logo ajuste-texto-menu">
               <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin}">Home</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin(email=${datosAdmin.email})}">Home</a> <!--Redirecciona al metodo homeAdmin enviando el mail con el name mail-->
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin}">Mis datos</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin(email=${datosAdmin.email})}">Mis datos</a> <!--Redirecciona al metodo misdatosAdmin enviando el mail con el name mail-->
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaAdmin}">Cambiar contraseña</a>
@@ -51,57 +51,60 @@
     <h3 class="">Datos personales</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
-        <form action="action">
          
+        <form th:action="action">
           <div class="row">
           <div class="mb-3 col-lg-4">
             <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
-            <input type="text" class="form-control" id="nombre" placeholder="Nombre" disabled >
+            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.nombre)}" class="form-control" id="nombre" placeholder="Nombre" disabled >
           </div>
           <div class="mb-3 col-lg-4">
             <label for="apellido" class="form-label texto-label">Apellido</label>
-            <input type="text" class="form-control" id="apellido" placeholder="Apellido" disabled >
+            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.apellido)}" class="form-control" id="apellido" placeholder="Apellido" disabled >
           </div>
           <div class="mb-3 col-lg-4">
             <label for="dni" class="form-label texto-label">DNI</label>
-            <input type="number" class="form-control" id="dni" placeholder="123456789" disabled >
+            <input type="number" th:value="${#strings.toUpperCase(datosAdmin.dni)}" class="form-control" id="dni" placeholder="123456789" disabled >
           </div>
         </div>
         <div class="row">
           <div class="mb-3 col-lg-6 ">
             <label for="nacimiento" class="form-label texto-label">Fecha Nacimiento</label>
-            <input type="date" class="form-control" id="nacimiento" placeholder="Fecha Nacimineto" disabled>
+            <input type="date" th:value="${#strings.toUpperCase(datosAdmin.fechaNacimiento)}" class="form-control" id="nacimiento" placeholder="Fecha Nacimineto" disabled>
           </div>
           <div class="mb-3 col-lg-6 ">
             <label for="edad" class="form-label texto-label">Ocupación</label>
-            <input type="text" class="form-control" id="edad" placeholder="">
+            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.ocupacion)}" class="form-control" id="edad" placeholder="">
           </div>
         </div>
         <div class="row">
           <div class="mb-3 col-lg-6">
             <label for="email" class="form-label texto-label">Email</label>
-            <input type="email" class="form-control" id="email" placeholder="">
+            <input type="email" th:value="${#strings.toUpperCase(datosAdmin.email)}" class="form-control" id="email" placeholder="">
           </div>
           <div class="mb-3 col-lg-6">
             <label for="direccion" class="form-label texto-label">Direccion</label>
-            <input type="text" class="form-control" id="direccion" placeholder="">
+            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.domicilio)}" class="form-control" id="direccion" placeholder="">
           </div>
         </div>
         <div class="row ">
           <div class="mb-3 col-lg-6">
             <label for="sexo" class="form-label texto-label">Sexo</label>
-            <input type="text" class="form-control" id="sexo" placeholder="">
+            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.sexo)}" class="form-control" id="sexo" placeholder="">
           </div>
           <div class="mb-3 col-lg-6">
             <label for="telefono" class="form-label texto-label">Telefono</label>
-            <input type="number" class="form-control" id="telefono" placeholder="">
+            <input type="number" th:value="${#strings.toUpperCase(datosAdmin.telefono)}" class="form-control" id="telefono" placeholder="">
           </div>
         </div>
+        <div th:if="${exito}" class="fs-5 mt-2 text-center">
+	          	<p th:text="${exito}"></p>
+	   	</div>
         <div class="boton-de-registro mt-4  text-center">
           <a href="#"><button class="bn632-hover bn26">Guardar</button></a>
         </div>
         <div class="text-center mt-2 ">
-          <a class="m-2 " th:href="@{/cambiarContrasenaAdmin}">Cambiar contraseña</a>
+          <a class="m-2 fs-5 " th:href="@{/cambiarContrasenaAdmin}">¿Quieres cambiar tu contraseña?</a>
         </div>
         </form>
       </div>

@@ -60,22 +60,14 @@ public class ControladorAdmin {
 	public ServicioCliente servicioCliente;
 	
 	
-	@GetMapping("homeAdmin")
-	public String homeAdmin() {
-	return "/pagina_admin/homeAdmin";	
-	}
-	
-	@GetMapping("portalAdmin")
+	@GetMapping("/portalAdmin")
 	public String portalAdmin() {
 	return "/pagina_admin/portalAdmin";	
 	}
 	
-	@GetMapping("misdatosAdmin")
-	public String misdatosAdmin() {
-	return "/pagina_admin/misdatosAdmin";	
-	}
 	
-	@GetMapping("cambiarContrasenaAdmin")
+	
+	@GetMapping("/cambiarContrasenaAdmin")
 	public String cambiarContrasenaAdmin() {
 	return "/pagina_admin/cambiarContrasenaAdmin";	
 	}
@@ -95,10 +87,28 @@ public class ControladorAdmin {
 		return "index";
 	}*/
 	
-
+	@GetMapping("/misdatosAdmin")
+	public String misdatosAdmin(@RequestParam(name = "email") String email, ModelMap model) {
+		List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(email);
+		model.addAttribute("datosAdmin", datosPersonaUsuario);
+		return "/pagina_admin/misdatosAdmin";	
+	}
+	
+	@GetMapping("/homeAdmin")
+	public String homeAdmin(@RequestParam(name = "email") String email, ModelMap model) {
+		List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
+		model.addAttribute("datosAdmin", datosAdmin);
+		return "/pagina_admin/homeAdmin";	
+	}
+			
+	
+	//A este metodo le paso la variable mail y la lista por dos model diferentes para que cuando cargue
+	//la pagina se pueda visualizar el nav y la lista de usuarios, sino le paso el mail el nav no se ve
 	@GetMapping("/listarUsuariosVisibles")
-    public String listarUsuariosVisibles(Model model) throws MiExcepcion {
+    public String listarUsuariosVisibles(@RequestParam(name = "email") String email, ModelMap model) throws MiExcepcion {
 		List<Usuario> usuarios = repositorioUsuario.joinUsuarioPersona();
+		List<Usuario> usuariosEmail = repositorioUsuario.buscarPorEmail(email);
+		model.addAttribute("usuariosEmail", usuariosEmail);
 		model.addAttribute("usuarios", usuarios);
 		return "/pagina_admin/portalAdmin";
 	}
@@ -106,11 +116,12 @@ public class ControladorAdmin {
 	//Muestra una pagina con la lista de usuarios oculta, esto porque queremos que el admin
 	//busque los usuarios por nombre, dni o email y no que los busque en una lista
 	@GetMapping("/listarUsuarios")
-    public String listarUsuarios(Model model) throws MiExcepcion {
-		List<Usuario> usuarios = repositorioUsuario.joinUsuarioPersona();
-		model.addAttribute("usuarios", false);
+    public String listarUsuarios(@RequestParam(name = "email") String email, Model model) throws MiExcepcion {
+		List<Usuario> usuariosEmail = repositorioUsuario.buscarPorEmail(email);
+		model.addAttribute("usuariosEmail", usuariosEmail);
 		return "/pagina_admin/portalAdmin";
 	}
+		
 
 	//Buscamos usuario por dni, nombre o email
 	@PostMapping("/buscarDNIoNombre")
@@ -135,14 +146,14 @@ public class ControladorAdmin {
 		if (!usuarioEmail.isEmpty()) {
 			model.addAttribute("usuarios", usuarioEmail);
 		}
-		
 		return "/pagina_admin/portalAdmin";
 	}
+		
+	
 	
 	
 	// En este metodo unificamos la edicion y eliminacion de un usuario a traves de un solo formulario
-	// usanso el action como valor para las diferentes condiciones
-	
+	// usando el action como valor para las diferentes condiciones
 	@PostMapping("/modificarUsuario")
 	public String modificarUsuario(@RequestParam(name = "idUsuario", required = false) String id,
             @RequestParam(name = "nuevoRol") String nuevoRolNombre, @RequestParam(name = "action") String action,
@@ -165,18 +176,29 @@ public class ControladorAdmin {
 	            System.out.println(e.getMessage());
 	        }
 		}
-	            
+		
+		//Con este bloque de codigo, uso el id para encontrar el mail de usuario
+		String emailUsuario = null;
+		Optional<Usuario> datosUsuario = repositorioUsuario.findById(id);
+		if (datosUsuario.isPresent()) {
+			Usuario usuarioEmail = datosUsuario.get();
+			emailUsuario = usuarioEmail.getEmail();
+		}
+			
+	     //Ya teniendo el mail de usuario puedo inyectarlo en el resultado de cada if
+		// para que ademas de cumplir la funcion de cada condicional tambien la pag
+		// me recargue con la barra de nav. Recordar que como la barra de nav este en un
+		//bucle, sino le paso un valor de mail esta no se me activo y no puedo verla
 		if (action.equals("modificarRol") && nuevoRol != null) {
 			//metodo para moficar el rol
 			servicioUsuario.modificarRol(id, nuevoRol);
-			return "redirect:/listarUsuariosPorId?id=" + id; //redireciona al metodo listarUsuariosPorId y le pasa el valor del id,
+			return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailUsuario;
 		}
-															 //Esto ayuda a que cuando  cambiemos el rol nos cargue de vuelta la pagina con el valor nuevo		
+															 
 		if (action.equals("altaUsuario")) {
 			try {
-				//metodo para modificar el activo del usuario a True
 				servicioUsuario.altaUsuario(id);
-				return "redirect:/listarUsuariosPorId?id=" + id;
+				return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailUsuario;
 				
 			} catch (Exception e) {
 				System.out.println("No se actualizo el alta del Usuario....");
@@ -188,7 +210,7 @@ public class ControladorAdmin {
 			try {
 				//metodo para modificar el activo del usuario a False
 				servicioUsuario.bajaUsuario(id);
-				return "redirect:/listarUsuariosPorId?id=" + id;
+				return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailUsuario;
 				
 			} catch (Exception e) {
 				System.out.println("No se actualizo la baja del usuario....");
@@ -202,21 +224,23 @@ public class ControladorAdmin {
 				servicioUsuario.borrarUsuario(id);
 				servicioPersona.borrarPersona(id);
 				model.addAttribute("exito2", "Usuario eliminado correctamente!!");
-				return "/pagina_admin/portalAdmin";
+				return "redirect:/listarUsuarios?email=" + emailUsuario;
 			} catch (Exception e) {
 				model.addAttribute("error", "No se pudo borrar el usuario");
-				return "/pagina_admin/portalAdmin";
+				return "redirect:/listarUsuarios?email=" + emailUsuario;
 			}
 		}
-		
 		return "/pagina_admin/portalAdmin";
 	}
+		
 	
 	//Lista usuarios y persona haciendo un join de tablas por ID
 	//Este metodo esta relacionado con el de modificarUsuario
 	@GetMapping("/listarUsuariosPorId")
-	public String listarUsuariosPorId( String id, Model model) {
+	public String listarUsuariosPorId(String id, String email, Model model) {
 		List<Usuario> usuarios = servicioUsuario.buscarId(id);
+		List<Usuario> usuariosEmail = repositorioUsuario.buscarPorEmail(email);
+		model.addAttribute("usuariosEmail", usuariosEmail);
 		model.addAttribute("usuarios", usuarios);
 		model.addAttribute("exito", "Modificación realizada exitosamente!!");
 		return "/pagina_admin/portalAdmin";

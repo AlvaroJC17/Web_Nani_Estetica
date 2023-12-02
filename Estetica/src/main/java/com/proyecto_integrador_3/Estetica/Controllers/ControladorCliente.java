@@ -62,7 +62,7 @@ public class ControladorCliente {
 	
 	//Devuelve la pagina homeCLiente con los datos del usuario que le pasemos por mmail
 	@GetMapping("/homeCliente")
-	public String homeCliente(String email, Model model) {
+	public String homeCliente(@RequestParam(name = "email") String email, Model model) {
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosCliente", datosCliente);
 		return "/pagina_cliente/homeCliente";	
@@ -73,9 +73,6 @@ public class ControladorCliente {
 	@GetMapping("misdatosCliente")
 	public String misdatosCliente(@RequestParam("email") String email, Model model) { // el valor del parametro email viene del html homeCliente
 		List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(email);
-		List <Usuario> dastosEnMayuscula = new ArrayList();
-	
-		
 		model.addAttribute("datosCliente", datosPersonaUsuario);
 	return "/pagina_cliente/misdatosCliente";	
 	}

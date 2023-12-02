@@ -10,7 +10,8 @@
         <link rel="stylesheet" href="../css/styles.css">
         <title>Datos Cliente</title>
       </head>
-<body class="body-misdatos">
+<body class="body-misdatos " th:each="datosCliente : ${datosCliente}"> <!--La variable datosCliente viene del metodo misdatosCliente,-->
+																	   <!--usea el bucle en el body para que los datos esten disponibles para todos los enlaces de la pag-->
 
   <a href="#" target="_blank" class="boton-flotante">
     <i class="fa-brands fa-whatsapp"></i>
@@ -23,14 +24,14 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a th:href="@{/homeCliente}">
+          <a th:href="@{/homeCliente(email=${datosCliente.email})}"> <!--Al presionar la imagen del logo le vuelvo a mandar el mail a la pagina home para que vuelva a cargar con el dato del nombre-->
             <div class="imagen-logo ajuste-texto-menu">
               <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatos}">Mis Datos</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis Datos</a> <!--Le mando el mail al metodo misdatosCLiente para que cargue con todo los datos-->
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente}">Solicitar Turno</a>
@@ -60,8 +61,7 @@
     <h3 class="">Datos personales</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
-		  <!--La variable datosCliente viene del metodo misdatosCliente-->
-        <form th:action="action" th:each="datosCliente : ${datosCliente}">
+        <form th:action="action">
           <div class="row">
           <div class="mb-3 col-lg-4">
             <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
@@ -106,11 +106,14 @@
             <input type="number" th:value="${#strings.toUpperCase(datosCliente.telefono)}" class="form-control" id="telefono" placeholder="">
           </div>
         </div>
+        <div th:if="${exito}" class="fs-5 mt-2 text-center">
+	          	<p th:text="${exito}"></p>
+	   	</div>
         <div class="boton-de-registro mt-4  text-center">
           <a href="#"><button type="submit" class="bn632-hover bn26">Guardar</button></a>
         </div>
         <div class="text-center mt-2 ">
-          <a class="m-2 " th:href="@{/cambiarContrasena}">Cambiar contraseña</a>
+          <a class="m-2 fs-5 " th:href="@{/cambiarContrasena}">¿Quieres cambiar tu contraseña?</a>
         </div>
         </form>
       </div>

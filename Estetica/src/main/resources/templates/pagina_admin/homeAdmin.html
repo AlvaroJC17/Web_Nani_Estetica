@@ -12,7 +12,7 @@
   <title>Admin</title>
 </head>
 
-<body class="body-interno">
+<body class="body-interno" th:each="datosAdmin : ${datosAdmin}">
 
   <!--Boton flotante de ws-->
   <a href="#" target="_blank" class="boton-flotante">
@@ -26,17 +26,17 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a th:href="@{/homeAdmin}">
+          <a th:href="@{/homeAdmin(email=${datosAdmin.email})}">
             <div class="imagen-logo ajuste-texto-menu">
               <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin}">Home</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin(email=${datosAdmin.email})}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin}">Mis Datos</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin(email=${datosAdmin.email})}">Mis Datos</a>
             </li>
              <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaAdmin}">Cambiar contraseña</a>
@@ -51,11 +51,11 @@
   </nav>
 
 <main class="">
-  <div class="main-interno" th:each="datosAdmin : ${datosAdmin}">
+  <div class="main-interno">
     <h3 th:text="'Hola, ' + ${datosAdmin.nombre}"></h3>
   <div class=" container">
       <div class="  ft">
-        <a th:href="@{/misdatosAdmin}">
+        <a th:href="@{/misdatosAdmin(email=${datosAdmin.email})}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Mis datos</p>
@@ -64,7 +64,7 @@
       </div>
 
       <div class=" ft ">
-        <a th:href="@{/listarUsuarios}">
+        <a th:href="@{/listarUsuarios(email=${datosAdmin.email})}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="../imagenes/icons8-más-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Usuarios</p>
@@ -73,7 +73,7 @@
       </div>
       
       <div class="  ft">
-        <a th:href="@{/listarUsuariosVisibles}">
+        <a th:href="@{/listarUsuariosVisibles(email=${datosAdmin.email})}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Lista usuarios</p>

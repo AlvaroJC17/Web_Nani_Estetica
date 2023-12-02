@@ -25,18 +25,18 @@
           aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a th:href="@{/homeAdmin}">
+        <div th:each="usuariosEmail : ${usuariosEmail}" class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+          <a th:href="@{/homeAdmin(email=${usuariosEmail.email})}">
             <div class="imagen-logo ajuste-texto-menu">
               <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin}">Home</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin(email=${usuariosEmail.email})}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin}">Mis datos</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin(email=${usuariosEmail.email})}">Mis datos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaAdmin}">Cambiar contraseña</a>
