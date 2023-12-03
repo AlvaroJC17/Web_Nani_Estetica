@@ -30,6 +30,9 @@
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
+			<li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeCliente(email=${datosCliente.email})}">Home</a> <!--Le mando el mail al metodo homeCliente para que cargue con todo los datos-->
+            </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis Datos</a> <!--Le mando el mail al metodo misdatosCLiente para que cargue con todo los datos-->
             </li>
