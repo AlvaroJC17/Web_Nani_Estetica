@@ -121,7 +121,6 @@ public class ControladorAdmin {
     		@RequestParam(name = "error", required = false) String error,
     		Model model) throws MiExcepcion {
 
-		//List<Usuario> usuariosEmail = repositorioUsuario.buscarPorEmail(email);
 		model.addAttribute("usuariosEmail", email); //Con este mail mostramos el nav en este metodo
 		model.addAttribute("exito", exito); //inyectamos mensaje de exito si es necesario
 		model.addAttribute("error", error); //inyectamos mensaje de error si es necesario
@@ -189,29 +188,22 @@ public class ControladorAdmin {
 	            System.out.println(e.getMessage());
 	        }
 		}
-		
-		//Con este bloque de codigo, uso el id para encontrar el mail de usuario
-		String emailUsuario = null;
-		Optional<Usuario> datosUsuario = repositorioUsuario.findById(id);
-		if (datosUsuario.isPresent()) {
-			Usuario usuarioEmail = datosUsuario.get();
-			emailUsuario = usuarioEmail.getEmail();
-		}
-			
+					
 	     //Ya teniendo el mail de usuario puedo inyectarlo en el resultado de cada if
 		// para que ademas de cumplir la funcion de cada condicional tambien la pag
 		// me recargue con la barra de nav. Recordar que como la barra de nav este en un
 		//condicional, sino le paso un valor de mail esta no se me activo y no puedo verla
+		
 		if (action.equals("modificarRol") && nuevoRol != null) {
 			//metodo para moficar el rol
 			servicioUsuario.modificarRol(id, nuevoRol);
-			return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailUsuario;
+			return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailAdministrador;
 		}
 															 
 		if (action.equals("altaUsuario")) {
 			try {
 				servicioUsuario.altaUsuario(id);
-				return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailUsuario;
+				return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailAdministrador;
 				
 			} catch (Exception e) {
 				System.out.println("No se actualizo el alta del Usuario....");
@@ -223,7 +215,7 @@ public class ControladorAdmin {
 			try {
 				//metodo para modificar el activo del usuario a False
 				servicioUsuario.bajaUsuario(id);
-				return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailUsuario;
+				return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailAdministrador;
 				
 			} catch (Exception e) {
 				System.out.println("No se actualizo la baja del usuario....");
@@ -237,10 +229,10 @@ public class ControladorAdmin {
 				servicioUsuario.borrarUsuario(id);
 				servicioPersona.borrarPersona(id);
 				String exito = "Usuario eliminado correctamente";
-				return "redirect:/listarUsuariosOcultos?email=" + emailUsuario + "&exito=" + exito; //Enviamos mail y mensaje de exito
+				return "redirect:/listarUsuariosOcultos?email=" + emailAdministrador + "&exito=" + exito; //Enviamos mail y mensaje de exito
 			} catch (Exception e) {
 				String error = "Usuario no se pudo eliminar";
-				return "redirect:/listarUsuariosOcultos?email=" + emailUsuario + "&error=" + error; //Enviamos mail y mensaje de error;
+				return "redirect:/listarUsuariosOcultos?email=" + emailAdministrador + "&error=" + error; //Enviamos mail y mensaje de error;
 			}
 		}
 		return "/pagina_admin/portalAdmin";
@@ -248,7 +240,7 @@ public class ControladorAdmin {
 		
 	
 	//Lista usuarios y persona haciendo un join de tablas por ID
-	//Este metodo esta relacionado con el de modificarUsuario
+	//Este metodo esta relacionado con el de modificarUsuario y la variable mail viene de él
 	@GetMapping("/listarUsuariosPorId")
 	public String listarUsuariosPorId(String id, String email, Model model) {
 		List<Usuario> usuarios = servicioUsuario.buscarId(id);
