@@ -25,18 +25,18 @@
           aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-        <div th:each="usuariosEmail : ${usuariosEmail}" class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a th:href="@{/homeAdmin(email=${usuariosEmail.email})}">
+        <div th:if="${usuariosEmail}" class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+          <a th:href="@{/homeAdmin(email=${usuariosEmail})}">
             <div class="imagen-logo ajuste-texto-menu">
               <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin(email=${usuariosEmail.email})}">Home</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin(email=${usuariosEmail})}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin(email=${usuariosEmail.email})}">Mis datos</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin(email=${usuariosEmail})}">Mis datos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaAdmin}">Cambiar contraseña</a>
@@ -63,6 +63,7 @@
                 <form class="d-flex justify-content-center " th:action="@{/buscarDNIoNombre}" method="post">
                     <div class="w-50">		
               <input type="text" class="form-control mb-3" id="dato" name="dato" placeholder="Buscar por nombre o DNI" >
+              <input hidden type="text" id="emailAdmin" name="emailAdmin" th:value="${usuariosEmail}"></input> <!--Obtenemos el valor de la variable emailAdmin del metodo listarUsuariosOcultos que a su vez la obtenemos de la pagina homeAdmin y darle al boton buscar la pasa al metod buscarPorDni-->
             </div>
             <div class="">
                 <button type="submit" class="btn btn-primary ms-3">Buscar</button>
@@ -74,6 +75,7 @@
 </section> 
      <section th:if = "${usuarios}">
 <form class="alinear-tabla" th:action="@{/modificarUsuario}" method="post">
+	<input hidden type="text" id="emailAdministrador" name="emailAdministrador" th:value="${usuariosEmail}"></input>
       <table class="table ">
         <thead>
           <tr class="text-center fs-5 ">
@@ -88,7 +90,7 @@
           </tr>
         </thead>
         <tbody>
-          <tr class="text-center radius" th:each="usuarios : ${usuarios}">
+          <tr class="text-center radius" th:each="usuarios : ${usuarios}" >
    	 		<th class=" ">
               <div class="form-check">
                 <input class="form-check-input" type="radio" name="idUsuario" th:value="${usuarios.id}" id="idUsuario">
@@ -104,12 +106,6 @@
           </tr>
         </tbody>
       </table>
-      
-	   	<div th:if="${exito}" class="fs-5 mt-2 text-center">
-	          	<p th:text="${exito}"></p>
-	   	</div>
-     
-
       <div class="d-flex justify-content-center align-items-center  ">
       <div class="fila-tabla-select">
         <select id="nuevoRol" name="nuevoRol" class="form-select select-tabla" aria-label="Default select example">
@@ -144,8 +140,11 @@
      </form>
     </section>
      <div th:if="${error}" class="fs-5 mt-2 text-center">
-	          	<p th:text="${error}"></p>
-	   	</div>
+	      <p th:text="${error}"></p>
+	 </div>
+	 <div th:if="${exito}" class="fs-5 mt-2 text-center">
+	      <p th:text="${exito}"></p>
+	 </div>
 </div>
   </main>
        

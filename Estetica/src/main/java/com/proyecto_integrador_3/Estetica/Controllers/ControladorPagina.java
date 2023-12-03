@@ -51,23 +51,21 @@ public class ControladorPagina {
 	
 	// Registro un usuario en la base de datos
 	 @PostMapping("/registro")
-	    public String registroUsuario(@RequestParam(name = "email") String email, @RequestParam(name = "contrasena") String password,
-	           @RequestParam(name = "contrasena2") String password2, ModelMap modelo) throws MiExcepcion {
+	    public String registroUsuario(@RequestParam(name = "email") String email,
+	    							  @RequestParam(name = "contrasena") String password,
+	    							  @RequestParam(name = "contrasena2") String password2,
+	    							  ModelMap modelo) throws MiExcepcion {
 
-		
-	        try {
-
+		 try {
 	        	servicioUsuario.guardarUsuario(email, password, password2);
 	        	return "index.html";
-	        
 	        } catch (MiExcepcion e) {
 	            System.out.println(e.getMessage());
 	            modelo.put("error", e.getMessage());
 	            return "registrarse";
 	        }
+	 }
 
-	    }
-	 
 	 	//Login de un usuario, dependiendo de su rol lo redireccion a un home y si es logueo
 	 	// por primera vez lo redirecciona a una formulario de datos
 		@PostMapping("/loginUsuario")
@@ -76,33 +74,31 @@ public class ControladorPagina {
 		         @RequestParam(name = "password") String contrasena,
 		         ModelMap model, Model modelo) throws MiExcepcion {
 
-			 String password = null;
 		     Optional<Usuario> usuarioOptional = servicioUsuario.buscarPorEmailOptional(email);
 
 		     if (usuarioOptional.isPresent()) {
 		    	 
 		         Usuario usuario = usuarioOptional.get(); //con el metodo get, asociamos al usuario encontrado a la variable usuario y asi poder acceder a sus atributos
 		         String emailUsuario = usuario.getEmail();
-		         password = usuario.getContrasena();
+		         String password = usuario.getContrasena();
 		         Boolean activo = usuario.getActivo();
 		         Boolean validarForm = usuario.getValidacionForm();
 		         Rol rol = usuario.getRol();
 		         
+		         //Verificamos que el usuario este activo
 		         if (!activo) {
 						model.addAttribute("Error", "Usuario no se encuentra activo");
 						return "login";
 					}
 			         
-		      
 		         try {
-		        	 //verificamos que los password esten correcto y sean iguales ademas de que el usuario este activo
+		        	 //verificamos que los password esten correcto y sean iguales
 		        	  if (servicioUsuario.verificarPassword(contrasena, password)) {
 		        		  
-		        		  //Buscamos los datos pertenecientes a ese email en la table de persona y los pasamos a homeAdmin, en este caso solo usamos el nombre
+		        		  //Buscamos los datos pertenecientes a ese email en la tabla de persona y los pasamos a homeAdmin, en este caso solo usamos el nombre
 		        		  List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(emailUsuario);
 		        		  
 				             if ("ADMIN".equals(rol.toString())) {
-				       
 				            	 if (validarForm) {
 				            		 modelo.addAttribute("datosAdmin", datosPersonaUsuario);
 				            		 return "pagina_admin/homeAdmin";
@@ -110,10 +106,7 @@ public class ControladorPagina {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario);
 				            		 return "completarDatos";
 				            	 }
-									
-				            	 
 				             } else if ("CLIENTE".equals(rol.toString())) {
-				            	
 				            	 if (validarForm) {
 				            		 modelo.addAttribute("datosCliente", datosPersonaUsuario);
 				            		 return "pagina_cliente/homeCliente";
@@ -121,9 +114,7 @@ public class ControladorPagina {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario); //Esta variable envia el email en un input oculto hacia el metodo guardarDatosPersona
 				            		 return "completarDatos";
 				            	 }
-				            	 
-				             } else if ("PROFESIONAL".equals(rol.toString())) {
-				            	 
+				             } else if ("PROFESIONAL".equals(rol.toString())) {				            	 
 				            	 if (validarForm) {
 				            		 modelo.addAttribute("datosProfesional", datosPersonaUsuario);
 				            		 return "pagina_profesional/homeProfesional";
