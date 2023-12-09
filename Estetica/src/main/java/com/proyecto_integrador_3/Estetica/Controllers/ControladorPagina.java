@@ -1,8 +1,10 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
+import org.springframework.http.ResponseEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -23,27 +25,27 @@ public class ControladorPagina {
 	@Autowired
 	public ServicioUsuario servicioUsuario;
 	
-	@GetMapping("registrarse")
-	public String monstrarRegistrarse() {
-		return "registrarse";
+	@GetMapping("/login")
+	public String login() {
+		return "login";
 	}
 	
-	@GetMapping("index")
+	@GetMapping("/index")
 	public String monstrarIndex() {
 		return "index";
 	}
 	
-	@GetMapping("login")
-	public String login() {
-	return "login";	
+	@GetMapping("/registrarse")
+	public String registrarse() {
+		return "registrarse";
 	}
 	
-	@GetMapping("olvidoContrasena")
+	@GetMapping("/olvidoContrasena")
 	public String olvidoContrasena() {
 	return "olvidocontrasena";	
 	}
 	
-	@GetMapping("cambiarContrasena")
+	@GetMapping("/cambiarContrasena")
 	public String cambiarContrasena() {
 	return "cambiarContrasena";	
 	}
@@ -58,19 +60,21 @@ public class ControladorPagina {
 
 		 try {
 	        	servicioUsuario.guardarUsuario(email, password, password2);
-	        	return "index.html";
+	        	modelo.addAttribute("exito", "¡Gracias por registrarte!, ahora inicia sesión y completa "
+	        			+ "tus datos personales para poder usar tu cuenta");
+	        	return "registrarse";
 	        } catch (MiExcepcion e) {
 	            System.out.println(e.getMessage());
 	            modelo.put("error", e.getMessage());
 	            return "registrarse";
 	        }
 	 }
-
+	
 	 	//Login de un usuario, dependiendo de su rol lo redireccion a un home y si es logueo
 	 	// por primera vez lo redirecciona a una formulario de datos
 		@PostMapping("/loginUsuario")
 		 public String loginUsuario(
-		         @RequestParam(name = "email") String email,
+		         @RequestParam(name = "email") String email, //El valor de estas variables proviene del form login
 		         @RequestParam(name = "password") String contrasena,
 		         ModelMap model, Model modelo) throws MiExcepcion {
 
@@ -104,7 +108,7 @@ public class ControladorPagina {
 				            		 return "pagina_admin/homeAdmin";
 				            	 }else if(!validarForm) {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario);
-				            		 return "completarDatos";
+				            		 return "pagina_admin/completarDatosAdmin";
 				            	 }
 				             } else if ("CLIENTE".equals(rol.toString())) {
 				            	 if (validarForm) {
@@ -112,7 +116,7 @@ public class ControladorPagina {
 				            		 return "pagina_cliente/homeCliente";
 				            	 }else if(!validarForm) {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario); //Esta variable envia el email en un input oculto hacia el metodo guardarDatosPersona
-				            		 return "completarDatos";
+				            		 return "pagina_cliente/completarDatosCliente";
 				            	 }
 				             } else if ("PROFESIONAL".equals(rol.toString())) {				            	 
 				            	 if (validarForm) {

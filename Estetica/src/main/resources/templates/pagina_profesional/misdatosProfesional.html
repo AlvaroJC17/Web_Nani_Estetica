@@ -10,7 +10,7 @@
         <link rel="stylesheet" href="./css/styles.css">
         <title>Datos Profesional</title>
       </head>
-<body class="body-misdatos">
+<body class="body-misdatos" th:each="datosProfesional : ${datosProfesional}">
 
   <a href="#" target="_blank" class="boton-flotante">
     <i class="fa-brands fa-whatsapp"></i>
@@ -35,14 +35,17 @@
         <span class="navbar-toggler-icon"></span>
       </button>
       <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-        <a th:href="@{/homeProfesional}">
+        <a th:href="@{/homeProfesional(email=${datosProfesional.email})}">
           <div class="imagen-logo ajuste-texto-menu">
             <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
           </div>
         </a>
         <ul class="navbar-nav navbar4 container-fluid p-0">
+			<li class="nav-item">
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
+          </li>
           <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional}">Mis Datos</a>
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis Datos</a>
           </li>
           <li class="nav-item">
             <a class="nav-link py-1 ajuste-texto-menu" href="./solicitartuno.html">Solicitar Turno</a>
@@ -63,60 +66,67 @@
 </nav>
 
 <main class="main-misdatos">
+  <h3 class="">Datos personales</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
-        <form action="action">
-          <div>
-            <h4 class="">Datos personales</h4>
-          </div>
+        <form th:action="action">
           <div class="row">
           <div class="mb-3 col-lg-4">
             <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
-            <input type="text" class="form-control" id="nombre" placeholder="Nombre" disabled >
+            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.nombre)}" class="form-control" id="nombre" placeholder="Nombre" disabled >
           </div>
           <div class="mb-3 col-lg-4">
             <label for="apellido" class="form-label texto-label">Apellido</label>
-            <input type="text" class="form-control" id="apellido" placeholder="Apellido" disabled >
+            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.apellido)}" class="form-control" id="apellido" placeholder="Apellido" disabled >
           </div>
           <div class="mb-3 col-lg-4">
             <label for="dni" class="form-label texto-label">DNI</label>
-            <input type="number" class="form-control" id="dni" placeholder="123456789" disabled >
+            <input type="number" th:value="${#strings.toUpperCase(datosProfesional.dni)}" class="form-control" id="dni" placeholder="123456789" disabled >
           </div>
         </div>
         <div class="row">
-          <div class="mb-3 col-lg-6 ">
-            <label for="nacimiento" class="form-label texto-label">Matricula</label>
-            <input type="text" class="form-control" id="nacimiento" placeholder="" disabled>
+          <div class="mb-3 col-lg-4 ">
+            <label for="matricula" class="form-label texto-label">Matricula</label>
+            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.matricula)}" class="form-control" id="matricula" placeholder="" disabled>
           </div>
-          <div class="mb-3 col-lg-6 ">
-            <label for="nacimiento" class="form-label texto-label">Fecha Nacimiento</label>
-            <input type="date" class="form-control" id="nacimiento" placeholder="" disabled>
+          <div class="mb-3 col-lg-4 ">
+            <label for="especialidad" class="form-label texto-label">Especialidad</label>
+            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.especialidad)}" class="form-control" id="especialidad" placeholder="" disabled>
+          </div>
+          <div class="mb-3 col-lg-4 ">
+            <label for="fechaNacimiento" class="form-label texto-label">Fecha Nacimiento</label>
+            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.fechaNacimiento)}" class="form-control" id="fechaNacimiento" placeholder="" disabled>
           </div>
         </div>
         <div class="row">
           <div class="mb-3 col-lg-6">
             <label for="email" class="form-label texto-label">Email</label>
-            <input type="email" class="form-control" id="email" placeholder="">
+            <input type="email" th:value="${#strings.toUpperCase(datosProfesional.email)}" class="form-control" id="email" placeholder="">
           </div>
           <div class="mb-3 col-lg-6">
-            <label for="direccion" class="form-label texto-label">Direccion</label>
-            <input type="text" class="form-control" id="direccion" placeholder="">
+            <label for="sexo" class="form-label texto-label">Sexo</label>
+            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.sexo)}" class="form-control" id="direccion" placeholder="">
           </div>
         </div>
         <div class="row ">
           <div class="mb-3 col-lg-6">
-            <label for="telefono" class="form-label texto-label">Telefono</label>
-            <input type="number" class="form-control" id="telefono" placeholder="">
+           <label for="domicilio" class="form-label texto-label">Direccion</label>
+            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.domicilio)}" class="form-control" id="domicilio" placeholder="">
           </div>
           <div class="mb-3 col-lg-6">
-            
+              <label for="telefono" class="form-label texto-label">Telefono</label>
+            <input type="number" th:value="${#strings.toUpperCase(datosProfesional.telefono)}" class="form-control" id="telefono" placeholder="">
           </div>
         </div>
+        <div th:if="${exito}" class="fs-5 mt-2 text-center">
+	          	<p th:text="${exito}"></p>
+	   	</div>
+        
         <div class="boton-de-registro text-center">
           <a href="#"><button class="bn632-hover bn26">Guardar</button></a>
         </div>
         <div class="text-center mt-2 ">
-          <a class="m-2 " th:href="@{/cambiarContrasenaProfesional}">¿Cambiar su contraseña?</a>
+          <a class="m-2 fs-5" th:href="@{/cambiarContrasenaProfesional}">¿Quieres cambiar tu contraseña?</a>
         </div>
         </form>
       </div>
@@ -184,10 +194,6 @@
         width="600" height="303" style="border:0;" allowfullscreen="" loading="lazy"
         referrerpolicy="no-referrer-when-downgrade">
       </iframe>
-    </div>
-  
-    <div class="contenedor-logo-final-general">
-      <img class="img-logo-final-general" src="./imagenes/Nani-removebg-preview.png" alt="">
     </div>
   </footer>
 

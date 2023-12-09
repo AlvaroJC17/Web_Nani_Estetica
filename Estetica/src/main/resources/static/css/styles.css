@@ -8,13 +8,13 @@ h1, h2, h3, h4 {
     /*Le asigna por defecto un tamaño de letra y un grosor a los titulos H3*/
     font-size: 80px;
     font-weight: 100;
-    color: #78340f !important;
+   /* color: #78340f !important;*/
     margin-bottom: 30px;
 }
 
 a, p, label {
     /* Para cambiar el color y quitar la decoracion de los todos los link de la pagina*/
-    color: #78340f !important;
+   /* color: #78340f !important; */
     text-decoration: none;
 }
 

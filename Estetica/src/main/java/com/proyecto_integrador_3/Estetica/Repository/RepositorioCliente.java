@@ -16,5 +16,5 @@ import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 @Repository
 public interface RepositorioCliente extends JpaRepository<Cliente, String> {
 
-
+	
 }

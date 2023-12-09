@@ -4,6 +4,8 @@ import java.util.Date;
 
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
+import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
+import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -22,6 +25,7 @@ import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "Persona")
+@Inheritance(strategy = InheritanceType.JOINED)
 public class Persona extends Usuario{
 
 	@Column(name = "dni")
@@ -48,6 +52,7 @@ public class Persona extends Usuario{
 	
 	@Column(name = "telefono")
 	private Integer telefono;
+	
 	
 	
 	//Constructores
@@ -82,6 +87,21 @@ public class Persona extends Usuario{
 		super(id, email, contrasena, rol, activo, ValidacionForm);
 	}
 		
+	public Persona(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean validacionForm,
+			String dni, String nombre, String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento,
+			String domicilio, Integer telefono) {
+		super(id, email, contrasena, rol, activo, validacionForm);
+		this.dni = dni;
+		this.nombre = nombre;
+		this.apellido = apellido;
+		this.ocupacion = ocupacion;
+		this.sexo = sexo;
+		this.fechaNacimiento = fechaNacimiento;
+		this.domicilio = domicilio;
+		this.telefono = telefono;
+		
+	}
+
 	public String getId() {
 		return id;
 	}

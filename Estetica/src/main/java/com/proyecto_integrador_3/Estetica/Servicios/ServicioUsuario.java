@@ -4,16 +4,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
-
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
+import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 
@@ -21,9 +24,12 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class ServicioUsuario {
-
+	
 	  @Autowired
-	    public RepositorioUsuario repositorioUsuario;
+	  public RepositorioUsuario repositorioUsuario;
+	  
+	  @Autowired
+	  public RepositorioCliente repositorioCliente;
 	  
 	  @Autowired
 	  public RepositorioPersona repositorioPersona;
@@ -146,6 +152,7 @@ public class ServicioUsuario {
 		        	repositorioUsuario.save(usuario_alta);
 		        }
 		    }
+		
 		 
 		 @Transactional
 		    public void modificarRol(String id, Rol rol) {
@@ -156,34 +163,59 @@ public class ServicioUsuario {
 		        	Usuario usuario_rol = new Admin();
 		        	usuario_rol = presente.get();
 		        	usuario_rol.setRol(rol);
+		        	usuario_rol.setValidacionForm(FALSE); //volvemos el form a false para que el cambio de rol obligue al usuario a llenar la nueva planilla de su rol
 		        	repositorioUsuario.save(usuario_rol);
 		        }
 		    }
-		 
 		
-
 	  
 	  //VALIDACIONES
 	  public void verificarEmail(String email) throws MiExcepcion {
-	        if (email.isEmpty()) {
+		// Expresión regular para validar un correo electrónico
+	        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
+	        // Compilar la expresión regular
+	        Pattern pattern = Pattern.compile(regex);
+
+	        // Crear un objeto Matcher
+	        Matcher matcher = pattern.matcher(email);
+
+	        // Verificar si la cadena cumple con la expresión regular
+	        if (!matcher.matches()) {
+	            throw new MiExcepcion("El correo electronico no es valido");
+	        } 
+	        if (email == null || email.isEmpty() || email.trim().isEmpty()) {
 	            throw new MiExcepcion("El email no puede estar vacío");
 	        }
 	        if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
-	            throw new MiExcepcion("El email ya está registrado");
+	            throw new MiExcepcion("El email ya esta registrado");
 	        }
 
 	    }
 
 	    public boolean verificarPassword(String password, String password2) throws MiExcepcion {
-	        if (password.isEmpty()) {
-	            throw new MiExcepcion("La constraseña no puede estar vacía");
-	        }
-	        if (password.trim().isEmpty()) {
-	            throw new MiExcepcion("La contraseña no puede estar vacía");
-	        }
-	        if (!password.equals(password2)) {
-	            throw new MiExcepcion("Las contraseñas no coinciden");
-	        }
-	        return true;
+	    	
+	    	 String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$";
+
+	         // Compilar la expresión regular
+	         Pattern pattern = Pattern.compile(regex);
+
+	         // Crear un objeto Matcher
+	         Matcher matcher = pattern.matcher(password);
+
+	         // Verificar si la cadena cumple con la expresión regular
+	         if (!matcher.matches()) {
+	        	 throw new MiExcepcion("La contraseña debe tener al menos 8 digitos, una mayuscula, una minuscula y un numero.");
+	         }
+	         if (password.isEmpty()) {
+	        	 throw new MiExcepcion("La constraseña no puede estar vacía");
+	         }
+	         if (password.trim().isEmpty()) {
+	        	 throw new MiExcepcion("La contraseña no puede estar vacía");
+	         }
+	         if (!password.equals(password2)) {
+	        	 throw new MiExcepcion("Las contraseñas no son iguales");
+	         }
+	         return true;
 	    }
 }

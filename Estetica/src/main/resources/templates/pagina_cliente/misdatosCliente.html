@@ -64,7 +64,7 @@
     <h3 class="">Datos personales</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
-        <form th:action="action">
+        <form th:action="@{/actualizarDatosCliente}" method="post">
           <div class="row">
           <div class="mb-3 col-lg-4">
             <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
@@ -85,32 +85,38 @@
             <input type="date" th:value="${#strings.toUpperCase(datosCliente.fechaNacimiento)}"  class="form-control" id="nacimiento" placeholder="" disabled>
           </div>
           <div class="mb-3 col-lg-6 ">
-            <label for="edad" class="form-label texto-label">Ocupación</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosCliente.ocupacion)}" class="form-control" id="edad" placeholder="">
+            <label for="ocupacion" class="form-label texto-label">Ocupación</label>
+            <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosCliente.ocupacion)}" class="form-control" id="ocupacion" placeholder="">
           </div>
         </div>
         <div class="row">
           <div class="mb-3 col-lg-6">
             <label for="email" class="form-label texto-label">Email</label>
-            <input type="email" th:value="${#strings.toUpperCase(datosCliente.email)}" class="form-control" id="email" placeholder="">
+            <input type="email" name="email" th:value="${#strings.toUpperCase(datosCliente.email)}" class="form-control" id="email" placeholder="">
           </div>
           <div class="mb-3 col-lg-6">
-            <label for="direccion" class="form-label texto-label">Direccion</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosCliente.domicilio)}" class="form-control" id="direccion" placeholder="">
+            <label for="domicilio" class="form-label texto-label">Direccion</label>
+            <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosCliente.domicilio)}" class="form-control" id="domicilio" placeholder="">
           </div>
         </div>
         <div class="row ">
           <div class="mb-3 col-lg-6">
             <label for="sexo" class="form-label texto-label">Sexo</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosCliente.sexo)}" class="form-control" id="sexo" placeholder="">
+            <input type="text" name="sexo" th:value="${#strings.toUpperCase(datosCliente.sexo)}" class="form-control" id="sexo" placeholder="">
           </div>
           <div class="mb-3 col-lg-6">
             <label for="telefono" class="form-label texto-label">Telefono</label>
-            <input type="number" th:value="${#strings.toUpperCase(datosCliente.telefono)}" class="form-control" id="telefono" placeholder="">
+            <input type="number" name="telefono" th:value="${#strings.toUpperCase(datosCliente.telefono)}" class="form-control" id="telefono" placeholder="">
           </div>
         </div>
+        
+        <input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente" id="idCliente"> <!--input oculto para enviar el id del cliente al controlador actualizarDatosCliente-->
+        
         <div th:if="${exito}" class="fs-5 mt-2 text-center">
-	          	<p th:text="${exito}"></p>
+	    	<p th:text="${exito}"></p>
+	   	</div>
+	   	<div th:if="${error}" class="fs-5 mt-2 text-center">
+	    	<p th:text="${error}"></p>
 	   	</div>
         <div class="boton-de-registro mt-4  text-center">
           <a href="#"><button type="submit" class="bn632-hover bn26">Guardar</button></a>

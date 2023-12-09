@@ -65,27 +65,11 @@ public class ControladorAdmin {
 	return "/pagina_admin/portalAdmin";	
 	}
 	
-	
-	
 	@GetMapping("/cambiarContrasenaAdmin")
 	public String cambiarContrasenaAdmin() {
 	return "/pagina_admin/cambiarContrasenaAdmin";	
 	}
 	
-	
-/*	@PostMapping("/modificarAdmin")
-	public String actualizarAdmin(@RequestBody Admin admin) {
-		
-		try {
-			servicioAdmin.modificarAdmin(admin);
-			System.out.println("Actualizado con exito!!!");
-		} catch (Exception e) {
-			System.out.println("No se actualizo....");
-			e.printStackTrace();
-		}
-		
-		return "index";
-	}*/
 	
 	@GetMapping("/misdatosAdmin")
 	public String misdatosAdmin(@RequestParam(name = "email") String email, ModelMap model) {
@@ -95,10 +79,37 @@ public class ControladorAdmin {
 	}
 	
 	@GetMapping("/homeAdmin")
-	public String homeAdmin(@RequestParam(name = "email") String email, ModelMap model) {
+	public String homeAdmin(@RequestParam(name = "email") String email, ModelMap model) { //El valor de esta variable viene del metodo login en controladorPagina
 		List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosAdmin", datosAdmin);
 		return "/pagina_admin/homeAdmin";	
+	}
+	
+	@PostMapping("/guardarDatosAdmin")
+	public String guardarDatosAdmin(
+			@RequestParam(name = "nombre") String nombre,
+			@RequestParam(name = "apellido") String apellido,
+			@RequestParam(name = "numeroDoc") String dni,
+			@RequestParam(name = "sexo") String sexo,
+			@RequestParam(name = "nacimiento") String fechaNacimiento,
+			@RequestParam(name = "telefono", required = false) Integer telefono,
+			@RequestParam(name = "direccion") String direccion,
+			@RequestParam(name = "ocupacion") String ocupacion,
+			@RequestParam(name = "emailUsuario") String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
+			ModelMap model
+			) throws MiExcepcion {
+		
+		try {
+			
+			//Guardamos los datos del form que lleno el nuevo admin
+			servicioAdmin.registrarAdmin(emailUsuario, dni, nombre, apellido, ocupacion, direccion, telefono, fechaNacimiento, sexo);
+				
+		} catch (MiExcepcion e) {
+			System.out.println(e.getMessage());
+			model.put("error", e.getMessage());
+			return "/pagina_admin/completarDatosAdmin";
+		}
+		return "redirect:/homeAdmin?email=" + emailUsuario; //redirecionamos al metodo homeAdmin enviando la varibale mail
 	}
 			
 	
@@ -116,7 +127,7 @@ public class ControladorAdmin {
 	//busque los usuarios por nombre, dni o email y no que los busque en una lista
 	@GetMapping("/listarUsuariosOcultos")
     public String listarUsuarios(
-    		@RequestParam(name = "email") String email,
+    		@RequestParam(name = "email") String email, //Esta variable proviene de homeAdmin
     		@RequestParam(name = "exito", required = false) String exito, //El requiered=false le indica al metodo que el valor de esta variable es opcional y puede llegar null, asi no se rempe el programa
     		@RequestParam(name = "error", required = false) String error,
     		Model model) throws MiExcepcion {
@@ -129,7 +140,7 @@ public class ControladorAdmin {
 	
 	//Buscamos usuario por dni, nombre o email, la variable emailAdmin es para pasar el mail de admin y poder visualizar el nav
 	@PostMapping("/buscarDNIoNombre")
-	public String buscarDniNombreEmail(@RequestParam(name = "dato") String dato, @RequestParam(name = "emailAdmin") String emailAdmin, Model model) {
+	public String buscarDniNombreEmail(@RequestParam(name = "dato") String dato, @RequestParam(name = "emailAdmin") String emailAdmin, Model model) { //la variable dato puede ser un nombre, dni o mail
 
 		//Validamos que la busqueda no se haya hecho en blanco y mostramos un mensaje
 		if (dato.isEmpty() || dato == null) {
@@ -137,6 +148,8 @@ public class ControladorAdmin {
 			model.addAttribute("usuariosEmail", emailAdmin);
 			return "/pagina_admin/portalAdmin";
 		}
+		
+		//AQUI AGREGAR UN CONDICIONAL QUE BUSQUE EN LA BASE DE DATOS POR NOMBRE, DNI O EMAIL Y SINO LO ENCUENTRA LANCE EL ERROR "USUARIO NO REGISTRADO EN LA BASE DE DATOS"
 					
 		List<Usuario> usuarioDni = servicioUsuario.buscarDni(dato);
 		List<Usuario>	usuarioNombre = servicioUsuario.buscarNombre(dato);

@@ -96,16 +96,18 @@
                 <input class="form-check-input" type="radio" name="idUsuario" th:value="${usuarios.id}" id="idUsuario">
               </div>
             </th>
-            <th class="esconder-col" th:text="${usuarios.id}"></th>
-    		<th th:text="${usuarios.dni}"></th>
-      		<th th:text="${usuarios.nombre}"></th>
-            <th th:text="${usuarios.apellido}"></th>
-            <th th:text="${usuarios.rol}"></th>
-            <th th:text="${usuarios.activo}"></th>
-            <th th:text="${usuarios.email}"></th>
+            <th class="esconder-col fw-semibold" th:text="${usuarios.id}"></th>
+    		<th class="fw-semibold" th:text="${usuarios.dni}"></th>
+      		<th class="fw-semibold" th:text="${#strings.toUpperCase(usuarios.nombre)}"></th>
+            <th class="fw-semibold" th:text="${#strings.toUpperCase(usuarios.apellido)}"></th>
+            <th class="fw-semibold" th:text="${usuarios.rol}"></th>
+            <th class="fw-semibold" th:text="${usuarios.activo}"></th>
+            <th class="fw-semibold" th:text="${#strings.toLowerCase(usuarios.email)}"></th>
+            
           </tr>
         </tbody>
       </table>
+      
       <div class="d-flex justify-content-center align-items-center  ">
       <div class="fila-tabla-select">
         <select id="nuevoRol" name="nuevoRol" class="form-select select-tabla" aria-label="Default select example"> <!--Enviamos el valor del rol con el name nuevoRol al metodo modificarUsuario-->
@@ -139,10 +141,10 @@
       </div>
      </form>
     </section>
-     <div th:if="${error}" class="fs-5 mt-2 text-center"> <!--Mensaje opcional de error, el valor puede venir de diferentes metodos-->
+     <div th:if="${error}" class="fs-5 mt-5 text-center"> <!--Mensaje opcional de error, el valor puede venir de diferentes metodos-->
 	      <p th:text="${error}"></p>
 	 </div>
-	 <div th:if="${exito}" class="fs-5 mt-2 text-center"> <!--Mensaje opcional de exito, el valor puede venir de cualquier metodo-->
+	 <div th:if="${exito}" class="fs-5 mt-5 text-center"> <!--Mensaje opcional de exito, el valor puede venir de cualquier metodo-->
 	      <p th:text="${exito}"></p>
 	 </div>
 </div>

@@ -6,19 +6,26 @@ import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Enums.Tratamiento;
+import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
+@Table(name = "Profesional")
 public class Profesional extends Persona {
 
-
+	@Column(name = "matricula")
 	private String matricula;
+	
+	@Column(name = "especialidad")
+	private String especialidad;
 
     @Enumerated(EnumType.STRING)
     private Tratamiento tratamientos;
@@ -26,17 +33,22 @@ public class Profesional extends Persona {
     @Enumerated(EnumType.STRING)
     private Provincias provincia;
     
+    @Column(name = "calificacion")
     private Double calificacion;
 
+    @Column(name = "precioConsulta")
     private Double precioConsulta;
+    
+  
     
     public Profesional() {
     	
     }
 
-	public Profesional(String matricula, Tratamiento tratamientos, Provincias provincia, Double calificacion,
+	public Profesional(String matricula, String especialidad, Tratamiento tratamientos, Provincias provincia, Double calificacion,
 			Double precioConsulta) {
 		this.matricula = matricula;
+		this.especialidad = especialidad;
 		this.tratamientos = tratamientos;
 		this.provincia = provincia;
 		this.calificacion = calificacion;
@@ -55,6 +67,14 @@ public class Profesional extends Persona {
 
 	public void setMatricula(String matricula) {
 		this.matricula = matricula;
+	}
+	
+	public String getEspecialidad() {
+		return especialidad;
+	}
+	
+	public void setEspecialidad(String especialidad) {
+		this.especialidad = especialidad;
 	}
 
 	public Tratamiento getTratamientos() {
