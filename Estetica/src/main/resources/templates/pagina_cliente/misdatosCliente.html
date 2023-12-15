@@ -112,10 +112,10 @@
         
         <input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente" id="idCliente"> <!--input oculto para enviar el id del cliente al controlador actualizarDatosCliente-->
         
-        <div th:if="${exito}" class="fs-5 mt-2 text-center">
+        <div th:if="${exito}" class="fs-5 mt-3 text-success fw-bold text-center">
 	    	<p th:text="${exito}"></p>
 	   	</div>
-	   	<div th:if="${error}" class="fs-5 mt-2 text-center">
+	   	<div th:if="${error}" class="fs-5 mt-3 text-danger fw-bold text-center">
 	    	<p th:text="${error}"></p>
 	   	</div>
         <div class="boton-de-registro mt-4  text-center">

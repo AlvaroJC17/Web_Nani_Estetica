@@ -3,6 +3,7 @@ package com.proyecto_integrador_3.Estetica.Controllers;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,8 +97,7 @@ public class ControladorAdmin {
 			@RequestParam(name = "direccion") String direccion,
 			@RequestParam(name = "ocupacion") String ocupacion,
 			@RequestParam(name = "emailUsuario") String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
-			ModelMap model
-			) throws MiExcepcion {
+			ModelMap model) throws MiExcepcion {
 		
 		try {
 			
@@ -113,6 +113,8 @@ public class ControladorAdmin {
 	}
 			
 	
+	
+	
 	//A este metodo le paso la variable mail y la lista por dos model diferentes para que cuando cargue
 	//la pagina se pueda visualizar el nav y la lista de usuarios, sino le paso el mail el nav no se ve
 	@GetMapping("/listarUsuariosVisibles")
@@ -122,6 +124,10 @@ public class ControladorAdmin {
 		model.addAttribute("usuarios", usuarios);
 		return "/pagina_admin/portalAdmin";
 	}
+	
+	
+	
+	
 	
 	//Muestra una pagina con la lista de usuarios oculta, esto porque queremos que el admin
 	//busque los usuarios por nombre, dni o email y no que los busque en una lista
@@ -138,22 +144,38 @@ public class ControladorAdmin {
 		return "/pagina_admin/portalAdmin";
 	}
 	
+	
+	
+	
+	
 	//Buscamos usuario por dni, nombre o email, la variable emailAdmin es para pasar el mail de admin y poder visualizar el nav
 	@PostMapping("/buscarDNIoNombre")
-	public String buscarDniNombreEmail(@RequestParam(name = "dato") String dato, @RequestParam(name = "emailAdmin") String emailAdmin, Model model) { //la variable dato puede ser un nombre, dni o mail
+	public String buscarDniNombreEmail(
+			@RequestParam(name = "dato") String dato,  //la variable dato puede ser un nombre, dni o mail
+			@RequestParam(name = "emailAdmin") String emailAdmin,
+			Model model) {
+		
+		String exito;
+		String error;
+		String datoSinEspacios = dato.trim(); //Le quitamos los espacios en blanco al principio y final de la palabra
 
 		//Validamos que la busqueda no se haya hecho en blanco y mostramos un mensaje
-		if (dato.isEmpty() || dato == null) {
-			model.addAttribute("error", "Indique un numero de DNI, nombre o email para realizar la busqueda");
-			model.addAttribute("usuariosEmail", emailAdmin);
-			return "/pagina_admin/portalAdmin";
+		if (datoSinEspacios.isEmpty() || Objects.equals(datoSinEspacios, null)) {
+			error = "Indique un numero de DNI, nombre o email para realizar la busqueda";
+			return "redirect:/listarUsuariosOcultos?email=" + emailAdmin + "&error=" + error;
 		}
 		
-		//AQUI AGREGAR UN CONDICIONAL QUE BUSQUE EN LA BASE DE DATOS POR NOMBRE, DNI O EMAIL Y SINO LO ENCUENTRA LANCE EL ERROR "USUARIO NO REGISTRADO EN LA BASE DE DATOS"
-					
-		List<Usuario> usuarioDni = servicioUsuario.buscarDni(dato);
-		List<Usuario>	usuarioNombre = servicioUsuario.buscarNombre(dato);
-		List<Usuario> usuarioEmail = servicioUsuario.buscarPorEmail(dato);
+		//Validamos que el usuario buscado exista en la base de datos, sino mandamos un mensaje de error
+		if (!servicioUsuario.buscarPorDniOptional(datoSinEspacios).isPresent() && !servicioUsuario.buscarPorNombreOptional(datoSinEspacios).isPresent() && !servicioUsuario.buscarPorEmailOptional(datoSinEspacios).isPresent()) {
+			error = "Usuario no se encuentra registrado";
+			return "redirect:/listarUsuariosOcultos?email=" + emailAdmin + "&error=" + error;
+		}
+		
+		// Si cumple las condiciones para pasar los condicionales de arriba, entonces
+		//usamos el valor de dato, segun corresponda
+		List<Usuario> usuarioDni = servicioUsuario.buscarDni(datoSinEspacios);
+		List<Usuario>	usuarioNombre = servicioUsuario.buscarNombre(datoSinEspacios);
+		List<Usuario> usuarioEmail = servicioUsuario.buscarPorEmail(datoSinEspacios);
 		
 		if (!usuarioDni.isEmpty()) {
 			model.addAttribute("usuarios", usuarioDni); // asignamos el valor de la variable administradoresDni a la variable html administradores y asi poder iterarla en el documento
@@ -175,14 +197,20 @@ public class ControladorAdmin {
 	}
 		
 	
+	
+	
 	// En este metodo unificamos la edicion y eliminacion de un usuario a traves de un solo formulario
 	// usando el action como valor para las diferentes condiciones
 	@PostMapping("/modificarUsuario")
-	public String modificarUsuario(@RequestParam(name = "idUsuario", required = false) String id,
-								   @RequestParam(name = "nuevoRol") String nuevoRolNombre,
-            					   @RequestParam(name = "emailAdministrador") String emailAdministrador,
-            					   @RequestParam(name = "action") String action,
-            					   Model model) {
+	public String modificarUsuario(
+			@RequestParam(name = "idUsuario", required = false) String id,
+			@RequestParam(name = "nuevoRol") String nuevoRolNombre,
+            @RequestParam(name = "emailAdministrador") String emailAdministrador,
+            @RequestParam(name = "action") String action,
+            Model model) {
+		
+		String exito;
+		String error;
 		
 		//Validamos que el id no venga vacio, esto pasa cuando le dan a una opcion sin seleccionar a un usuario
 		if (id == null) {
@@ -241,16 +269,19 @@ public class ControladorAdmin {
 			try {
 				servicioUsuario.borrarUsuario(id);
 				servicioPersona.borrarPersona(id);
-				String exito = "Usuario eliminado correctamente";
+				exito = "Usuario eliminado correctamente";
 				return "redirect:/listarUsuariosOcultos?email=" + emailAdministrador + "&exito=" + exito; //Enviamos mail y mensaje de exito
 			} catch (Exception e) {
-				String error = "Usuario no se pudo eliminar";
+				error = "Usuario no se pudo eliminar";
 				return "redirect:/listarUsuariosOcultos?email=" + emailAdministrador + "&error=" + error; //Enviamos mail y mensaje de error;
 			}
 		}
 		return "/pagina_admin/portalAdmin";
 	}
 		
+	
+	
+	
 	
 	//Lista usuarios y persona haciendo un join de tablas por ID
 	//Este metodo esta relacionado con el de modificarUsuario y la variable mail viene de él

@@ -56,8 +56,7 @@ public class ControladorProfesional {
 			@RequestParam(name = "telefono", required = false) Integer telefono,
 			@RequestParam(name = "direccion") String direccion,
 			@RequestParam(name = "emailUsuario") String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
-			ModelMap model
-			) throws MiExcepcion {
+			ModelMap model) throws MiExcepcion {
 		
 		try {
 			

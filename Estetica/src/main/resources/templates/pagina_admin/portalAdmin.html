@@ -141,10 +141,10 @@
       </div>
      </form>
     </section>
-     <div th:if="${error}" class="fs-5 mt-5 text-center"> <!--Mensaje opcional de error, el valor puede venir de diferentes metodos-->
+     <div th:if="${error}" class="fs-5 mt-3 text-danger fw-bold text-center"> <!--Mensaje opcional de error, el valor puede venir de diferentes metodos-->
 	      <p th:text="${error}"></p>
 	 </div>
-	 <div th:if="${exito}" class="fs-5 mt-5 text-center"> <!--Mensaje opcional de exito, el valor puede venir de cualquier metodo-->
+	 <div th:if="${exito}" class="fs-5 mt-3 text-success fw-bold text-center"> <!--Mensaje opcional de exito, el valor puede venir de cualquier metodo-->
 	      <p th:text="${exito}"></p>
 	 </div>
 </div>

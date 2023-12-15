@@ -82,10 +82,12 @@ public class ControladorCliente {
 	
 	//Muestra todos los datos personales de la persona en la pagina misdatosCliente
 	@GetMapping("/misdatosCliente")
-	public String misdatosCliente(@RequestParam(name="email") String email,
-								  @RequestParam(name="exito", required = false) String exito,
-								  @RequestParam(name="error", required = false) String error,
-								  Model model) { // el valor del parametro email viene del html homeCliente
+	public String misdatosCliente(
+			@RequestParam(name="email") String email,
+			@RequestParam(name="exito", required = false) String exito,
+			@RequestParam(name="error", required = false) String error,
+			Model model) { // el valor del parametro email viene del html homeCliente
+		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("exito", exito);
 		model.addAttribute("error", error);
@@ -121,14 +123,14 @@ public class ControladorCliente {
 
 	
 	@PostMapping("/actualizarDatosCliente")
-	public String actualizarDatosCliente(@RequestParam(name="idCliente") String idCliente, //este atributo es enviado en un input oculto de la pag misdatosCliente
-										 @RequestParam(name="ocupacion", required = false) String ocupacion, // Este y los demas atributos los puse como no requeridos para poder personalizar las excepciones
-										 @RequestParam(name="email", required = false) String email,
-										 @RequestParam(name="domicilio", required = false) String domicilio,
-										 @RequestParam(name="sexo", required = false) String sexo,
-										 @RequestParam(name="telefono", required = false) Integer telefono,
-										 ModelMap model)
-										 throws MiExcepcion {
+	public String actualizarDatosCliente(
+			@RequestParam(name="idCliente") String idCliente, //este atributo es enviado en un input oculto de la pag misdatosCliente
+			@RequestParam(name="ocupacion", required = false) String ocupacion, // Este y los demas atributos los puse como no requeridos para poder personalizar las excepciones
+		    @RequestParam(name="email", required = false) String email,
+			@RequestParam(name="domicilio", required = false) String domicilio,
+			@RequestParam(name="sexo", required = false) String sexo,
+			@RequestParam(name="telefono", required = false) Integer telefono,
+			ModelMap model) throws MiExcepcion {
 		
 		//Buscamos mediante el id el mail anterior del cliente y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
 		// entonces usamos este mail anterior para poder pasarlo al controlador de misdatosClientes y poder visualizar los datos del cliente

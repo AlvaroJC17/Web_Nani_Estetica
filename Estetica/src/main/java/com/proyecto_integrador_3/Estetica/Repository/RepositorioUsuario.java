@@ -63,6 +63,14 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, String>  {
 	public List<Usuario> obtenerDatosPersonaUsuarioPorEmail(@Param("email") String email);
 	
 	//Metodo para buscar todos los campos de persona y usuario usando el email
-		@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.email = :email")
-		public Optional<Usuario> obtenerDatosPersonaUsuarioPorEmailOptional(@Param("email") String email);
+	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.email = :email")
+	public Optional<Usuario> obtenerDatosPersonaUsuarioPorEmailOptional(@Param("email") String email);
+	
+	//Metodo para buscar todos los campos de persona y usuario usando el dni
+	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.dni = :dni")
+	public Optional<Usuario> obtenerDatosPersonaUsuarioPorDniOptional(@Param("dni") String dni);
+		
+	//Metodo para buscar todos los campos de persona y usuario usando el nombre
+	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.nombre = :nombre")
+	public Optional<Usuario> obtenerDatosPersonaUsuarioPorNombreOptional(@Param("nombre") String nombre);
 }

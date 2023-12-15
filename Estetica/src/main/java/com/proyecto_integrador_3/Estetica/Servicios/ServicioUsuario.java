@@ -103,6 +103,18 @@ public class ServicioUsuario {
 		}
 		
 		@Transactional
+		public Optional<Usuario> buscarPorDniOptional(String dni) {
+			Optional<Usuario> dnilUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorDniOptional(dni);
+		return dnilUsuario;
+		}
+		
+		@Transactional
+		public Optional<Usuario> buscarPorNombreOptional(String nombre) {
+			Optional<Usuario> nombreUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorNombreOptional(nombre);
+		return nombreUsuario;
+		}
+		
+		@Transactional
 		public Optional<Usuario> buscarContrasena(String contrasena) {
 			Optional<Usuario> contrasenaUsuario = repositorioUsuario.buscarContrasena(contrasena);
 		return contrasenaUsuario;

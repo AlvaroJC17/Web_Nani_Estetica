@@ -53,10 +53,11 @@ public class ControladorPagina {
 	
 	// Registro un usuario en la base de datos
 	 @PostMapping("/registro")
-	    public String registroUsuario(@RequestParam(name = "email") String email,
-	    							  @RequestParam(name = "contrasena") String password,
-	    							  @RequestParam(name = "contrasena2") String password2,
-	    							  ModelMap modelo) throws MiExcepcion {
+	    public String registroUsuario(
+	    		@RequestParam(name = "email") String email,
+	    		@RequestParam(name = "contrasena") String password,
+	    		@RequestParam(name = "contrasena2") String password2,
+	    		ModelMap modelo) throws MiExcepcion {
 
 		 try {
 	        	servicioUsuario.guardarUsuario(email, password, password2);
