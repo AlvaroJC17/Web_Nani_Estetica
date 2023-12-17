@@ -101,6 +101,7 @@ public class ServicioCliente {
         	repositorioCliente.save(cliente_actualizado);
 		}
 	}
+
         		
 
 	 public void validarDatosCliente(String nombre, String apellido, String dni,  String sexo,
@@ -185,6 +186,8 @@ public class ServicioCliente {
 		        }
 		        
 	 }
+	 
+	 
 		        	
 	 
 	 

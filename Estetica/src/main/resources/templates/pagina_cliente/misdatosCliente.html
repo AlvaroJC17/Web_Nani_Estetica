@@ -46,7 +46,7 @@
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misdatos}">Mis consultas</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente}">Cambiar contraseña</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
             </li>
             <li class="nav-item">
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
@@ -122,7 +122,7 @@
           <a href="#"><button type="submit" class="bn632-hover bn26">Guardar</button></a>
         </div>
         <div class="text-center mt-2 ">
-          <a class="m-2 fs-5 " th:href="@{/cambiarContrasena}">¿Quieres cambiar tu contraseña?</a>
+          <a class="m-2 fs-5 " th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">¿Quieres cambiar tu contraseña?</a>
         </div>
         </form>
       </div>

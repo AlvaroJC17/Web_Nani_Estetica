@@ -61,11 +61,25 @@ public class ControladorCliente {
 	return "/pagina_cliente/misconsultas";	
 	}
 	
-	@GetMapping("cambiarContrasenaCliente")
-	public String cambiarContrasenaCliente() {
-	return "/pagina_cliente/cambiarContrasenaCliente";	
+	@GetMapping("/cambiarContrasenaCliente")
+	public String cambiarContrasenaCliente(
+			@RequestParam(name = "email") String email,
+			@RequestParam(name = "exito", required = false) String exito,
+			@RequestParam(name = "error", required = false) String error,
+			ModelMap model) {
+		
+		System.out.println("EMAIL: " + email);
+		System.out.println("EXITO: " + exito);
+		System.out.println("ERROR: " + error);
+		
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		
+		model.addAttribute("datosCliente", datosCliente);
+		model.addAttribute("exito", exito);
+		model.addAttribute("error", error);
+		return "/pagina_cliente/cambiarContrasenaCliente";
 	}
-	
+		
 	@GetMapping("completarDatosCliente")
 	public String completarDatos() {
 		return "/pagina_cliente/completarDatosCliente";
@@ -152,7 +166,27 @@ public class ControladorCliente {
 			return "redirect:/misdatosCliente?email=" + emailAnterior + "&error=" + error; // si se produce alguna exepcion en algun campo enviamos el mail anterior del usuario y un mensaje de error al metodo misdatosCliente
 		}
 	}
+	
 			
+	@PostMapping("actualizarContrasenaCliente")
+	public String actualizarContrasenaCliente(
+			@RequestParam(name = "emailCliente") String emailCliente, //Esta variable viene de un input oculto de la pag cambiarContrasenaCliente
+			@RequestParam(name = "idCliente") String idCliente, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
+			@RequestParam(name = "oldPass") String oldPass, //A partir de estas viene del formulario
+			@RequestParam(name = "newPass") String newPass,
+			@RequestParam(name = "repeatNewPass") String repeatNewPass,
+			ModelMap model) throws MiExcepcion {
+		
+		String error = null;
+		try {
+			servicioUsuario.modificarContrasena(idCliente,oldPass, newPass, repeatNewPass);
+			return "/index";
+		} catch (Exception e) {
+			error = e.getMessage();
+			return "redirect:/cambiarContrasenaCliente?email=" + emailCliente + "&error=" + error;
+		}
+		
+	}
 			
 			
 			

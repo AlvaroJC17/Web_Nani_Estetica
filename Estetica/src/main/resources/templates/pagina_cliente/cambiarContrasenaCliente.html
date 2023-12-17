@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
 
 <head>
   <meta charset="UTF-8">
@@ -12,7 +12,7 @@
   <title>CambiarContraseña</title>
 </head>
 
-<body class="body-interno">
+<body class="body-interno" th:each="datosCliente : ${datosCliente}">
 
   <!--Boton flotante de ws-->
   <a href="#" target="_blank" class="boton-flotante">
@@ -26,14 +26,17 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a th:href="@{/homeCliente}">
+          <a th:href="@{/homeCliente(email=${datosCliente.email})}">
             <div class="imagen-logo ajuste-texto-menu">
               <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
+			<li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/homeCliente(email=${datosCliente.email})}">Home</a>
+            </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente}">Mis Datos</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis Datos</a> <!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente}">Solicitar Turno</a>
@@ -45,11 +48,12 @@
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas}">Mis consultas</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente}">Cambiar contraseña</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
             </li> 
             <li class="nav-item">
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
             </li>
+          </ul>
         </div>
       </div>
     </div>
@@ -70,23 +74,60 @@
         </div>
         </div>
         <div class=" info-silicitar-turno border-0  ">
-          <form action="">
+          <form th:action="@{/actualizarContrasenaCliente}" method="post">
             <div>
-              <label for="oldPass" class="form-label mb-0 mt-2  fs-4">Contraseña anterior<span class="text-danger ">*</span></label>
-              <input type="password" class="form-control" id="oldPass" placeholder="">
+              <label for="oldPass" class="form-label mb-0 mt-2  fs-5">Contraseña anterior<span class="text-danger ">*</span></label>
+              <input type="password" name="oldPass" class="form-control rounded-0" id="oldPass" placeholder="">
             </div>
             <div>
-              <label for="newPass" class="form-label mb-0 mt-2  fs-4">Nueva contraseña<span class="text-danger ">*</span></label>
-              <input type="password" class="form-control" id="newPass" placeholder="">
+              <label for="newPass" class="form-label mb-0 mt-2  fs-5">Nueva contraseña<span class="text-danger ">*</span></label>
+              <input type="password" name="newPass" class="form-control rounded-0" id="newPass" placeholder="">
             </div>
             <div>
-              <label for="RepeatNewPass" class="form-label mb-0 mt-2  fs-4">Repetir nueva contraseña<span class="text-danger ">*</span></label>
-              <input type="password" class="form-control" id="RepeatNewPass" placeholder="">
+              <label for="RepeatNewPass" class="form-label mb-0 mt-2  fs-5">Repetir nueva contraseña<span class="text-danger ">*</span></label>
+              <input type="password" name="repeatNewPass" class="form-control rounded-0" id="repeatNewPass" placeholder="">
             </div>
+            
+           
+            
+            <input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente" id="idCliente">
+            <input type="hidden" th:value="${datosCliente.email}" class="form-control" name="emailCliente" id="emailCliente">
+            
+            <div th:if="${exito}" class="fs-5 mt-5 text-success fw-bold text-center">
+	    	<p th:text="${exito}"></p>
+	   	</div>
+	   	<div th:if="${error}" class="fs-5 mt-5
+	   	 text-danger fw-bold text-center">
+	    	<p th:text="${error}"></p>
+	   	</div>
+            
             <div class="d-flex justify-content-center mt-4  text-center ">
             <div class="boton-de-registro text-center me-1 boton-pag-turno ">
-              <a href="#"><button class="bn632-hover bn26">Enviar</button></a>
+              <button type="button" class="bn632-hover bn26" data-bs-toggle="modal" data-bs-target="#staticBackdrop">Enviar</button>
             </div>
+
+<!-- ModalCambiarContraseña -->
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="staticBackdropLabel">¿Estas seguro?</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Si aceptas cambiar tu contraseña, tu sesion se cerrara autimaticamnte y deberas iniciar sesion
+        nuevamenta con la nueva contraseña
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+        <a href="">
+        <button type="submit" class="btn btn-primary">Aceptar</button>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+            
           </div>
           </form>
         </div>
