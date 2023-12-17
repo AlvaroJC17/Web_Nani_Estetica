@@ -65,21 +65,12 @@
           <form th:action="@{/guardarDatosAdmin}" method="post">
             <p class="ps-3 fs-1 ">Completar Datos de Administrador</p>
             <p class="ps-3 fs-5">Complete todos los datos para poder acceder a su sesión</p>
-              <div class="mb-3 row">
-                <div class="col-md-6">
-                <label for="nombre" class="form-label texto-label">Nombre<span class="text-danger fw-bold">*</span></label>
-                <input type="text" class="form-control" name="nombre" id="nombre" placeholder="" required>
-              </div>
-              <div class="col-md-6">
-                <label for="apellido" class="form-label texto-label">Apellido<span class="text-danger fw-bold">*</span></label>
-                <input type="text" class="form-control" name="apellido" id="apellido" placeholder="" required>
-              </div>
-            </div>
+           
             <div class="mb-3 row">
-              <div class="col-md-6">
-                <label for="numeroDoc" class="form-label texto-label">N° Documento<span class="text-danger fw-bold">*</span></label>
-                <input type="text" class="form-control" name="numeroDoc" id="numeroDoc" placeholder="" required>
-            </div>
+             <div class="col-md-6">
+              <label for="telefono" class="form-label texto-label">Teléfono<span class="text-danger fw-bold">*</span></label>
+              <input type="number" class="form-control" name="telefono" id="telefono" placeholder="" required>
+        </div>
             <div class="col-md-6">
               <label for="sexo" class="form-label texto-label">Sexo<span class="text-danger fw-bold">*</span></label>
               <select id="sexo" name="sexo" class="form-select" aria-label="Default select example">
@@ -91,16 +82,6 @@
           </div>
         </div>
 
-          <div class="mb-3 row">
-            <div class="col-md-6">
-              <label for="nacimiento" class="form-label texto-label">Fecha nacimiento<span class="text-danger fw-bold">*</span></label>
-              <input type="date" class="form-control" name="nacimiento" id="nacimiento" placeholder="" required>
-            </div>
-          <div class="col-md-6">
-              <label for="telefono" class="form-label texto-label">Teléfono<span class="text-danger fw-bold">*</span></label>
-              <input type="number" class="form-control" name="telefono" id="telefono" placeholder="" required>
-        </div>
-      </div>
         <div class="mb-3 row">
             <div class="col-md-6">
               <label for="direccion" class="form-label texto-label">Dirección<span class="text-danger fw-bold">*</span></label>

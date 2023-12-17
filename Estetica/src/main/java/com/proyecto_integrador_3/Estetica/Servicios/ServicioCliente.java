@@ -1,13 +1,10 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
-import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +12,6 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto_integrador_3.Estetica.Entidades.Admin;
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
@@ -144,7 +140,7 @@ public class ServicioCliente {
 		 }
 		 
 		 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {
-			 throw new MiExcepcion("El domicilio no puede estar vacio");
+			 throw new MiExcepcion("La direccion no puede estar vacia");
 		 }
 		 
 		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
@@ -183,7 +179,7 @@ public class ServicioCliente {
 		       
 		        if (!email.equalsIgnoreCase(emailAnterior)) {
 		        	if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
-		        		throw new MiExcepcion("El email ya esta registrado");
+		        		throw new MiExcepcion("El email ingresado ya se encuentra registrado, por favor ingrese otro");
 		        	}
 						
 		        }

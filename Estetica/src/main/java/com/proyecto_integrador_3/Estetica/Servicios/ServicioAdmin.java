@@ -9,12 +9,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
+import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
@@ -45,81 +48,85 @@ public class ServicioAdmin {
 	public RepositorioPersona repositorioPersona;
 	
 	@Transactional
-	public void registrarAdmin(String email, String dni, String nombre, String apellido, String ocupacion,
-			String direccion, Integer telefono, String fechaNacimiento, String sexo) throws MiExcepcion {
+	public void registrarAdmin(String email, String ocupacion,
+			String direccion, Integer telefono, String sexo) throws MiExcepcion {
 		
-		validarDatosAdmin(nombre, apellido, dni, sexo, fechaNacimiento, telefono, direccion, ocupacion);
+		validarDatosAdmin(sexo, telefono, direccion, ocupacion);
 
 		Optional <Usuario> datosUsuario = servicioUsuario.buscarPorEmailOptional(email);
 		if (datosUsuario.isPresent()) {
-			Usuario datosCliente = datosUsuario.get();
+			Usuario datosDelUsuario = datosUsuario.get();
+			
+			//Buscamos los datos de nombre, apellido, fechaNacimiento y dni de la persona y los guardamos como nuevo profesional, asi la persona no los tiene que ingresar de nuevo en el formulario
+			String nombrePersona = null;
+			String apellidoPersona = null;
+			String dniPersona = null;
+			Date fechaNacimientoPerson = null;
+			Optional <Persona> datosPersona = repositorioPersona.buscarPorEmailOptional(email);
+			if (datosPersona.isPresent()) {
+				Persona datosPersonalesPersona = datosPersona.get();
+				nombrePersona = datosPersonalesPersona.getNombre();
+				apellidoPersona = datosPersonalesPersona.getApellido();
+				dniPersona = datosPersonalesPersona.getDni();
+				fechaNacimientoPerson = datosPersonalesPersona.getFechaNacimiento();
+			}
 		
 			Sexo nuevoSexo = null;
 			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
 			
-			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+			/*SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
 			Date fecha = null;
 			try {
 				fecha = formato.parse(fechaNacimiento);
 			} catch (ParseException e) {
 				e.printStackTrace();
-			}
+			}*/
 			
 			Admin nuevo_admin = new Admin();
 			nuevo_admin.setEmail(email);
-			nuevo_admin.setContrasena(datosCliente.getContrasena());
-			nuevo_admin.setRol(datosCliente.getRol());
-			nuevo_admin.setActivo(datosCliente.getActivo());
+			nuevo_admin.setContrasena(datosDelUsuario.getContrasena());
+			nuevo_admin.setRol(datosDelUsuario.getRol());
+			nuevo_admin.setActivo(datosDelUsuario.getActivo());
 			nuevo_admin.setValidacionForm(TRUE);
-			nuevo_admin.setDni(dni);
-			nuevo_admin.setNombre(nombre);
-			nuevo_admin.setApellido(apellido);
+			nuevo_admin.setDni(dniPersona);
+			nuevo_admin.setNombre(nombrePersona);
+			nuevo_admin.setApellido(apellidoPersona);
 			nuevo_admin.setTelefono(telefono);
 			nuevo_admin.setDomicilio(direccion);
-			nuevo_admin.setFechaNacimiento(fecha);
+			nuevo_admin.setFechaNacimiento(fechaNacimientoPerson);
 			nuevo_admin.setSexo(nuevoSexo);
 			nuevo_admin.setOcupacion(ocupacion);
 			repositorioAdmin.save(nuevo_admin);
-			repositorioUsuario.delete(datosCliente);
+			repositorioUsuario.delete(datosDelUsuario);
 		}
 	}
 	
-	/*
 	@Transactional
-	public List<Admin> buscarDni(String dni) {
-		List<Admin> dniAdmin = repositorioAdmin.buscarPorDni(dni);
-	return dniAdmin;
-	}
-	
-	//Actualiza los datos de un Admin en la base de datos
-	@Transactional
-	public void modificarAdmin(Admin admin ) {
+	public void modificarAdmin(String idAdmin, String ocupacion, String email, String emailAnterior, String domicilio, String sexo, Integer telefono) throws MiExcepcion {
 		
-		Optional<Admin> identificarAdmin = repositorioAdmin.findById(admin.getId());
+		verificarEmailAdmin(email, emailAnterior);
+		validarActualizacionDeDatosAdmin(ocupacion, domicilio, sexo, telefono);
+		
+		Optional<Admin> identificarAdmin = repositorioAdmin.findById(idAdmin);
+		
 		if (identificarAdmin.isPresent()) {
-			Admin admin_modificado = identificarAdmin.get(); // Atribuye el objeto presente a esta nueva variable
-			admin_modificado.setDni(admin.getDni());
-			admin_modificado.setEmail(admin.getEmail());
-			admin_modificado.setRol(admin.getRol().ADMIN);
-			admin_modificado.setActivo(admin.getActivo());
-			admin_modificado.setNombre(admin.getNombre());
-			admin_modificado.setApellido(admin.getApellido());
-			admin_modificado.setSexo(admin.getSexo());
-			admin_modificado.setFechaNacimiento(admin.getFechaNacimiento());
-			admin_modificado.setDomicilio(admin.getApellido());
-			admin_modificado.setTelefono(admin.getTelefono());
-			repositorioAdmin.save(admin_modificado);
+			Admin admin_actualizado = identificarAdmin.get(); // Atribuye el objeto presente a esta nueva variable
+			
+			Sexo nuevoSexo = null;
+			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
+			
+			admin_actualizado.setEmail(email);
+			admin_actualizado.setOcupacion(ocupacion);
+			admin_actualizado.setSexo(nuevoSexo);
+			admin_actualizado.setDomicilio(domicilio);
+			admin_actualizado.setTelefono(telefono);
+        	repositorioAdmin.save(admin_actualizado);
 		}
 	}
+	 
+	 public void validarDatosAdmin(String sexo, Integer telefono, String direccion, String ocupacion) throws MiExcepcion {
 	
-	 
-*/
-	 
-	 
-	 public void validarDatosAdmin(String nombre, String apellido, String dni,  String sexo,
-			 String fechaNacimiento, Integer telefono, String direccion, String ocupacion) throws MiExcepcion {
-	
-		 
+		 /*
 		 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
 			 throw new MiExcepcion("El nombre no puede estar vacio");
 		 }
@@ -129,15 +136,20 @@ public class ServicioAdmin {
 		 if (dni == null || dni.isEmpty() || dni.trim().isEmpty()) {
 			 throw new MiExcepcion("El dni no puede estar vacio");
 		 } 
+		 
 		 if(repositorioPersona.buscarPorDniOptional(dni).isPresent()) {
 			 throw new MiExcepcion("El numero de dni ya está registrado");
 		 }
+		 */
+		 
 		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
 			 throw new MiExcepcion("El sexo no puede estar vacio");
 		 }
+		 /*
 		 if (fechaNacimiento == null || fechaNacimiento.toString().isEmpty() || fechaNacimiento.trim().isEmpty()) {
 			 throw new MiExcepcion("La fecha de nacimiento no puede estar vacia");
 		 }
+		 */
 		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
 			 throw new MiExcepcion("EL telefono no puede estar vacio");
 		 }
@@ -149,6 +161,59 @@ public class ServicioAdmin {
 		 }
 	 
  }
+	 
+	 
+	 public void validarActualizacionDeDatosAdmin(String ocupacion, String domicilio, String sexo, Integer telefono) throws MiExcepcion {
+		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
+			 throw new MiExcepcion("La ocupacion no puede estar vacia");
+		 }
+		 
+		 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {
+			 throw new MiExcepcion("El domicilio no puede estar vacio");
+		 }
+		 
+		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
+			 throw new MiExcepcion("EL telefono no puede estar vacio");
+		 }
+		 
+		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
+			 throw new MiExcepcion("El sexo no puede estar vacio");
+		 }
+		 
+		 if (!sexo.equalsIgnoreCase("masculino") && !sexo.equalsIgnoreCase("femenino") && !sexo.equalsIgnoreCase("otro")) {
+			 throw new MiExcepcion("El sexo solo puede ser masculino, femenino u otro");
+		 }
+		 
+	 }
+	 
+	 public void verificarEmailAdmin(String email, String emailAnterior) throws MiExcepcion {
+		 
+			// Expresión regular para validar un correo electrónico
+		        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
+		        // Compilar la expresión regular
+		        Pattern pattern = Pattern.compile(regex);
+
+		        // Crear un objeto Matcher
+		        Matcher matcher = pattern.matcher(email);
+		        
+		        if (email == null || email.isEmpty() || email.trim().isEmpty()) {
+		            throw new MiExcepcion("El email no puede estar vacio");
+		        }
+
+		        // Verificar si la cadena cumple con la expresión regular
+		        if (!matcher.matches()) {
+		            throw new MiExcepcion("El correo electronico no es valido");
+		        } 
+		       
+		        if (!email.equalsIgnoreCase(emailAnterior)) {
+		        	if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
+		        		throw new MiExcepcion("El email ingresado ya se encuentra registrado, por favor ingrese otro");
+		        	}
+						
+		        }
+		        
+	 }
 		
 	
 }

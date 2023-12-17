@@ -30,6 +30,10 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, String>  {
 	//Metodo para buscar por Email usando los metodos de Optional
     @Query("SELECT u FROM Usuario u WHERE u.email = :email")
     public Optional<Usuario> buscarPorEmailOptional(@Param("email") String email);
+    
+  //Metodo para buscar por id usando los metodos de Optional
+    @Query("SELECT u FROM Usuario u WHERE u.id = :id")
+    public Optional<Usuario> buscarPorIdOptional(@Param("id") String id);
 	
     //Metodo para buscar contrasena, este lo uso para comparar las contraseñas al loguearse
     @Query("SELECT u FROM Usuario u WHERE u.contrasena = :contrasena")

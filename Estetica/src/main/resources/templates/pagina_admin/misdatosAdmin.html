@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org">
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,7 +10,8 @@
         <link rel="stylesheet" href="../css/styles.css">
         <title>Datos Admin</title>
       </head>
-<body class="body-interno" th:each="datosAdmin : ${datosAdmin}">
+<body class="body-interno" th:each="datosAdmin : ${datosAdmin}"> <!--La variable datosAdmin viene del metodo misdatosAdmin,-->
+																	   <!--usea el bucle en el body para que los datos esten disponibles para todos los enlaces de la pag-->
 
   <a href="#" target="_blank" class="boton-flotante">
     <i class="fa-brands fa-whatsapp"></i>
@@ -52,7 +53,7 @@
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
          
-        <form th:action="action">
+        <form th:action="@{/actualizarDatosAdmin}" method="post">
           <div class="row">
           <div class="mb-3 col-lg-4">
             <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
@@ -74,31 +75,36 @@
           </div>
           <div class="mb-3 col-lg-6 ">
             <label for="edad" class="form-label texto-label">Ocupación</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.ocupacion)}" class="form-control" id="edad" placeholder="">
+            <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosAdmin.ocupacion)}" class="form-control" id="edad" placeholder="">
           </div>
         </div>
         <div class="row">
           <div class="mb-3 col-lg-6">
             <label for="email" class="form-label texto-label">Email</label>
-            <input type="email" th:value="${#strings.toUpperCase(datosAdmin.email)}" class="form-control" id="email" placeholder="">
+            <input type="email" name="email" th:value="${#strings.toUpperCase(datosAdmin.email)}" class="form-control" id="email" placeholder="">
           </div>
           <div class="mb-3 col-lg-6">
             <label for="direccion" class="form-label texto-label">Direccion</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.domicilio)}" class="form-control" id="direccion" placeholder="">
+            <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosAdmin.domicilio)}" class="form-control" id="direccion" placeholder="">
           </div>
         </div>
         <div class="row ">
           <div class="mb-3 col-lg-6">
             <label for="sexo" class="form-label texto-label">Sexo</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.sexo)}" class="form-control" id="sexo" placeholder="">
+            <input type="text" name="sexo" th:value="${#strings.toUpperCase(datosAdmin.sexo)}" class="form-control" id="sexo" placeholder="">
           </div>
           <div class="mb-3 col-lg-6">
             <label for="telefono" class="form-label texto-label">Telefono</label>
-            <input type="number" th:value="${#strings.toUpperCase(datosAdmin.telefono)}" class="form-control" id="telefono" placeholder="">
+            <input type="number" name="telefono" th:value="${#strings.toUpperCase(datosAdmin.telefono)}" class="form-control" id="telefono" placeholder="">
           </div>
         </div>
-        <div th:if="${exito}" class="fs-5 mt-2 text-center">
-	          	<p th:text="${exito}"></p>
+        <input type="hidden" th:value="${datosAdmin.id}" class="form-control" name="idAdmin" id="idAdmin"> <!--input oculto para enviar el id del admin al controlador actualizarDatosAdmin-->
+        
+        <div th:if="${exito}" class="fs-5 mt-5 text-success fw-bold text-center">
+	    	<p th:text="${exito}"></p>
+	   	</div>
+	   	<div th:if="${error}" class="fs-5 mt-5 text-danger fw-bold text-center">
+	    	<p th:text="${error}"></p>
 	   	</div>
         <div class="boton-de-registro mt-4  text-center">
           <a href="#"><button class="bn632-hover bn26">Guardar</button></a>
