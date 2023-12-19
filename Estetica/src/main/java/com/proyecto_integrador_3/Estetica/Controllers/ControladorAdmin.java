@@ -66,11 +66,6 @@ public class ControladorAdmin {
 	return "/pagina_admin/portalAdmin";	
 	}
 	
-	@GetMapping("/cambiarContrasenaAdmin")
-	public String cambiarContrasenaAdmin() {
-	return "/pagina_admin/cambiarContrasenaAdmin";	
-	}
-	
 	
 	@GetMapping("/misdatosAdmin")
 	public String misdatosAdmin(
@@ -363,7 +358,47 @@ public class ControladorAdmin {
 	}
 		
 		
+	//metodo relacionado con actualizarContrasenaProfesional
+		@GetMapping("/cambiarContrasenaAdmin")
+		public String cambiarContrasenaAdmin(
+				@RequestParam(name = "email") String email,
+				@RequestParam(name = "exito", required = false) String exito,
+				@RequestParam(name = "error", required = false) String error,
+				ModelMap model) {
+			
+			System.out.println("EMAIL: " + email);
+			System.out.println("EXITO: " + exito);
+			System.out.println("ERROR: " + error);
+			
+			List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
+			
+			model.addAttribute("datosAdmin", datosAdmin);
+			model.addAttribute("exito", exito);
+			model.addAttribute("error", error);
+			return "/pagina_admin/cambiarContrasenaAdmin";
+		}
 		
+		//Metodo relacionado con cambiarContrasenaProfesional
+		@PostMapping("actualizarContrasenaAdmin")
+		public String actualizarContrasenaAdmin(
+				@RequestParam(name = "emailAdmin") String emailAdmin, //Esta variable viene de un input oculto de la pag cambiarContrasenaProfesional
+				@RequestParam(name = "idAdmin") String idAdmin, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
+				@RequestParam(name = "oldPass") String oldPass, //A partir de estas viene del formulario
+				@RequestParam(name = "newPass") String newPass,
+				@RequestParam(name = "repeatNewPass") String repeatNewPass,
+				ModelMap model) throws MiExcepcion {
+			
+			String error = null;
+			try {
+				servicioUsuario.modificarContrasena(idAdmin,oldPass, newPass, repeatNewPass);
+				return "/index";
+			} catch (Exception e) {
+				error = e.getMessage();
+				return "redirect:/cambiarContrasenaAdmin?email=" + emailAdmin + "&error=" + error;
+			}
+			
+		}
+
 	
 		
 	

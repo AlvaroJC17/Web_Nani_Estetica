@@ -53,8 +53,7 @@ public class ServicioUsuario {
 	  @Transactional
 	    public void modificarContrasena( String id, String oldPass, String newPass, String repeatNewPass) throws MiExcepcion {
 		  
-		  verificarPassword(newPass, repeatNewPass);
-		  verificarPasswordCambioContrasena(id, oldPass, newPass); //verificamos que la contraseña anterior y la nueva no sean iguales o que la contraseña anteriro sea correcta
+		  verificarPasswordCambioContrasena(id, oldPass, newPass, repeatNewPass); //verificamos que la contraseña anterior y la nueva no sean iguales o que la contraseña anteriro sea correcta
 
 	        Optional<Usuario> presente = repositorioUsuario.findById(id);
 
@@ -213,8 +212,11 @@ public class ServicioUsuario {
 
 	    }
 
+	  //Esta verificacion es para el login y el registrarse
 	    public boolean verificarPassword(String password, String password2) throws MiExcepcion {
 	    	
+	    	 String pass = password.trim();
+	    	 String pass2 = password2.trim();
 	    	 String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$";
 
 	         // Compilar la expresión regular
@@ -222,37 +224,61 @@ public class ServicioUsuario {
 
 	         // Crear un objeto Matcher
 	         Matcher matcher = pattern.matcher(password);
-
+	         
+	         
+	         if (pass.isEmpty()) {
+	        	 throw new MiExcepcion("La constrasena no puede estar vacía");
+	         }
+	         if (pass2.isEmpty()) {
+	        	 throw new MiExcepcion("La constrasena no puede estar vacía");
+			}
 	         // Verificar si la cadena cumple con la expresión regular
 	         if (!matcher.matches()) {
 	        	 throw new MiExcepcion("La contrasena debe tener al menos 8 digitos, una mayuscula, una minuscula y un numero.");
-	         }
-	         if (password.isEmpty()) {
-	        	 throw new MiExcepcion("La constrasena no puede estar vacía");
-	         }
-	         if (password.trim().isEmpty()) {
-	        	 throw new MiExcepcion("La contrasena no puede estar vacía");
-	         }
-	         if (!password.equals(password2)) {
+	         }  
+	         if (!pass.equals(pass2)) {
 	        	 throw new MiExcepcion("Las contrasenas no son iguales");
 	         }
 	         return true;
 	    }
 	    
-	    public boolean verificarPasswordCambioContrasena(String id, String oldPassword, String password) throws MiExcepcion {
+	    //Esta verifiacion es para cambiar el password de clientes, profesionales y admins
+	    public boolean verificarPasswordCambioContrasena(String id,  String oldPassword, String newPassword, String repeatNewPassword) throws MiExcepcion {
 	    	
-	    	String contrasenaNueva = password.trim();
+	    	String contrasenaAnterior = oldPassword.trim();
+	    	String contrasenaNueva = newPassword.trim();
+	    	String repetirNuevaContrasena = repeatNewPassword.trim();
 	    	String contrasenaRegistrada = null;
+	    	String regex = "^(?=.*[A-Z])(?=.*[a-z])(?=.*\\d).{8,}$";
+	    	
+
+	         // Compilar la expresión regular
+	         Pattern pattern = Pattern.compile(regex);
+
+	         // Crear un objeto Matcher
+	         Matcher matcher = pattern.matcher(contrasenaNueva);
+	    	
 	    	Optional<Usuario> presente = repositorioUsuario.findById(id);
 	    	if (presente.isPresent()) {
 				Usuario infoUsuario = presente.get();
 				contrasenaRegistrada = infoUsuario.getContrasena();
 			}
 	    	
+	    	if (contrasenaAnterior.isEmpty()) {
+	    		throw new MiExcepcion("La contrasena anterior no puede estar vacia");
+			}
+	    	if (contrasenaNueva.isEmpty()) {
+	    		throw new MiExcepcion("La nueva contrasena no puede estar vacia");
+			}
+	    	if (repetirNuevaContrasena.isEmpty()) {
+	    		throw new MiExcepcion("Repetir la contrasena no puede estar vacia");	
+			}
 	    	if (!contrasenaRegistrada.equals(oldPassword)) {
 				throw new MiExcepcion("La contrasena anterior es incorrecta");
 			}
-	    	
+	    	 if (!matcher.matches()) {
+	        	 throw new MiExcepcion("La contrasena debe tener al menos 8 digitos, una mayuscula, una minuscula y un numero.");
+	         }  
 	    	if (contrasenaRegistrada.equals(contrasenaNueva)) {
 	    		throw new MiExcepcion("La nueva contrasena no puede ser igual a la enterior");
 			}

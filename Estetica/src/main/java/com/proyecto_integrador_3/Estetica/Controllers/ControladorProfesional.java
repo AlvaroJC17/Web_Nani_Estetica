@@ -30,12 +30,7 @@ public class ControladorProfesional {
 	@Autowired
 	public RepositorioProfesional repositorioProfesional;
 
-	
-	@GetMapping("cambiarContrasenaProfesional")
-	public String cambiarContrasenaProfesional() {
-	return "/pagina_admin/cambiarContrasenaProfesional";	
-	}
-	
+		
 	@GetMapping("/homeProfesional")
 	public String homeProfesional(@RequestParam(name = "email") String email, Model model) {
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
@@ -110,6 +105,47 @@ public class ControladorProfesional {
 			String error = e.getMessage(); // en la exepcion e.getmessage obtenenos el valor de la exepcion personalizada que se de y la enviamos al controlador de misdatosProfesional para ser monstrada en pantalla
 			return "redirect:/misdatosProfesional?email=" + emailAnterior + "&error=" + error; // si se produce alguna exepcion en algun campo enviamos el mail anterior del usuario y un mensaje de error al metodo misdatosProfesional
 		}
+	}
+	
+	//metodo relacionado con actualizarContrasenaProfesional
+	@GetMapping("/cambiarContrasenaProfesional")
+	public String cambiarContrasenaProfesional(
+			@RequestParam(name = "email") String email,
+			@RequestParam(name = "exito", required = false) String exito,
+			@RequestParam(name = "error", required = false) String error,
+			ModelMap model) {
+		
+		System.out.println("EMAIL: " + email);
+		System.out.println("EXITO: " + exito);
+		System.out.println("ERROR: " + error);
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
+		
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("exito", exito);
+		model.addAttribute("error", error);
+		return "/pagina_profesional/cambiarContrasenaProfesional";
+	}
+	
+	//Metodo relacionado con cambiarContrasenaProfesional
+	@PostMapping("actualizarContrasenaProfesional")
+	public String actualizarContrasenaProfesional(
+			@RequestParam(name = "emailProfesional") String emailProfesional, //Esta variable viene de un input oculto de la pag cambiarContrasenaProfesional
+			@RequestParam(name = "idProfesional") String idProfesional, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
+			@RequestParam(name = "oldPass") String oldPass, //A partir de estas viene del formulario
+			@RequestParam(name = "newPass") String newPass,
+			@RequestParam(name = "repeatNewPass") String repeatNewPass,
+			ModelMap model) throws MiExcepcion {
+		
+		String error = null;
+		try {
+			servicioUsuario.modificarContrasena(idProfesional,oldPass, newPass, repeatNewPass);
+			return "/index";
+		} catch (Exception e) {
+			error = e.getMessage();
+			return "redirect:/cambiarContrasenaProfesional?email=" + emailProfesional + "&error=" + error;
+		}
+		
 	}
 
 }

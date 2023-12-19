@@ -2,146 +2,236 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link rel="stylesheet" href="./css/styles.css">
-  <title>CambiarContraseña</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+	<link rel="stylesheet" href="./css/styles.css">
+	<title>CambiarContraseñaAdmin</title>
 </head>
 
-<body class="body-interno">
+<body class="body-interno" th:each="datosAdmin : ${datosAdmin}">
 
-  <!--Boton flotante de ws-->
-  <a href="#" target="_blank" class="boton-flotante">
-    <i class="fa-brands fa-whatsapp"></i>
-  </a>
-  <nav>
-    <div class="navbar navbar1 navbar-expand-md">
-      <div class="container-fluid navbar2">
-        <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
-          aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a href="./homeCliente.html">
-            <div class="imagen-logo ajuste-texto-menu">
-              <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
-            </div>
-          </a>
-        </div>
-      </div>
-    </div>
-  </nav>
+	<!--Boton flotante de ws-->
+	<a href="#" target="_blank" class="boton-flotante">
+		<i class="fa-brands fa-whatsapp"></i>
+	</a>
+	<nav>
+		<div class="navbar navbar1 navbar-expand-md">
+			<div class="container-fluid navbar2">
+				<button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse"
+					data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
+					aria-label="Toggle navigation">
+					<span class="navbar-toggler-icon"></span>
+				</button>
+				<div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+					<a th:href="@{/homeAdmin(email=${datosAdmin.email})}">
+						<div class="imagen-logo ajuste-texto-menu">
+							<img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
+						</div>
+					</a>
+					<ul class="navbar-nav navbar4 container-fluid p-0">
+						<li class="nav-item">
+							<a class="nav-link  py-1 ajuste-texto-menu"
+								th:href="@{/homeAdmin(email=${datosAdmin.email})}">Home</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link py-1 ajuste-texto-menu"
+								th:href="@{/misdatosAdmin(email=${datosAdmin.email})}">Mis Datos</a>
+							<!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
+						</li>
+						<li class="nav-item">
+							<a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente}">Solicitar
+								Turno</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Mis Turnos</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas}">Mis consultas</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link py-1 ajuste-texto-menu"
+								th:href="@{/cambiarContrasenaAdmin(email=${datosAdmin.email})}">Cambiar
+								contraseña</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
+						</li>
+					</ul>
+				</div>
+			</div>
+		</div>
+	</nav>
 
 
-<main class="">
-  <div class="main-interno">
-    <h3>Cambiar contraseña</h3>
-  <div class=" container">
-      <div class="  ft-reserva-turno d-block p-4 ">
-        <div class=" texto-solicitar-turno ">
-          <div>
-          <div class="logo-registrarse text-center  ">
-            <img class="img-logo-final-home" src="./imagenes/Nani-removebg-preview.png" alt="">
-          </div>
-          <p class="fs-3">Por favor ingrese los datos solicitados para cambiar su contraseña</p>
-        </div>
-        </div>
-        <div class=" info-silicitar-turno border-0  ">
-          <form action="">
-            <div>
-              <label for="oldPass" class="form-label mb-0 mt-2  fs-5">Contraseña anterior<span class="text-danger ">*</span></label>
-              <input type="password" class="form-control rounded-0" id="oldPass" placeholder="" required>
-            </div>
-            <div>
-              <label for="newPass" class="form-label mb-0 mt-2  fs-5">Nueva contraseña<span class="text-danger ">*</span></label>
-              <input type="password" class="form-control rounded-0" id="newPass" placeholder="" required>
-            </div>
-            <div>
-              <label for="RepeatNewPass" class="form-label mb-0 mt-2  fs-5">Repetir nueva contraseña<span class="text-danger ">*</span></label>
-              <input type="password" class="form-control rounded-0" id="RepeatNewPass" placeholder="" required>
-            </div>
-            <div class="d-flex justify-content-center mt-4  text-center ">
-            <div class="boton-de-registro text-center me-1 boton-pag-turno ">
-              <a href="#"><button type="submit" class="bn632-hover bn26">Enviar</button></a>
-            </div>
-          </div>
-          </form>
-        </div>
-      </div>
-</div>
-</div>
-  </main>
+	<main class="">
+		<div class="main-interno">
+			<h3>Cambiar contraseña</h3>
+			<div class=" container">
+				<div class="  ft-reserva-turno d-block p-4 ">
+					<div class=" texto-solicitar-turno ">
+						<div>
+							<div class="logo-registrarse text-center  ">
+								<img class="img-logo-final-home" src="./imagenes/Nani-removebg-preview.png" alt="">
+							</div>
+							<p class="fs-3">Por favor ingrese los datos solicitados para cambiar su contraseña</p>
+						</div>
+					</div>
+					<div class=" info-silicitar-turno border-0  ">
+						<form th:action="@{/actualizarContrasenaAdmin}" method="post">
+							<div>
+								<label for="oldPass" class="form-label mb-0 mt-2  fs-5">Contraseña anterior<span
+										class="text-danger ">*</span></label>
+								<input type="password" name="oldPass" class="form-control rounded-0" id="oldPass"
+									placeholder="">
+							</div>
+							<div>
+								<label for="newPass" class="form-label mb-0 mt-2  fs-5">Nueva contraseña<span
+										class="text-danger ">*</span></label>
+								<input type="password" name="newPass" class="form-control rounded-0" id="newPass"
+									placeholder="">
+							</div>
+							<div>
+								<label for="RepeatNewPass" class="form-label mb-0 mt-2  fs-5">Repetir nueva
+									contraseña<span class="text-danger ">*</span></label>
+								<input type="password" name="repeatNewPass" class="form-control rounded-0"
+									id="repeatNewPass" placeholder="">
+							</div>
 
-  <footer class="d-flex row p-0">
-    <div class="divfooter col-lg-4">
-      <p class="mb-3 text-center titulos-footer-general">CONTACTOS</p>
-      <div class="mb-4">
-        <p class="mb-0 text-center"><img class="iconos" src="./imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
-          B1625 Belén de Escobar</p>
-        <p class="text-center mt-0">Provincia de Buenos Aires</p>
-      </div>
-      <div class="mb-4 text-center">
-        <p><img class="iconos" src="./imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
-      </div>
-      <div class="mb-4 text-center">
-        <p><img class="iconos" src="./imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
-      </div>
-      <div class="mb-4 text-center">
-        <p class=""><img class="iconos pe-1" src="./imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
-      </div>
-      <div class="text-center iconos3  pb-2">
-        <div class="">
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-instagram-50 black.png" alt=""></a>
-        </div>
-        <div>
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-tik-tok-50 black.png" alt=""></a>
-        </div>
-        <div>
-          <a class="link" href="#"> <img class=" iconos2" src="./imagenes/icons8-facebook-50 black.png" alt=""></a>
-        </div>
-        <div>
-          <a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-youtube-play-50 black.png" alt=""></a>
-        </div>
-      </div>
-    </div>
-  
-    <div class="divfooter col-lg-4">
-      <p class="text-center titulos-footer-general">COMENTARIOS</p>
-      <div class="mb-3">
-        <label for="exampleFormControlInput21" class="form-label texto-label">NOMBRE</label>
-        <input type="text" class="form-control footer-interno" id="exampleFormControlInput21" placeholder="Nombre completo">
-      </div>
-      <div class="mb-3">
-        <label for="exampleFormControlInput22" class="form-label texto-label">TELEFONO</label>
-        <input type="text" class="form-control footer-interno" id="exampleFormControlInput22" placeholder="11 - 1111 - 1111">
-      </div>
-      <div class="mb-3">
-        <label for="exampleFormControlInput23" class="form-label texto-label">EMAIL</label>
-        <input type="email" class="form-control footer-interno" id="exampleFormControlInput23" placeholder="name@example.com">
-      </div>
-      <div class="mb-2">
-        <label for="exampleFormControlTextarea24" class="form-label texto-label">COMENTARIO</label>
-        <textarea class="form-control areatexto" id="exampleFormControlTextarea24" rows="3"></textarea>
-      </div>
-    </div>
-  
-    <div class="divfooter col-lg-4">
-      <p class=" text-center mb-4 titulos-footer-general">UBICACIÓN</p>
-      <iframe class="w-100 rounded rounded-2"
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4400.61749400772!2d-58.79359358225364!3d-34.353920874961496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61b6066f6bc1%3A0xdc195365f6a5a98d!2sPablo%20Podesta%20451%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1697767903353!5m2!1ses-419!2sar"
-        width="600" height="303" style="border:0;" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
-    </div>
-  </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous"></script>
+
+							<input type="hidden" th:value="${datosAdmin.id}" class="form-control"
+								name="idAdmin" id="idAdmin">
+							<input type="hidden" th:value="${datosAdmin.email}" class="form-control"
+								name="emailAdmin" id="emailAdmin">
+
+							<div th:if="${exito}" class="fs-5 mt-5 text-success fw-bold text-center">
+								<p th:text="${exito}"></p>
+							</div>
+							<div th:if="${error}" class="fs-5 mt-5 text-danger fw-bold text-center">
+								<p th:text="${error}"></p>
+							</div>
+
+							<div class="d-flex justify-content-center mt-4  text-center ">
+								<div class="boton-de-registro text-center me-1 boton-pag-turno ">
+									<button type="button" class="bn632-hover bn26" data-bs-toggle="modal"
+										data-bs-target="#staticBackdrop">Enviar</button>
+								</div>
+
+								<!-- ModalCambiarContraseña -->
+								<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static"
+									data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+									aria-hidden="true">
+									<div class="modal-dialog">
+										<div class="modal-content">
+											<div class="modal-header">
+												<h1 class="modal-title fs-4" id="staticBackdropLabel">¿Estas seguro?
+												</h1>
+												<button type="button" class="btn-close" data-bs-dismiss="modal"
+													aria-label="Close"></button>
+											</div>
+											<div class="modal-body">
+												Si aceptas cambiar tu contraseña, tu sesion se cerrara autimaticamnte y
+												deberas iniciar sesion
+												nuevamenta con la nueva contraseña
+											</div>
+											<div class="modal-footer">
+												<button type="button" class="btn btn-secondary"
+													data-bs-dismiss="modal">Cerrar</button>
+												<a href="">
+													<button type="submit" class="btn btn-primary">Aceptar</button>
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer class="d-flex row p-0">
+		<div class="divfooter col-lg-4">
+			<p class="mb-3 text-center titulos-footer-general">CONTACTOS</p>
+			<div class="mb-4">
+				<p class="mb-0 text-center"><img class="iconos" src="./imagenes/icons8-gps-50.png" alt="">Pablo Podesta
+					451,
+					B1625 Belén de Escobar</p>
+				<p class="text-center mt-0">Provincia de Buenos Aires</p>
+			</div>
+			<div class="mb-4 text-center">
+				<p><img class="iconos" src="./imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
+			</div>
+			<div class="mb-4 text-center">
+				<p><img class="iconos" src="./imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
+			</div>
+			<div class="mb-4 text-center">
+				<p class=""><img class="iconos pe-1" src="./imagenes/icons8-correo-50.png"
+						alt="">estoesunaprueba@gmail.com</p>
+			</div>
+			<div class="text-center iconos3  pb-2">
+				<div class="">
+					<a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-instagram-50 black.png"
+							alt=""></a>
+				</div>
+				<div>
+					<a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-tik-tok-50 black.png"
+							alt=""></a>
+				</div>
+				<div>
+					<a class="link" href="#"> <img class=" iconos2" src="./imagenes/icons8-facebook-50 black.png"
+							alt=""></a>
+				</div>
+				<div>
+					<a class="link" href="#"><img class=" iconos2" src="./imagenes/icons8-youtube-play-50 black.png"
+							alt=""></a>
+				</div>
+			</div>
+		</div>
+
+		<div class="divfooter col-lg-4">
+			<p class="text-center titulos-footer-general">COMENTARIOS</p>
+			<div class="mb-3">
+				<label for="exampleFormControlInput21" class="form-label texto-label">NOMBRE</label>
+				<input type="text" class="form-control footer-interno" id="exampleFormControlInput21"
+					placeholder="Nombre completo">
+			</div>
+			<div class="mb-3">
+				<label for="exampleFormControlInput22" class="form-label texto-label">TELEFONO</label>
+				<input type="text" class="form-control footer-interno" id="exampleFormControlInput22"
+					placeholder="11 - 1111 - 1111">
+			</div>
+			<div class="mb-3">
+				<label for="exampleFormControlInput23" class="form-label texto-label">EMAIL</label>
+				<input type="email" class="form-control footer-interno" id="exampleFormControlInput23"
+					placeholder="name@example.com">
+			</div>
+			<div class="mb-2">
+				<label for="exampleFormControlTextarea24" class="form-label texto-label">COMENTARIO</label>
+				<textarea class="form-control areatexto" id="exampleFormControlTextarea24" rows="3"></textarea>
+			</div>
+		</div>
+
+		<div class="divfooter col-lg-4">
+			<p class=" text-center mb-4 titulos-footer-general">UBICACIÓN</p>
+			<iframe class="w-100 rounded rounded-2"
+				src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4400.61749400772!2d-58.79359358225364!3d-34.353920874961496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61b6066f6bc1%3A0xdc195365f6a5a98d!2sPablo%20Podesta%20451%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1697767903353!5m2!1ses-419!2sar"
+				width="600" height="303" style="border:0;" allowfullscreen="" loading="lazy"
+				referrerpolicy="no-referrer-when-downgrade">
+			</iframe>
+		</div>
+	</footer>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+		crossorigin="anonymous"></script>
 </body>
 
 </html>
