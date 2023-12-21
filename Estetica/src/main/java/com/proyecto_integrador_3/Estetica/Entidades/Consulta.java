@@ -1,5 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
+import java.io.Serializable;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table
-public class Consulta {
+public class Consulta implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID)

@@ -1,6 +1,8 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
 
+import java.io.Serializable;
+
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 
 import jakarta.persistence.CascadeType;
@@ -21,7 +23,7 @@ import jakarta.persistence.Table;
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED) // Esta etiqueta es la que permite crear tablas separadas en la base de datos
 @Table(name = "Usuario")
-public class Usuario {
+public class Usuario implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.UUID) // genera valores alfanumericos como id

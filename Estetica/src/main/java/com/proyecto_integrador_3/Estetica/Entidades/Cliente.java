@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
@@ -16,7 +17,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Cliente")
-public class Cliente extends Persona {
+public class Cliente extends Persona implements Serializable {
 
 	
 

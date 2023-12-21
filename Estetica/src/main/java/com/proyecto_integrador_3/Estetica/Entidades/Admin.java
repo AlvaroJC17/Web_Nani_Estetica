@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
@@ -8,7 +9,7 @@ import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import jakarta.persistence.Entity;
 
 @Entity
-public class Admin extends Persona {
+public class Admin extends Persona implements Serializable {
 
 	public Admin() {
 		

@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
@@ -26,7 +27,7 @@ import jakarta.persistence.TemporalType;
 @Entity
 @Table(name = "Persona")
 @Inheritance(strategy = InheritanceType.JOINED)
-public class Persona extends Usuario{
+public class Persona extends Usuario implements Serializable{
 
 	@Column(name = "dni")
     protected String dni;

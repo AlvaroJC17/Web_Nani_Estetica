@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
@@ -19,7 +20,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Profesional")
-public class Profesional extends Persona {
+public class Profesional extends Persona implements Serializable {
 
 	@Column(name = "matricula")
 	private String matricula;
