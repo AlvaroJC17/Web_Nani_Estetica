@@ -31,16 +31,16 @@
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin(email=${datosAdmin.email})}">Home</a> <!--Redirecciona al metodo homeAdmin enviando el mail con el name mail-->
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin(email=${datosAdmin.email})}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin(email=${datosAdmin.email})}">Mis datos</a> <!--Redirecciona al metodo misdatosAdmin enviando el mail con el name mail-->
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin(email=${datosAdmin.email})}">Mis datos</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaAdmin}">Cambiar contraseña</a>
+             <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaAdmin(email=${datosAdmin.email})}">Cambiar contraseña</a>
             </li> 
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
             </li>
           </ul>
         </div>
@@ -110,7 +110,7 @@
           <a href="#"><button class="bn632-hover bn26">Guardar</button></a>
         </div>
         <div class="text-center mt-2 ">
-          <a class="m-2 fs-5 " th:href="@{/cambiarContrasenaAdmin}">¿Quieres cambiar tu contraseña?</a>
+          <a class="m-2 fs-5 " th:href="@{/cambiarContrasenaAdmin(email=${datosAdmin.email})}">¿Quieres cambiar tu contraseña?</a>
         </div>
         </form>
       </div>

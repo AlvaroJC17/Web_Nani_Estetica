@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,17 +56,17 @@ public class ControladorPagina {
 	 @PostMapping("/registro")
 	    public String registroUsuario(
 	    		@RequestParam(name = "email") String email,
+	    		@RequestParam(name = "fechaNacimiento", required = false) String fechaNacimiento, // no lo colocamos requerido para poder manejar la excepcion
 	    		@RequestParam(name = "contrasena") String password,
 	    		@RequestParam(name = "contrasena2") String password2,
 	    		ModelMap modelo) throws MiExcepcion {
 
 		 try {
-	        	servicioUsuario.guardarUsuario(email, password, password2);
+	        	servicioUsuario.guardarUsuario(email, password, password2, fechaNacimiento );
 	        	modelo.addAttribute("exito", "¡Gracias por registrarte!, ahora inicia sesión y completa "
 	        			+ "tus datos personales para poder usar tu cuenta");
 	        	return "registrarse";
 	        } catch (MiExcepcion e) {
-	            System.out.println(e.getMessage());
 	            modelo.put("error", e.getMessage());
 	            return "registrarse";
 	        }
@@ -86,6 +87,7 @@ public class ControladorPagina {
 		         Usuario usuario = usuarioOptional.get(); //con el metodo get, asociamos al usuario encontrado a la variable usuario y asi poder acceder a sus atributos
 		         String emailUsuario = usuario.getEmail();
 		         String password = usuario.getContrasena();
+		         Date fechaNacimiento = usuario.getFechaNacimiento();
 		         Boolean activo = usuario.getActivo();
 		         Boolean validarForm = usuario.getValidacionForm();
 		         Rol rol = usuario.getRol();

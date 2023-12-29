@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
@@ -88,11 +89,37 @@ public class ControladorProfesional {
 		
 		//Buscamos mediante el id el mail anterior del admin y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
 		// entonces usamos este mail anterior para poder pasarlo al controlador de misdatosClientes y poder visualizar los datos del cliente
+		// Tambien buscamos los valores previamente guardados en la base de datos para poder compararlos con los nuevos
 		String emailAnterior = null;
+		String domicilioAnterior = null;
+		Sexo sexoAnterior = null;
+		String nuevoSexo = null;
+		Integer telefonoAnterior = null;
+		
 		Optional<Profesional> identificarProfesional = repositorioProfesional.findById(idProfesional);
 		if (identificarProfesional.isPresent()) {
-			Profesional emailProfesional = identificarProfesional.get();
-			emailAnterior = emailProfesional.getEmail();
+			Profesional datosAnteriorProfesional = identificarProfesional.get();
+			emailAnterior = datosAnteriorProfesional.getEmail();
+			domicilioAnterior = datosAnteriorProfesional.getDomicilio();
+			sexoAnterior = datosAnteriorProfesional.getSexo();
+			nuevoSexo = sexoAnterior.toString();
+			telefonoAnterior = datosAnteriorProfesional.getTelefono();
+			
+		}
+		
+//		System.out.println("EMAIL: " + email);
+//		System.out.println("EMAIL ANTERIOR: " + emailAnterior);
+//		System.out.println("DOMICILIO: " + domicilio);
+//		System.out.println("DOMICILIO ANTERIOR: " + domicilioAnterior);
+//		System.out.println("SEXO: " + sexo);
+//		System.out.println("SEXO ANTERIOR: " + nuevoSexo);
+//		System.out.println("TELEFONO: " + telefono);
+//		System.out.println("TELEFONO ANTERIOR: " + telefonoAnterior);
+		
+		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
+		//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
+		if (emailAnterior.equals(email) && domicilioAnterior.equals(domicilio) && nuevoSexo.equals(sexo) && telefonoAnterior.equals(telefono)) {
+			return "redirect:/misdatosProfesional?email=" + email;
 		}
 		
 		try {

@@ -12,7 +12,7 @@
   <title>Reserva de turno</title>
 </head>
 
-<body class="body-interno">
+<body class="body-interno" th:each="datosCliente : ${datosCliente}">
 
   <!--Boton flotante de ws-->
   <a href="#" target="_blank" class="boton-flotante">
@@ -26,35 +26,39 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a th:href="@{/homeCliente}">
+          <a th:href="@{/homeCliente(email=${datosCliente.email})}">
             <div class="imagen-logo ajuste-texto-menu">
               <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
-            <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatos}">Mis Datos</a>
+			<li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/homeCliente(email=${datosCliente.email})}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente}">Solicitar Turno</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis datos</a> <!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Mis Turnos</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Solicitar turno</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misdatos}">Mis consultas</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Mis turnos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente}">Cambiar contraseña</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas}">Mis consultas</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
+            </li> 
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
             </li>
           </ul>
         </div>
       </div>
     </div>
   </nav>
+
 
 
 <main class="">

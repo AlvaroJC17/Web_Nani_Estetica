@@ -46,17 +46,36 @@ public class ControladorCliente {
 	public ServicioUsuario servicioUsuario;
 	
 	
-	@GetMapping("reservaDeTurnoCliente")
-	public String reservaDeTurnoCliente() {
-	return "/pagina_cliente/reservaDeTurnoCliente";	
+	@GetMapping("/reservaDeTurnoCliente")
+	public String reservaDeTurnoCliente(
+			@RequestParam(name = "email", required = false) String email,
+			@RequestParam(name = "idCliente") String idCliente,
+			ModelMap model) {
+		
+		Boolean usoDeFormulario = null;
+		Optional<Cliente> formularioDeDatos = repositorioCliente.findById(idCliente);
+		if (formularioDeDatos.isPresent()) {
+			Cliente validarUsoFormulario = formularioDeDatos.get();
+			usoDeFormulario = validarUsoFormulario.getFomularioDatos();
+		}
+		
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+			
+		if (usoDeFormulario) {
+			model.addAttribute("datosCliente", datosCliente);
+			return "/pagina_cliente/reservaDeTurnoCliente";	
+		}else {
+			model.addAttribute("datosCliente", datosCliente);
+			return "/pagina_cliente/formularioPreguntas";
+		}
 	}
-	
-	@GetMapping("misturnos")
+			
+	@GetMapping("/misturnos")
 	public String misturnos() {
 	return "/pagina_cliente/misturnos";	
 	}
 	
-	@GetMapping("misconsultas")
+	@GetMapping("/misconsultas")
 	public String misconsultas() {
 	return "/pagina_cliente/misconsultas";	
 	}
@@ -68,10 +87,6 @@ public class ControladorCliente {
 			@RequestParam(name = "error", required = false) String error,
 			ModelMap model) {
 		
-		System.out.println("EMAIL: " + email);
-		System.out.println("EXITO: " + exito);
-		System.out.println("ERROR: " + error);
-		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		
 		model.addAttribute("datosCliente", datosCliente);
@@ -80,8 +95,14 @@ public class ControladorCliente {
 		return "/pagina_cliente/cambiarContrasenaCliente";
 	}
 		
-	@GetMapping("completarDatosCliente")
-	public String completarDatos() {
+	@GetMapping("/completarDatosCliente")
+	public String completarDatos(
+			@RequestParam(name = "email") String emailUsuario,
+			@RequestParam(name = "error", required = false) String error,
+			ModelMap modelo) {
+		System.out.println("EMAILLLLL DENTRO: " + emailUsuario);
+		modelo.addAttribute("emailUsuario", emailUsuario);
+		modelo.addAttribute("error", error);
 		return "/pagina_cliente/completarDatosCliente";
 	}
 	
@@ -115,7 +136,6 @@ public class ControladorCliente {
 			@RequestParam(name = "apellido") String apellido,
 			@RequestParam(name = "numeroDoc") String dni,
 			@RequestParam(name = "sexo") String sexo,
-			@RequestParam(name = "nacimiento") String fechaNacimiento,
 			@RequestParam(name = "telefono", required = false) Integer telefono,
 			@RequestParam(name = "direccion") String direccion,
 			@RequestParam(name = "ocupacion") String ocupacion,
@@ -123,16 +143,18 @@ public class ControladorCliente {
 			ModelMap model
 			) throws MiExcepcion {
 		
+		System.out.println("EMAILLLLL: " + emailUsuario);
 		try {
 			
 			//Guardamos los datos del formulario que lleno el nuevo cliente
-			servicioCliente.registrarCliente(emailUsuario, dni, nombre, apellido, ocupacion, direccion, telefono, fechaNacimiento, sexo);
+			servicioCliente.registrarCliente(emailUsuario, dni, nombre, apellido, ocupacion, direccion, telefono, sexo);
+			return "redirect:/homeCliente?email=" + emailUsuario; //redirecionamos al metodo homeCliente enviando la varibale mail
 				
 		} catch (MiExcepcion e) {
-			model.put("error", e.getMessage());
-			return "pagina_cliente/completarDatosCliente";
+			String error = e.getMessage();
+			//return "pagina_cliente/completarDatosCliente";
+			return "redirect:/completarDatosCliente?email=" + emailUsuario + "&error=" + error;
 		}
-		return "redirect:/homeCliente?email=" + emailUsuario; //redirecionamos al metodo homeCliente enviando la varibale mail
 	}
 
 	
@@ -148,11 +170,29 @@ public class ControladorCliente {
 		
 		//Buscamos mediante el id el mail anterior del cliente y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
 		// entonces usamos este mail anterior para poder pasarlo al controlador de misdatosClientes y poder visualizar los datos del cliente
+		// Tambien buscamos los valores previamente guardados en la base de datos para poder compararlos con los nuevos
+		String ocupacionAnterior = null;
 		String emailAnterior = null;
+		String domicilioAnterior = null;
+		Sexo sexoAnterior = null;
+		String nuevoSexo = null;
+		Integer telefonoAnterior = null;
+		
 		Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
 		if (identificarCliente.isPresent()) {
-			Cliente emailCliente = identificarCliente.get();
-			emailAnterior = emailCliente.getEmail();
+			Cliente datosAnteriorCliente = identificarCliente.get();
+			emailAnterior = datosAnteriorCliente.getEmail();
+			ocupacionAnterior = datosAnteriorCliente.getOcupacion();
+			domicilioAnterior = datosAnteriorCliente.getDomicilio();
+			sexoAnterior = datosAnteriorCliente.getSexo();
+			nuevoSexo = sexoAnterior.toString();
+			telefonoAnterior = datosAnteriorCliente.getTelefono();
+		}
+		
+		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
+				//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
+		if (ocupacionAnterior.equals(ocupacion) && emailAnterior.equals(email) && domicilioAnterior.equals(domicilio) && nuevoSexo.equals(sexo) && telefonoAnterior.equals(telefono)) {
+			return "redirect:/misdatosCliente?email=" + email;
 		}
 		
 		try {
@@ -190,6 +230,7 @@ public class ControladorCliente {
 			
 			
 			
+	
 			
 				
 		

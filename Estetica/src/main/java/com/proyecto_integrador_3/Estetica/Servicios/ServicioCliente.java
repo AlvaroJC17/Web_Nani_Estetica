@@ -1,6 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
 import static java.lang.Boolean.TRUE;
+import static java.lang.Boolean.FALSE;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,24 +40,18 @@ public class ServicioCliente {
 	
 	@Transactional
 	public void registrarCliente(String email, String dni, String nombre, String apellido, String ocupacion,
-			String direccion, Integer telefono, String fechaNacimiento, String sexo) throws MiExcepcion {
+			String direccion, Integer telefono, String sexo) throws MiExcepcion {
 		
-		validarDatosCliente(nombre, apellido, dni, sexo, fechaNacimiento, telefono, direccion, ocupacion);
+		validarDatosCliente(nombre, apellido, dni, sexo, telefono, direccion, ocupacion);
 
 		Optional <Usuario> datosUsuario = servicioUsuario.buscarPorEmailOptional(email);
 		if (datosUsuario.isPresent()) {
 			Usuario datosCliente = datosUsuario.get();
 		
+			//Pasamos la fecha de nacimiento de String a un objeto tipo Date
 			Sexo nuevoSexo = null;
 			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
 			
-			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-			Date fecha = null;
-			try {
-				fecha = formato.parse(fechaNacimiento);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}
 			
 			Cliente nuevo_cliente = new Cliente();
 			nuevo_cliente.setEmail(email);
@@ -64,12 +59,13 @@ public class ServicioCliente {
 			nuevo_cliente.setRol(datosCliente.getRol());
 			nuevo_cliente.setActivo(datosCliente.getActivo());
 			nuevo_cliente.setValidacionForm(TRUE);
+			nuevo_cliente.setFomularioDatos(FALSE);
 			nuevo_cliente.setDni(dni);
 			nuevo_cliente.setNombre(nombre);
 			nuevo_cliente.setApellido(apellido);
 			nuevo_cliente.setTelefono(telefono);
 			nuevo_cliente.setDomicilio(direccion);
-			nuevo_cliente.setFechaNacimiento(fecha);
+			nuevo_cliente.setFechaNacimiento(datosCliente.getFechaNacimiento());
 			nuevo_cliente.setSexo(nuevoSexo);
 			nuevo_cliente.setOcupacion(ocupacion);
 			repositorioCliente.save(nuevo_cliente);
@@ -105,7 +101,8 @@ public class ServicioCliente {
         		
 
 	 public void validarDatosCliente(String nombre, String apellido, String dni,  String sexo,
-			 String fechaNacimiento, Integer telefono, String direccion, String ocupacion) throws MiExcepcion {
+			 Integer telefono, String direccion, String ocupacion) throws MiExcepcion {
+		 
 		 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
 			 throw new MiExcepcion("El nombre no puede estar vacio");
 		 }
@@ -120,9 +117,6 @@ public class ServicioCliente {
 		 }
 		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
 			 throw new MiExcepcion("El sexo no puede estar vacio");
-		 }
-		 if (fechaNacimiento == null || fechaNacimiento.toString().isEmpty() || fechaNacimiento.trim().isEmpty()) {
-			 throw new MiExcepcion("La fecha de nacimiento no puede estar vacia");
 		 }
 		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
 			 throw new MiExcepcion("EL telefono no puede estar vacio");

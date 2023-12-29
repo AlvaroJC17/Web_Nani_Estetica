@@ -48,7 +48,7 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, String>  {
 	public List<Usuario> listarUsuarios();
 
 	//Metodo para mostrar una lista de todos los campos de usuario y persona jusntos
-	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id")
+	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id ORDER BY u.rol ASC")
 	List<Usuario> joinUsuarioPersona();
 	
 	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.id = :id")

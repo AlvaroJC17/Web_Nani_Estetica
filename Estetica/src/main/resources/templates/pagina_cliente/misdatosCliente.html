@@ -34,13 +34,13 @@
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeCliente(email=${datosCliente.email})}">Home</a> <!--Le mando el mail al metodo homeCliente para que cargue con todo los datos-->
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis Datos</a> <!--Le mando el mail al metodo misdatosCLiente para que cargue con todo los datos-->
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis datos</a> <!--Le mando el mail al metodo misdatosCLiente para que cargue con todo los datos-->
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente}">Solicitar Turno</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Solicitar turno</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Mis Turnos</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Mis turnos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misdatos}">Mis consultas</a>
@@ -49,7 +49,7 @@
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
             </li>
           </ul>
         </div>

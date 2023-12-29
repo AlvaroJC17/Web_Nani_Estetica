@@ -36,13 +36,13 @@
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/homeCliente(email=${datosCliente.email})}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis Datos</a> <!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis datos</a> <!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente}">Solicitar Turno</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Solicitar turno</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Mis Turnos</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Mis turnos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas}">Mis consultas</a>
@@ -51,7 +51,7 @@
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
             </li> 
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
             </li>
           </ul>
         </div>
@@ -72,7 +72,7 @@
         </a>
       </div>
       <div class=" ft ">
-        <a th:href="@{/reservaDeTurnoCliente}">
+        <a th:href="@{/reservaDeTurnoCliente(email=${datosCliente.email}, idCliente=${datosCliente.id})}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="../imagenes/icons8-más-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Solicitar turno</p>

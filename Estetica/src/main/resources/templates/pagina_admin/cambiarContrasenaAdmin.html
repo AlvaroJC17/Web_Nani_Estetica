@@ -33,34 +33,19 @@
 						</div>
 					</a>
 					<ul class="navbar-nav navbar4 container-fluid p-0">
-						<li class="nav-item">
-							<a class="nav-link  py-1 ajuste-texto-menu"
-								th:href="@{/homeAdmin(email=${datosAdmin.email})}">Home</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link py-1 ajuste-texto-menu"
-								th:href="@{/misdatosAdmin(email=${datosAdmin.email})}">Mis Datos</a>
-							<!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
-						</li>
-						<li class="nav-item">
-							<a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente}">Solicitar
-								Turno</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Mis Turnos</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas}">Mis consultas</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link py-1 ajuste-texto-menu"
-								th:href="@{/cambiarContrasenaAdmin(email=${datosAdmin.email})}">Cambiar
-								contraseña</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
-						</li>
-					</ul>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeAdmin(email=${datosAdmin.email})}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosAdmin(email=${datosAdmin.email})}">Mis datos</a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaAdmin(email=${datosAdmin.email})}">Cambiar contraseña</a>
+            </li> 
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
+            </li>
+          </ul>
 				</div>
 			</div>
 		</div>

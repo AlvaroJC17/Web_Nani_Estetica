@@ -164,6 +164,8 @@ public class ServicioAdmin {
 	 
 	 
 	 public void validarActualizacionDeDatosAdmin(String ocupacion, String domicilio, String sexo, Integer telefono) throws MiExcepcion {
+		 
+		 
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
 			 throw new MiExcepcion("La ocupacion no puede estar vacia");
 		 }

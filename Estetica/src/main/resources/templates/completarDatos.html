@@ -93,8 +93,8 @@
 
           <div class="mb-3 row">
             <div class="col-md-6">
-              <label for="nacimiento" class="form-label texto-label">Fecha nacimiento<span class="text-danger fw-bold">*</span></label>
-              <input type="date" class="form-control" name="nacimiento" id="nacimiento" placeholder="" required>
+              <label for="ocupacion" class="form-label texto-label">Ocupación<span class="text-danger fw-bold">*</span></label>
+              <input type="text" class="form-control" name="ocupacion" id="ocupacion" placeholder="" required>
             </div>
           <div class="col-md-6">
               <label for="telefono" class="form-label texto-label">Teléfono<span class="text-danger fw-bold">*</span></label>
@@ -106,10 +106,7 @@
               <label for="direccion" class="form-label texto-label">Dirección<span class="text-danger fw-bold">*</span></label>
               <input type="text" class="form-control" name="direccion" id="direccion" placeholder="" required>
             </div>  
-            <div class="col-md-6">
-              <label for="ocupacion" class="form-label texto-label">Ocupación<span class="text-danger fw-bold">*</span></label>
-              <input type="text" class="form-control" name="ocupacion" id="ocupacion" placeholder="" required>
-            </div>
+            
              <div  class="fs-5 mt-2 text-center"> <!--La variable emailUsuario viene del formulario login y del controlador loginUsuario-->
 	          	<input type="hidden" th:value="${emailUsuario}" class="form-control" name="emailUsuario" id="emailUsuario" placeholder="">
 	    	  </div>

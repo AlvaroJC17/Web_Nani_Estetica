@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <link rel="stylesheet" href="../css/styles.css">
+        <title>Formulario</title>
+      </head>
+<body class="body-misdatos" th:each="datosCliente : ${datosCliente}">
+
+  <a href="#" target="_blank" class="boton-flotante">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+  <nav>
+    <div class="navbar navbar1 navbar-expand-md">
+      <div class="container-fluid navbar2">
+        <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+          aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+          <a th:href="@{/homeCliente(email=${datosCliente.email})}">
+            <div class="imagen-logo ajuste-texto-menu">
+              <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
+            </div>
+          </a>
+          <ul class="navbar-nav navbar4 container-fluid p-0">
+			<li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/homeCliente(email=${datosCliente.email})}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis datos</a> <!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/reservaDeTurnoCliente(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Solicitar turno</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Mis turnos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas}">Mis consultas</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
+            </li> 
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+<main class="main-interno">
+    <h3 class="">Formulario</h3>
+    <section class=" section-misdatosS">
+      <p class="text-center fs-4">Antes de seleccionar tu turno te pedimos por favor que completes estos datos por unica vez para ahorrar
+       tiempo a la hora de tu consulta y brindarte un servicio mas personalizado.
+      </p>
+      <div class="container-fluid form-misdatos ">
+        <form action="action">
+         
+          <div class="mb-3 row">
+            <div class="col-md-6">
+              <label for="fuma" class="form-label texto-label">¿Fumas cigarillos?</label>
+              <select id="fuma" class="form-select rounded-0 " aria-label="Default select example">
+              <option selected>Seleccione</option>
+              <option value="1">SI</option>
+              <option value="2">NO</option>
+            </select>
+          </div>
+          <div class="col-md-6">
+            <label for="drogas" class="form-label texto-label">¿Usas algun tipo de droga?</label>
+            <select id="drogas" class="form-select rounded-0 " aria-label="Default select example">
+            <option selected>Seleccione</option>
+            <option value="1">SI</option>
+            <option value="2">NO</option>
+          </select>
+        </div>
+      </div>
+      <div class="mb-3 row">
+        <div class="col-md-6">
+          <label for="alcohol" class="form-label texto-label">¿Consumes bebidas alcoholicas</label>
+          <select id="alcohol" class="form-select rounded-0 " aria-label="Default select example">
+          <option selected>Seleccione</option>
+          <option value="1">Regularmente</option>
+          <option value="2">Muy pocas veces</option>
+          <option value="3">No bebo alcohol</option>
+        </select>
+      </div>
+      <div class="col-md-6">
+        <label for="deporte" class="form-label texto-label">¿Practicas algun deporte?</label>
+        <select id="deporte" class="form-select rounded-0 " aria-label="Default select example">
+        <option selected>Seleccione</option>
+        <option value="1">SI</option>
+        <option value="2">NO</option>
+      </select>
+    </div>
+  </div>
+  <div class="mb-3 row">
+    <div class="col-md-6">
+      <label for="ejercicio" class="form-label texto-label">¿Cuantas veces a la semana haces ejercicio?</label>
+      <select id="ejercicio" class="form-select rounded-0 " aria-label="Default select example">
+      <option selected>Seleccione</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">Mas de 3 veces</option>
+      <option value="5">No hago ejercicios</option>
+    </select>
+  </div>
+  <div class="col-md-6">
+    <label for="sol" class="form-label texto-label">¿En tu dia a dia te expones mucho al sol?</label>
+    <select id="sol" class="form-select rounded-0 " aria-label="Default select example">
+    <option selected>Seleccione</option>
+    <option value="1">SI</option>
+    <option value="2">NO</option>
+  </select>
+</div>
+</div>
+<div class="mb-3 row">
+  <div class="col-md-6">
+    <label for="medicamento" class="form-label texto-label">¿Tomas algun medicamento de forma regular?</label>
+    <select id="medicamento" class="form-select rounded-0 " aria-label="Default select example">
+    <option selected>Seleccione</option>
+    <option value="1">SI</option>
+    <option value="2">NO</option>
+  </select>
+</div>
+<div class="col-md-6">
+  <label for="cual_medicamento" class="form-label texto-label">¿Cual medicamento?</label>
+  <input type="text" class="form-control" id="cual_medicamento" placeholder="Nombre del medicamento">
+</div>
+</div>
+
+        <div class="mb-3 row">
+          <div class="col-md-6">
+            <label for="sexo" class="form-label texto-label">Sexo</label>
+            <select id="sexo" class="form-select rounded-0 " aria-label="Default select example">
+            <option selected>Seleccione</option>
+            <option value="1">Femenino</option>
+            <option value="2">Masculino</option>
+            <option value="3">Otro</option>
+          </select>
+        </div>
+        <div class="col-md-6">
+          <label for="sexo" class="form-label texto-label">Sexo</label>
+          <select id="sexo" class="form-select rounded-0 " aria-label="Default select example">
+          <option selected>Seleccione</option>
+          <option value="1">Femenino</option>
+          <option value="2">Masculino</option>
+          <option value="3">Otro</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="mb-3 row">
+      <div class="col-md-6">
+        <label for="sexo" class="form-label texto-label">Sexo</label>
+        <select id="sexo" class="form-select rounded-0 " aria-label="Default select example">
+        <option selected>Seleccione</option>
+        <option value="1">Femenino</option>
+        <option value="2">Masculino</option>
+        <option value="3">Otro</option>
+      </select>
+    </div>
+    <div class="col-md-6">
+      <label for="sexo" class="form-label texto-label">Sexo</label>
+      <select id="sexo" class="form-select rounded-0 " aria-label="Default select example">
+      <option selected>Seleccione</option>
+      <option value="1">Femenino</option>
+      <option value="2">Masculino</option>
+      <option value="3">Otro</option>
+    </select>
+  </div>
+</div>
+
+<div class="mb-3 row">
+  <div class="col-md-6">
+    <label for="sexo" class="form-label texto-label">Sexo</label>
+    <select id="sexo" class="form-select rounded-0 " aria-label="Default select example">
+    <option selected>Seleccione</option>
+    <option value="1">Femenino</option>
+    <option value="2">Masculino</option>
+    <option value="3">Otro</option>
+  </select>
+</div>
+<div class="col-md-6">
+  <label for="sexo" class="form-label texto-label">Sexo</label>
+  <select id="sexo" class="form-select rounded-0 " aria-label="Default select example">
+  <option selected>Seleccione</option>
+  <option value="1">Femenino</option>
+  <option value="2">Masculino</option>
+  <option value="3">Otro</option>
+</select>
+</div>
+</div>
+
+<div class="mb-3 row">
+  <div class="col-md-6">
+    <label for="sexo" class="form-label texto-label">Sexo</label>
+    <select id="sexo" class="form-select rounded-0 " aria-label="Default select example">
+    <option selected>Seleccione</option>
+    <option value="1">Femenino</option>
+    <option value="2">Masculino</option>
+    <option value="3">Otro</option>
+  </select>
+</div>
+<div class="col-md-6">
+  <label for="sexo" class="form-label texto-label">Sexo</label>
+  <select id="sexo" class="form-select rounded-0 " aria-label="Default select example">
+  <option selected>Seleccione</option>
+  <option value="1">Femenino</option>
+  <option value="2">Masculino</option>
+  <option value="3">Otro</option>
+</select>
+</div>
+</div>
+
+
+        <div class="boton-de-registro mt-4  text-center">
+          <a href="#"><button class="bn632-hover bn26">Guardar</button></a>
+        </div>
+        <div class="text-center mt-2 ">
+          <a class="m-2 " href="">Cambiar contraseña</a>
+        </div>
+        </form>
+      </div>
+    </section>
+  </main>
+
+    
+  <footer class="d-flex row p-0">
+    <div class="divfooter col-lg-4">
+      <p class="mb-3 text-center titulos-footer-general">CONTACTOS</p>
+      <div class="mb-4">
+        <p class="mb-0 text-center"><img class="iconos" src="../imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
+          B1625 Belén de Escobar</p>
+        <p class="text-center mt-0">Provincia de Buenos Aires</p>
+      </div>
+      <div class="mb-4 text-center">
+        <p><img class="iconos" src="../imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
+      </div>
+      <div class="mb-4 text-center">
+        <p><img class="iconos" src="../imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
+      </div>
+      <div class="mb-4 text-center">
+        <p class=""><img class="iconos pe-1" src="../imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+      </div>
+      <div class="text-center iconos3  pb-2">
+        <div class="">
+          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-instagram-50 black.png" alt=""></a>
+        </div>
+        <div>
+          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+        </div>
+        <div>
+          <a class="link" href="#"> <img class=" iconos2" src="../imagenes/icons8-facebook-50 black.png" alt=""></a>
+        </div>
+        <div>
+          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+        </div>
+      </div>
+    </div>
+  
+    <div class="divfooter col-lg-4">
+      <p class="text-center titulos-footer-general">COMENTARIOS</p>
+      <div class="mb-3">
+        <label for="exampleFormControlInput21" class="form-label texto-label">NOMBRE</label>
+        <input type="text" class="form-control footer-interno" id="exampleFormControlInput21" placeholder="Nombre completo">
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlInput22" class="form-label texto-label">TELEFONO</label>
+        <input type="text" class="form-control footer-interno" id="exampleFormControlInput22" placeholder="11 - 1111 - 1111">
+      </div>
+      <div class="mb-3">
+        <label for="exampleFormControlInput23" class="form-label texto-label">EMAIL</label>
+        <input type="email" class="form-control footer-interno" id="exampleFormControlInput23" placeholder="name@example.com">
+      </div>
+      <div class="mb-2">
+        <label for="exampleFormControlTextarea24" class="form-label texto-label">COMENTARIO</label>
+        <textarea class="form-control areatexto" id="exampleFormControlTextarea24" rows="3"></textarea>
+      </div>
+    </div>
+  
+    <div class="divfooter col-lg-4">
+      <p class=" text-center mb-4 titulos-footer-general">UBICACIÓN</p>
+      <iframe class="w-100 rounded rounded-2"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4400.61749400772!2d-58.79359358225364!3d-34.353920874961496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61b6066f6bc1%3A0xdc195365f6a5a98d!2sPablo%20Podesta%20451%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1697767903353!5m2!1ses-419!2sar"
+        width="600" height="303" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+</body>
+</html>

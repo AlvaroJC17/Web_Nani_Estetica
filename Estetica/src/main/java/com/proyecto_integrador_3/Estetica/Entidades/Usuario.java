@@ -2,6 +2,7 @@ package com.proyecto_integrador_3.Estetica.Entidades;
 
 
 import java.io.Serializable;
+import java.util.Date;
 
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 
@@ -18,6 +19,8 @@ import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 
 
 @Entity
@@ -46,19 +49,23 @@ public class Usuario implements Serializable {
 	@Column(name = "ValidacionForm")
 	protected boolean ValidacionForm;
 	
+	@Temporal(TemporalType.DATE)
+	protected Date fechaNacimiento;
+	
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "persona_id", referencedColumnName = "id")
 	private Persona persona;
 	
 	public Usuario() {};
 	
-	public Usuario(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm) {
+	public Usuario(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, Date fechaNacimiento) {
 		this.id = id;
 		this.email = email;
 		this.contrasena = contrasena;
 		this.rol = rol;
 		this.activo = activo;
 		this.ValidacionForm = ValidacionForm;
+		this.fechaNacimiento = fechaNacimiento;
 	}
 
 	public String getId() {
@@ -108,12 +115,34 @@ public class Usuario implements Serializable {
 	public void setValidacionForm(Boolean ValidacionForm) {
 		this.ValidacionForm = ValidacionForm;
 	}
+	
+	
+
+	public Date getFechaNacimiento() {
+		return fechaNacimiento;
+	}
+
+	public void setFechaNacimiento(Date fechaNacimiento) {
+		this.fechaNacimiento = fechaNacimiento;
+	}
+
+	public Persona getPersona() {
+		return persona;
+	}
+
+	public void setPersona(Persona persona) {
+		this.persona = persona;
+	}
 
 	@Override
 	public String toString() {
 		return "Usuario [id=" + id + ", email=" + email + ", contrasena=" + contrasena + ", rol=" + rol + ", activo="
-				+ activo + "]";
+				+ activo + ", ValidacionForm=" + ValidacionForm + ", fechaNacimiento=" + fechaNacimiento + ", persona="
+				+ persona + "]";
 	}
+
+
+
 	
 	
 }

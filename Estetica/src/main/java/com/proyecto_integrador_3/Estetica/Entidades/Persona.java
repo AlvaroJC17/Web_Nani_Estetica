@@ -45,8 +45,6 @@ public class Persona extends Usuario implements Serializable{
 	@Column(name = "sexo")
 	protected Sexo sexo;
 
-	@Temporal(TemporalType.DATE)
-	protected Date fechaNacimiento;
 	
 	@Column(name = "domicilio")
 	private String domicilio;
@@ -61,37 +59,35 @@ public class Persona extends Usuario implements Serializable{
 
 	public Persona(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm, String nombre, String apellido,
 			String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, Integer telefono) {
-		super(id, email, contrasena, rol, activo, ValidacionForm);
+		super(id, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.ocupacion = ocupacion;
 		this.sexo = sexo;
-		this.fechaNacimiento = fechaNacimiento;
 		this.domicilio = domicilio;
 		this.telefono = telefono;
 	}
 	
-	public Persona(String dni, String nombre, String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio,
+	public Persona(String dni, String nombre, String apellido, String ocupacion, Sexo sexo, String domicilio,
 			Integer telefono) {
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
 		this.ocupacion = ocupacion;
 		this.sexo = sexo;
-		this.fechaNacimiento = fechaNacimiento;
 		this.domicilio = domicilio;
 		this.telefono = telefono;
 	}
 
-	public Persona(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm) {
-		super(id, email, contrasena, rol, activo, ValidacionForm);
+	public Persona(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, Date fechaNacimiento) {
+		super(id, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
 	}
 		
 	public Persona(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean validacionForm,
 			String dni, String nombre, String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento,
 			String domicilio, Integer telefono) {
-		super(id, email, contrasena, rol, activo, validacionForm);
+		super(id, email, contrasena, rol, activo, validacionForm, fechaNacimiento);
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -175,14 +171,6 @@ public class Persona extends Usuario implements Serializable{
 		this.sexo = sexo;
 	}
 
-	public Date getFechaNacimiento() {
-		return fechaNacimiento;
-	}
-
-	public void setFechaNacimiento(Date fechaNacimiento) {
-		this.fechaNacimiento = fechaNacimiento;
-	}
-
 	public String getDomicilio() {
 		return domicilio;
 	}
@@ -201,10 +189,11 @@ public class Persona extends Usuario implements Serializable{
 
 	@Override
 	public String toString() {
-		return super.toString() +  "Persona [id=" + id + ", dni=" + dni + ", email=" + email + ", rol=" + rol + ", activo=" + activo
-				+ ", nombre=" + nombre + ", apellido=" + apellido + ", sexo=" + sexo + ", fechaNacimiento="
-				+ fechaNacimiento + ", domicilio=" + domicilio + ", telefono=" + telefono + "]";
+		return "Persona [dni=" + dni + ", nombre=" + nombre + ", apellido=" + apellido + ", ocupacion=" + ocupacion
+				+ ", sexo=" + sexo + ", domicilio=" + domicilio + ", telefono=" + telefono + "]";
 	}
+
+
 
 	
 }

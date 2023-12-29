@@ -1,28 +1,21 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
-import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
+import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioAdmin;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
@@ -31,8 +24,6 @@ import com.proyecto_integrador_3.Estetica.Servicios.ServicioAdmin;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
-
-import jakarta.transaction.Transactional;
 
 
 @Controller
@@ -156,8 +147,9 @@ public class ControladorAdmin {
 			return "redirect:/listarUsuariosOcultos?email=" + emailAdmin + "&error=" + error;
 		}
 		
-		//Validamos que el usuario buscado exista en la base de datos, sino mandamos un mensaje de error
-		if (!servicioUsuario.buscarPorDniOptional(datoSinEspacios).isPresent() && !servicioUsuario.buscarPorNombreOptional(datoSinEspacios).isPresent() && !servicioUsuario.buscarPorEmailOptional(datoSinEspacios).isPresent()) {
+		//Validamos que el usuario buscado solo por dni o emial exista en la base de datos, sino mandamos un mensaje de error.
+		//Solo validamos email y dni porque si resultado siempre va a ser un unico registro y el metodo isPresent solo acepta un solo registro como resultado
+		if (!servicioUsuario.buscarPorDniOptional(datoSinEspacios).isPresent() &&  !servicioUsuario.buscarPorEmailOptional(datoSinEspacios).isPresent() && servicioUsuario.buscarNombre(datoSinEspacios).isEmpty()) {
 			error = "Usuario no se encuentra registrado";
 			return "redirect:/listarUsuariosOcultos?email=" + emailAdmin + "&error=" + error;
 		}
@@ -338,11 +330,29 @@ public class ControladorAdmin {
 		
 		//Buscamos mediante el id el mail anterior del admin y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
 		// entonces usamos este mail anterior para poder pasarlo al controlador de misdatosClientes y poder visualizar los datos del cliente
+		// Tambien buscamos los valores previamente guardados en la base de datos para poder compararlos con los nuevos
+		String ocupacionAnterior = null;
 		String emailAnterior = null;
+		String domicilioAnterior = null;
+		Sexo sexoAnterior = null;
+		String nuevoSexo = null;
+		Integer telefonoAnterior = null;
+		
 		Optional<Admin> identificarAdmin = repositorioAdmin.findById(idAdmin);
 		if (identificarAdmin.isPresent()) {
-			Admin emailAdmin = identificarAdmin.get();
-			emailAnterior = emailAdmin.getEmail();
+			Admin datosAdminAnterior = identificarAdmin.get();
+			emailAnterior = datosAdminAnterior.getEmail();
+			ocupacionAnterior = datosAdminAnterior.getOcupacion();
+			domicilioAnterior = datosAdminAnterior.getDomicilio();
+			sexoAnterior = datosAdminAnterior.getSexo();
+			nuevoSexo = sexoAnterior.toString();
+			telefonoAnterior = datosAdminAnterior.getTelefono();
+		}
+		
+		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
+		//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
+		if (ocupacionAnterior.equals(ocupacion) && emailAnterior.equals(email) && domicilioAnterior.equals(domicilio) && nuevoSexo.equals(sexo) && telefonoAnterior.equals(telefono)) {
+			return "redirect:/misdatosAdmin?email=" + email;
 		}
 		
 		try {
@@ -365,10 +375,6 @@ public class ControladorAdmin {
 				@RequestParam(name = "exito", required = false) String exito,
 				@RequestParam(name = "error", required = false) String error,
 				ModelMap model) {
-			
-			System.out.println("EMAIL: " + email);
-			System.out.println("EXITO: " + exito);
-			System.out.println("ERROR: " + error);
 			
 			List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
 			

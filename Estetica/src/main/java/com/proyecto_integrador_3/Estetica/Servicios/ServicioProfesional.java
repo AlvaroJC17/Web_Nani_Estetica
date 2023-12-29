@@ -46,34 +46,17 @@ public class ServicioProfesional {
 		
 		validarDatosProfesional(matricula, especialidad, sexo,telefono, direccion);
 
-		Optional <Usuario> datosUsuario = servicioUsuario.buscarPorEmailOptional(email);
-		if (datosUsuario.isPresent()) {
-			Usuario datosDelUsuario = datosUsuario.get();
-			
-			//Buscamos los datos de nombre, apellido, fechaNacimiento y dni de la persona y los guardamos como nuevo profesional, asi la persona no los tiene que ingresar de nuevo en el formulario
-			String nombrePersona = null;
-			String apellidoPersona = null;
-			String dniPersona = null;
-			Date fechaNacimientoPerson = null;
-			Optional <Persona> datosPersona = repositorioPersona.buscarPorEmailOptional(email);
-			if (datosPersona.isPresent()) {
-				Persona datosPersonalesPersona = datosPersona.get();
-				nombrePersona = datosPersonalesPersona.getNombre();
-				apellidoPersona = datosPersonalesPersona.getApellido();
-				dniPersona = datosPersonalesPersona.getDni();
-				fechaNacimientoPerson = datosPersonalesPersona.getFechaNacimiento();
-			}
+		Optional <Usuario> datosUsuario = repositorioUsuario.buscarPorEmailOptional(email);
+		Optional <Persona> datosPersona = repositorioPersona.buscarPorEmailOptional(email);
 		
+		//Buscamos los datos de nombre, apellido, fechaNacimiento y dni de la persona y los guardamos como nuevo profesional, asi la persona no los tiene que ingresar de nuevo en el formulario
+		if (datosUsuario.isPresent() && datosPersona.isPresent()) {
+			Usuario datosDelUsuario = datosUsuario.get();
+			Persona datosPersonalesPersona = datosPersona.get();
+			
+			//Pasamos el sexo de String a un objeto de tipo Date
 			Sexo nuevoSexo = null;
 			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
-			
-		/*	SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-			Date fecha = null;
-			try {
-				fecha = formato.parse(fechaNacimiento);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			} */
 			
 			Profesional nuevo_profesional = new Profesional();
 			nuevo_profesional.setEmail(email);
@@ -81,14 +64,14 @@ public class ServicioProfesional {
 			nuevo_profesional.setRol(datosDelUsuario.getRol());
 			nuevo_profesional.setActivo(datosDelUsuario.getActivo());
 			nuevo_profesional.setValidacionForm(TRUE);
-			nuevo_profesional.setDni(dniPersona);
-			nuevo_profesional.setNombre(nombrePersona);
-			nuevo_profesional.setApellido(apellidoPersona);
+			nuevo_profesional.setDni(datosPersonalesPersona.getDni());
+			nuevo_profesional.setNombre(datosPersonalesPersona.getNombre());
+			nuevo_profesional.setApellido(datosPersonalesPersona.getApellido());
 			nuevo_profesional.setMatricula(matricula);
 			nuevo_profesional.setEspecialidad(especialidad);;
 			nuevo_profesional.setTelefono(telefono);
 			nuevo_profesional.setDomicilio(direccion);
-			nuevo_profesional.setFechaNacimiento(fechaNacimientoPerson);
+			nuevo_profesional.setFechaNacimiento(datosDelUsuario.getFechaNacimiento());
 			nuevo_profesional.setSexo(nuevoSexo);
 			repositorioProfesional.save(nuevo_profesional);
 			repositorioUsuario.delete(datosDelUsuario);

@@ -4,11 +4,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
+import java.time.LocalDate;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
@@ -35,14 +41,25 @@ public class ServicioUsuario {
 	  public RepositorioPersona repositorioPersona;
 	  
 	  @Transactional
-	    public void guardarUsuario(String email, String password, String password2) throws MiExcepcion {
+	    public void guardarUsuario(String email, String password, String password2, String fechaNacimiento) throws MiExcepcion {
 
-	        verificarEmail(email);
-	        verificarPassword(password, password2);
-	        
+		  verificarEmail(email);
+		  verificarPassword(password, password2);
+		  validarEdad(fechaNacimiento);
+		  
+		    //pasamos la fecha de string a date
+	        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+			Date fecha = null;
+			try {
+				fecha = formato.parse(fechaNacimiento);
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
 	        Usuario usuario = new Usuario();
 	        usuario.setEmail(email);
 	        usuario.setContrasena(password);
+	        usuario.setFechaNacimiento(fecha);
 	        usuario.setActivo(TRUE);
 	        usuario.setRol(Rol.CLIENTE);
 	        usuario.setValidacionForm(FALSE);
@@ -185,6 +202,7 @@ public class ServicioUsuario {
 		        	usuario_rol.setValidacionForm(FALSE); //volvemos el form a false para que el cambio de rol obligue al usuario a llenar la nueva planilla de su rol
 		        	repositorioUsuario.save(usuario_rol);
 		        }
+		        
 		    }
 		
 	  
@@ -199,13 +217,14 @@ public class ServicioUsuario {
 	        // Crear un objeto Matcher
 	        Matcher matcher = pattern.matcher(email);
 
+	        if (Objects.equals(email, null) || email.isEmpty() || email.trim().isEmpty()) {
+	            throw new MiExcepcion("El email no puede estar vacío");
+	        }
 	        // Verificar si la cadena cumple con la expresión regular
 	        if (!matcher.matches()) {
 	            throw new MiExcepcion("El correo electronico no es valido");
 	        } 
-	        if (email == null || email.isEmpty() || email.trim().isEmpty()) {
-	            throw new MiExcepcion("El email no puede estar vacío");
-	        }
+	       
 	        if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
 	            throw new MiExcepcion("El email ya esta registrado");
 	        }
@@ -282,8 +301,41 @@ public class ServicioUsuario {
 	    	if (contrasenaRegistrada.equals(contrasenaNueva)) {
 	    		throw new MiExcepcion("La nueva contrasena no puede ser igual a la enterior");
 			}
+	    	 if (!contrasenaNueva.equals(repetirNuevaContrasena)) {
+	        	 throw new MiExcepcion("Las contrasenas no son iguales");
+	         }
 	    	return true;
 	    }
 	    	
-	    	
+	    	public boolean validarEdad(String fechaNacimiento) throws MiExcepcion {
+	    		
+	    		Date fecha = null;
+	    		LocalDate fechaUsuario = null;
+	    		LocalDate fechaActual = null; //Obtenemos la fecha actual 
+	    		
+	    		//Validamos que la fecha no sea null antes de pasarla a LocalDate
+	    		if (Objects.equals(fechaNacimiento, null) || fechaNacimiento.isEmpty()) {
+	    			throw new MiExcepcion("La fecha de nacimiento no puede estar vacia");
+				}
+	    		
+	    		// pasamos la fecha de String a date y luego a LocalDate
+	    		 try {
+	    	            SimpleDateFormat formatoFecha = new SimpleDateFormat("yyyy-MM-dd");
+	    	            fecha = formatoFecha.parse(fechaNacimiento);
+	    	            fechaUsuario =  fecha.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+	    	        } catch (ParseException e) {
+	    	            e.printStackTrace(); // Manejo de excepciones, por ejemplo, formato de fecha incorrecto
+	    	           
+	    	        }
+	    		
+	    		//hacemos la resta de la fecha del usuario con la fecha actual
+	    		Integer edad = fechaActual.now().getYear() - fechaUsuario.getYear();
+	  
+	    		//Validamos que el usuario sea mayor de 13
+	    		if (edad <= 13) {
+	    			throw new MiExcepcion("No cumples la edad minima para usar nuestros servicios");
+				}
+	    		
+	    		return true;
+	    	}
 }
