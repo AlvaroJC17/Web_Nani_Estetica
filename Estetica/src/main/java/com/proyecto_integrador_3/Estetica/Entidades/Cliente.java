@@ -18,6 +18,28 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "Cliente")
 public class Cliente extends Persona implements Serializable {
+	
+	
+	@Column(name = "fumador")
+	String fuma;
+	
+	@Column(name = "drogas")
+	String drogas;
+	
+	@Column(name = "alcohol")
+	String alcohol;
+	
+	@Column(name = "deportes")
+	String deportes;
+	
+	@Column(name = "ejercicios")
+	String ejercicio;
+	
+	@Column(name = "medicamentos")
+	String medicamentos;
+	
+	@Column(name = "nombre_medicamento")
+	String nombreMedicamento;
 
 	@Column(name = "fomulario_datos")
 	Boolean fomularioDatos;
@@ -129,13 +151,21 @@ public class Cliente extends Persona implements Serializable {
 	}
 
 
-	public Cliente(Boolean fomularioDatos, String embarazo, String amamantando, String ciclo_menstrual, String alteracion_hormonal,
+	public Cliente(String fuma, String drogas, String alcohol, String deportes, String ejercicios, String medicamentos, String nombreMedicamento,
+			Boolean fomularioDatos, String embarazo, String amamantando, String ciclo_menstrual, String alteracion_hormonal,
 			String vitaminas, String corticoides, String hormonas, String metodo_anticonceptivo, String sufre_enfermedad,
 			String cual_enfermedad, String tiroides, String paciente_oncologica, String fractura_facial, String cirugia_estetica, 
 			String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
 			String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
 			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta) {
 		super();
+		this.fuma = fuma;
+		this.drogas = drogas;
+		this.alcohol = alcohol;
+		this.deportes = deportes;
+		this.ejercicio = ejercicios;
+		this.medicamentos = medicamentos;
+		this.nombreMedicamento = nombreMedicamento;
 		this.fomularioDatos = fomularioDatos;
 		this.embarazo = embarazo;
 		this.amamantando = amamantando;
@@ -174,9 +204,67 @@ public class Cliente extends Persona implements Serializable {
 	}
 	
 	*/
+	
+	
 
 	public String getSufre_enfermedad() {
 		return sufre_enfermedad;
+	}
+
+	public String getFuma() {
+		return fuma;
+	}
+
+	public void setFuma(String fuma) {
+		this.fuma = fuma;
+	}
+
+	public String getDrogas() {
+		return drogas;
+	}
+
+	public void setDrogas(String drogas) {
+		this.drogas = drogas;
+	}
+
+	public String getAlcohol() {
+		return alcohol;
+	}
+
+	public void setAlcohol(String alcohol) {
+		this.alcohol = alcohol;
+	}
+
+	public String getDeportes() {
+		return deportes;
+	}
+
+	public void setDeportes(String deportes) {
+		this.deportes = deportes;
+	}
+
+	public String getEjercicio() {
+		return ejercicio;
+	}
+
+	public void setEjercicio(String ejercicio) {
+		this.ejercicio = ejercicio;
+	}
+
+	public String getMedicamentos() {
+		return medicamentos;
+	}
+
+	public void setMedicamentos(String medicamentos) {
+		this.medicamentos = medicamentos;
+	}
+
+	public String getNombreMedicamento() {
+		return nombreMedicamento;
+	}
+
+	public void setNombreMedicamento(String nombreMedicamento) {
+		this.nombreMedicamento = nombreMedicamento;
 	}
 
 	public void setSufre_enfermedad(String sufre_enfermedad) {

@@ -99,14 +99,15 @@ public class ServicioCliente {
 	}
 	
 	@Transactional
-	public void formularioTurnos(String idCliente, String email, String embarazo, String amamantando, String ciclo_menstrual, String alteracion_hormonal,
-			String vitaminas, String corticoides, String hormonas, String metodo_anticonceptivo, String sufre_enfermedad,
+	public void formularioTurnos(String idCliente, String email, String fuma, String drogas, String alcohol, String deportes,
+			String ejercicios, String medicamentos, String nombreMedicamento, String embarazo, String amamantando,
+			String ciclo_menstrual, String alteracion_hormonal,String vitaminas, String corticoides, String hormonas, String metodo_anticonceptivo, String sufre_enfermedad,
 			String cual_enfermedad, String tiroides, String paciente_oncologica, String fractura_facial, String cirugia_estetica, 
 			String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
 			String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
 			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta) throws MiExcepcion {
 		
-		validarDatosFormularioTurno(embarazo, amamantando, ciclo_menstrual, alteracion_hormonal, vitaminas, corticoides,
+		validarDatosFormularioTurno(fuma, drogas, alcohol, deportes, ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual, alteracion_hormonal, vitaminas, corticoides,
 				hormonas, metodo_anticonceptivo, sufre_enfermedad, cual_enfermedad, tiroides, paciente_oncologica,
 				fractura_facial, cirugia_estetica, indique_cirugia_estetica, tiene_implantes, marca_pasos,
 				horas_sueno, exposicion_sol, protector_solar, reaplica_protector, consumo_carbohidratos,
@@ -118,7 +119,13 @@ public class ServicioCliente {
 		if (identificarCliente.isPresent()) {
 			Cliente formulario_cliente = identificarCliente.get(); // Atribuye el objeto presente a esta nueva variable
 			
-			
+			formulario_cliente.setFuma(fuma);
+			formulario_cliente.setDrogas(drogas);
+			formulario_cliente.setAlcohol(alcohol);
+			formulario_cliente.setDeportes(deportes);
+			formulario_cliente.setEjercicio(ejercicios);
+			formulario_cliente.setMedicamentos(medicamentos);
+			formulario_cliente.setNombreMedicamento(nombreMedicamento);
 			formulario_cliente.setEmbarazo(embarazo);
 			formulario_cliente.setAmamantando(amamantando);
 			formulario_cliente.setCiclo_menstrual(ciclo_menstrual);
@@ -234,12 +241,34 @@ public class ServicioCliente {
 		        
 	 }
 	 
-	 public void validarDatosFormularioTurno(String embarazo, String amamantando, String ciclo_menstrual, String alteracion_hormonal,
+	 public void validarDatosFormularioTurno(String fuma, String drogas, String alcohol, String deportes, String ejercicios, 
+			 String medicamentos, String nombreMedicamento,String embarazo, String amamantando, String ciclo_menstrual, String alteracion_hormonal,
 				String vitaminas, String corticoides, String hormonas, String metodo_anticonceptivo, String sufre_enfermedad,
 				String cual_enfermedad, String tiroides, String paciente_oncologica, String fractura_facial, String cirugia_estetica, 
 				String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
 				String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
 				String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta) throws MiExcepcion {
+		 
+		 if (fuma == null || fuma.isEmpty() || fuma.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar si fuma");
+		 
+		 if (drogas == null || drogas.isEmpty() || drogas.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar si consume alguna droga");
+		 
+		 if (alcohol == null || alcohol.isEmpty() || alcohol.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar su consumo aproximado de alcohol");
+		 
+		 if (deportes == null || deportes.isEmpty() || deportes.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar si realiza algun deporte");
+		 
+		 if (ejercicios == null || ejercicios.isEmpty() || ejercicios.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar si realiza algun ejercicio");
+		 
+		 if (medicamentos == null || medicamentos.isEmpty() || medicamentos.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar si toma algun medicamento");
+		 
+		 if (nombreMedicamento == null || nombreMedicamento.isEmpty() || nombreMedicamento.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar el nombre del medicamento");
 		 
 		 if (embarazo == null || embarazo.isEmpty() || embarazo.trim().isEmpty()) 
 			 throw new MiExcepcion("Por favor indicar si esta embarazada");
@@ -307,8 +336,8 @@ public class ServicioCliente {
 		 if (consumo_carbohidratos == null || consumo_carbohidratos.isEmpty() || consumo_carbohidratos.trim().isEmpty()) 
 			 throw new MiExcepcion("Por favor indique el consumo aproximado de carbohidratos");
 		 
-		/* if (tratamientos_faciales_anteriores == null || tratamientos_faciales_anteriores.isEmpty() || tratamientos_faciales_anteriores.trim().isEmpty()) 
-			 throw new MiExcepcion("Por favor indicar si se realizo tratamientos faciales anteriormente"); */
+		 if (tratamientos_faciales_anteriores == null || tratamientos_faciales_anteriores.isEmpty() || tratamientos_faciales_anteriores.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar si se realizo tratamientos faciales anteriormente"); 
 		 
 		 if (resultados_tratamiento_anterior == null || resultados_tratamiento_anterior.isEmpty() || resultados_tratamiento_anterior.trim().isEmpty()) 
 			 throw new MiExcepcion("Por favor indicar el resultado de los tratamientos faciales anteriores");
