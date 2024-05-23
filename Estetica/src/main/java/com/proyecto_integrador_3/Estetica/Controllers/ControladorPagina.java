@@ -72,8 +72,8 @@ public class ControladorPagina {
 	        }
 	 }
 	
-	 	//Login de un usuario, dependiendo de su rol lo redireccion a un home y si es logueo
-	 	// por primera vez lo redirecciona a una formulario de datos
+	 	//Login de un usuario, dependiendo de su rol lo redirecciona a un home determinado y si es logueo
+	 	// por primera vez lo redirecciona a una formulario para completar los datos
 		@PostMapping("/loginUsuario")
 		 public String loginUsuario(
 		         @RequestParam(name = "email") String email, //El valor de estas variables proviene del form login
@@ -87,7 +87,7 @@ public class ControladorPagina {
 		         Usuario usuario = usuarioOptional.get(); //con el metodo get, asociamos al usuario encontrado a la variable usuario y asi poder acceder a sus atributos
 		         String emailUsuario = usuario.getEmail();
 		         String password = usuario.getContrasena();
-		         Date fechaNacimiento = usuario.getFechaNacimiento();
+		        // Date fechaNacimiento = usuario.getFechaNacimiento();
 		         Boolean activo = usuario.getActivo();
 		         Boolean validarForm = usuario.getValidacionForm();
 		         Rol rol = usuario.getRol();

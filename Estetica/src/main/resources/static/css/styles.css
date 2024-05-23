@@ -336,6 +336,13 @@ footer {
     margin: 0;
 }
 
+.ft .iconosTratamientos{
+    height: 66px;
+    width: 62px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
 .ft{
     /*Estilos de los cuadros de seleccion en el centro de la hoja, ademas de centar el texto*/
     height: 235px;

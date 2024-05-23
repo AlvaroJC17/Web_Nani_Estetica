@@ -45,12 +45,39 @@ public class ControladorCliente {
 	@Autowired
 	public ServicioUsuario servicioUsuario;
 	
-	
-	@GetMapping("/reservaDeTurnoCliente")
-	public String reservaDeTurnoCliente(
+	/*Este metodo deriva a la pagina de tratamientos con los valores de mail y id del cliente*/
+	@GetMapping("/tratamientos")
+	public String tratamientos(
 			@RequestParam(name = "email", required = false) String email,
 			@RequestParam(name = "idCliente") String idCliente,
 			ModelMap model) {
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		model.addAttribute("datosCliente", datosCliente);
+		return "/pagina_cliente/tratamientos";
+	}
+
+	/*Este metodo deriva a la pagina de turnos esteicos con los valores de mail y id del cliente*/
+	@GetMapping("/reservaDeTurnoClienteEstetico")
+	public String reservaDeTurnoClienteEstetico(
+			@RequestParam(name = "email", required = false) String email,
+			@RequestParam(name = "idCliente") String idCliente,
+			ModelMap model) {
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		model.addAttribute("datosCliente", datosCliente);
+		return "/pagina_cliente/reservaDeTurnoClienteEstetico";
+	}
+	
+	/*Se usa postmapping por que los valores que recibe este metodo vienen de un formulario con un metodo post*/
+	/*Valida si el formulario de preguntas ya se lleno y le muestra al cliente la pagina correspondiente dependiendo de su seleccion*/
+	@PostMapping("/reservaDeTurnoCliente")
+	public String reservaDeTurnoCliente(
+			@RequestParam(name = "email", required = false) String email,
+			@RequestParam(name = "idCliente") String idCliente,
+			@RequestParam(name = "tratamiento") String tratamiento,
+			ModelMap model) {
+		
+		/*El valor de tratamiento sirve para filtrar que pagina le vamos a mostrar
+		 * al cliente para solicitar turno, puede ser facial o corporal*/
 		
 		Boolean usoDeFormulario = null;
 		Optional<Cliente> formularioDeDatos = repositorioCliente.findById(idCliente);
@@ -60,15 +87,37 @@ public class ControladorCliente {
 		}
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		
+		System.out.println("usoDeFormulario: " + usoDeFormulario);
 			
-		if (usoDeFormulario) {
+		if (usoDeFormulario && tratamiento.equals("facial")) {
 			model.addAttribute("datosCliente", datosCliente);
-			return "/pagina_cliente/reservaDeTurnoCliente";	
+			return "/pagina_cliente/reservaDeTurnoClienteFacial";	
+			
+		}else if(usoDeFormulario && tratamiento.equals("corporal")) {
+			model.addAttribute("datosCliente", datosCliente);
+			return "/pagina_cliente/reservaDeTurnoClienteCorporal";	
+			
 		}else {
-			model.addAttribute("datosCliente", datosCliente);
-			return "/pagina_cliente/formularioPreguntas";
+			return "redirect:/formularioPreguntas?tratamiento=" + tratamiento + "&email=" + email;
 		}
 	}
+	
+	/*Redirecciona al formulario de preguntas en caso de haber un error en la validacion de los input*/
+	@GetMapping("/formularioPreguntas")
+	public String formularioPreguntas(
+			@RequestParam(name="tratamiento") String tratamiento,
+			@RequestParam(name="email") String email,
+			@RequestParam(name="error", required = false) String error,
+			ModelMap model) {
+		
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		model.addAttribute("datosCliente", datosCliente);
+		model.addAttribute("tratamiento", tratamiento);
+		model.addAttribute("error", error);
+		return "/pagina_cliente/formularioPreguntas";
+	}
+		
 			
 	@GetMapping("/misturnos")
 	public String misturnos() {
@@ -100,7 +149,7 @@ public class ControladorCliente {
 			@RequestParam(name = "email") String emailUsuario,
 			@RequestParam(name = "error", required = false) String error,
 			ModelMap modelo) {
-		System.out.println("EMAILLLLL DENTRO: " + emailUsuario);
+		
 		modelo.addAttribute("emailUsuario", emailUsuario);
 		modelo.addAttribute("error", error);
 		return "/pagina_cliente/completarDatosCliente";
@@ -108,7 +157,8 @@ public class ControladorCliente {
 	
 	//Devuelve la pagina homeCLiente con los datos del usuario que le pasemos por mmail
 	@GetMapping("/homeCliente")
-	public String homeCliente(@RequestParam(name = "email") String email, Model model) {
+	public String homeCliente(
+			@RequestParam(name = "email") String email, Model model) {
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosCliente", datosCliente);
 		return "/pagina_cliente/homeCliente";	
@@ -143,7 +193,6 @@ public class ControladorCliente {
 			ModelMap model
 			) throws MiExcepcion {
 		
-		System.out.println("EMAILLLLL: " + emailUsuario);
 		try {
 			
 			//Guardamos los datos del formulario que lleno el nuevo cliente
@@ -155,6 +204,123 @@ public class ControladorCliente {
 			//return "pagina_cliente/completarDatosCliente";
 			return "redirect:/completarDatosCliente?email=" + emailUsuario + "&error=" + error;
 		}
+	}
+	
+	
+	@GetMapping("/formularioTurnos")
+	public String formularioTurnos(
+			@RequestParam(name = "email") String email,
+			@RequestParam(name = "error", required = false) String error,
+			ModelMap modelo) {
+			
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);		
+		modelo.addAttribute("datosCliente", datosCliente);
+		modelo.addAttribute("error", error);
+		return "/pagina_cliente/formularioPreguntas";
+	}
+	
+	/*Registra y valida los input del formulario de preguntas en la base de datos*/
+	@PostMapping("/guardarFormularioTurnos")
+	public String guardarFormularioTurnos(
+			@RequestParam(name="tratamiento") String tratamiento,
+			@RequestParam(name="idCliente", required = false) String idCliente,
+			@RequestParam(name="email", required = false) String email,
+			@RequestParam(name="embarazo", required = false) String embarazo,
+			@RequestParam(name="amamantando", required = false) String amamantando,
+			@RequestParam(name="ciclo_menstrual", required = false) String ciclo_menstrual,
+			@RequestParam(name="alteracion_hormonal", required = false) String alteracion_hormonal,
+			@RequestParam(name="vitaminas", required = false) String vitaminas,
+			@RequestParam(name="corticoides", required = false) String corticoides,
+			@RequestParam(name="hormonas", required = false) String hormonas,
+			@RequestParam(name="metodo_anticonceptivo", required = false) String metodo_anticonceptivo,
+			@RequestParam(name="sufre_enfermedad", required = false) String sufre_enfermedad,
+			@RequestParam(name="cual_enfermedad", required = false) String cual_enfermedad,
+			@RequestParam(name="tiroides", required = false) String tiroides,
+			@RequestParam(name="paciente_oncologica", required = false) String paciente_oncologica,
+			@RequestParam(name="fractura_facial", required = false) String fractura_facial,
+			@RequestParam(name="cirugia_estetica", required = false) String cirugia_estetica,
+			@RequestParam(name="indique_cirugia_estetica", required = false) String indique_cirugia_estetica,
+			@RequestParam(name="tiene_implantes", required = false) String tiene_implantes,
+			@RequestParam(name="marca_pasos", required = false) String marca_pasos,
+			@RequestParam(name="horas_sueno", required = false) String horas_sueno,
+			@RequestParam(name="exposicion_sol", required = false) String exposicion_sol,
+			@RequestParam(name="protector_solar", required = false) String protector_solar,
+			@RequestParam(name="reaplica_protector", required = false) String reaplica_protector,
+			@RequestParam(name="consumo_carbohidratos", required = false) String consumo_carbohidratos,
+			@RequestParam(name="tratamientos_faciales_anteriores,", required = false) String tratamientos_faciales_anteriores,
+			@RequestParam(name="resultados_tratamiento_anterior", required = false) String resultados_tratamiento_anterior,
+			@RequestParam(name="cuidado_de_piel", required = false) String cuidado_de_piel,
+			@RequestParam(name="motivo_consulta", required = false) String motivo_consulta) throws MiExcepcion{
+		
+		System.out.println("tratamiento: " + tratamiento);
+		System.out.println("id: " + idCliente);
+		System.out.println("email: " + email);
+		System.out.println("Embarazo: " + embarazo);
+		System.out.println("amamantando: " + amamantando);
+		System.out.println("ciclo_menstrual: " + ciclo_menstrual );
+		System.out.println("alteracion_hormonal: " + alteracion_hormonal );
+		System.out.println("vitaminas: " + vitaminas);
+		System.out.println("corticoides: " + corticoides );
+		System.out.println("hormonas: " + hormonas );
+		System.out.println("metodo_anticonceptivo: " + metodo_anticonceptivo );
+		System.out.println("sufre_enfermedad: " + sufre_enfermedad );
+		System.out.println("cual_enfermedad: " + cual_enfermedad );
+		System.out.println("tiroides: " + tiroides );
+		System.out.println("paciente_oncologica: " + paciente_oncologica );
+		System.out.println("fractura_facial: " + fractura_facial );
+		System.out.println("cirugia_estetica: " + cirugia_estetica );
+		System.out.println("indique_cirugia_estetica: " + indique_cirugia_estetica );
+		System.out.println("tiene_implantes: " + tiene_implantes );
+		System.out.println("marca_pasos: " + marca_pasos );
+		System.out.println("horas_sueno: " + horas_sueno );
+		System.out.println("exposicion_sol: " + exposicion_sol );
+		System.out.println("protector_solar: " + protector_solar );
+		System.out.println("reaplica_protector: " + reaplica_protector );
+		System.out.println("consumo_carbohidratos: " + consumo_carbohidratos );
+		System.out.println("tratamientos_faciales_anteriores: " + tratamientos_faciales_anteriores );
+		System.out.println("resultados_tratamiento_anterior: " + resultados_tratamiento_anterior );
+		System.out.println("cuidado_de_piel: " + cuidado_de_piel);
+		System.out.println("motivo_consulta: " + motivo_consulta);
+		
+		try {
+			servicioCliente.formularioTurnos(idCliente, email, embarazo, amamantando, ciclo_menstrual, alteracion_hormonal,
+					vitaminas, corticoides, hormonas, metodo_anticonceptivo, sufre_enfermedad,
+					cual_enfermedad, tiroides, paciente_oncologica, fractura_facial, cirugia_estetica, 
+					indique_cirugia_estetica, tiene_implantes, marca_pasos, horas_sueno, exposicion_sol,
+					protector_solar, reaplica_protector, consumo_carbohidratos, tratamientos_faciales_anteriores,
+					resultados_tratamiento_anterior, cuidado_de_piel, motivo_consulta);
+			
+			if (tratamiento.equals("facial")) {
+				return "redirect:/reservaDeTurnoClienteFacial?email=" + email;
+			}else if(tratamiento.equals("corporal")){
+				return "redirect:/reservaDeTurnoClienteCorporal?email=" + email;
+			}else {
+				return "";
+			}
+				
+		} catch (MiExcepcion e) {
+			String error = e.getMessage();
+			return "redirect:/formularioPreguntas?email=" + email + "&error=" + error + "&tratamiento=" + tratamiento;
+		}
+		
+	}
+	
+	@GetMapping("/reservaDeTurnoClienteFacial")
+	public String reservaDeTurnoClienteFacial(
+			@RequestParam(name="email") String email,
+			Model modelo){
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);		
+		modelo.addAttribute("datosCliente", datosCliente);
+		return "/pagina_cliente/reservaDeTurnoClienteFacial";
+	}
+	
+	@GetMapping("/reservaDeTurnoClienteCorporal")
+	public String reservaDeTurnoClienteCorporal(
+			@RequestParam(name="email") String email,
+			Model modelo){
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);		
+		modelo.addAttribute("datosCliente", datosCliente);
+		return "/pagina_cliente/reservaDeTurnoClienteCorporal";
 	}
 
 	

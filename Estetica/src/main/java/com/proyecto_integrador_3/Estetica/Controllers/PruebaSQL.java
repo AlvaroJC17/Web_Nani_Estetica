@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 
-@Component
+//@Component
 public class PruebaSQL implements CommandLineRunner {
 
 	@Autowired

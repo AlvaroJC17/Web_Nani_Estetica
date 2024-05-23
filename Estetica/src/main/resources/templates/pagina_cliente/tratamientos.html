@@ -1,16 +1,20 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-        <link rel="stylesheet" href="../css/styles.css">
-        <title>Mis turnos</title>
-      </head>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <title>Tratamientos</title>
+</head>
+
 <body class="body-interno" th:each="datosCliente : ${datosCliente}">
+
+  <!--Boton flotante de ws-->
   <a href="#" target="_blank" class="boton-flotante">
     <i class="fa-brands fa-whatsapp"></i>
   </a>
@@ -55,17 +59,61 @@
     </div>
   </nav>
 
-
-
-  
-  <main>
-    <div class="main-interno">
-      <h3>Mis turnos</h3>
-
+<main class="">
+  <div class="main-interno">
+    <h3>Tratamientos</h3>
+    <p class="text-center fs-4">Seleccione el tratamiento para el cual desea solicitar turno.  </p>
+    
+    <div class=" container">
+		
+		<!--Se crea un enlace tipo formulario para poder mandar ademas del email y el id, el valor de tratamiento
+		asi cuando el usario seleccione un de las opciones, puedo obtener este valor y usarlo en el metodo para poder
+		filtrar cual es la planilla de solicitud de turnos que se le va a mostrar. Al usar un formulario y un
+		metodo post, el metodo que recibe esta informacion debe estar con la etiqueta @Postmaping-->
+		   <div class="ft">
+        <form th:action="@{/reservaDeTurnoCliente}" method="post">
+            <input type="hidden" name="email" th:value="${datosCliente.email}" />
+            <input type="hidden" name="idCliente" th:value="${datosCliente.id}" />
+            <input type="hidden" name="tratamiento" th:value="facial" />
+            <button style="background-color: #ebdf9d; color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));"
+             type="submit" class="d-flex justify-content-center align-items-center border-0">
+              <img class="iconosTratamientos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
+              <p class="texto-tarjetas-main-home ms-1 hover">Tratamientos Faciales</p>
+            </button>
+        </form>
     </div>
+     
+      <!--En este enlace no se utilizo el form, sino que se dejo de la misma forma que esta en otros enlaces del programa.
+      Esto se hizo asi porque este enlace no necesita validar si se lleno el formulario de datos antes de dirigir a la pagina
+      de seleccion de turnos, sino que entra directo a dicha pagina.-->
+      <div class=" ft ">
+        <a th:href="@{/reservaDeTurnoClienteEstetico(email=${datosCliente.email}, idCliente=${datosCliente.id})}">
+          <div class="d-flex justify-content-center align-items-center">
+            <img class="iconos" src="../imagenes/icons8-más-50.png" alt="">
+            <p class="texto-tarjetas-main-home ms-1 hover">Tratamientos esteticos</p>
+          </div>
+        </a>
+      </div>
+      
+      <!--Aca tambien usamos formulario y el metodo post para obtener el valor de tratamiento y filtrarlo en el  metodo-->
+       <div class="ft">
+        <form th:action="@{/reservaDeTurnoCliente}" method="post">
+            <input type="hidden" name="email" th:value="${datosCliente.email}" />
+            <input type="hidden" name="idCliente" th:value="${datosCliente.id}" />
+            <input type="hidden" name="tratamiento" th:value="corporal" />
+            <button style="background-color: #ebdf9d; color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1)); text-align: start; font-size: 28px;"
+             type="submit" class="d-flex justify-content-center align-items-center border-0">
+              <img class="iconosTratamientos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
+              <p class="texto-tarjetas-main-home ms-1 hover">Tratamientos Corporales</p>
+            </button>
+        </form>
+    </div>
+      
+   
+
+</div>
+</div>
   </main>
-
-
 
   <footer class="d-flex row p-0">
     <div class="divfooter col-lg-4">
@@ -129,9 +177,9 @@
   </footer>
 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
 </body>
-</body>
+
 </html>

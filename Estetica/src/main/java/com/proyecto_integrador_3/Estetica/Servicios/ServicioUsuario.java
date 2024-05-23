@@ -331,11 +331,11 @@ public class ServicioUsuario {
 	    		//hacemos la resta de la fecha del usuario con la fecha actual
 	    		Integer edad = fechaActual.now().getYear() - fechaUsuario.getYear();
 	  
-	    		//Validamos que el usuario sea mayor de 13
+	    		//Validamos que el usuario sea mayor de 13 años
 	    		if (edad <= 13) {
 	    			throw new MiExcepcion("No cumples la edad minima para usar nuestros servicios");
 				}
-	    		
 	    		return true;
 	    	}
+	    		
 }

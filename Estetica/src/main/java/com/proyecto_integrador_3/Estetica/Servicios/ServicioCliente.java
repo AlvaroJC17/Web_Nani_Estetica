@@ -97,6 +97,59 @@ public class ServicioCliente {
         	repositorioCliente.save(cliente_actualizado);
 		}
 	}
+	
+	@Transactional
+	public void formularioTurnos(String idCliente, String email, String embarazo, String amamantando, String ciclo_menstrual, String alteracion_hormonal,
+			String vitaminas, String corticoides, String hormonas, String metodo_anticonceptivo, String sufre_enfermedad,
+			String cual_enfermedad, String tiroides, String paciente_oncologica, String fractura_facial, String cirugia_estetica, 
+			String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
+			String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
+			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta) throws MiExcepcion {
+		
+		validarDatosFormularioTurno(embarazo, amamantando, ciclo_menstrual, alteracion_hormonal, vitaminas, corticoides,
+				hormonas, metodo_anticonceptivo, sufre_enfermedad, cual_enfermedad, tiroides, paciente_oncologica,
+				fractura_facial, cirugia_estetica, indique_cirugia_estetica, tiene_implantes, marca_pasos,
+				horas_sueno, exposicion_sol, protector_solar, reaplica_protector, consumo_carbohidratos,
+				tratamientos_faciales_anteriores, resultados_tratamiento_anterior, cuidado_de_piel,
+				motivo_consulta);
+		
+		Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
+		
+		if (identificarCliente.isPresent()) {
+			Cliente formulario_cliente = identificarCliente.get(); // Atribuye el objeto presente a esta nueva variable
+			
+			
+			formulario_cliente.setEmbarazo(embarazo);
+			formulario_cliente.setAmamantando(amamantando);
+			formulario_cliente.setCiclo_menstrual(ciclo_menstrual);
+			formulario_cliente.setAlteracion_hormonal(alteracion_hormonal);
+			formulario_cliente.setVitaminas(vitaminas);
+			formulario_cliente.setCorticoides(corticoides);
+			formulario_cliente.setHormonas(hormonas);
+			formulario_cliente.setMetodo_anticonceptivo(metodo_anticonceptivo);
+			formulario_cliente.setSufre_enfermedad(sufre_enfermedad);
+			formulario_cliente.setCual_enfermedad(cual_enfermedad);
+			formulario_cliente.setTiroides(tiroides);
+			formulario_cliente.setPaciente_oncologica(paciente_oncologica);
+			formulario_cliente.setFractura_facial(fractura_facial);
+			formulario_cliente.setCirugia_estetica(indique_cirugia_estetica);
+			formulario_cliente.setIndique_cirugia_estetica(indique_cirugia_estetica);
+			formulario_cliente.setTiene_implantes(tiene_implantes);
+			formulario_cliente.setMarca_pasos(marca_pasos);
+			formulario_cliente.setHoras_sueno(horas_sueno);
+			formulario_cliente.setExposicion_sol(exposicion_sol);
+			formulario_cliente.setProtector_solar(protector_solar);
+			formulario_cliente.setReaplica_protector(reaplica_protector);
+			formulario_cliente.setConsumo_carbohidratos(consumo_carbohidratos);
+			formulario_cliente.setTratamientos_faciales_anteriores(tratamientos_faciales_anteriores);
+			formulario_cliente.setResultados_tratamiento_anterior(resultados_tratamiento_anterior);
+			formulario_cliente.setCuidado_de_piel(cuidado_de_piel);
+			formulario_cliente.setMotivo_consulta(motivo_consulta);
+			formulario_cliente.setFomularioDatos(TRUE);
+        	repositorioCliente.save(formulario_cliente);
+		}
+		
+	}
 
         		
 
@@ -181,6 +234,92 @@ public class ServicioCliente {
 		        
 	 }
 	 
+	 public void validarDatosFormularioTurno(String embarazo, String amamantando, String ciclo_menstrual, String alteracion_hormonal,
+				String vitaminas, String corticoides, String hormonas, String metodo_anticonceptivo, String sufre_enfermedad,
+				String cual_enfermedad, String tiroides, String paciente_oncologica, String fractura_facial, String cirugia_estetica, 
+				String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
+				String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
+				String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta) throws MiExcepcion {
+		 
+		 if (embarazo == null || embarazo.isEmpty() || embarazo.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar si esta embarazada");
+		 
+		 if (amamantando == null || amamantando.isEmpty() || amamantando.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar si esta amamantando");
+		 
+		 if (ciclo_menstrual == null || ciclo_menstrual.isEmpty() || ciclo_menstrual.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique como es su ciclo menstrual");
+		 
+		 if (alteracion_hormonal == null || alteracion_hormonal.isEmpty() || alteracion_hormonal.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si ha tenido o tiene alteraciones hormonales");
+		 
+		 if (vitaminas == null || vitaminas.isEmpty() || vitaminas.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si toma alguna vitamina");
+		 
+		 if (corticoides == null || corticoides.isEmpty() || corticoides.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si toma corticoides");
+		 
+		 if (hormonas == null || hormonas.isEmpty() || hormonas.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si toma hormonas");
+		 
+		 if (metodo_anticonceptivo == null || metodo_anticonceptivo.isEmpty() || metodo_anticonceptivo.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si utiliza algun metodo anticonceptivo");
+		 
+		 if (sufre_enfermedad == null || sufre_enfermedad.isEmpty() || sufre_enfermedad.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si sufre de alguna enfermedad");
+		 
+	/*	 if (cual_enfermedad == null || cual_enfermedad.isEmpty() || cual_enfermedad.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar cual enfermedad ha tenido"); */
+		 
+		 if (tiroides == null || tiroides.isEmpty() || tiroides.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si padece de la tiroide");
+		 
+		 if (paciente_oncologica == null || paciente_oncologica.isEmpty() || paciente_oncologica.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si es o fue paciente oncologico");
+		 
+		 if (fractura_facial == null || fractura_facial.isEmpty() || fractura_facial.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si posee alguna fractura facial");
+		 
+		 if (cirugia_estetica == null || cirugia_estetica.isEmpty() || cirugia_estetica.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si tiene alguna cirugia estetica");
+		 
+	/*	 if (indique_cirugia_estetica == null || indique_cirugia_estetica.isEmpty() || indique_cirugia_estetica.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique cual cirugia estetica se realizo"); */
+		 
+		 if (tiene_implantes == null || tiene_implantes.isEmpty() || tiene_implantes.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si tiene algun implante");
+		 
+		 if (marca_pasos == null || marca_pasos.isEmpty() || marca_pasos.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si tiene marca pasos");
+		 
+		 if (horas_sueno == null || horas_sueno.isEmpty() || horas_sueno.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique un aproximado de las horas de sueno");
+		 
+		 if (exposicion_sol == null || exposicion_sol.isEmpty() || exposicion_sol.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique un aproximidado de las horas de exposicion al sol"); 
+		 
+		 if (protector_solar == null || protector_solar.isEmpty() || protector_solar.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si utiliza protector solar");
+		 
+		 if (reaplica_protector == null || reaplica_protector.isEmpty() || reaplica_protector.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique si se reaplica el protector solar");
+		 
+		 if (consumo_carbohidratos == null || consumo_carbohidratos.isEmpty() || consumo_carbohidratos.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique el consumo aproximado de carbohidratos");
+		 
+		/* if (tratamientos_faciales_anteriores == null || tratamientos_faciales_anteriores.isEmpty() || tratamientos_faciales_anteriores.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar si se realizo tratamientos faciales anteriormente"); */
+		 
+		 if (resultados_tratamiento_anterior == null || resultados_tratamiento_anterior.isEmpty() || resultados_tratamiento_anterior.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar el resultado de los tratamientos faciales anteriores");
+		 
+		 if (cuidado_de_piel == null || cuidado_de_piel.isEmpty() || cuidado_de_piel.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indique como se cuida la piel");
+		 
+		 if (motivo_consulta == null || motivo_consulta.isEmpty() || motivo_consulta.trim().isEmpty()) 
+			 throw new MiExcepcion("Por favor indicar el motivo de la consulta");
+	 }
+	 
 	 
 		        	
 	 
@@ -188,4 +327,4 @@ public class ServicioCliente {
 
 
 
-}
+	 }
