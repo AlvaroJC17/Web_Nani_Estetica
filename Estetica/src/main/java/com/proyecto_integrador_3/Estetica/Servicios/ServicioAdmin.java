@@ -165,7 +165,6 @@ public class ServicioAdmin {
 	 
 	 public void validarActualizacionDeDatosAdmin(String ocupacion, String domicilio, String sexo, Integer telefono) throws MiExcepcion {
 		 
-		 
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
 			 throw new MiExcepcion("La ocupacion no puede estar vacia");
 		 }
@@ -185,8 +184,8 @@ public class ServicioAdmin {
 		 if (!sexo.equalsIgnoreCase("masculino") && !sexo.equalsIgnoreCase("femenino") && !sexo.equalsIgnoreCase("otro")) {
 			 throw new MiExcepcion("El sexo solo puede ser masculino, femenino u otro");
 		 }
-		 
 	 }
+		 
 	 
 	 public void verificarEmailAdmin(String email, String emailAnterior) throws MiExcepcion {
 		 

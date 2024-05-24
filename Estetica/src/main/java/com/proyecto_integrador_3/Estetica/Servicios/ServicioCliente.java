@@ -188,6 +188,7 @@ public class ServicioCliente {
 			 throw new MiExcepcion("La ocupacion no puede estar vacio");
 		 }
 	 }
+	 
 	 	 
 	 public void validarActualizacionDeDatosCliente(String ocupacion, String domicilio, String sexo, Integer telefono) throws MiExcepcion {
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
@@ -294,58 +295,58 @@ public class ServicioCliente {
 		 if (metodo_anticonceptivo == null || metodo_anticonceptivo.isEmpty() || metodo_anticonceptivo.trim().isEmpty() || metodo_anticonceptivo.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si utiliza algun metodo anticonceptivo");
 		 
-		 if (sufre_enfermedad == null || sufre_enfermedad.isEmpty() || sufre_enfermedad.trim().isEmpty()) 
+		 if (sufre_enfermedad == null || sufre_enfermedad.isEmpty() || sufre_enfermedad.trim().isEmpty()|| sufre_enfermedad.equals("Seleccione") ) 
 			 throw new MiExcepcion("Por favor indique si sufre de alguna enfermedad");
 		 
 	/*	 if (cual_enfermedad == null || cual_enfermedad.isEmpty() || cual_enfermedad.trim().isEmpty()) 
 			 throw new MiExcepcion("Por favor indicar cual enfermedad ha tenido"); */
 		 
-		 if (tiroides == null || tiroides.isEmpty() || tiroides.trim().isEmpty()) 
+		 if (tiroides == null || tiroides.isEmpty() || tiroides.trim().isEmpty() || tiroides.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si padece de la tiroide");
 		 
-		 if (paciente_oncologica == null || paciente_oncologica.isEmpty() || paciente_oncologica.trim().isEmpty()) 
+		 if (paciente_oncologica == null || paciente_oncologica.isEmpty() || paciente_oncologica.trim().isEmpty() || paciente_oncologica.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si es o fue paciente oncologico");
 		 
-		 if (fractura_facial == null || fractura_facial.isEmpty() || fractura_facial.trim().isEmpty()) 
+		 if (fractura_facial == null || fractura_facial.isEmpty() || fractura_facial.trim().isEmpty() || fractura_facial.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si posee alguna fractura facial");
 		 
-		 if (cirugia_estetica == null || cirugia_estetica.isEmpty() || cirugia_estetica.trim().isEmpty()) 
+		 if (cirugia_estetica == null || cirugia_estetica.isEmpty() || cirugia_estetica.trim().isEmpty() || cirugia_estetica.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si tiene alguna cirugia estetica");
 		 
 	/*	 if (indique_cirugia_estetica == null || indique_cirugia_estetica.isEmpty() || indique_cirugia_estetica.trim().isEmpty()) 
 			 throw new MiExcepcion("Por favor indique cual cirugia estetica se realizo"); */
 		 
-		 if (tiene_implantes == null || tiene_implantes.isEmpty() || tiene_implantes.trim().isEmpty()) 
+		 if (tiene_implantes == null || tiene_implantes.isEmpty() || tiene_implantes.trim().isEmpty() || tiene_implantes.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si tiene algun implante");
 		 
-		 if (marca_pasos == null || marca_pasos.isEmpty() || marca_pasos.trim().isEmpty()) 
+		 if (marca_pasos == null || marca_pasos.isEmpty() || marca_pasos.trim().isEmpty() || marca_pasos.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si tiene marca pasos");
 		 
-		 if (horas_sueno == null || horas_sueno.isEmpty() || horas_sueno.trim().isEmpty()) 
+		 if (horas_sueno == null || horas_sueno.isEmpty() || horas_sueno.trim().isEmpty() || horas_sueno.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique un aproximado de las horas de sueno");
 		 
-		 if (exposicion_sol == null || exposicion_sol.isEmpty() || exposicion_sol.trim().isEmpty()) 
+		 if (exposicion_sol == null || exposicion_sol.isEmpty() || exposicion_sol.trim().isEmpty() || exposicion_sol.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique un aproximidado de las horas de exposicion al sol"); 
 		 
-		 if (protector_solar == null || protector_solar.isEmpty() || protector_solar.trim().isEmpty()) 
+		 if (protector_solar == null || protector_solar.isEmpty() || protector_solar.trim().isEmpty() || protector_solar.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si utiliza protector solar");
 		 
-		 if (reaplica_protector == null || reaplica_protector.isEmpty() || reaplica_protector.trim().isEmpty()) 
+		 if (reaplica_protector == null || reaplica_protector.isEmpty() || reaplica_protector.trim().isEmpty() || reaplica_protector.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si se reaplica el protector solar");
 		 
-		 if (consumo_carbohidratos == null || consumo_carbohidratos.isEmpty() || consumo_carbohidratos.trim().isEmpty()) 
+		 if (consumo_carbohidratos == null || consumo_carbohidratos.isEmpty() || consumo_carbohidratos.trim().isEmpty() || consumo_carbohidratos.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique el consumo aproximado de carbohidratos");
 		 
-		 if (tratamientos_faciales_anteriores == null || tratamientos_faciales_anteriores.isEmpty() || tratamientos_faciales_anteriores.trim().isEmpty()) 
+		 if (tratamientos_faciales_anteriores == null || tratamientos_faciales_anteriores.isEmpty() || tratamientos_faciales_anteriores.trim().isEmpty() || tratamientos_faciales_anteriores.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar si se realizo tratamientos faciales anteriormente"); 
 		 
-		 if (resultados_tratamiento_anterior == null || resultados_tratamiento_anterior.isEmpty() || resultados_tratamiento_anterior.trim().isEmpty()) 
+		 if (resultados_tratamiento_anterior == null || resultados_tratamiento_anterior.isEmpty() || resultados_tratamiento_anterior.trim().isEmpty() || resultados_tratamiento_anterior.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar el resultado de los tratamientos faciales anteriores");
 		 
-		 if (cuidado_de_piel == null || cuidado_de_piel.isEmpty() || cuidado_de_piel.trim().isEmpty()) 
+		 if (cuidado_de_piel == null || cuidado_de_piel.isEmpty() || cuidado_de_piel.trim().isEmpty())  /*Este no lleva la validacion del Seleccione porque es un textarea*/
 			 throw new MiExcepcion("Por favor indique como se cuida la piel");
 		 
-		 if (motivo_consulta == null || motivo_consulta.isEmpty() || motivo_consulta.trim().isEmpty()) 
+		 if (motivo_consulta == null || motivo_consulta.isEmpty() || motivo_consulta.trim().isEmpty() || motivo_consulta.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar el motivo de la consulta");
 	 }
 	 
