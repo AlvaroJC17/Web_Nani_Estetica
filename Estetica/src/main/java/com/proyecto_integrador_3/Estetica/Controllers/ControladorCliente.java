@@ -310,7 +310,7 @@ public class ControladorCliente {
             model.addAttribute("protector_solar", protector_solar);
             model.addAttribute("reaplica_protector", reaplica_protector);
             model.addAttribute("consumo_carbohidratos", consumo_carbohidratos);
-            model.addAttribute("tratamientos_faciales_anteriores", tratamientos_faciales_anteriores);
+            model.addAttribute("tratamientosFacialesAnteriores", tratamientos_faciales_anteriores);
             model.addAttribute("resultados_tratamiento_anterior", resultados_tratamiento_anterior);
             model.addAttribute("cuidado_de_piel", cuidado_de_piel);
             model.addAttribute("motivo_consulta", motivo_consulta);

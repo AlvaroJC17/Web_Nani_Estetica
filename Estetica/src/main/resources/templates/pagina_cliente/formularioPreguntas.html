@@ -74,11 +74,6 @@
             		<option th:value="Seleccione" th:text="Seleccione" th:selected="${fuma == '' || fuma == null}"></option>
                     <option th:value="SI" th:text="SI" th:selected="${fuma == 'SI'}"></option>
                     <option th:value="NO" th:text="NO" th:selected="${fuma == 'NO'}"></option>
-
-            
-             <!-- <option selected>Seleccione</option>
-              <option value="SI">SI</option>
-              <option value="NO">NO</option> -->
             </select>
           </div>
           <div class="col-md-6">
@@ -99,10 +94,7 @@
               <option th:value="Poco" th:text="Poco" th:selected="${alcohol == 'Poco'}"></option>
               <option th:value="Moderado" th:text="Moderado" th:selected="${alcohol == 'Moderado'}"></option>
               <option th:value="Mucho" th:text="Mucho" th:selected="${alcohol == 'Mucho'}"></option>
-          <!--    <option selected>Seleccione</option>
-              <option value="Poco">Poco</option>
-              <option value="Moderado">Moderado</option>
-              <option value="Mucho">Mucho</option> -->
+              <option th:value="'No consumo alcohol'" th:text="'No consumo alcohol'" th:selected="${alcohol == 'No consumo alcohol'}"></option>
             </select>
           </div>
           <div class="col-md-6">
@@ -119,33 +111,33 @@
             <div class="col-md-6">
               <label for="ejercicios" class="form-label texto-label">¿Realiza algun ejercicio?</label>
               <select id="ejercicios" name="ejercicios" class="form-select rounded-0 " aria-label="Default select example">
-              <option selected>Seleccione</option>
-              <option value="SI">SI</option>
-              <option value="NO">NO</option>
+              <option th:value="Seleccione" th:text="Seleccione" th:selected="${ejercicios == '' || ejercicios == null}"></option>
+                    <option th:value="SI" th:text="SI" th:selected="${ejercicios == 'SI'}"></option>
+                    <option th:value="NO" th:text="NO" th:selected="${ejercicios == 'NO'}"></option>
             </select>
           </div>
           <div class="col-md-6">
-            <label for="deporte" class="form-label texto-label">AGREGAR PREGUNTA</label>
-            <select id="deporte" name="deporte" class="form-select rounded-0 " aria-label="Default select example">
-            <option selected>Seleccione</option>
-            <option value="SI">SI</option>
-            <option value="NO">NO</option>
-          </select>
-        </div>
+        <label for="ciclo_menstrual" class="form-label texto-label">Ciclo menstrual</label>
+        <select id="ciclo_menstrual" name="ciclo_menstrual" class="form-select rounded-0 " aria-label="Default select example">
+        <option th:value="Seleccione" th:text="Seleccione" th:selected="${ciclo_menstrual == '' || ciclo_menstrual == null}"></option>
+         <option th:value="Regular" th:text="Regular" th:selected="${ciclo_menstrual == 'Regular'}"></option>
+         <option th:value="Irregular" th:text="Irregular" th:selected="${ciclo_menstrual == 'Irregular'}"></option>
+      </select>
+    </div>
       </div>
       
       <div class="mb-3 row">
   <div class="col-md-6">
     <label for="medicamentos" class="form-label texto-label">¿Toma algun medicamento?</label>
     <select id="medicamentos" name="medicamentos" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="SI">SI</option>
-    <option value="NO">NO</option>
+    <option th:value="Seleccione" th:text="Seleccione" th:selected="${medicamentos == '' || medicamentos == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${medicamentos == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${medicamentos == 'NO'}"></option>
   </select>
 </div>
 <div class="col-md-6">
   <label for="nombreMedicamento" class="form-label texto-label">¿Indique el nombre del medicamento?</label>
-  <input type="text" name="nombreMedicamento" class="form-control" id="nombreMedicamento" placeholder="">
+  <input type="text" th:value="${nombreMedicamento}" name="nombreMedicamento" class="form-control" id="nombreMedicamento" placeholder="Nombre medicamento">
 </div>
 </div>
 			 
@@ -153,54 +145,36 @@
             <div class="col-md-6">
               <label for="embarazo" class="form-label texto-label">¿Estas embarazada?</label>
               <select id="embarazo" name="embarazo" class="form-select rounded-0 " aria-label="Default select example">
-              <option selected>Seleccione</option>
-              <option value="SI">Si</option>
-              <option value="NO">No</option>
+              <option th:value="Seleccione" th:text="Seleccione" th:selected="${embarazo == '' || embarazo == null}"></option>
+                    <option th:value="SI" th:text="SI" th:selected="${embarazo == 'SI'}"></option>
+                    <option th:value="NO" th:text="NO" th:selected="${embarazo == 'NO'}"></option>
             </select>
           </div>
           <div class="col-md-6">
             <label for="amamantando" class="form-label texto-label">¿Estas amamantando?</label>
             <select id="amamantando" name="amamantando" class="form-select rounded-0 " aria-label="Default select example">
-            <option selected>Seleccione</option>
-            <option value="SI">SI</option>
-            <option value="NO">NO</option>
+            <option th:value="Seleccione" th:text="Seleccione" th:selected="${amamantando == '' || amamantando == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${amamantando == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${amamantando == 'NO'}"></option>
           </select>
         </div>
       </div>
-      <div class="mb-3 row">
-        <div class="col-md-6">
-          <label for="alcohol" class="form-label texto-label">¿Consumes bebidas alcoholicas?</label>
-          <select id="alcohol" class="form-select rounded-0 " aria-label="Default select example">
-          <option selected>Seleccione</option>
-          <option value="Regularmente">Regularmente</option>
-          <option value="Muy pocas veces">Muy pocas veces</option>
-          <option value="No bebo alcohol">No bebo alcohol</option>
-        </select>
-      </div>
-      <div class="col-md-6">
-        <label for="ciclo_menstrual" class="form-label texto-label">Ciclo menstrual</label>
-        <select id="ciclo_menstrual" name="ciclo_menstrual" class="form-select rounded-0 " aria-label="Default select example">
-        <option selected>Seleccione</option>
-        <option value="Regular">Regular</option>
-        <option value="Irregular">Irregular</option>
-      </select>
-    </div>
-  </div>
+     
   <div class="mb-3 row">
     <div class="col-md-6">
       <label for="alteracion_hormonal" class="form-label texto-label">¿Has presentado alguna alteración hormonal?</label>
       <select id="alteracion_hormonal" name="alteracion_hormonal" class="form-select rounded-0 " aria-label="Default select example">
-      <option selected>Seleccione</option>
-      <option value="SI">SI</option>
-      <option value="NO">NO</option>
+     <option th:value="Seleccione" th:text="Seleccione" th:selected="${alteracion_hormonal == '' || alteracion_hormonal == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${alteracion_hormonal == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${alteracion_hormonal == 'NO'}"></option>
     </select>
   </div>
   <div class="col-md-6">
     <label for="vitaminas" class="form-label texto-label">¿Tomas alguna vitamina?</label>
     <select id="vitaminas" name="vitaminas" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="SI">SI</option>
-    <option value="NO">NO</option>
+     <option th:value="Seleccione" th:text="Seleccione" th:selected="${vitaminas == '' || vitaminas == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${vitaminas == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${vitaminas == 'NO'}"></option>
   </select>
 </div>
 </div>
@@ -208,36 +182,44 @@
   <div class="col-md-6">
     <label for="corticoides" class="form-label texto-label">¿Tomas algun corticoide?</label>
     <select id="corticoides" name="corticoides" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="SI">SI</option>
-    <option value="NO">NO</option>
+    <option th:value="Seleccione" th:text="Seleccione" th:selected="${corticoides == '' || corticoides == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${corticoides == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${corticoides == 'NO'}"></option>
   </select>
 </div>
-<div class="col-md-6">
-  <label for="cual_corticoide" class="form-label texto-label">¿Cual corticoide?</label>
-  <input type="text" class="form-control" id="cual_medicamento" placeholder="">
+
+	 <div class="col-md-6">
+            <label for="hormonas" class="form-label texto-label">¿Tomas hormonas?</label>
+            <select id="hormonas" name="hormonas" class="form-select rounded-0 " aria-label="Default select example">
+            <option th:value="Seleccione" th:text="Seleccione" th:selected="${hormonas == '' || hormonas == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${hormonas == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${hormonas == 'NO'}"></option>
+          </select>
+        </div>
+  <!---->
 </div>
-</div>
+  
+
 
     	<div class="mb-3 row">
           <div class="col-md-6">
-            <label for="hormonas" class="form-label texto-label">¿Tomas hormonas?</label>
-            <select id="hormonas" name="hormonas" class="form-select rounded-0 " aria-label="Default select example">
-            <option selected>Seleccione</option>
-            <option value="SI">SI</option>
-            <option value="NO">NO</option>
-          </select>
-        </div>
+        <label for="tiroides" class="form-label texto-label">¿Paciente con tiroides?</label>
+        <select id="tiroides" name="tiroides" class="form-select rounded-0 " aria-label="Default select example">
+        <option th:value="Seleccione" th:text="Seleccione" th:selected="${tiroides == '' || tiroides == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${tiroides == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${tiroides == 'NO'}"></option>
+      </select>
+    </div>
         <div class="col-md-6">
           <label for="metodo_anticonceptivo" class="form-label texto-label">¿Tomas algun anticonceptivo?</label>
           <select id="metodo_anticonceptivo" name="metodo_anticonceptivo" class="form-select rounded-0 " aria-label="Default select example">
-          <option selected>Seleccione</option>
-          <option value="NO">No</option>
-          <option value="Pastillas">Pastilla</option>
-          <option value="Parche">Parche</option>
-          <option value="Chip">Chip</option>
-          <option value="Inyeccion">Inyeccion</option>
-          <option value="Diu">Diu</option>
+          <option th:value="Seleccione" th:text="Seleccione" th:selected="${metodo_anticonceptivo == '' || metodo_anticonceptivo == null}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${metodo_anticonceptivo == 'NO'}"></option>
+         <option th:value="Pastillas" th:text="Pastillas" th:selected="${metodo_anticonceptivo == 'Pastillas'}"></option>
+         <option th:value="Parche" th:text="Parche" th:selected="${metodo_anticonceptivo == 'Parche'}"></option>
+         <option th:value="Chip" th:text="Chip" th:selected="${metodo_anticonceptivo == 'Chip'}"></option>
+         <option th:value="Inyeccion" th:text="Inyeccion" th:selected="${metodo_anticonceptivo == 'Inyeccion'}"></option>
+         <option th:value="Diu" th:text="Diu" th:selected="${metodo_anticonceptivo == 'Diu'}"></option>
         </select>
       </div>
     </div>
@@ -246,51 +228,53 @@
   <div class="col-md-6">
     <label for="sufre_enfermedad" class="form-label texto-label">¿Tienes algun tipo de enfermedad?</label>
     <select id="sufre_enfermedad" name="sufre_enfermedad" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="SI">SI</option>
-    <option value="NO">NO</option>
+    <option th:value="Seleccione" th:text="Seleccione" th:selected="${sufre_enfermedad == '' || sufre_enfermedad == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${sufre_enfermedad == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${sufre_enfermedad == 'NO'}"></option>
   </select>
 </div>
 <div class="col-md-6">
   <label for="cual_enfermedad" class="form-label texto-label">Mencione cual enfermedad</label>
-  <input type="text" name="cual_enfermedad" class="form-control" id="cual_enfermedad" placeholder="">
+  <input type="text" th:value="${cual_enfermedad}" name="cual_enfermedad" class="form-control" id="cual_enfermedad" placeholder="">
 </div>
 </div>
 
     <div class="mb-3 row">
-      <div class="col-md-6">
-        <label for="tiroides" class="form-label texto-label">¿Paciente con tiroides?</label>
-        <select id="tiroides" name="tiroides" class="form-select rounded-0 " aria-label="Default select example">
-        <option selected>Seleccione</option>
-        <option value="SI">SI</option>
-        <option value="NO">NO</option>
-      </select>
-    </div>
+     
     <div class="col-md-6">
       <label for="paciente_oncologica" class="form-label texto-label">¿Paciente oncologico?</label>
       <select id="paciente_oncologica" name="paciente_oncologica" class="form-select rounded-0 " aria-label="Default select example">
-      <option selected>Seleccione</option>
-      <option value="SI">SI</option>
-      <option value="NO">NO</option>
+      <option th:value="Seleccione" th:text="Seleccione" th:selected="${paciente_oncologica == '' || paciente_oncologica == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${paciente_oncologica == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${paciente_oncologica == 'NO'}"></option>
     </select>
   </div>
+  <div class="col-md-6">
+      <label for="consumo_carbohidratos" class="form-label texto-label">¿Cual es su consumo de carbohidratos?</label>
+    <select id="consumo_carbohidratos" name="consumo_carbohidratos" class="form-select rounded-0 " aria-label="Default select example">
+    <option th:value="Seleccione" th:text="Seleccione" th:selected="${consumo_carbohidratos == '' || consumo_carbohidratos == null}"></option>
+         <option th:value="Poco" th:text="Poco" th:selected="${consumo_carbohidratos == 'Poco'}"></option>
+         <option th:value="Moderado" th:text="Moderado" th:selected="${consumo_carbohidratos == 'Moderado'}"></option>
+         <option th:value="Abundante" th:text="Abundante" th:selected="${consumo_carbohidratos == 'Abundante'}"></option>
+  </select>
+</div>
 </div>
 
 <div class="mb-3 row">
   <div class="col-md-6">
     <label for="fractura_facial" class="form-label texto-label">¿Tienes una fractura facial?</label>
     <select id="fractura_facial" name="fractura_facial" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="SI">SI</option>
-    <option value="NO">NO</option>
+    <option th:value="Seleccione" th:text="Seleccione" th:selected="${fractura_facial == '' || fractura_facial == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${fractura_facial == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${fractura_facial == 'NO'}"></option>
   </select>
 </div>
   <div class="col-md-6">
     <label for="tiene_implantes" class="form-label texto-label">¿Tiene implantes?</label>
     <select id="tiene_implantes" name="tiene_implantes" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="SI">SI</option>
-    <option value="NO">NO</option>
+        <option th:value="Seleccione" th:text="Seleccione" th:selected="${tiene_implantes == '' || tiene_implantes == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${tiene_implantes == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${tiene_implantes == 'NO'}"></option>
   </select>
 </div>
 </div>
@@ -299,14 +283,14 @@
 <div class="col-md-6">
   <label for="cirugia_estetica" class="form-label texto-label">¿Tienes alguna cirugia estetica?</label>
   <select id="cirugia_estetica" name="cirugia_estetica" class="form-select rounded-0 " aria-label="Default select example">
-  <option selected>Seleccione</option>
-  <option value="SI">SI</option>
-  <option value="NO">NO</option>
+  <option th:value="Seleccione" th:text="Seleccione" th:selected="${cirugia_estetica == '' || cirugia_estetica == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${cirugia_estetica == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${cirugia_estetica == 'NO'}"></option>
 </select>
 </div>
 <div class="col-md-6">
   <label for="indique_cirugia_estetica" class="form-label texto-label">Indique cirugia estetica</label>
-  <input type="text" name="indique_cirugia_estetica" class="form-control" id="indique_cirugia_estetica" placeholder="">
+  <input type="text" th:value="${indique_cirugia_estetica}" name="indique_cirugia_estetica" class="form-control" id="indique_cirugia_estetica" placeholder="">
 </div>
 </div>
 
@@ -314,17 +298,17 @@
   <div class="col-md-6">
     <label for="marca_pasos" class="form-label texto-label">¿Tienes marca pasos?</label>
     <select id="marca_pasos" name="marca_pasos" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="SI">SI</option>
-    <option value="NO">NO</option>
+    <option th:value="Seleccione" th:text="Seleccione" th:selected="${marca_pasos == '' || marca_pasos == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${marca_pasos == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${marca_pasos == 'NO'}"></option>
   </select>
 </div>
 <div class="col-md-6">
   <label for="horas_sueno" class="form-label texto-label">¿Cuantas horas de sueño al dia?</label>
   <select id="horas_sueno" name="horas_sueno" class="form-select rounded-0 " aria-label="Default select example">
-  <option selected>Seleccione</option>
-  <option value="Mas de ocho horas">Mas de ocho horas</option>
-  <option value="Menos de ocho horas">Menos de ocho horas</option>
+  <option th:value="Seleccione" th:text="Seleccione" th:selected="${horas_sueno == '' || horas_sueno == null}"></option>
+     <option th:value="'Mas de ocho horas'" th:text="'Mas de ocho horas'" th:selected="${horas_sueno == 'Mas de ocho horas'}"></option>
+     <option th:value="'Menos de ocho horas'" th:text="'Menos de ocho horas'" th:selected="${horas_sueno == 'Menos de ocho horas'}"></option>
 </select>
 </div>
 </div>
@@ -332,14 +316,14 @@
     <div class="mb-3 row">
 <div class="col-md-6">
   <label for="exposicion_sol" class="form-label texto-label">¿horas de exposicion al sol tienes al día?</label>
-  <input type="number" name="exposicion_sol" class="form-control" id="exposicion_sol" placeholder="Horas aproximadas de exposicion">
+  <input type="number" th:value="${exposicion_sol}" name="exposicion_sol" class="form-control" id="exposicion_sol" placeholder="Horas aproximadas de exposicion">
 </div>
   <div class="col-md-6">
     <label for="protector_solar" class="form-label texto-label">¿Usas protector solar?</label>
     <select id="protector_solar" name="protector_solar" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="SI">SI</option>
-    <option value="NO">NO</option>
+    <option th:value="Seleccione" th:text="Seleccione" th:selected="${protector_solar == '' || protector_solar == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${protector_solar == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${protector_solar == 'NO'}"></option>
   </select>
 </div>
 </div>
@@ -348,58 +332,50 @@
   <div class="col-md-6">
     <label for="reaplica_protector" class="form-label texto-label">¿Reaplica el protector solar durante el dia?</label>
     <select id="reaplica_protector" name="reaplica_protector" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="SI">SI</option>
-    <option value="NO">NO</option>
+    <option th:value="Seleccione" th:text="Seleccione" th:selected="${reaplica_protector == '' || reaplica_protector == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${reaplica_protector == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${reaplica_protector == 'NO'}"></option>
   </select>
 </div>
 <div class="col-md-6">
-      <label for="consumo_carbohidratos" class="form-label texto-label">¿Cual es su consumo de carbohidratos?</label>
-    <select id="consumo_carbohidratos" name="consumo_carbohidratos" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="Poco">Poco</option>
-    <option value="Moderado">Moderado</option>
-    <option value="Abundante">Abundante</option>
+    <label for="motivo_consulta" class="form-label texto-label">¿Cual es el motivo de la consulta?</label>
+    <select id="motivo_consulta" name="motivo_consulta" class="form-select rounded-0 " aria-label="Default select example">
+   	<option th:value="Seleccione" th:text="Seleccione" th:selected="${motivo_consulta == '' || motivo_consulta == null}"></option>
+         <option th:value="'Enfermedad de la piel'" th:text="'Enfermedad de la piel'" th:selected="${motivo_consulta == 'Enfermedad de la piel'}"></option>
+         <option th:value="'Condicion de la piel'" th:text="'Condicion de la piel'" th:selected="${motivo_consulta == 'Condicion de la piel'}"></option>
+         <option th:value="'Prevencion'" th:text="'Prevencion'" th:selected="${motivo_consulta == 'Prevencion'}"></option>
   </select>
 </div>
+
 </div>
 
 <div class="mb-3 row">
   <div class="col-md-6">
     <label for="tratamientosFacialesAnteriores" class="form-label texto-label">¿Te has hecho tratamientos faciales anteriormente?</label>
     <select id="tratamientosFacialesAnteriores" name="tratamientosFacialesAnteriores" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="SI">SI</option>
-    <option value="NO">NO</option>
+    <option th:value="Seleccione" th:text="Seleccione" th:selected="${tratamientosFacialesAnteriores == '' || tratamientosFacialesAnteriores == null}"></option>
+         <option th:value="SI" th:text="SI" th:selected="${tratamientosFacialesAnteriores == 'SI'}"></option>
+         <option th:value="NO" th:text="NO" th:selected="${tratamientosFacialesAnteriores == 'NO'}"></option>
     
   </select>
 </div>
 <div class="col-md-6">
   <label for="resultados_tratamiento_anterior" class="form-label texto-label">¿Resultado del tratamiento aterior?</label>
     <select id="resultados_tratamiento_anterior" name="resultados_tratamiento_anterior" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="Bueno">Bueno</option>
-    <option value="Regular">Regular</option>
-    <option value="Malo">Malo</option>
+    <option th:value="Seleccione" th:text="Seleccione" th:selected="${resultados_tratamiento_anterior == '' || resultados_tratamiento_anterior == null}"></option>
+         <option th:value="Bueno" th:text="Bueno" th:selected="${resultados_tratamiento_anterior == 'Bueno'}"></option>
+         <option th:value="Regular" th:text="Regular" th:selected="${resultados_tratamiento_anterior == 'Regular'}"></option>
+         <option th:value="Malo" th:text="Malo" th:selected="${resultados_tratamiento_anterior == 'Malo'}"></option>
   </select>
 </div>
 </div>
 
 
 <div class="mb-3 row">
-  <div class="col-md-6">
-    <label for="motivo_consulta" class="form-label texto-label">¿Cual es el motivo de la consulta?</label>
-    <select id="motivo_consulta" name="motivo_consulta" class="form-select rounded-0 " aria-label="Default select example">
-    <option selected>Seleccione</option>
-    <option value="Enfermedad de la piel">Enfermedad de la piel</option>
-    <option value="Condicion de la piel">Condicion de la piel</option>
-    <option value="Prevencion">prevencion</option>
-    <option value="Otro">otro</option>
-  </select>
-</div>
-<div class="col-md-6">
-  <label for="cuidado_de_piel" class="form-label texto-label">¿como te cuidas las piel y que productos usas?</label>
-  <input type="text" name="cuidado_de_piel" class="form-control" id="cuidado_de_piel" placeholder="">
+  
+<div class="col-md-12">
+  <label for="cuidado_de_piel" class="form-label texto-label">¿Describe brevemente como te cuidas las piel y que productos usas?</label>
+  <textarea type="text" style="height: 100px;" th:value="${cuidado_de_piel}" name="cuidado_de_piel" class="form-control" id="cuidado_de_piel" placeholder=""></textarea>
 </div>
 	<input type="hidden" class="form-control" name="tratamiento" id="tratamiento" th:value="${tratamiento}" placeholder="">
 	<input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">

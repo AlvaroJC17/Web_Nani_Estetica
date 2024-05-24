@@ -249,49 +249,49 @@ public class ServicioCliente {
 				String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
 				String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta) throws MiExcepcion {
 		 
-		 if (fuma == null || fuma.isEmpty() || fuma.trim().isEmpty()) 
+		 if (fuma == null || fuma.isEmpty() || fuma.trim().isEmpty() || fuma.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar si fuma");
 		 
-		 if (drogas == null || drogas.isEmpty() || drogas.trim().isEmpty()) 
+		 if (drogas == null || drogas.isEmpty() || drogas.trim().isEmpty() || drogas.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar si consume alguna droga");
 		 
-		 if (alcohol == null || alcohol.isEmpty() || alcohol.trim().isEmpty()) 
+		 if (alcohol == null || alcohol.isEmpty() || alcohol.trim().isEmpty() || alcohol.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar su consumo aproximado de alcohol");
 		 
-		 if (deportes == null || deportes.isEmpty() || deportes.trim().isEmpty()) 
+		 if (deportes == null || deportes.isEmpty() || deportes.trim().isEmpty() || deportes.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar si realiza algun deporte");
 		 
-		 if (ejercicios == null || ejercicios.isEmpty() || ejercicios.trim().isEmpty()) 
+		 if (ejercicios == null || ejercicios.isEmpty() || ejercicios.trim().isEmpty() || ejercicios.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar si realiza algun ejercicio");
 		 
-		 if (medicamentos == null || medicamentos.isEmpty() || medicamentos.trim().isEmpty()) 
+		 if (medicamentos == null || medicamentos.isEmpty() || medicamentos.trim().isEmpty() || medicamentos.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar si toma algun medicamento");
 		 
-		 if (nombreMedicamento == null || nombreMedicamento.isEmpty() || nombreMedicamento.trim().isEmpty()) 
+		 if (nombreMedicamento == null || nombreMedicamento.isEmpty() || nombreMedicamento.trim().isEmpty() || nombreMedicamento.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar el nombre del medicamento");
 		 
-		 if (embarazo == null || embarazo.isEmpty() || embarazo.trim().isEmpty()) 
+		 if (embarazo == null || embarazo.isEmpty() || embarazo.trim().isEmpty() || embarazo.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar si esta embarazada");
 		 
-		 if (amamantando == null || amamantando.isEmpty() || amamantando.trim().isEmpty()) 
+		 if (amamantando == null || amamantando.isEmpty() || amamantando.trim().isEmpty() || amamantando.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar si esta amamantando");
 		 
-		 if (ciclo_menstrual == null || ciclo_menstrual.isEmpty() || ciclo_menstrual.trim().isEmpty()) 
+		 if (ciclo_menstrual == null || ciclo_menstrual.isEmpty() || ciclo_menstrual.trim().isEmpty() || ciclo_menstrual.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique como es su ciclo menstrual");
 		 
-		 if (alteracion_hormonal == null || alteracion_hormonal.isEmpty() || alteracion_hormonal.trim().isEmpty()) 
+		 if (alteracion_hormonal == null || alteracion_hormonal.isEmpty() || alteracion_hormonal.trim().isEmpty() || alteracion_hormonal.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si ha tenido o tiene alteraciones hormonales");
 		 
-		 if (vitaminas == null || vitaminas.isEmpty() || vitaminas.trim().isEmpty()) 
+		 if (vitaminas == null || vitaminas.isEmpty() || vitaminas.trim().isEmpty() || vitaminas.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si toma alguna vitamina");
 		 
-		 if (corticoides == null || corticoides.isEmpty() || corticoides.trim().isEmpty()) 
+		 if (corticoides == null || corticoides.isEmpty() || corticoides.trim().isEmpty() || corticoides.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si toma corticoides");
 		 
-		 if (hormonas == null || hormonas.isEmpty() || hormonas.trim().isEmpty()) 
+		 if (hormonas == null || hormonas.isEmpty() || hormonas.trim().isEmpty() || hormonas.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si toma hormonas");
 		 
-		 if (metodo_anticonceptivo == null || metodo_anticonceptivo.isEmpty() || metodo_anticonceptivo.trim().isEmpty()) 
+		 if (metodo_anticonceptivo == null || metodo_anticonceptivo.isEmpty() || metodo_anticonceptivo.trim().isEmpty() || metodo_anticonceptivo.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indique si utiliza algun metodo anticonceptivo");
 		 
 		 if (sufre_enfermedad == null || sufre_enfermedad.isEmpty() || sufre_enfermedad.trim().isEmpty()) 
