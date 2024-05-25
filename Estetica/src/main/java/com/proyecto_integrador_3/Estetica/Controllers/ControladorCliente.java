@@ -280,7 +280,6 @@ public class ControladorCliente {
 			String error = e.getMessage();
 			model.addAttribute("datosCliente", datosCliente);
 			model.addAttribute("tratamiento", tratamiento);
-			model.addAttribute("error", error);
             model.addAttribute("fuma", fuma);
             model.addAttribute("drogas", drogas);
             model.addAttribute("alcohol", alcohol);
@@ -314,6 +313,7 @@ public class ControladorCliente {
             model.addAttribute("resultados_tratamiento_anterior", resultados_tratamiento_anterior);
             model.addAttribute("cuidado_de_piel", cuidado_de_piel);
             model.addAttribute("motivo_consulta", motivo_consulta);
+            model.addAttribute("error", error);
             model.addAttribute("showModal", true);
 			return "/pagina_cliente/formularioPreguntas";
 			//return "redirect:/formularioPreguntas?email=" + email + "&error=" + error + "&tratamiento=" + tratamiento;
