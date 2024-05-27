@@ -398,19 +398,20 @@
     
     <!--Modal mensaje de error, es un modal de bootstrap con algunas modificaciones para que
     funcione el jquery. La variable ${showModal} viene del metodo guardarFormularioTurnos-->
+    
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
      th:classappend="${showModal} ? 'show d-block' : ''" th:style="${showModal} ? 'display: block;' : 'display: none;'">
     <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="errorModalLabel">Error</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div style="background-color: #ebdf9d;" class="modal-content">
+            <div class="modal-header border border-0 d-flex justify-content-center ">
+			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+      <!--  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
             </div>
-            <div class="modal-body">
+            <div class="modal-body text-center text-danger text-uppercase fw-bold">
                 <p th:text="${error}">Ha ocurrido un error. Por favor, revise los datos ingresados.</p>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            <div class="modal-footer border border-0">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>

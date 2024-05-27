@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.aspectj.apache.bcel.classfile.Module.Require;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,6 +30,7 @@ import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 @Controller
 //@RestController
 public class ControladorAdmin {
+
 
 	@Autowired
 	public RepositorioAdmin repositorioAdmin;
@@ -72,12 +74,14 @@ public class ControladorAdmin {
 		return "/pagina_admin/misdatosAdmin";	
 	}
 	
+	
 	@GetMapping("/homeAdmin")
 	public String homeAdmin(@RequestParam(name = "email") String email, ModelMap model) { //El valor de esta variable viene del metodo login en controladorPagina
 		List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosAdmin", datosAdmin);
 		return "/pagina_admin/homeAdmin";	
 	}
+	
 	
 	@PostMapping("/guardarDatosAdmin")
 	public String guardarDatosAdmin(
@@ -101,7 +105,6 @@ public class ControladorAdmin {
 			
 	
 	
-	
 	//A este metodo le paso la variable mail y la lista por dos model diferentes para que cuando cargue
 	//la pagina se pueda visualizar el nav y la lista de usuarios, sino le paso el mail el nav no se ve
 	@GetMapping("/listarUsuariosVisibles")
@@ -113,22 +116,16 @@ public class ControladorAdmin {
 	}
 	
 	
-	
 	//Muestra una pagina con la lista de usuarios oculta, esto porque queremos que el admin
 	//busque los usuarios por nombre, dni o email y no que los busque en una lista
 	@GetMapping("/listarUsuariosOcultos")
     public String listarUsuarios(
     		@RequestParam(name = "email") String email, //Esta variable proviene de homeAdmin
-    		@RequestParam(name = "exito", required = false) String exito, //El requiered=false le indica al metodo que el valor de esta variable es opcional y puede llegar null, asi no se rempe el programa
-    		@RequestParam(name = "error", required = false) String error,
     		Model model) throws MiExcepcion {
 
 		model.addAttribute("usuariosEmail", email); //Con este mail mostramos el nav en este metodo
-		model.addAttribute("exito", exito); //inyectamos mensaje de exito si es necesario
-		model.addAttribute("error", error); //inyectamos mensaje de error si es necesario
 		return "/pagina_admin/portalAdmin";
 	}
-	
 	
 	
 	//Buscamos usuario por dni, nombre o email, la variable emailAdmin es para pasar el mail de admin y poder visualizar el nav
@@ -136,22 +133,38 @@ public class ControladorAdmin {
 	public String buscarDniNombreEmail(
 			@RequestParam(name = "dato") String dato,  //la variable dato puede ser un nombre, dni o mail
 			@RequestParam(name = "emailAdmin") String emailAdmin,
+			@RequestParam(name ="dato2", required = false) String dato2,
+			//@RequestParam(name = "activarMensaje", required = false) Boolean activarMensaje,
 			Model model) {
 		
-		String error;
+		/*Dato dos lo usamos como una variable para recibir la informacion del modal de exito de portalAdmin
+		 * no puedo usar le mismo nobre de dato porque me da error por lo que tuve que crear dato2, una vez
+		 * recibida la variable primero verifica si es vacia, si esta vacia se ejecuta el metodo normalmente, sino
+		 * esta vacia entonces le asigna el valor de dato2 a dato y se ejecuta el metodo normalmente */
+		if (dato2 != null) {
+			dato = dato2;
+		}
+					
+		String error = null;
 		String datoSinEspacios = dato.trim(); //Le quitamos los espacios en blanco al principio y final de la palabra
 
 		//Validamos que la busqueda no se haya hecho en blanco y mostramos un mensaje
 		if (datoSinEspacios.isEmpty() || Objects.equals(datoSinEspacios, null)) {
 			error = "Indique un numero de DNI, nombre o email para realizar la busqueda";
-			return "redirect:/listarUsuariosOcultos?email=" + emailAdmin + "&error=" + error;
+			model.addAttribute("usuariosEmail", emailAdmin);
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+			return "/pagina_admin/portalAdmin";
 		}
 		
 		//Validamos que el usuario buscado solo por dni o emial exista en la base de datos, sino mandamos un mensaje de error.
 		//Solo validamos email y dni porque si resultado siempre va a ser un unico registro y el metodo isPresent solo acepta un solo registro como resultado
 		if (!servicioUsuario.buscarPorDniOptional(datoSinEspacios).isPresent() &&  !servicioUsuario.buscarPorEmailOptional(datoSinEspacios).isPresent() && servicioUsuario.buscarNombre(datoSinEspacios).isEmpty()) {
 			error = "Usuario no se encuentra registrado";
-			return "redirect:/listarUsuariosOcultos?email=" + emailAdmin + "&error=" + error;
+			model.addAttribute("usuariosEmail", emailAdmin);
+				model.addAttribute("error", error);
+				model.addAttribute("showModalError", true);
+				return "/pagina_admin/portalAdmin";
 		}
 		
 		// Si cumple las condiciones para pasar los condicionales de arriba, entonces
@@ -163,24 +176,84 @@ public class ControladorAdmin {
 		if (!usuarioDni.isEmpty()) {
 			model.addAttribute("usuarios", usuarioDni); // asignamos el valor de la variable administradoresDni a la variable html administradores y asi poder iterarla en el documento
 			model.addAttribute("usuariosEmail", emailAdmin);
+			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
 			return "/pagina_admin/portalAdmin";
 		}	
+						
 		if (!usuarioNombre.isEmpty()) {
 			model.addAttribute("usuarios", usuarioNombre);
 			model.addAttribute("usuariosEmail", emailAdmin);
+			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
 			return "/pagina_admin/portalAdmin";
 		}	
+
+		/*Le enviamos el valor de dato2 al modal de exito. Solo lo colocamos en este pedazo de codigo porque solo estamos
+		 * usando el mail de los usuario como dato2*/
 		if (!usuarioEmail.isEmpty()) {
 			model.addAttribute("usuarios", usuarioEmail);
 			model.addAttribute("usuariosEmail", emailAdmin);
+			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
+			model.addAttribute("dato2", datoSinEspacios);  
+			/*Esta variable dato2 se usa en la segunda vuelta del metodo, osea despues de que un usuario
+			 * busca a la persona y le sale el noombre con los datos, este selecciona una opcion de alta, baja,
+			 * elimiar o rol, pero si no selecciona un usario con el check entonces se usa esta variable para
+			 * activar el modal con el mensaje de advertencia*/
+			return "/pagina_admin/portalAdmin";
+		}			
+			model.addAttribute("usuariosEmail", emailAdmin);
+			model.addAttribute("dato2", datoSinEspacios);
+			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
+			return "/pagina_admin/portalAdmin";
+	}
+			
+	/*Este metodo es para cuando el usuario no selecciona ningun usuario con el check,
+	 * entonces se muestre un modal de advertencia y al cerrarse quede sobre la misma pagina
+	 * donde estan los datos del usuario encontrado y asi no tener que volver a buscarlo en el buscador*/
+	@GetMapping("/mensajeErrorNoID")
+	public String mensajeErrorNoID(
+			@RequestParam(name = "emailAdmin", required = false) String emailAdministrador,
+			@RequestParam(name = "datoIngresadoUsuario") String datoIngresadoUsuario,
+			Model model){
+		
+		List<Usuario> usuarioDni = servicioUsuario.buscarDni(datoIngresadoUsuario);
+		List<Usuario>	usuarioNombre = servicioUsuario.buscarNombre(datoIngresadoUsuario);
+		List<Usuario> usuarioEmail = servicioUsuario.buscarPorEmail(datoIngresadoUsuario);
+		
+		String error = "Es necesario seleccionar un usuario";
+		if (!usuarioDni.isEmpty()) {
+			System.out.println("Entro en dni");
+			model.addAttribute("usuarios", usuarioDni); // Esta variable hace la iteracion de los usuarios a mostrar
+			model.addAttribute("usuariosEmail", emailAdministrador); // sirve para mostrar el nav
+			model.addAttribute("dato2", datoIngresadoUsuario); //Esta variable es para el modal
+			model.addAttribute("dato", datoIngresadoUsuario); // esta variable dato es para el hiden imput del formulario modificarUsuario 
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+			return "/pagina_admin/portalAdmin";
+			
+		}else if(!usuarioNombre.isEmpty()) {
+			System.out.println("Entro en nombre");
+			model.addAttribute("usuarios", usuarioNombre);
+			model.addAttribute("usuariosEmail", emailAdministrador);
+			model.addAttribute("dato2", datoIngresadoUsuario);
+			model.addAttribute("dato", datoIngresadoUsuario);
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+			return "/pagina_admin/portalAdmin";
+			
+		}else if(!usuarioEmail.isEmpty()) {
+			System.out.println("Entro en email");
+			model.addAttribute("usuarios", usuarioEmail);
+			model.addAttribute("usuariosEmail", emailAdministrador);
+			model.addAttribute("dato2", datoIngresadoUsuario);
+			model.addAttribute("dato", datoIngresadoUsuario);
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
 			return "/pagina_admin/portalAdmin";
 		}
-		model.addAttribute("usuariosEmail", emailAdmin);
 		return "/pagina_admin/portalAdmin";
 	}
 		
-	
-	
+			
 	// En este metodo unificamos la edicion y eliminacion de un usuario a traves de un solo formulario
 	// usando el action como valor para las diferentes condiciones
 	@PostMapping("/modificarUsuario")
@@ -189,6 +262,8 @@ public class ControladorAdmin {
 			@RequestParam(name = "nuevoRol") String nuevoRolNombre,
             @RequestParam(name = "emailAdministrador") String emailAdministrador,
             @RequestParam(name = "action") String action,
+            @RequestParam(name = "usuarioEmail", required = false) String usuarioEmail,
+            @RequestParam(name = "dato", required = false) String dato, //viene del formulario modificarUsuario y esta su vez viene del metodo buscarDNIoNombre
             Model model) {
 		
 		String exito;
@@ -196,12 +271,11 @@ public class ControladorAdmin {
 		
 		//Validamos que el id no venga vacio, esto pasa cuando le dan a una opcion sin seleccionar a un usuario
 		if (Objects.equals(id, null)) {
-			model.addAttribute("error", "Es necesario seleccionar un usuario!!");
-			model.addAttribute("usuariosEmail", emailAdministrador);
-			return "/pagina_admin/portalAdmin"; //retorno a este pagina porque sin id no tengo info del usuario que mostrar
+			/*Pasamos los datos del mail de usuario y mail de admin al metodo mensajeError para poder
+			 * visualizar el usuario buscado y que se despliegue bien el nav y la pagina.*/
+			return "redirect:/mensajeErrorNoID?emailAdmin=" + emailAdministrador + "&datoIngresadoUsuario=" + dato ;
 		}
-		
-	
+			
 		//Validamos que la opcion rol no sea "Modifical rol" y pasamos el valor de String a Rol
 		Rol nuevoRol = null;
 		
@@ -223,37 +297,57 @@ public class ControladorAdmin {
 		// Buscamos el activo y el rol actual para compararlo con el que selecciono el usuario y en caso que sean iguales mostrar un mensaje de error
 		Rol rolActual = null;
 		Boolean activoActual = null;
-		Optional <Usuario> rolActualUsuario = servicioUsuario.buscarPorIdOptional(id);
-		if (rolActualUsuario.isPresent()) {
-			Usuario rolUsuarioActual = rolActualUsuario.get();
+		String email = null;
+		Optional <Usuario> rolEmailActualUsuario = servicioUsuario.buscarPorIdOptional(id);
+		if (rolEmailActualUsuario.isPresent()) {
+			Usuario rolUsuarioActual = rolEmailActualUsuario.get();
 			rolActual = rolUsuarioActual.getRol();
 			activoActual = rolUsuarioActual.getActivo();
+			email = rolUsuarioActual.getEmail();
 		}
 		
+		List<Usuario> usuarios = servicioUsuario.buscarId(id);
 		if (action.equals("modificarRol") && nuevoRol != null) {
 			if (!rolActual.equals(nuevoRol)) { // si los roles son direfentes ejecuta esto
 				//metodo para moficar el rol
-				exito = "Actializacion realizada correctamente";
 				servicioUsuario.modificarRol(id, nuevoRol);
-				return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailAdministrador + "&exito=" + exito;
+				exito = "Actializacion realizada correctamente";
+				model.addAttribute("usuariosEmail", emailAdministrador);
+				model.addAttribute("showModalExito", true);
+				model.addAttribute("usuarios", usuarios);
+				model.addAttribute("exito", exito);
+				model.addAttribute("dato2",email); // enviamos el mismo mail del usuario como dato para el formulario de buscarDNIoNombre
+				return "/pagina_admin/portalAdmin";
 			}else {
 				error = "El usuario ya posee un rol de " + nuevoRol;
-				return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailAdministrador + "&error=" + error;
+				model.addAttribute("usuariosEmail", emailAdministrador);
+				model.addAttribute("usuarios", usuarios);
+				model.addAttribute("error", error);
+				model.addAttribute("showModalError", true);
+				return "/pagina_admin/portalAdmin";
 			}
-				
 		}
+				
 															 
 		if (action.equals("altaUsuario")) {
 			try {
 				if (!activoActual.equals(true)) {
-					exito = "Actializacion realizada correctamente";
+					exito = "Alta realizada correctamente";
 					servicioUsuario.altaUsuario(id);
-					return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailAdministrador + "&exito=" + exito;
+					model.addAttribute("usuariosEmail", emailAdministrador);
+					model.addAttribute("usuarios", usuarios);
+					model.addAttribute("exito", exito);
+					model.addAttribute("showModalExito", true);
+					model.addAttribute("dato2",email);
+					return "/pagina_admin/portalAdmin";
 				}else {
 					error = "El usuario ya se encuentra activo";
-					return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailAdministrador + "&error=" + error;
-				}
-					
+					model.addAttribute("usuariosEmail", emailAdministrador);
+					model.addAttribute("usuarios", usuarios);
+					model.addAttribute("error", error);
+					model.addAttribute("showModalError", true);
+					return "/pagina_admin/portalAdmin";
+				}					
 			} catch (Exception e) {
 				System.out.println("No se actualizo el alta del Usuario....");
 				e.printStackTrace();
@@ -264,12 +358,21 @@ public class ControladorAdmin {
 			try {
 				//metodo para modificar el activo del usuario a False
 				if (!activoActual.equals(false)) {
-					exito = "Actualizacion realizada correctamente";
+					exito = "Baja realizada correctamente";
 					servicioUsuario.bajaUsuario(id);
-					return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailAdministrador + "&exito=" + exito;
+					model.addAttribute("usuariosEmail", emailAdministrador);
+					model.addAttribute("usuarios", usuarios);
+					model.addAttribute("exito", exito);
+					model.addAttribute("showModalExito", true);
+					model.addAttribute("dato2",email);
+					return "/pagina_admin/portalAdmin";
 				}else {
 					error = "El usuario ya se encuentra inactivo";
-					return "redirect:/listarUsuariosPorId?id=" + id + "&email=" + emailAdministrador + "&error=" + error;
+					model.addAttribute("usuariosEmail", emailAdministrador);
+					model.addAttribute("usuarios", usuarios);
+					model.addAttribute("error", error);
+					model.addAttribute("showModalError", true);
+					return "/pagina_admin/portalAdmin";
 				}
 				
 			} catch (Exception e) {
@@ -284,10 +387,19 @@ public class ControladorAdmin {
 				servicioUsuario.borrarUsuario(id);
 				servicioPersona.borrarPersona(id);
 				exito = "Usuario eliminado correctamente";
-				return "redirect:/listarUsuariosOcultos?email=" + emailAdministrador + "&exito=" + exito; //Enviamos mail y mensaje de exito
+				model.addAttribute("usuariosEmail", emailAdministrador);
+				model.addAttribute("exito", exito);
+				model.addAttribute("showModalBorradoExitoso", true);
+				//model.addAttribute("dato2",email);
+				return "/pagina_admin/portalAdmin";
+				//return "redirect:/listarUsuariosOcultos?email=" + emailAdministrador + "&exito=" + exito; //Enviamos mail y mensaje de exito
 			} catch (Exception e) {
 				error = "Usuario no se pudo eliminar";
-				return "redirect:/listarUsuariosOcultos?email=" + emailAdministrador + "&error=" + error; //Enviamos mail y mensaje de error;
+				model.addAttribute("usuariosEmail", emailAdministrador);
+				model.addAttribute("error", error);
+				model.addAttribute("showModalError", true);
+				return "/pagina_admin/portalAdmin";
+				//return "redirect:/listarUsuariosOcultos?email=" + emailAdministrador + "&error=" + error; //Enviamos mail y mensaje de error;
 			}
 		}
 		return "/pagina_admin/portalAdmin";
@@ -296,7 +408,7 @@ public class ControladorAdmin {
 	
 	
 	
-	
+	/*
 	//Lista usuarios y persona haciendo un join de tablas por ID
 	//Este metodo esta relacionado con el de modificarUsuario y la variable mail viene de él
 	@GetMapping("/listarUsuariosPorId")
@@ -314,6 +426,7 @@ public class ControladorAdmin {
 		model.addAttribute("error", error);
 		return "/pagina_admin/portalAdmin";
 	}
+	 */
 	
 	
 	
@@ -384,6 +497,7 @@ public class ControladorAdmin {
 			return "/pagina_admin/cambiarContrasenaAdmin";
 		}
 		
+		
 		//Metodo relacionado con cambiarContrasenaProfesional
 		@PostMapping("actualizarContrasenaAdmin")
 		public String actualizarContrasenaAdmin(
@@ -404,13 +518,13 @@ public class ControladorAdmin {
 			}
 			
 		}
+}
 
 	
 		
 	
 	
 		
-}
 		
 		
 			

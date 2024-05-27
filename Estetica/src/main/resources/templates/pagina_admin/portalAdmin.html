@@ -6,8 +6,10 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-		th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css}" rel="stylesheet"
-		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	th:href="@{https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css}" rel="stylesheet"
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<link rel="stylesheet" href="/css/styles.css">
 	<title>Portal Admin</title>
@@ -77,16 +79,42 @@
 								<div class="">
 									<button type="submit" class="btn btn-primary ms-3">Buscar</button>
 								</div>
-							</form>
-						</div>
-					</div>
-				</div>
-			</section>
+								
+					<!--Modal de exito y redireccionamiento a el usuario con datos actualizados-->	
+							
+	<div class="modal fade" id="exitoModal" tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
+     th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
+    <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+            <div class="modal-header border border-0 d-flex justify-content-center ">
+			<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
+            </div>
+            <div class="modal-body text-center text-danger text-uppercase fw-bold">
+                <p th:text="${exito}">Ha ocurrido un error. Por favor, revise los datos ingresados.</p>
+            </div>
+            <div class="modal-footer border border-0">
+                 <button type="submit" name="dato2" th:value="${dato2}" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+                 <!--Recibe el valor de ${dato2} cuando el usuario da a buscar a un usuario en el buscador
+                 Luego al presionar aceptar el boton tipo submit vuelven a disparar el metodo buscarDNIoNombre con ese valor de
+                 ${dato2}. Esto tiene la finalidad de cuando el admin modifique a un usuario, salga el modal de exito y luego
+                 cuando se presione el boton cerrar se cargue la pagina de busqueda con los datos actualizados del usuario-->
+            </div>
+        </div>
+    </div>
+</div>
+</form>
+	</div>
+		</div>
+			</div>
+				</section>
+				
+				
 			<section th:if="${usuarios}">
 				<form class="alinear-tabla" th:action="@{/modificarUsuario}" method="post">
 					<input hidden type="text" id="emailAdministrador" name="emailAdministrador"
-						th:value="${usuariosEmail}"></input>
-					<!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
+						th:value="${usuariosEmail}"></input> 					<!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
+
+					<input hidden type="text" id="dato" name="dato" th:value="${dato}"></input> <!--El valor de la variable viene de buscarDNIoNombre y va hacia modificarUsuario y a su vez va mensajeErrorNoId-->
 					<table class="table ">
 						<thead>
 							<tr class="text-center fs-5 ">
@@ -116,7 +144,8 @@
 								<th class="fw-semibold" th:text="${usuarios.rol}"></th>
 								<th class="fw-semibold" th:text="${usuarios.activo}"></th>
 								<th class="fw-semibold" th:text="${#strings.toLowerCase(usuarios.email)}"></th>
-
+								<input hidden type="text" id="usuarioEmail" name="usuarioEmail"
+								th:value="${usuarios.email}"></input>
 							</tr>
 						</tbody>
 					</table>
@@ -164,20 +193,19 @@
 						<div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false"
 							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
+								<div style="background-color: #ebdf9d;" class="modal-content">
+									<div class="modal-header d-block  text-center border border-0">
+										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
 										<h1 class="modal-title fs-4 fw-bold" id="staticBackdropLabel">¿Estas seguro de modificar el
 											rol de este usuario?</h1>
-										<button type="button" class="btn-close" data-bs-dismiss="modal"
-											aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
 										Al modificar el rol de este usuario le das diferentes tipos de permisos como pueden ser permisos
 										de profesional o de administrador, asi que por verifica que el rol que le estes asigando al usuario
 										sea el adecuado.
 									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-secundary"
+									<div class="modal-footer border border-0">
+										<button type="button" class="btn btn-danger"
 											data-bs-dismiss="modal">Cerrar</button>
 										<a href="">
 											<!--Este boton es el que hace el llamado al metodo-->
@@ -194,21 +222,20 @@
 						<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false"
 							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
+								<div style="background-color: #ebdf9d;" class="modal-content">
+									<div class="modal-header d-block  text-center border border-0">
+										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
 										<h1 class="modal-title fs-4 fw-bold" id="staticBackdropLabel">¿Estas seguro de
-											darle Alta a este usuario?</h1>
-										<button type="button" class="btn-close" data-bs-dismiss="modal"
-											aria-label="Close"></button>
+											darle de alta a este usuario?</h1>
 									</div>
 									<div class="modal-body">
 										Al darle de alta a un usuario, este queda activo nuevamente en el sistema, por
 										lo que puede
 										volver a iniciar sesion en su cuenta y usar los servicios ofrecidos por la
-										pagina
+										pagina.
 									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-primary"
+									<div class="modal-footer border border-0">
+										<button type="button" class="btn btn-danger"
 											data-bs-dismiss="modal">Cerrar</button>
 										<a href="">
 											<!--Este boton es el que hace el llamado al metodo-->
@@ -224,12 +251,11 @@
 						<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false"
 							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
+								<div style="background-color: #ebdf9d;" class="modal-content">
+									<div class="modal-header d-block  text-center border border-0">
+										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
 										<h1 class="modal-title fs-4 fw-bold" id="staticBackdropLabel">¿Estas seguro de
-											darle baja a este usuario?</h1>
-										<button type="button" class="btn-close" data-bs-dismiss="modal"
-											aria-label="Close"></button>
+											darle de baja a este usuario?</h1>
 									</div>
 									<div class="modal-body">
 										Si le das de baja al usuario, este quedara inhabilitado del sistema, por lo que
@@ -237,13 +263,13 @@
 										usar los servicios ofrecidos por la pagina. Esta acción se puede revertir dadole
 										de alta nuevamente al usuario.
 									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-primary"
+									<div class="modal-footer border border-0">
+										<button type="button" class="btn btn-danger"
 											data-bs-dismiss="modal">Cerrar</button>
 										<a href="">
 											<!--Este boton es el que hace el llamado al metodo-->
 											<button type="submit" name="action" value="bajaUsuario"
-												class="btn btn-warning">Baja</button>
+												class="btn btn-primary">Baja</button>
 										</a>
 									</div>
 								</div>
@@ -256,24 +282,23 @@
 						<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
 							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
 							<div class="modal-dialog">
-								<div class="modal-content">
-									<div class="modal-header">
+								<div style="background-color: #ebdf9d;" class="modal-content">
+									<div class="modal-header d-block  text-center border border-0">
+										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
 										<h1 class="modal-title fs-4 fw-bold" id="staticBackdropLabel">¿Estas seguro de
 											eliminar este usuario?</h1>
-										<button type="button" class="btn-close" data-bs-dismiss="modal"
-											aria-label="Close"></button>
 									</div>
 									<div class="modal-body">
 										Si eliminas el usuario, se borraran todos sus datos de la base de datos y no se
-										podran recuperar
+										podran recuperar.
 									</div>
-									<div class="modal-footer">
-										<button type="button" class="btn btn-primary"
+									<div class="modal-footer border border-0">
+										<button type="button" class="btn btn-danger"
 											data-bs-dismiss="modal">Cerrar</button>
 										<a href="">
 											<!--Este boton es el que hace el llamado al metodo-->
 											<button type="submit" name="action" value="eliminarUsuario"
-												class="btn btn-danger">Eliminar</button>
+												class="btn btn-primary">Eliminar</button>
 										</a>
 									</div>
 								</div>
@@ -283,15 +308,100 @@
 					</div>
 				</form>
 			</section>
-			<div th:if="${error}" class="fs-5 mt-5 text-danger fw-bold text-center">
-				<!--Mensaje opcional de error, el valor puede venir de diferentes metodos-->
-				<p th:text="${error}"></p>
-			</div>
-			<div th:if="${exito}" class="fs-5 mt-5 text-success fw-bold text-center">
-				<!--Mensaje opcional de exito, el valor puede venir de cualquier metodo-->
-				<p th:text="${exito}"></p>
-			</div>
 		</div>
+		
+		<!--Modal mensajes de error-->
+		
+		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
+     th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
+    <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+            <div class="modal-header border border-0 d-flex justify-content-center ">
+			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+            </div>
+            <div class="modal-body text-center text-danger text-uppercase fw-bold">
+                <p th:text="${error}">Ha ocurrido un error. Por favor, revise los datos ingresados.</p>
+            </div>
+            <div class="modal-footer border border-0">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+			<!--Modal mensajes de elimar usuario exitoso-->
+		
+		<div class="modal fade" id="eliminarModal" tabindex="-1" aria-labelledby="eliminarModalLabel" aria-hidden="true"
+     th:classappend="${showModalBorradoExitoso} ? 'show d-block' : ''" th:style="${showModalBorradoExitoso} ? 'display: block;' : 'display: none;'">
+    <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+            <div class="modal-header border border-0 d-flex justify-content-center ">
+			<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
+            </div>
+            <div class="modal-body text-center text-danger text-uppercase fw-bold">
+                <p th:text="${exito}">Ha ocurrido un error. Por favor, revise los datos ingresados.</p>
+            </div>
+            <div class="modal-footer border border-0">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--Este jquery lo saque de chatgp, cumple la funcion de abrir el modal al recibir la variable de 
+showModal y tambien se encarga de cerrar el modal cuando le damos al boton cerrar-->
+
+			<!--Scrip para el modal de eliminar usuario exitoso-->
+			
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalBorradoExitoso = /*[[${showModalBorradoExitoso}]]*/ false;
+        if (showModalBorradoExitoso) {
+            $('#eliminarModal').modal('show');
+        }
+
+        $('#eliminarModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
+
+			<!--Scrip para el modal de mensaje de exito-->
+			
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalExito = /*[[${showModalExito}]]*/ false;
+        if (showModalExito) {
+            $('#exitoModal').modal('show');
+        }
+
+        $('#exitoModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
+
+			<!--Scrip para el modal de mensaje de exito-->
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalError = /*[[${showModalError}]]*/ false;
+        if (showModalError) {
+            $('#errorModal').modal('show');
+        }
+
+        $('#errorModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
 	</main>
 
 
