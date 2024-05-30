@@ -6,7 +6,9 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 	<link rel="stylesheet" href="./css/styles.css">
@@ -59,23 +61,24 @@
 	</nav>
 
 
-	<main class="main-registrarse-2">
-		<div class="d-flex justify-content-center  align-items-center div-registrarse">
+	<main class="">
+		<div class="">
 			<section class=" section-registrarse">
-				<div class="row  ">
-					<div class="img-registrarse col-md-4 d-flex justify-content-center align-items-center"> </div>
+				<div style="border-top: 1px solid;border-bottom: 1px solid;" class="row  ">
+					<div class="img-registrarse col-md-8 d-flex justify-content-center align-items-center"> </div>
 
-					<div class="texto-registrarse col-md-8 p-4">
+					<div style="padding-bottom: 105px; padding-top: 24px;" class="texto-registrarse col-md-4 px-4">
 						<div class="logo-registrarse text-center  ">
 							<img class="img-logo-final-home" src="./imagenes/Nani-removebg-preview.png" alt="">
 						</div>
 						<form id="formularioRegistro" th:action="@{/registro}" method="post">
-							<p class="ps-0 fs-1 ">Registrarse</p>
+							<p class="ps-0 fs-2 text-center">REGISTRASE</p>
 
 							<div class="mb-3">
 
 								<label for="email" class="form-label texto-label">Email</label>
-								<input type="email" class="form-control" name="email" id="email" placeholder="Email">
+								<input type="email" th:value="${email}" class="form-control" name="email" id="email" placeholder="Email"> <!--Se ajusta el input para que el metodo devuelve siempre el campo mail cuando haya un error-->
+								
 								
 								<label for="fechaNacimiento" class="form-label texto-label mt-2">Fecha Nacimiento</label>
 								<input type="date" class="form-control" name="fechaNacimiento" id="fechaNacimiento" placeholder="Fecha de Nacimiento">
@@ -88,13 +91,15 @@
 								<label for="contrasena2" class="form-label texto-label mt-2">Repetir contraseña</label>
 								<input type="password" class="form-control" name="contrasena2" id="contrasena2"
 									placeholder="Repetir contraseña">
-
+							
+							<!--
 								<div th:if="${exito}" class="fs-5 mt-3 text-success fw-bold text-center">
 									<p th:text="${exito}"></p>
 								</div>
 								<div th:if="${error}" class="fs-5 mt-3 text-danger fw-bold text-center">
 									<p th:text="${error}"></p>
 								</div>
+								-->
 							</div>
 
 							<div class="boton-de-registro text-center boton-pag-regi ">
@@ -106,11 +111,89 @@
 							<div class="text-center fs-5  mt-2 ">
 								<a class="m-2 " th:href="@{/olvidocontrasena}">¿Olvido su contraseña?</a>
 							</div>
+							
+							
+							<!--Modal mensaje de exito al registrarse	-->
+	
+	<div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
+	tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
+	th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
+		<div class="modal-dialog">
+			<div style="background-color: #ebdf9d;" class="modal-content">
+				<div class="modal-header border border-0 d-flex justify-content-center">
+					<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
+				</div>
+				<div class="modal-body text-center text-danger text-uppercase fw-bold">
+					<p class="fs-6" th:text="${exito}"></p>
+				</div>
+				<div class="modal-footer border border-0">
+					<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	
+				<!--Modal mensajes de error al registrarse-->
+			
+			<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
+	     th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
+	    <div class="modal-dialog">
+	        <div style="background-color: #ebdf9d;" class="modal-content">
+	            <div class="modal-header border border-0 d-flex justify-content-center ">
+				<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+	            </div>
+	            <div class="modal-body text-center text-danger text-uppercase fw-bold">
+	                <p class="fs-6" th:text="${error}"></p>
+	            </div>
+	            <div class="modal-footer border border-0">
+	                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+							
+							
 						</form>
 					</div>
 				</div>
 			</section>
 		</div>
+	
+	<!--Scrip para el modal de mensaje de exito-->
+			
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalExito = /*[[${showModalExito}]]*/ false;
+        if (showModalExito) {
+            $('#exitoModal').modal('show');
+        }
+
+        $('#exitoModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
+
+			<!--Scrip para el modal de mensaje de exito-->
+
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalError = /*[[${showModalError}]]*/ false;
+        if (showModalError) {
+            $('#errorModal').modal('show');
+        }
+
+        $('#errorModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
 	</main>
 
 	<footer class="d-flex row p-0">

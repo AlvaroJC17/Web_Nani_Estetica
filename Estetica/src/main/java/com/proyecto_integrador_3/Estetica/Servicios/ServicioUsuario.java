@@ -218,7 +218,7 @@ public class ServicioUsuario {
 	        Matcher matcher = pattern.matcher(email);
 
 	        if (Objects.equals(email, null) || email.isEmpty() || email.trim().isEmpty()) {
-	            throw new MiExcepcion("El email no puede estar vacío");
+	            throw new MiExcepcion("El correo electronico no puede estar vacío");
 	        }
 	        // Verificar si la cadena cumple con la expresión regular
 	        if (!matcher.matches()) {
@@ -226,7 +226,7 @@ public class ServicioUsuario {
 	        } 
 	       
 	        if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
-	            throw new MiExcepcion("El email ya esta registrado");
+	            throw new MiExcepcion("El correo electronico ya se encuentra esta registrado");
 	        }
 
 	    }

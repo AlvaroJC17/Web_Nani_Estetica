@@ -80,34 +80,36 @@
 									<button type="submit" class="btn btn-primary ms-3">Buscar</button>
 								</div>
 								
-					<!--Modal de exito y redireccionamiento a el usuario con datos actualizados-->	
 							
-	<div class="modal fade" id="exitoModal" tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
-     th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
-    <div class="modal-dialog">
-        <div style="background-color: #ebdf9d;" class="modal-content">
-            <div class="modal-header border border-0 d-flex justify-content-center ">
-			<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
-            </div>
-            <div class="modal-body text-center text-danger text-uppercase fw-bold">
-                <p th:text="${exito}">Ha ocurrido un error. Por favor, revise los datos ingresados.</p>
-            </div>
-            <div class="modal-footer border border-0">
-                 <button type="submit" name="dato2" th:value="${dato2}" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
-                 <!--Recibe el valor de ${dato2} cuando el usuario da a buscar a un usuario en el buscador
-                 Luego al presionar aceptar el boton tipo submit vuelven a disparar el metodo buscarDNIoNombre con ese valor de
-                 ${dato2}. Esto tiene la finalidad de cuando el admin modifique a un usuario, salga el modal de exito y luego
-                 cuando se presione el boton cerrar se cargue la pagina de busqueda con los datos actualizados del usuario-->
-            </div>
-        </div>
-    </div>
-</div>
+					<!--Modal de exito y redireccionamiento a el usuario con datos actualizados	-->
+	
+	<div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
+	tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
+	th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
+		<div class="modal-dialog">
+			<div style="background-color: #ebdf9d;" class="modal-content">
+				<div class="modal-header border border-0 d-flex justify-content-center">
+					<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
+				</div>
+				<div class="modal-body text-center text-danger text-uppercase fw-bold">
+					<p th:text="${exito}"></p>
+				</div>
+				<div class="modal-footer border border-0">
+					<!--Recibe el valor de ${dato2} cuando el usuario da a buscar a un usuario en el buscador
+                 		Luego al presionar aceptar el boton tipo submit vuelven a disparar el metodo buscarDNIoNombre con ese valor de
+                		${dato2}. Esto tiene la finalidad de cuando el admin modifique a un usuario, salga el modal de exito y luego
+                		cuando se presione el boton cerrar se cargue la pagina de busqueda con los datos actualizados del usuario-->
+						<button type="submit" name="dato2" th:value="${dato2}" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 </form>
 	</div>
 		</div>
 			</div>
 				</section>
-				
 				
 			<section th:if="${usuarios}">
 				<form class="alinear-tabla" th:action="@{/modificarUsuario}" method="post">
@@ -385,7 +387,7 @@ showModal y tambien se encarga de cerrar el modal cuando le damos al boton cerra
     /*]]>*/
 </script>
 
-			<!--Scrip para el modal de mensaje de exito-->
+			<!--Scrip para el modal de mensaje de error-->
 
 
 <script th:inline="javascript">

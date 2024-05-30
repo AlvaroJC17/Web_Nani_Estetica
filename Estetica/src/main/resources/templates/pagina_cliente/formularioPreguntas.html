@@ -400,7 +400,7 @@
     funcione el jquery. La variable ${showModal} viene del metodo guardarFormularioTurnos-->
     
 <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
-     th:classappend="${showModal} ? 'show d-block' : ''" th:style="${showModal} ? 'display: block;' : 'display: none;'">
+     th:classappend="${showModal} ? 'show d-block' : ''" th:style="${showModal} ? 'display: block;' : 'display: none;'"> <!--Las variables showModal vienen del metodo asociado y sirven como disparador del modal-->
     <div class="modal-dialog">
         <div style="background-color: #ebdf9d;" class="modal-content">
             <div class="modal-header border border-0 d-flex justify-content-center ">

@@ -63,11 +63,15 @@ public class ControladorPagina {
 
 		 try {
 	        	servicioUsuario.guardarUsuario(email, password, password2, fechaNacimiento );
-	        	modelo.addAttribute("exito", "¡Gracias por registrarte!, ahora inicia sesión y completa "
-	        			+ "tus datos personales para poder usar tu cuenta");
+	        	String exito = "¡Gracias por registrarte!, ahora inicia sesión y completa tus datos personales para poder usar tu cuenta";
+	        	modelo.addAttribute("exito", exito);
+	        	modelo.addAttribute("showModalExito", true);
 	        	return "registrarse";
 	        } catch (MiExcepcion e) {
-	            modelo.put("error", e.getMessage());
+	        	String error = e.getMessage();
+	        	modelo.addAttribute("email", email);
+	            modelo.addAttribute("error", error);
+	        	modelo.addAttribute("showModalError", true);
 	            return "registrarse";
 	        }
 	 }

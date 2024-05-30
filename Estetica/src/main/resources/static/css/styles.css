@@ -8,7 +8,7 @@ h1, h2, h3, h4 {
     /*Le asigna por defecto un tamaño de letra y un grosor a los titulos H3*/
     font-size: 80px;
     font-weight: 100;
-   /* color: #78340f !important;*/
+   /* color: #78340f !important; */
     margin-bottom: 30px;
 }
 
@@ -432,44 +432,31 @@ footer {
     margin-top: 50px;
   }
 
-  .main-login{
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 50px 0px 50px 0px;
-  }
-
   .imagen-formulario-login{
     background-image: url(../imagenes/istockphoto-968940310-1024x1024.jpg);
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    height: 700px;
-    width: 320px;
-    box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
-    border-radius: 40px 0px 00px 0px;
+  
   }
 
   .login-box {
-    width: 400px;
-    height: 700px;
     background: #db9e42;
     color: black;
     box-sizing: border-box;
-    padding: 70px 30px;
+    padding-top: 105px;
+    padding-bottom: 105px;
     margin: 0px 0px 0px 0px;
-    border-radius: 0px 0px 40px 0px;
-    box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
     position: relative;
   }
   
   .login-box .avatar {
-    width: 89px;
-    height: 84px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     position: absolute;
-    top: 5px;
-    left: calc(50% - 50px);
+    top: 24px;
+    left: calc(50% - 40px);
   }
   
   .login-box h1 {
@@ -483,7 +470,6 @@ footer {
   .login-box label {
     margin: 0;
     padding: 0;
-    font-weight: bold;
     display: block;
     font-size: 22px;
   }
@@ -501,6 +487,7 @@ footer {
     height: 40px;
     color: black;
     font-size: 16px;
+    
   }
   
   .login-box input[type="submit"] {
@@ -523,7 +510,7 @@ footer {
     text-decoration: none;
     font-size: 12px;
     line-height: 20px;
-    color: darkgrey;
+    
   }
   
   .login-box a:hover {
@@ -533,11 +520,9 @@ footer {
   /*PAGINA DE REGISTRO DE USUARIOS*/
 
   .section-registrarse{
-    border-radius: 40px 0px 40px 0px;
+    
     background-color: #db9e42;
-    box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
-    width: 50%;
-    margin: 30px
+   
 }
 
   .main-registrarse-2{
@@ -546,7 +531,7 @@ footer {
 }
 
 .texto-label{
-    font-size: 17px;
+    font-size: 20px;
     margin-bottom: 0px;
 }
 
@@ -563,7 +548,7 @@ footer {
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
-    border-radius: 40px 0px 0px 0px;
+    
 }
 
 .boton-de-registro{
@@ -928,14 +913,9 @@ tr {
         width: 200px;
       }
     .texto-label{
-        font-size: 16px;
+       
         margin-bottom: 0px;
     }
-
-    .main-login{
-        padding-top: 50px;
-        padding-bottom: 50px;
-      }
 
     .texto-recuperar1 .texto{
         font-size: 18px;
@@ -960,18 +940,9 @@ tr {
       }
 
     .form-login{
-        margin-top: 10px;
+        margin-top: 45px;
       }
-
-    .imagen-formulario-login{
-        height: 555px;
-        width: 320px;
-      }
-      
-      .login-box {
-        width: 320px;
-        height: 555px;
-    }  
+   
         
   .login-box h1 {
     font-size: 27px;
@@ -991,10 +962,6 @@ tr {
 @media(max-width: 992px) {
 
     .section-completar-datos{
-        width: 95%;
-        margin: 15px
-    }
-    .section-registrarse{
         width: 95%;
         margin: 15px
     }
@@ -1025,11 +992,6 @@ tr {
 
     h3{
         text-align: center;
-    }
-
-    .login-box{
-        border-radius: 40px 0px 40px 0px;
-        width: 370px;
     }
   
     .cabecera {
@@ -1294,11 +1256,6 @@ tr {
         /*Le da el color degradado al footer, el ancho y los maregenes*/
         position: absolute;
     }
-      
-.login-box {
-    width: 90%;
-    margin-left: 15px;
-}
 
 h3{
     font-size: 50px;
