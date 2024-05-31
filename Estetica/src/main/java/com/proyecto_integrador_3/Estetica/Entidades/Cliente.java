@@ -145,7 +145,7 @@ public class Cliente extends Persona implements Serializable {
 		
 	
 	public Cliente(String dni, String nombre, String apellido, String ocupacion, Sexo sexo,
-			String domicilio, Integer telefono) {
+			String domicilio, String telefono) {
 		super(dni, nombre, apellido, ocupacion, sexo, domicilio, telefono);
 		
 	}

@@ -87,8 +87,6 @@ public class ControladorCliente {
 		}
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		
-		System.out.println("usoDeFormulario: " + usoDeFormulario);
 			
 		if (usoDeFormulario && tratamiento.equals("facial")) {
 			model.addAttribute("datosCliente", datosCliente);
@@ -103,7 +101,7 @@ public class ControladorCliente {
 			model.addAttribute("datosCliente", datosCliente);
 			model.addAttribute("email", email);
 			return "/pagina_cliente/formularioPreguntas";
-			//return "redirect:/formularioPreguntas?tratamiento=" + tratamiento + "&email=" + email;
+			
 		}
 	}
 			
@@ -157,28 +155,26 @@ public class ControladorCliente {
 	//Muestra todos los datos personales de la persona en la pagina misdatosCliente
 	@GetMapping("/misdatosCliente")
 	public String misdatosCliente(
-			@RequestParam(name="email") String email,
-			@RequestParam(name="exito", required = false) String exito,
-			@RequestParam(name="error", required = false) String error,
+			@RequestParam(name="email", required = false) String email,
 			Model model) { // el valor del parametro email viene del html homeCliente
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		model.addAttribute("exito", exito);
-		model.addAttribute("error", error);
 		model.addAttribute("datosCliente", datosCliente);
 	return "/pagina_cliente/misdatosCliente";	
 	}
 	
+	
+	
 	@PostMapping("guardarDatosCliente")
 	public String guardarDatosCliente(
-			@RequestParam(name = "nombre") String nombre,
-			@RequestParam(name = "apellido") String apellido,
-			@RequestParam(name = "numeroDoc") String dni,
-			@RequestParam(name = "sexo") String sexo,
-			@RequestParam(name = "telefono", required = false) Integer telefono,
-			@RequestParam(name = "direccion") String direccion,
-			@RequestParam(name = "ocupacion") String ocupacion,
-			@RequestParam(name = "emailUsuario") String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
+			@RequestParam(name = "nombre", required = false) String nombre,
+			@RequestParam(name = "apellido", required = false) String apellido,
+			@RequestParam(name = "numeroDoc", required = false) String dni,
+			@RequestParam(name = "sexo", required = false) String sexo,
+			@RequestParam(name = "telefono", required = false) String telefono,
+			@RequestParam(name = "direccion", required = false) String direccion,
+			@RequestParam(name = "ocupacion", required = false) String ocupacion,
+			@RequestParam(name = "emailUsuario", required = false) String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
 			ModelMap model
 			) throws MiExcepcion {
 		
@@ -190,8 +186,18 @@ public class ControladorCliente {
 				
 		} catch (MiExcepcion e) {
 			String error = e.getMessage();
-			//return "pagina_cliente/completarDatosCliente";
-			return "redirect:/completarDatosCliente?email=" + emailUsuario + "&error=" + error;
+			model.addAttribute("emailUsuario", emailUsuario);
+			model.addAttribute("nombre", nombre);
+			model.addAttribute("apellido", apellido);
+			model.addAttribute("numeroDoc", dni);
+            model.addAttribute("sexo", sexo);
+            model.addAttribute("telefono", telefono);
+            model.addAttribute("direccion", direccion);
+            model.addAttribute("ocupacion", ocupacion);
+            model.addAttribute("error", error);
+            model.addAttribute("showModalError", true);
+			return "pagina_cliente/completarDatosCliente";
+			
 		}
 	}
 	
@@ -316,7 +322,6 @@ public class ControladorCliente {
             model.addAttribute("error", error);
             model.addAttribute("showModal", true);
 			return "/pagina_cliente/formularioPreguntas";
-			//return "redirect:/formularioPreguntas?email=" + email + "&error=" + error + "&tratamiento=" + tratamiento;
 		}
 		
 	}
@@ -362,7 +367,7 @@ public class ControladorCliente {
 		    @RequestParam(name="email", required = false) String email,
 			@RequestParam(name="domicilio", required = false) String domicilio,
 			@RequestParam(name="sexo", required = false) String sexo,
-			@RequestParam(name="telefono", required = false) Integer telefono,
+			@RequestParam(name="telefono", required = false) String telefono,
 			ModelMap model) throws MiExcepcion {
 		
 		//Buscamos mediante el id el mail anterior del cliente y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
@@ -373,7 +378,7 @@ public class ControladorCliente {
 		String domicilioAnterior = null;
 		Sexo sexoAnterior = null;
 		String nuevoSexo = null;
-		Integer telefonoAnterior = null;
+		String telefonoAnterior = null;
 		
 		Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
 		if (identificarCliente.isPresent()) {
@@ -395,12 +400,23 @@ public class ControladorCliente {
 		try {
 			//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
 			servicioCliente.modificarCliente(idCliente, ocupacion, email, emailAnterior, domicilio, sexo, telefono );
+			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email); //Buscamos todos los datos pertenecientes al cliente despues de haber sido actualizados en la base de datos y los mostramos en el campo correspondiente
 			String exito = "Datos actualizados correctamente";
-			return "redirect:/misdatosCliente?email=" + email + "&exito=" + exito; //si todo sale bien redireccionamos al metodo misdatosCliente con el mail actualizado y un mensaje de exito
+			model.addAttribute("datosCliente",datosCliente);
+			model.addAttribute("exito",exito);
+			model.addAttribute("showModalExito", true);
+			return "/pagina_cliente/misdatosCliente";
 			
 		} catch (Exception e) {
 			String error = e.getMessage(); // en la exepcion e.getmessage obtenenos el valor de la exepcion personalizada que se de y la enviamos al controlador de misdatosCliente para ser monstrada en pantalla
-			return "redirect:/misdatosCliente?email=" + emailAnterior + "&error=" + error; // si se produce alguna exepcion en algun campo enviamos el mail anterior del usuario y un mensaje de error al metodo misdatosCliente
+			List <Usuario> datosClienteAnterior = servicioUsuario.buscarPorEmail(emailAnterior); //Buscamos los datos ateriores a la excepcion y los mostramos en caso de que haya un error por parte del usuario
+			model.addAttribute("datosCliente",datosClienteAnterior);
+			model.addAttribute("error",error);
+			model.addAttribute("showModalError", true);
+			return "/pagina_cliente/misdatosCliente";
+			
+			
+			
 		}
 	}
 	

@@ -57,7 +57,7 @@ public class Profesional extends Persona implements Serializable {
 	}
 
 	public Profesional(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm, String nombre,
-			String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, Integer telefono) {
+			String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, String telefono) {
 		super(id, dni, contrasena, email, rol, activo, ValidacionForm, nombre, apellido, ocupacion, sexo, fechaNacimiento, domicilio, telefono);
 
 	}

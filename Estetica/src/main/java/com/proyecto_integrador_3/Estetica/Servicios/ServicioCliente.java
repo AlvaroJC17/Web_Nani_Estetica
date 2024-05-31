@@ -40,7 +40,7 @@ public class ServicioCliente {
 	
 	@Transactional
 	public void registrarCliente(String email, String dni, String nombre, String apellido, String ocupacion,
-			String direccion, Integer telefono, String sexo) throws MiExcepcion {
+			String direccion, String telefono, String sexo) throws MiExcepcion {
 		
 		validarDatosCliente(nombre, apellido, dni, sexo, telefono, direccion, ocupacion);
 
@@ -76,7 +76,7 @@ public class ServicioCliente {
 	
 
 	@Transactional
-	public void modificarCliente(String idCliente, String ocupacion, String email, String emailAnterior, String domicilio, String sexo, Integer telefono) throws MiExcepcion {
+	public void modificarCliente(String idCliente, String ocupacion, String email, String emailAnterior, String domicilio, String sexo, String telefono) throws MiExcepcion {
 		
 		verificarEmailCliente(email, emailAnterior);
 		validarActualizacionDeDatosCliente(ocupacion, domicilio, sexo, telefono);
@@ -161,7 +161,7 @@ public class ServicioCliente {
         		
 
 	 public void validarDatosCliente(String nombre, String apellido, String dni,  String sexo,
-			 Integer telefono, String direccion, String ocupacion) throws MiExcepcion {
+			 String telefono, String direccion, String ocupacion) throws MiExcepcion {
 		 
 		 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
 			 throw new MiExcepcion("El nombre no puede estar vacio");
@@ -178,11 +178,11 @@ public class ServicioCliente {
 		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
 			 throw new MiExcepcion("El sexo no puede estar vacio");
 		 }
-		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
-			 throw new MiExcepcion("EL telefono no puede estar vacio");
-		 }
 		 if (direccion == null || direccion.isEmpty() || direccion.trim().isEmpty()) {
 			 throw new MiExcepcion("La dirección no puede estar vacia");
+		 }
+		 if (telefono == null || telefono.isEmpty() || telefono.trim().isEmpty()) {
+			 throw new MiExcepcion("EL telefono no puede estar vacio");
 		 }
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
 			 throw new MiExcepcion("La ocupacion no puede estar vacio");
@@ -190,7 +190,7 @@ public class ServicioCliente {
 	 }
 	 
 	 	 
-	 public void validarActualizacionDeDatosCliente(String ocupacion, String domicilio, String sexo, Integer telefono) throws MiExcepcion {
+	 public void validarActualizacionDeDatosCliente(String ocupacion, String domicilio, String sexo, String telefono) throws MiExcepcion {
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
 			 throw new MiExcepcion("La ocupacion no puede estar vacio");
 		 }

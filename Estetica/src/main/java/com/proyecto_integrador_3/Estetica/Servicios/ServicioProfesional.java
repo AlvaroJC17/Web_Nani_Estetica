@@ -42,7 +42,7 @@ public class ServicioProfesional {
 
 	@Transactional
 	public void registrarProfesional(String email, String matricula, String especialidad,
-			String direccion, Integer telefono, String sexo) throws MiExcepcion {
+			String direccion, String telefono, String sexo) throws MiExcepcion {
 		
 		validarDatosProfesional(matricula, especialidad, sexo,telefono, direccion);
 
@@ -79,7 +79,7 @@ public class ServicioProfesional {
 	}
 	
 	@Transactional
-	public void modificarProfesional(String idAdmin, String email, String emailAnterior, String domicilio, String sexo, Integer telefono) throws MiExcepcion {
+	public void modificarProfesional(String idAdmin, String email, String emailAnterior, String domicilio, String sexo, String telefono) throws MiExcepcion {
 		
 		verificarEmailProfesional(email, emailAnterior);
 		validarActualizacionDeDatosProfesional(domicilio, sexo, telefono);
@@ -100,7 +100,7 @@ public class ServicioProfesional {
 		}
 	}
 	
-	 public void validarDatosProfesional(String matricula, String especialidad,  String sexo, Integer telefono, String direccion) throws MiExcepcion {
+	 public void validarDatosProfesional(String matricula, String especialidad,  String sexo, String telefono, String direccion) throws MiExcepcion {
 	
 		 
 	/*	 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
@@ -141,7 +141,7 @@ public class ServicioProfesional {
 	 }
 
 	 
-	 public void validarActualizacionDeDatosProfesional(String domicilio, String sexo, Integer telefono) throws MiExcepcion {
+	 public void validarActualizacionDeDatosProfesional(String domicilio, String sexo, String telefono) throws MiExcepcion {
 		/*
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
 			 throw new MiExcepcion("La ocupacion no puede estar vacia");

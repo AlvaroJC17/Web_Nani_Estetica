@@ -18,6 +18,10 @@ a, p, label {
     text-decoration: none;
 }
 
+a:hover{
+    color: white;
+}
+
 
 /*-------- BOTON WS ---------*/
 
@@ -513,9 +517,6 @@ footer {
     
   }
   
-  .login-box a:hover {
-    color: #fff;
-  }
 
   /*PAGINA DE REGISTRO DE USUARIOS*/
 
@@ -525,22 +526,13 @@ footer {
    
 }
 
-  .main-registrarse-2{
-    padding-bottom: 35px;
-    padding-top: 35px;
-}
-
 .texto-label{
     font-size: 20px;
     margin-bottom: 0px;
 }
 
 .section-completar-datos{
-    border-radius: 40px 0px 40px 0px;
     background-color: #db9e42;
-    box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
-    width: 70%;
-    margin: 30px
 }
 
 .img-registrarse{
@@ -559,7 +551,7 @@ footer {
 
 /*BOTON DE FORM COMPLETAR DATOS*/
 .bn632-hover {
-    width: 50%;
+    width: 200px;
     font-size: 18px !important;
     font-weight: 600;
     color: #fff;
@@ -601,8 +593,8 @@ footer {
 
   /*ESTILOS DEL BOTON DE LOGIN*/
   .bn632-hover-login {
-    width: 300px;
-    font-size: 16px;
+    width: 200px;
+    font-size: 18px;
     font-weight: 600;
     color: #fff;
     cursor: pointer;
@@ -960,11 +952,6 @@ tr {
 
 
 @media(max-width: 992px) {
-
-    .section-completar-datos{
-        width: 95%;
-        margin: 15px
-    }
 
     .form-misdatos h4 {
         margin-bottom: 40px;

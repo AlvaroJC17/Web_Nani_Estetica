@@ -49,7 +49,7 @@ public class ServicioAdmin {
 	
 	@Transactional
 	public void registrarAdmin(String email, String ocupacion,
-			String direccion, Integer telefono, String sexo) throws MiExcepcion {
+			String direccion, String telefono, String sexo) throws MiExcepcion {
 		
 		validarDatosAdmin(sexo, telefono, direccion, ocupacion);
 
@@ -102,7 +102,7 @@ public class ServicioAdmin {
 	}
 	
 	@Transactional
-	public void modificarAdmin(String idAdmin, String ocupacion, String email, String emailAnterior, String domicilio, String sexo, Integer telefono) throws MiExcepcion {
+	public void modificarAdmin(String idAdmin, String ocupacion, String email, String emailAnterior, String domicilio, String sexo, String telefono) throws MiExcepcion {
 		
 		verificarEmailAdmin(email, emailAnterior);
 		validarActualizacionDeDatosAdmin(ocupacion, domicilio, sexo, telefono);
@@ -124,7 +124,7 @@ public class ServicioAdmin {
 		}
 	}
 	 
-	 public void validarDatosAdmin(String sexo, Integer telefono, String direccion, String ocupacion) throws MiExcepcion {
+	 public void validarDatosAdmin(String sexo, String telefono, String direccion, String ocupacion) throws MiExcepcion {
 	
 		 /*
 		 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
@@ -150,7 +150,7 @@ public class ServicioAdmin {
 			 throw new MiExcepcion("La fecha de nacimiento no puede estar vacia");
 		 }
 		 */
-		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
+		 if (telefono == null || telefono.isEmpty() || telefono.trim().isEmpty()) {
 			 throw new MiExcepcion("EL telefono no puede estar vacio");
 		 }
 		 if (direccion == null || direccion.isEmpty() || direccion.trim().isEmpty()) {
@@ -163,7 +163,7 @@ public class ServicioAdmin {
  }
 	 
 	 
-	 public void validarActualizacionDeDatosAdmin(String ocupacion, String domicilio, String sexo, Integer telefono) throws MiExcepcion {
+	 public void validarActualizacionDeDatosAdmin(String ocupacion, String domicilio, String sexo, String telefono) throws MiExcepcion {
 		 
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
 			 throw new MiExcepcion("La ocupacion no puede estar vacia");

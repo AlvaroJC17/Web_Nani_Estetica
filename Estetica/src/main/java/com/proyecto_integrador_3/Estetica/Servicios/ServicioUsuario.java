@@ -226,7 +226,7 @@ public class ServicioUsuario {
 	        } 
 	       
 	        if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
-	            throw new MiExcepcion("El correo electronico ya se encuentra esta registrado");
+	            throw new MiExcepcion("El correo electronico ya se encuentra registrado");
 	        }
 
 	    }

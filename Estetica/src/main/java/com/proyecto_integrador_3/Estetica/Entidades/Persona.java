@@ -50,7 +50,7 @@ public class Persona extends Usuario implements Serializable{
 	private String domicilio;
 	
 	@Column(name = "telefono")
-	private Integer telefono;
+	private String telefono;
 	
 	
 	
@@ -58,7 +58,7 @@ public class Persona extends Usuario implements Serializable{
 	public Persona() {}
 
 	public Persona(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm, String nombre, String apellido,
-			String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, Integer telefono) {
+			String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, String telefono) {
 		super(id, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
 		this.dni = dni;
 		this.nombre = nombre;
@@ -70,7 +70,7 @@ public class Persona extends Usuario implements Serializable{
 	}
 	
 	public Persona(String dni, String nombre, String apellido, String ocupacion, Sexo sexo, String domicilio,
-			Integer telefono) {
+			String telefono) {
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -86,7 +86,7 @@ public class Persona extends Usuario implements Serializable{
 		
 	public Persona(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean validacionForm,
 			String dni, String nombre, String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento,
-			String domicilio, Integer telefono) {
+			String domicilio, String telefono) {
 		super(id, email, contrasena, rol, activo, validacionForm, fechaNacimiento);
 		this.dni = dni;
 		this.nombre = nombre;
@@ -179,11 +179,11 @@ public class Persona extends Usuario implements Serializable{
 		this.domicilio = domicilio;
 	}
 
-	public Integer getTelefono() {
+	public String getTelefono() {
 		return telefono;
 	}
 
-	public void setTelefono(Integer telefono) {
+	public void setTelefono(String telefono) {
 		this.telefono = telefono;
 	}
 

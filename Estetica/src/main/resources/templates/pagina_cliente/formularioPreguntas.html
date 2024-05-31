@@ -90,7 +90,7 @@
       
        <div class="mb-3 row">
             <div class="col-md-6">
-              <label for="alcohol" class="form-label texto-label">¿Aproximadamente cual es su consumo de alcohol?</label>
+              <label for="alcohol" class="form-label texto-label">¿Consumo aproximado de alcohol?</label>
               <select id="alcohol" name="alcohol" class="form-select rounded-0 " aria-label="Default select example">
 			  <option th:value="Seleccione" th:text="Seleccione" th:selected="${alcohol == '' || alcohol == null}"></option>
               <option th:value="Poco" th:text="Poco" th:selected="${alcohol == 'Poco'}"></option>
@@ -132,7 +132,7 @@
   <div class="col-md-6">
     <label for="medicamentos" class="form-label texto-label">¿Toma algun medicamento?</label>
     <select id="medicamentos" name="medicamentos" class="form-select rounded-0 " aria-label="Default select example">
-    <option th:value="Seleccione" th:text="Seleccione" th:selected="${medicamentos == '' || medicamentos == null}"></option>
+    	 <option th:value="Seleccione" th:text="Seleccione" th:selected="${medicamentos == '' || medicamentos == null}"></option>
          <option th:value="SI" th:text="SI" th:selected="${medicamentos == 'SI'}"></option>
          <option th:value="NO" th:text="NO" th:selected="${medicamentos == 'NO'}"></option>
   </select>
@@ -405,7 +405,6 @@
         <div style="background-color: #ebdf9d;" class="modal-content">
             <div class="modal-header border border-0 d-flex justify-content-center ">
 			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
-      <!--  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
             </div>
             <div class="modal-body text-center text-danger text-uppercase fw-bold">
                 <p th:text="${error}">Ha ocurrido un error. Por favor, revise los datos ingresados.</p>

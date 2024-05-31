@@ -60,7 +60,7 @@ public class ControladorProfesional {
 			@RequestParam(name = "matricula") String matricula,
 			@RequestParam(name = "especialidad") String especialidad,
 			@RequestParam(name = "sexo") String sexo,
-			@RequestParam(name = "telefono") Integer telefono,
+			@RequestParam(name = "telefono") String telefono,
 			@RequestParam(name = "direccion") String direccion,
 			@RequestParam(name = "emailUsuario") String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
 			ModelMap model) throws MiExcepcion {
@@ -84,7 +84,7 @@ public class ControladorProfesional {
 		    @RequestParam(name="email", required = false) String email, // Este y los demas atributos los puse como no requeridos para poder personalizar las excepciones
 			@RequestParam(name="domicilio", required = false) String domicilio,
 			@RequestParam(name="sexo", required = false) String sexo,
-			@RequestParam(name="telefono", required = false) Integer telefono,
+			@RequestParam(name="telefono", required = false) String telefono,
 			ModelMap model) throws MiExcepcion {
 		
 		//Buscamos mediante el id el mail anterior del admin y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
@@ -94,7 +94,7 @@ public class ControladorProfesional {
 		String domicilioAnterior = null;
 		Sexo sexoAnterior = null;
 		String nuevoSexo = null;
-		Integer telefonoAnterior = null;
+		String telefonoAnterior = null;
 		
 		Optional<Profesional> identificarProfesional = repositorioProfesional.findById(idProfesional);
 		if (identificarProfesional.isPresent()) {
