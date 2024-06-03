@@ -65,34 +65,28 @@
   <div class="main-interno">
     <h3>Reserva de turnos</h3>
   <div class=" container">
-      <div class="  ft-reserva-turno row ">
-        <div class="col-md-4 texto-solicitar-turno ">
+      <div class="  ft-reserva-turno">
+        <div class="texto-solicitar-turno ">
           <div>
-          <div class="logo-registrarse text-center  ">
-            <img class="img-logo-final-home" src="../imagenes/Nani-removebg-preview.png" alt="">
-          </div>
-          <p class="fs-4">Por favor complete todas las opciones a continuación para realizar la reserva de turno</p>
-          <p class="fs-4">Todos nustros tratamientos incluyen una limpieza facila profunda con extracciones</p>
+          <p class="fs-4">Todos nustros tratamientos incluyen una limpieza facila profunda con extracciones.</p>
+          <p class="fs-4">Por favor complete todas las opciones a continuación para realizar la reserva de turno.</p>
         </div>
         </div>
-        <div class="col-md-8 info-silicitar-turno ">
-          <form action="">
+        <div class="container">
+			<!--el campo th:object se relaciona con el onjeto turno creado en el controlador, a este objeto se le asigna todo los valores que puede tener el formulario y asi poder manejarlo en el controlador-->
+          <form th:action="@{/confimarTurnoClienteFacial}" method="post" th:object="${Turnos}" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno">
             <div>
               <label for="provincia" class="form-label mb-0 fs-4">Seleccione provincia <span class="text-danger ">*</span> </label>
-              <select class="form-select" id="provincia" aria-label="Default select example">
-                <option selected>Provincia</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+              <select th:field="*{provincias}" name="provincia" class="form-select" id="provincia" aria-label="Default select example">
+                <option value=""  selected>Seleccione una provincia</option>
+                <option th:each="provincia : ${provincias}" th:value="${provincia.name()}" th:text="${provincia.displayName}"></option> <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
               </select>
             </div>
             <div>
               <label for="profesional" class="form-label mb-0 mt-2 fs-4">Seleccione profesional <span class="text-danger ">*</span></label>
-              <select class="form-select" id="profesional" aria-label="Default select example">
+              <select class="form-select" id="profesional" name="datosProfesional" aria-label="Default select example">
                 <option selected>Profesional</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+                <option th:each="nombreProfesional : ${Profesional}" th:text="${nombreProfesional.nombre + ' '  + nombreProfesional.apellido}" th:value="${nombreProfesional.nombre + '/'  + nombreProfesional.apellido}"></option>
               </select>
             </div>
             <div>
@@ -145,14 +139,18 @@
               </div>
                 
             </div>
-            <div class="d-flex justify-content-center mt-4  text-center ">
-            <div class="boton-de-registro text-center me-1 boton-pag-turno ">
+            <div class="boton-pag-turno">
+            <div class="boton-de-registro text-center">
               <a href="#"><button type="submit" class="bn632-hover bn26">Enviar</button></a>
             </div>
-            <div class="boton-de-registro text-center ms-1 boton-pag-turno ">
+            <div class="boton-de-registro text-center">
               <a href="#"><button type="submit" class="bn632-hover bn26">Cancelar</button></a>
             </div>
           </div>
+          
+          <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
+		  <input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
+		  
           </form>
         </div>
       </div>

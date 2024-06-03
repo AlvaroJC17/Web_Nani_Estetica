@@ -17,10 +17,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import jakarta.persistence.Transient;
 
 
 @Entity
@@ -52,9 +54,11 @@ public class Usuario implements Serializable {
 	@Temporal(TemporalType.DATE)
 	protected Date fechaNacimiento;
 	
+	@Transient
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "persona_id", referencedColumnName = "id")
 	private Persona persona;
+	 
 	
 	public Usuario() {};
 	

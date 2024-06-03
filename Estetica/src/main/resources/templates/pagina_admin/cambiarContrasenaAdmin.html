@@ -55,18 +55,15 @@
 	<main class="">
 		<div class="main-interno">
 			<h3>Cambiar contraseña</h3>
-			<div class=" container">
-				<div class="  ft-reserva-turno d-block p-4 ">
-					<div class=" texto-solicitar-turno ">
+			<div class="">
+				<div class="">
+					<div class="">
 						<div>
-							<div class="logo-registrarse text-center  ">
-								<img class="img-logo-final-home" src="./imagenes/Nani-removebg-preview.png" alt="">
-							</div>
-							<p class="fs-3">Por favor ingrese los datos solicitados para cambiar su contraseña</p>
+							<p class="fs-4 text-center">Por favor ingrese los datos solicitados para cambiar su contraseña</p>
 						</div>
 					</div>
-					<div class=" info-silicitar-turno border-0  ">
-						<form th:action="@{/actualizarContrasenaAdmin}" method="post">
+					<div class="container">
+						<form class="fomularioCambiarContrasena w-50" th:action="@{/actualizarContrasenaAdmin}" method="post">
 							<div>
 								<label for="oldPass" class="form-label mb-0 mt-2  fs-5">Contraseña anterior<span
 										class="text-danger ">*</span></label>

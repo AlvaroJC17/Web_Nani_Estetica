@@ -1,14 +1,19 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
+import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ServicioPersona {
@@ -34,6 +39,12 @@ public class ServicioPersona {
 					Persona personaDelete = identificarPersona.get();
 					repositorioPersona.delete(personaDelete);
 				}
+			}
+			
+			@Transactional
+			public List<Persona> buscarNombreApellidoPorRol(Rol rol) {
+				List<Persona> nombreApellidoPorRol = repositorioPersona.buscarNombreApellidoPorRol(rol);
+			return nombreApellidoPorRol;
 			}
 	
 }

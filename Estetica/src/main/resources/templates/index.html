@@ -32,7 +32,7 @@
         </div>
       </div>
     </div>
-    <nav class="navbar navbar1 navbar-expand-md col-6 col-sm-8">
+    <div class="navbar navbar1 navbar-expand-lg col-6 col-sm-8">
       <div class="container-fluid navbar2">
         <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse"
           data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
@@ -47,7 +47,7 @@
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
             <li class="nav-item">
-             <a class="nav-link active py-1 ajuste-texto-menu" aria-current="page" href="#">HOME</a>
+             <a class="nav-link active py-1 ajuste-texto-menu" aria-current="page" th:href="@{/index}">HOME</a>
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" href="/tablamisdatos.html">NOSOTROS</a>
@@ -70,14 +70,14 @@
           </ul>
         </div>
       </div>
-    </nav>
+    </div>
 
     
     <div class=" cabecera navbar1 col-6 col-sm-4">
-      <div class="d-flex justify-content-center  align-items-center">
+      <div class="d-flex justify-content-center margen-login  align-items-center">
         <a class="registrarse" th:href="@{/login}">LOGIN</a>
       </div>
-        <div class="d-flex justify-content-center  align-items-center">
+        <div class="d-flex justify-content-center margen-registrarse align-items-center">
           <a class="registrarse" th:href="@{/registrarse}">REGISTRARSE</a>
         </div>
       </div>

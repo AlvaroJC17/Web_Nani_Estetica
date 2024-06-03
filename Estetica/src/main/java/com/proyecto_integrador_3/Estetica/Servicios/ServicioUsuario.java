@@ -144,13 +144,12 @@ public class ServicioUsuario {
 		return contrasenaUsuario;
 		}
 		
-	
-		
 		@Transactional
-		public List<Rol> buscarRol() {
-			List<Rol> rolUsuario = repositorioUsuario.buscarRol();
+		public List<Usuario> buscarRol(Rol rol) {
+			List<Usuario> rolUsuario = repositorioUsuario.findByRol(rol);
 		return rolUsuario;
 		}
+		
 
 		//Borra un admin de la base de datos
 		public void borrarUsuario(String id) {
@@ -207,6 +206,15 @@ public class ServicioUsuario {
 		
 	  
 	  //VALIDACIONES
+		 
+	  public void validarEmail(String email) throws MiExcepcion {
+			  
+			  if (Objects.equals(email, null) || email.isEmpty() || email.trim().isEmpty()) {
+		            throw new MiExcepcion("El correo electronico no puede estar vacío");
+		        }
+		  }
+		 
+		 
 	  public void verificarEmail(String email) throws MiExcepcion {
 		// Expresión regular para validar un correo electrónico
 	        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
@@ -230,6 +238,7 @@ public class ServicioUsuario {
 	        }
 
 	    }
+	  	  
 
 	  //Esta verificacion es para el login y el registrarse
 	    public boolean verificarPassword(String password, String password2) throws MiExcepcion {

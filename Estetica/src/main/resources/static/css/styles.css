@@ -75,7 +75,7 @@ nav, .subnav {
 .iconos3 {
     /*Ajusta los iconos del princio de la pagina y del footer uno al lado del otro y los separa entre si*/
     display: flex;
-    justify-content: space-around;
+    justify-content: center;
 }
 
 .iconos {
@@ -107,7 +107,7 @@ nav, .subnav {
     margin-right: 15px;
     background-color: transparent;
     border: none;
-    color: #724921 !important;
+    color: black !important;
     padding: 0px;
 }
 
@@ -116,7 +116,8 @@ nav, .subnav {
     display: flex;
     align-items: center;
     justify-content: end;
-    background-image: linear-gradient(to left, #d4af37, #724921);
+   /* background-image: linear-gradient(to left,#724921  #d4af37);*/
+    
 }
 
 .imagen-logo {
@@ -280,6 +281,7 @@ footer {
     /*Le da la transcision de aumento y bordes a los iconos de redes sociales del footer*/
     transition: all 0.3s;
     border-radius: 30%;
+    margin-left: 30px;
 }
 
 .iconos2:hover {
@@ -639,12 +641,6 @@ footer {
   padding-bottom: 20px;
 }
 
-.form-misdatos .bn632-hover {
-    margin-top: 10px;
-    height: 50px;
-    width: 20%;
-    font-size: 18px;
-}
 
   .body-misdatos{
     background-color:#ebdf9d ;
@@ -657,7 +653,6 @@ footer {
   .form-misdatos{
     width: 80%;
     background-color:#ebdf9d ;
-    border-radius: 20px;
     padding: 30px 30px 30px 30px;
   }
 
@@ -689,11 +684,6 @@ footer {
     align-items: center;
 }
 
-.boton-pag-turno .bn632-hover{
-    width: 120px;
-    font-size: 17px;
-    height: 50px;
-}
 
 .form-check .form-check-input {
 
@@ -710,10 +700,6 @@ footer {
     padding-left: 1.5em;
     margin-bottom: 0.425rem;
     margin-left: 1rem;
-}
-
-.info-silicitar-turno {
-    border-left: 1px solid white;
 }
 
 .input-seleccion-check {
@@ -783,6 +769,13 @@ tr {
     border-radius: 0.375rem;
 }
 
+.form-misdatos .boton-pag-turno{
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    margin-top: 20px;
+}
+
 /*-------- MEDIAS PARA RESPONSIVE ---------*/
 
 @media(max-width: 1280px){
@@ -812,10 +805,6 @@ tr {
         padding-right: 20px;
         padding-bottom: 50px;
     }
-  
-    .info-silicitar-turno{
-        border-left: 1px solid white;
-    }
     
     .info-silicitar-turno .img-logo-final-home{
         width: 80px;
@@ -825,20 +814,7 @@ tr {
         font-size: 18px;
         text-align: center;
     }
-.ft-reserva-turno{
-    /*Estilos de los cuadros de seleccion en el centro de la hoja, ademas de centar el texto*/
-    height: auto;
-    width: 750px;
-    margin: 21px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 40px 0px 40px 0px;
-    background-color: #ebdf9d;
-    border: 2px solid white;
-    box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
-    padding: 15px 0px 15px 0px;
-}
+
     .form-misdatos h4 {
         font-size: 50px;
         margin-bottom: 20px;
@@ -851,13 +827,7 @@ tr {
         padding-bottom: 50px;
       
       }
-
-    .form-misdatos .bn632-hover {
-        margin-top: 10px;
-        height: 50px;
-        width: 20%;
-        font-size: 18px;
-    }
+    
     
     .titulos-footer-general {
         font-size: 21px;
@@ -876,10 +846,6 @@ tr {
     div .areatexto{
         line-height: 1.2 !important;
     }
-
-    .iconos2 {
-        width: 80%;
-    }
   
     .container {
         margin-bottom: 0px;
@@ -888,6 +854,7 @@ tr {
     .ft {
         height: 200px;
         width: 400px;
+        font-size: 35px;
       
     }
     
@@ -953,26 +920,6 @@ tr {
 
 @media(max-width: 992px) {
 
-    .form-misdatos h4 {
-        margin-bottom: 40px;
-        text-align: center;
-      
-    }
-
-    .texto-label {
-        font-size: 20px;
-        margin-bottom: 0px;
-    }
-  
-    .navbar4 {
-        /*Le da estilos a la lista del menu, tamaño de letra, centrado y grosor de letra*/
-        font-size: 11px !important;
-    }
-  
-}
-
-@media(max-width: 767px) {
-
     .esconder-col{
         display: none ;
     }
@@ -986,6 +933,46 @@ tr {
         align-items: start !important;
         justify-content: end !important;
         padding-top: 10px;
+    }
+
+    .navbar2{
+        /*Separa el menu del margen izquierdo a este tamaño de pantalla*/
+        padding-left: 20px;
+    }
+
+    .img-logo{
+        /*Ajuta el logo del menu a la izquierda del menu*/
+        margin-left: -27px;
+        background-color: transparent;
+    }
+
+    .img-logo-nav {
+        /*Le da estilos al logo pequeño del menu*/
+        margin-left: -20px ;
+    }
+
+    .ajuste-texto-menu{
+        /*ajusta el contenedor al tamaño del texto para que solo se haga click al estar arriba de la palabra*/
+        display: inline-block;
+        }
+   
+    .form-misdatos h4 {
+        margin-bottom: 40px;
+        text-align: center;
+      
+    }
+
+    .texto-label {
+        font-size: 20px;
+        margin-bottom: 0px;
+    }
+    
+}
+
+@media(max-width: 767px) {
+
+    .fomularioCambiarContrasena{
+        width: 75% !important;
     }
 
     .h1estetica {
@@ -1019,26 +1006,6 @@ tr {
         /*cetra las card del main para este tamaño del media*/
     }
 
-    .img-logo{
-        /*Ajuta el logo del menu a la izquierda del menu*/
-        margin-left: -27px;
-        background-color: transparent;
-    }
-    .navbar2{
-        /*Separa el menu del margen izquierdo a este tamaño de pantalla*/
-        padding-left: 20px;
-    }
-
-    .img-logo-nav {
-        /*Le da estilos al logo pequeño del menu*/
-        margin-left: -20px ;
-    }
- 
-    .ajuste-texto-menu{
-    /*ajusta el contenedor al tamaño del texto para que solo se haga click al estar arriba de la palabra*/
-    display: inline-block;
-    }
-
     .imagen-formulario-login{
         display: none;
     }
@@ -1046,13 +1013,11 @@ tr {
 
 @media(max-width: 576px) {
 
-    .input-seleccion-check {
+    .form-misdatos .boton-pag-turno{
         display: block;
     }
-    
-
-    .form-misdatos .bn632-hover {
-        width: 35%;
+    .input-seleccion-check {
+        display: block;
     }
 
     .ft {
@@ -1110,28 +1075,15 @@ tr {
 
 @media (max-width: 400px) {
    
-    .boton-pag-turno .bn632-hover{
-        width: 90px;
-        font-size: 17px;
-        height: 40px;
-    }
 
+    .fomularioSacarTurno{
+        width: 100% !important;
+    }
     .ft {
         height: 150px;
         width: 360px;
-        font-size: 20px;
+        font-size: 23px;
     }
-
-    .form-misdatos .bn632-hover {
-        margin-top: 10px;
-        height: 50px;
-        width: 80%;
-    }
-
-    .bn632-hover {
-        width: 75%;
-    
-      }
 
     .boton-modal {
         /*Le da estilos a los botones de login y registrase del menu principal, en este tambien les pone fondo transparente*/
@@ -1168,6 +1120,7 @@ tr {
 
     .cabecera {
         /*Posiciona los botones de login y registrase en el menu princial al centro*/
+        display: block;
         justify-content: center !important;
         flex-wrap: wrap !important;
         padding: 0px;
@@ -1246,6 +1199,18 @@ tr {
 
 h3{
     font-size: 50px;
+}
+
+.margen-login{
+margin-bottom: 5px;
+}
+
+.margen-registrarse{
+margin-bottom: 10px;
+}
+
+.iconos2 {
+    width: 60%;
 }
   
 }

@@ -14,11 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
+import com.proyecto_integrador_3.Estetica.Entidades.Persona;
+import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 
 import jakarta.transaction.Transactional;
@@ -31,6 +34,9 @@ public class ServicioCliente {
 	
 	@Autowired
 	private RepositorioUsuario repositorioUsuario;
+	
+	@Autowired
+	private RepositorioTurnos repositorioTurnos;
 	
 	@Autowired
 	private ServicioUsuario servicioUsuario;
@@ -158,7 +164,33 @@ public class ServicioCliente {
 		
 	}
 
-        		
+	@Transactional
+	public void guardarTurno(String idCliente, String profesional, Turnos turnos) {
+	
+		//Como se recibe el nombre y el apellido en un solo string aplicamos este codigo para separarlos
+				String [] nombreApellidoProfesional = profesional.split("/");
+				String nombreProfesional = nombreApellidoProfesional[0];
+				String apellidoProfesional = nombreApellidoProfesional[1];
+				
+				//Buscamos el dni del cliente que esta seleccionando el turno para adjuntarlo al objeto turno que se va a guardar en la base de datos
+				String dniCliente = null;
+				Optional<Persona> dniUsuario = repositorioPersona.findById(idCliente);
+				if (dniUsuario.isPresent()) {
+					Persona usu = dniUsuario.get();
+					dniCliente = usu.getDni();
+				}
+				
+				/*Se crea la variable de tipo string para guardar el dato de la provincia que selecciono
+				 * el usuario, este dato viene adjunto en el objeto de tipo turno que se recibe del
+				 * formulario */
+				String Provincia = turnos.getProvincias().toString(); // se para el enum de la provincia seleccionada a string
+				Turnos nuevoTurno = new Turnos(); // Creamos un nuevo objeto de tipo turno que es el que se va a guardar en la base de datos
+				nuevoTurno.setProvincia(Provincia);
+				nuevoTurno.setDniCliente(dniCliente);
+				nuevoTurno.setProfesional(nombreProfesional + " " + apellidoProfesional);
+				nuevoTurno.setActivo(TRUE);
+				repositorioTurnos.save(nuevoTurno);
+	}
 
 	 public void validarDatosCliente(String nombre, String apellido, String dni,  String sexo,
 			 String telefono, String direccion, String ocupacion) throws MiExcepcion {

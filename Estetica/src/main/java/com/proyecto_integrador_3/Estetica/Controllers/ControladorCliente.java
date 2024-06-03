@@ -12,20 +12,28 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
+import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
+import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 
 import jakarta.persistence.EntityManager;
 
@@ -37,7 +45,13 @@ public class ControladorCliente {
 	public RepositorioCliente repositorioCliente;
 	
 	@Autowired
+	public RepositorioPersona repositorioPersona;
+	
+	@Autowired
 	public RepositorioUsuario repositorioUsuario;
+	
+	@Autowired
+	public RepositorioTurnos repositorioTurnos;
 	
 	@Autowired
 	public ServicioCliente servicioCliente;
@@ -45,12 +59,16 @@ public class ControladorCliente {
 	@Autowired
 	public ServicioUsuario servicioUsuario;
 	
+	@Autowired
+	public ServicioPersona servicioPersona;
+	
 	/*Este metodo deriva a la pagina de tratamientos con los valores de mail y id del cliente*/
 	@GetMapping("/tratamientos")
 	public String tratamientos(
 			@RequestParam(name = "email", required = false) String email,
 			@RequestParam(name = "idCliente") String idCliente,
 			ModelMap model) {
+		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosCliente", datosCliente);
 		return "/pagina_cliente/tratamientos";
@@ -66,6 +84,61 @@ public class ControladorCliente {
 		model.addAttribute("datosCliente", datosCliente);
 		return "/pagina_cliente/reservaDeTurnoClienteEstetico";
 	}
+	
+	@GetMapping("/reservaDeTurnoClienteFacial")
+	public String reservaDeTurnoClienteFacial(
+			@RequestParam(name = "email", required = false) String email,
+			@RequestParam(name = "idCliente", required = false) String idCliente,
+			ModelMap model) {
+		
+		//Buscamos el nombre y apellido en la tabla persona mediante el rol PROFESIONAL
+		List <Persona> Profesional = servicioPersona.buscarNombreApellidoPorRol(Rol.PROFESIONAL);
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		model.addAttribute("datosCliente", datosCliente);
+		model.addAttribute("provincias", Provincias.values()); // pasamos el array de enums al formulario para desplegar la lista de select
+		model.addAttribute("Profesional", Profesional); // pasamos el array de objetos tipo persona que tengan rol de profesional
+		model.addAttribute("Turnos", new Turnos()); // creamos una instancia de Turnos para pasarla al formulario y cargarlo con todos los campos del formulario
+		return "/pagina_cliente/reservaDeTurnoClienteFacial";
+	}
+	
+	@PostMapping("/confimarTurnoClienteFacial")
+	public String confimarTurnoClienteFacial(
+			@ModelAttribute Turnos turnos, //Se recibe un objeto de tipo Turnos que viene con todo los valores de los campos del formulario
+			@RequestParam(name = "email", required = false) String email,
+			@RequestParam(name = "idCliente", required = false) String idCliente,
+			@RequestParam(name = "datosProfesional", required = false) String profesional, // se recibe los valores de nombre y apellido del array de profesionales
+			ModelMap model) throws Exception {
+		
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		try {
+			//Servicio para guardar el turno facial en la base de datos6
+			servicioCliente.guardarTurno(idCliente, profesional, turnos);
+			model.addAttribute("datosCliente", datosCliente);
+			return "/pagina_cliente/misturnos";
+			
+		} catch (Exception e) {
+			System.out.println("Hay un error en el controlador confimarTurnoClienteFacial ");
+			model.addAttribute("datosCliente", datosCliente);
+			return "/pagina_cliente/misturnos";
+		}
+		
+		
+	}
+	
+	
+	
+	
+	
+	@GetMapping("/reservaDeTurnoClienteCorporal")
+	public String reservaDeTurnoClienteCorporal(
+			@RequestParam(name = "email", required = false) String email,
+			@RequestParam(name = "idCliente") String idCliente,
+			ModelMap model) {
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		model.addAttribute("datosCliente", datosCliente);
+		return "/pagina_cliente/reservaDeTurnoClienteCorporal";
+	}
+		
 	
 	/*Se usa postmapping por que los valores que recibe este metodo vienen de un formulario con un metodo post*/
 	/*Valida si el formulario de preguntas ya se lleno y le muestra al cliente la pagina correspondiente dependiendo de su seleccion*/
@@ -85,20 +158,23 @@ public class ControladorCliente {
 			Cliente validarUsoFormulario = formularioDeDatos.get();
 			usoDeFormulario = validarUsoFormulario.getFomularioDatos();
 		}
-		
+					
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-			
 		if (usoDeFormulario && tratamiento.equals("facial")) {
-			model.addAttribute("datosCliente", datosCliente);
-			return "/pagina_cliente/reservaDeTurnoClienteFacial";	
+			//model.addAttribute("datosCliente", datosCliente);
+			//return "/pagina_cliente/reservaDeTurnoClienteFacial";
+			return "redirect:/reservaDeTurnoClienteFacial?idCliente=" + idCliente + "&email=" + email;
 			
 		}else if(usoDeFormulario && tratamiento.equals("corporal")) {
-			model.addAttribute("datosCliente", datosCliente);
-			return "/pagina_cliente/reservaDeTurnoClienteCorporal";	
+			//model.addAttribute("datosCliente", datosCliente);
+			//return "/pagina_cliente/reservaDeTurnoClienteCorporal";
+			return "redirect:/reservaDeTurnoClienteCorporal?idCliente=" + idCliente + "&email=" + email;
 			
+			//Si el boolean usoDeFormulario es false, entonces dirige al usuario a llenar el formulario de preguntas
 		}else {
 			model.addAttribute("tratamiento", tratamiento);
 			model.addAttribute("datosCliente", datosCliente);
+			//model.addAttribute("idCliente", idCliente);
 			model.addAttribute("email", email);
 			return "/pagina_cliente/formularioPreguntas";
 			
@@ -131,6 +207,7 @@ public class ControladorCliente {
 		return "/pagina_cliente/cambiarContrasenaCliente";
 	}
 		
+	
 	@GetMapping("/completarDatosCliente")
 	public String completarDatos(
 			@RequestParam(name = "email") String emailUsuario,
@@ -258,8 +335,7 @@ public class ControladorCliente {
 			@RequestParam(name="cuidado_de_piel", required = false) String cuidado_de_piel,
 			@RequestParam(name="motivo_consulta", required = false) String motivo_consulta,
 			Model model) throws MiExcepcion{
-		
-		
+	
 		
 		try {
 			servicioCliente.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes, ejercicios,
@@ -271,9 +347,9 @@ public class ControladorCliente {
 					resultados_tratamiento_anterior, cuidado_de_piel, motivo_consulta);
 			
 			if (tratamiento.equals("facial")) {
-				return "redirect:/reservaDeTurnoClienteFacial?email=" + email;
+				return "redirect:/reservaDeTurnoClienteFacial?email=" + email + "&idCliente" + idCliente;
 			}else if(tratamiento.equals("corporal")){
-				return "redirect:/reservaDeTurnoClienteCorporal?email=" + email;
+				return "redirect:/reservaDeTurnoClienteCorporal?email=" + email + "&idCliente" + idCliente;
 			}else {
 				return "";
 			}
@@ -340,24 +416,7 @@ public class ControladorCliente {
 		model.addAttribute("error", error);
 		return "/pagina_cliente/formularioPreguntas";
 	} */
-	
-	@GetMapping("/reservaDeTurnoClienteFacial")
-	public String reservaDeTurnoClienteFacial(
-			@RequestParam(name="email") String email,
-			Model modelo){
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);		
-		modelo.addAttribute("datosCliente", datosCliente);
-		return "/pagina_cliente/reservaDeTurnoClienteFacial";
-	}
-	
-	@GetMapping("/reservaDeTurnoClienteCorporal")
-	public String reservaDeTurnoClienteCorporal(
-			@RequestParam(name="email") String email,
-			Model modelo){
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);		
-		modelo.addAttribute("datosCliente", datosCliente);
-		return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-	}
+
 
 	
 	@PostMapping("/actualizarDatosCliente")
@@ -391,36 +450,37 @@ public class ControladorCliente {
 			telefonoAnterior = datosAnteriorCliente.getTelefono();
 		}
 		
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email); //Buscamos todos los datos pertenecientes al cliente despues de haber sido actualizados en la base de datos y los mostramos en el campo correspondiente
 		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
 				//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
 		if (ocupacionAnterior.equals(ocupacion) && emailAnterior.equals(email) && domicilioAnterior.equals(domicilio) && nuevoSexo.equals(sexo) && telefonoAnterior.equals(telefono)) {
-			return "redirect:/misdatosCliente?email=" + email;
+			model.addAttribute("emial", email);
+			model.addAttribute("datosCliente",datosCliente);
+			return "/pagina_cliente/misdatosCliente";
+			//return "redirect:/misdatosCliente?email=" + email;
 		}
 		
 		try {
 			//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
 			servicioCliente.modificarCliente(idCliente, ocupacion, email, emailAnterior, domicilio, sexo, telefono );
-			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email); //Buscamos todos los datos pertenecientes al cliente despues de haber sido actualizados en la base de datos y los mostramos en el campo correspondiente
+			List <Usuario> datosClienteActualizados = servicioUsuario.buscarPorEmail(email);
 			String exito = "Datos actualizados correctamente";
-			model.addAttribute("datosCliente",datosCliente);
+			model.addAttribute("datosCliente",datosClienteActualizados);
 			model.addAttribute("exito",exito);
 			model.addAttribute("showModalExito", true);
 			return "/pagina_cliente/misdatosCliente";
 			
-		} catch (Exception e) {
+		} catch (MiExcepcion e) {
 			String error = e.getMessage(); // en la exepcion e.getmessage obtenenos el valor de la exepcion personalizada que se de y la enviamos al controlador de misdatosCliente para ser monstrada en pantalla
 			List <Usuario> datosClienteAnterior = servicioUsuario.buscarPorEmail(emailAnterior); //Buscamos los datos ateriores a la excepcion y los mostramos en caso de que haya un error por parte del usuario
 			model.addAttribute("datosCliente",datosClienteAnterior);
 			model.addAttribute("error",error);
 			model.addAttribute("showModalError", true);
 			return "/pagina_cliente/misdatosCliente";
-			
-			
-			
 		}
 	}
-	
 			
+	
 	@PostMapping("actualizarContrasenaCliente")
 	public String actualizarContrasenaCliente(
 			@RequestParam(name = "emailCliente") String emailCliente, //Esta variable viene de un input oculto de la pag cambiarContrasenaCliente

@@ -462,25 +462,37 @@ public class ControladorAdmin {
 			telefonoAnterior = datosAdminAnterior.getTelefono();
 		}
 		
+		List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
 		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
 		//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
 		if (ocupacionAnterior.equals(ocupacion) && emailAnterior.equals(email) && domicilioAnterior.equals(domicilio) && nuevoSexo.equals(sexo) && telefonoAnterior.equals(telefono)) {
-			return "redirect:/misdatosAdmin?email=" + email;
+			model.addAttribute("email", email);
+			model.addAttribute("datosAdmin",datosAdmin);
+			return "/pagina_admin/misdatosAdmin";
+			//return "redirect:/misdatosAdmin?email=" + email;
 		}
 		
 		try {
 			//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
 			servicioAdmin.modificarAdmin(idAdmin, ocupacion, email, emailAnterior, domicilio, sexo, telefono );
+			List <Usuario> datosAdminActualizados = servicioUsuario.buscarPorEmail(email);
 			String exito = "Datos actualizados correctamente";
-			return "redirect:/misdatosAdmin?email=" + email + "&exito=" + exito; //si todo sale bien redireccionamos al metodo misdatosAdmin con el mail actualizado y un mensaje de exito
+			model.addAttribute("datosAdmin",datosAdminActualizados);
+			model.addAttribute("exito",exito);
+			model.addAttribute("showModalExito", true);
+			return "/pagina_admin/misdatosAdmin"; //si todo sale bien redireccionamos al metodo misdatosAdmin con el mail actualizado y un mensaje de exito 
 			
-		} catch (Exception e) {
+		} catch (MiExcepcion e) {
 			String error = e.getMessage(); // en la exepcion e.getmessage obtenenos el valor de la exepcion personalizada que se de y la enviamos al controlador de misdatosAdmin para ser monstrada en pantalla
-			return "redirect:/misdatosAdmin?email=" + emailAnterior + "&error=" + error; // si se produce alguna exepcion en algun campo enviamos el mail anterior del usuario y un mensaje de error al metodo misdatosAdmin
+			List <Usuario> datosAdminAnterior = servicioUsuario.buscarPorEmail(emailAnterior);
+			model.addAttribute("datosAdmin",datosAdminAnterior);
+			model.addAttribute("error",error);
+			model.addAttribute("showModalError", true);
+			return "/pagina_admin/misdatosAdmin"; // si se produce alguna exepcion en algun campo enviamos el mail anterior del usuario y un mensaje de error al metodo misdatosAdmi
 		}
 	}
-		
-		
+			
+	
 	//metodo relacionado con actualizarContrasenaProfesional
 		@GetMapping("/cambiarContrasenaAdmin")
 		public String cambiarContrasenaAdmin(

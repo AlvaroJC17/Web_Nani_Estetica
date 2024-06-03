@@ -42,18 +42,12 @@ public class ControladorProfesional {
 	@GetMapping("/misdatosProfesional")
 	public String misdatosProfesional(
 			@RequestParam(name = "email") String email,
-			@RequestParam(name = "exito", required = false) String exito,
-			@RequestParam(name = "error", required = false) String error,
 			ModelMap model) {
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosProfesional", datosProfesional);
-		model.addAttribute("exito", exito);
-		model.addAttribute("error", error);
 		return "/pagina_profesional/misdatosProfesional";	
 	}
-	
-	
 	
 	@PostMapping("/guardarDatosProfesional")
 	public String guardarDatosProfesional(
@@ -104,33 +98,37 @@ public class ControladorProfesional {
 			sexoAnterior = datosAnteriorProfesional.getSexo();
 			nuevoSexo = sexoAnterior.toString();
 			telefonoAnterior = datosAnteriorProfesional.getTelefono();
-			
 		}
+			
 		
-//		System.out.println("EMAIL: " + email);
-//		System.out.println("EMAIL ANTERIOR: " + emailAnterior);
-//		System.out.println("DOMICILIO: " + domicilio);
-//		System.out.println("DOMICILIO ANTERIOR: " + domicilioAnterior);
-//		System.out.println("SEXO: " + sexo);
-//		System.out.println("SEXO ANTERIOR: " + nuevoSexo);
-//		System.out.println("TELEFONO: " + telefono);
-//		System.out.println("TELEFONO ANTERIOR: " + telefonoAnterior);
-		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
 		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
 		//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
 		if (emailAnterior.equals(email) && domicilioAnterior.equals(domicilio) && nuevoSexo.equals(sexo) && telefonoAnterior.equals(telefono)) {
-			return "redirect:/misdatosProfesional?email=" + email;
+			model.addAttribute("email", email);
+			model.addAttribute("datosProfesional",datosProfesional);
+			return "/pagina_profesional/misdatosProfesional";
+			//return "redirect:/misdatosProfesional?email=" + email;
 		}
 		
 		try {
 			//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
 			servicioProfesional.modificarProfesional(idProfesional, email, emailAnterior, domicilio, sexo, telefono );
+			List <Usuario> datosProfesionalActualizado = servicioUsuario.buscarPorEmail(email);
 			String exito = "Datos actualizados correctamente";
-			return "redirect:/misdatosProfesional?email=" + email + "&exito=" + exito; //si todo sale bien redireccionamos al metodo misdatosProfesional con el mail actualizado y un mensaje de exito
+			model.addAttribute("datosProfesional",datosProfesionalActualizado);
+			model.addAttribute("exito",exito);
+			model.addAttribute("showModalExito", true);
+			return "/pagina_profesional/misdatosProfesional"; //si todo sale bien redireccionamos al metodo misdatosProfesional con el mail actualizado y un mensaje de exito
 			
-		} catch (Exception e) {
+			
+		} catch (MiExcepcion e) {
 			String error = e.getMessage(); // en la exepcion e.getmessage obtenenos el valor de la exepcion personalizada que se de y la enviamos al controlador de misdatosProfesional para ser monstrada en pantalla
-			return "redirect:/misdatosProfesional?email=" + emailAnterior + "&error=" + error; // si se produce alguna exepcion en algun campo enviamos el mail anterior del usuario y un mensaje de error al metodo misdatosProfesional
+			List <Usuario> datosProfesionalAnterior = servicioUsuario.buscarPorEmail(emailAnterior);
+			model.addAttribute("datosProfesional",datosProfesionalAnterior);
+			model.addAttribute("error",error);
+			model.addAttribute("showModalError", true);
+			return "/pagina_profesional/misdatosProfesional"; // si se produce alguna exepcion en algun campo enviamos el mail anterior del usuario y un mensaje de error al metodo misdatosProfesional
 		}
 	}
 	

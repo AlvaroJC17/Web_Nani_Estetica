@@ -20,46 +20,67 @@
 	<a href="#" target="_blank" class="boton-flotante">
 		<i class="fa-brands fa-whatsapp"></i>
 	</a>
-	<nav>
-		<div class=" d-flex justify-content-end">
-			<p class="tituloredes">SIGUENOS EN NUESTRAS REDES: &nbsp</p>
-			<div class="iconos3">
-				<div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-instagram-50 black.png"
-							alt=""></a>
-				</div>
-				<div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-tik-tok-50 black.png"
-							alt=""></a></div>
-				<div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-facebook-50 black.png"
-							alt=""></a>
-				</div>
-				<div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-youtube-play-50 black.png"
-							alt=""></a>
-				</div>
-			</div>
-		</div>
-		<div class="row">
-			<nav class="navbar navbar1 navbar-expand-md col-12 col-sm-10 ">
-				<div class="container-fluid navbar2">
-					<button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse"
-						data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
-						aria-label="Toggle navigation">
-						<span class="navbar-toggler-icon"></span>
-					</button>
-					<div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-						<a th:href="@{/index}">
-							<div class="imagen-logo ajuste-texto-menu">
-								<img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
-							</div>
-						</a>
-					</div>
-				</div>
-			</nav>
-			<div class="d-flex justify-content-center  align-items-center col-12 col-sm-2 cabecera">
-				<a class="registrarse" th:href="@{/login}">INICIAR SESION</a>
-			</div>
-		</div>
-	</nav>
+	
+	 <nav class="container-fluid row p-0 m-0">
+    <div class=" d-flex justify-content-end">
+      <p class="tituloredes">SIGUENOS EN NUESTRAS REDES: &nbsp</p>
+      <div class="iconos3">
+        <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
+        </div>
+        <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a></div>
+        <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
+        </div>
+        <div class="ms-2"><a href="#"><img class="iconos" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+        </div>
+      </div>
+    </div>
+    <div class="navbar navbar1 navbar-expand-lg col-6 col-sm-8">
+      <div class="container-fluid navbar2">
+        <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+          <a th:href="@{/index}">
+            <div class="imagen-logo alvaro">
+              <img src="/imagenes/Nani-removebg-preview.png" class=" img-logo" alt="">
+            </div>
+          </a>
+          <ul class="navbar-nav navbar4 container-fluid p-0">
+            <li class="nav-item">
+             <a class="nav-link active py-1 ajuste-texto-menu" aria-current="page" th:href="@{/index}">HOME</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" href="/tablamisdatos.html">NOSOTROS</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" href="#">TRATAMIENTOS</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" href="#">RESULTADOS</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/login}">TURNOS</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" href="#">PRODUCTOS</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" href="#">CONTACTOS</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
 
+    
+    <div class=" cabecera navbar1 col-6 col-sm-4">
+      <div class="d-flex justify-content-center margen-login  align-items-center">
+        <a class="registrarse" th:href="@{/login}">LOGIN</a>
+      </div>
+      </div>
+    </nav>
 
 	<main class="">
 		<div class="">
@@ -100,9 +121,9 @@
 							<div class="text-center fs-5 ">
 								<a class="m-2 " th:href="@{/login}">¿Ya esta registrado?</a>
 							</div>
-							<div class="text-center fs-5  mt-2 ">
-								<a class="m-2 " th:href="@{/olvidocontrasena}">¿Olvido su contraseña?</a>
-							</div>
+							<div class="texto-recuperar1">
+              				<a class="texto fs-5"  th:href="@{/olvidoContrasena}">¿Olvido su contraseña?</a><br>
+            				</div>
 							
 							
 							<!--Modal mensaje de exito al registrarse	-->

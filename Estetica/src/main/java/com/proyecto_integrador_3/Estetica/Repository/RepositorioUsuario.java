@@ -41,7 +41,7 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, String>  {
     
     //Metodo para buscar una lista de rol
     @Query("SELECT u FROM Usuario u WHERE u.rol = :rol")
-    public List<Rol> buscarRol();
+    public List<Usuario> findByRol(Rol rol);
     
     //Metodo para mostrar la lista de usuarios
 	@Query("SELECT u FROM Usuario u")
@@ -77,4 +77,7 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, String>  {
 	//Metodo para buscar todos los campos de persona y usuario usando el nombre
 	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.nombre = :nombre")
 	public Optional<Usuario> obtenerDatosPersonaUsuarioPorNombreOptional(@Param("nombre") String nombre);
+	
+	
+
 }

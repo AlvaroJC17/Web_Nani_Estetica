@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.Rol;
 
 @Repository
 public interface RepositorioPersona extends JpaRepository<Persona, String>{
@@ -36,6 +37,9 @@ public interface RepositorioPersona extends JpaRepository<Persona, String>{
 	//Metodo para buscar a una persona por email usando los metodos de optional
     @Query("SELECT p FROM Persona p WHERE p.email = :email")
     public Optional<Persona> buscarPorEmailOptional(@Param("email") String email);
+    
+    @Query("SELECT u, p FROM Usuario u INNER JOIN Persona p ON u.id = p.id WHERE u.rol = :rol")
+	List<Persona> buscarNombreApellidoPorRol(@Param("rol") Rol rol);
     
 
 }

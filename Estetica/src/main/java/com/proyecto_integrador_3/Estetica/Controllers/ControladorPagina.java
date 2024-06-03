@@ -83,32 +83,61 @@ public class ControladorPagina {
 		         @RequestParam(name = "email") String email, //El valor de estas variables proviene del form login
 		         @RequestParam(name = "password") String contrasena,
 		         ModelMap model, Model modelo) throws MiExcepcion {
-
+			
+			
+			//VAlidamos que la casilla de mail no esta vacia
+			try {
+				servicioUsuario.validarEmail(email);
+			} catch (MiExcepcion e) {
+				String error = e.getMessage();
+				model.addAttribute("error", error);
+				modelo.addAttribute("showModalError", true);
+				return "login";
+			}
+				
+			
+			//Validamos con el mail ingresado si el usuario existe en la base de datos
+			// Si existe entonces le buscamos todos los valores de las variables mostradas abajo
+			Usuario usuario;
+			String emailUsuario = null;
+			String password = null;
+			Boolean activo;
+			Boolean validarForm = null;
+			Rol rol = null;
 		     Optional<Usuario> usuarioOptional = servicioUsuario.buscarPorEmailOptional(email);
-
-		     if (usuarioOptional.isPresent()) {
-		    	 
-		         Usuario usuario = usuarioOptional.get(); //con el metodo get, asociamos al usuario encontrado a la variable usuario y asi poder acceder a sus atributos
-		         String emailUsuario = usuario.getEmail();
-		         String password = usuario.getContrasena();
-		        // Date fechaNacimiento = usuario.getFechaNacimiento();
-		         Boolean activo = usuario.getActivo();
-		         Boolean validarForm = usuario.getValidacionForm();
-		         Rol rol = usuario.getRol();
+		     if (usuarioOptional.isPresent()) {		    	 
+		         usuario = usuarioOptional.get(); //con el metodo get, asociamos al usuario encontrado a la variable usuario y asi poder acceder a sus atributos
+		         emailUsuario = usuario.getEmail();
+		         password = usuario.getContrasena();
+		         activo = usuario.getActivo();
+		         validarForm = usuario.getValidacionForm();
+		         rol = usuario.getRol();
 		         
 		         //Verificamos que el usuario este activo
+		         String error1 = "Usuario no se encuentra activo";
 		         if (!activo) {
-						model.addAttribute("Error", "Usuario no se encuentra activo");
+						model.addAttribute("error", error1);
+						modelo.addAttribute("showModalError", true);
+						modelo.addAttribute("email", email);
 						return "login";
 					}
-			         
+			     
+		     // Si usuario no existe en la base de datos, tiramos el error y el mensaje    
+		     }else {
+		    	 String error3 = "Usuario o contraseña incorrectos";
+		    	 modelo.addAttribute("error", error3);
+		    	 modelo.addAttribute("email", email);
+		    	 modelo.addAttribute("showModalError", true);
+		     }
+
+		     
 		         try {
-		        	 //verificamos que los password esten correcto y sean iguales
+		        	// validamos que las contraseña ingresada coincida con la registrada en la base de datos
 		        	  if (servicioUsuario.verificarPassword(contrasena, password)) {
 		        		  
-		        		  //Buscamos los datos pertenecientes a ese email en la tabla de persona y los pasamos a homeAdmin, en este caso solo usamos el nombre
+		        		  //Buscamos los datos pertenecientes a ese email en la tabla de persona y los pasamos a homeAdmin
+		        		  //Dependiendo si es admin, profesional o cliente lo direccionamos a su respectivo home
 		        		  List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(emailUsuario);
-		        		  
 				             if ("ADMIN".equals(rol.toString())) {
 				            	 if (validarForm) {
 				            		 modelo.addAttribute("datosAdmin", datosPersonaUsuario);
@@ -135,12 +164,14 @@ public class ControladorPagina {
 				            	 }
 				             }
 		        	  }
+		        	  //En caso que la contraseña ingresada no sea igual a la guardada, tiramos exta excepcion con un mensaje
 		         } catch (Exception e) {
-		        	 model.put("Error", "Usuario o contraseña incorrecta");
+		        	 String error2 = "Usuario o contraseña incorrecta";
+		        	 modelo.addAttribute("error", error2);
+		        	 modelo.addAttribute("email", email);
+			         modelo.addAttribute("showModalError", true);
+			         return "login";
 		         }
-		     }else {
-		    	 model.put("Error", "Usuario no se encuentra registrado");
-		     }
 		     return "login";
 		}
 				            	

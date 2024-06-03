@@ -88,9 +88,9 @@
       de seleccion de turnos, sino que entra directo a dicha pagina.-->
       <div class=" ft ">
         <a th:href="@{/reservaDeTurnoClienteEstetico(email=${datosCliente.email}, idCliente=${datosCliente.id})}">
-          <div class="d-flex justify-content-center align-items-center">
-            <img class="iconos" src="../imagenes/icons8-más-50.png" alt="">
-            <p class="texto-tarjetas-main-home ms-1 hover">Tratamientos esteticos</p>
+          <div style="padding-left: 6px; padding-right: 6px;" class="d-flex justify-content-center align-items-center">
+            <img style="margin-left: 5px; margin-right: 5px;" class="iconosTratamientos" src="../imagenes/icons8-más-50.png" alt="">
+            <p class="texto-tarjetas-main-home ms-1 hover text-center">Tratamientos esteticos</p>
           </div>
         </a>
       </div>
@@ -101,7 +101,7 @@
             <input type="hidden" name="email" th:value="${datosCliente.email}" />
             <input type="hidden" name="idCliente" th:value="${datosCliente.id}" />
             <input type="hidden" name="tratamiento" th:value="corporal" />
-            <button style="background-color: #ebdf9d; color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1)); text-align: start; font-size: 28px;"
+            <button style="background-color: #ebdf9d; color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));"
              type="submit" class="d-flex justify-content-center align-items-center border-0">
               <img class="iconosTratamientos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
               <p class="texto-tarjetas-main-home ms-1 hover">Tratamientos Corporales</p>
