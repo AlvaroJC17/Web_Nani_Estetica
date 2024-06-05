@@ -14,7 +14,7 @@ import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
-@Component
+//@Component
 public class PruebaSQL implements CommandLineRunner {
 
 	@Autowired

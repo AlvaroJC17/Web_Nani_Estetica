@@ -1,8 +1,12 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,6 +29,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
+import com.proyecto_integrador_3.Estetica.Enums.Horarios;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
@@ -66,13 +71,14 @@ public class ControladorCliente {
 	@GetMapping("/tratamientos")
 	public String tratamientos(
 			@RequestParam(name = "email", required = false) String email,
-			@RequestParam(name = "idCliente") String idCliente,
+			@RequestParam(name = "idCliente", required = false) String idCliente,
 			ModelMap model) {
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosCliente", datosCliente);
 		return "/pagina_cliente/tratamientos";
 	}
+	
 
 	/*Este metodo deriva a la pagina de turnos esteicos con los valores de mail y id del cliente*/
 	@GetMapping("/reservaDeTurnoClienteEstetico")
@@ -85,21 +91,26 @@ public class ControladorCliente {
 		return "/pagina_cliente/reservaDeTurnoClienteEstetico";
 	}
 	
+	
 	@GetMapping("/reservaDeTurnoClienteFacial")
 	public String reservaDeTurnoClienteFacial(
 			@RequestParam(name = "email", required = false) String email,
 			@RequestParam(name = "idCliente", required = false) String idCliente,
 			ModelMap model) {
-		
-		//Buscamos el nombre y apellido en la tabla persona mediante el rol PROFESIONAL
+	
 		List <Persona> Profesional = servicioPersona.buscarNombreApellidoPorRol(Rol.PROFESIONAL);
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		
+		//Buscamos el nombre y apellido en la tabla persona mediante el rol PROFESIONAL
 		model.addAttribute("datosCliente", datosCliente);
 		model.addAttribute("provincias", Provincias.values()); // pasamos el array de enums al formulario para desplegar la lista de select
 		model.addAttribute("Profesional", Profesional); // pasamos el array de objetos tipo persona que tengan rol de profesional
+		model.addAttribute("horarios", Horarios.values());
 		model.addAttribute("Turnos", new Turnos()); // creamos una instancia de Turnos para pasarla al formulario y cargarlo con todos los campos del formulario
 		return "/pagina_cliente/reservaDeTurnoClienteFacial";
 	}
+		
+		
 	
 	@PostMapping("/confimarTurnoClienteFacial")
 	public String confimarTurnoClienteFacial(
@@ -107,28 +118,56 @@ public class ControladorCliente {
 			@RequestParam(name = "email", required = false) String email,
 			@RequestParam(name = "idCliente", required = false) String idCliente,
 			@RequestParam(name = "datosProfesional", required = false) String profesional, // se recibe los valores de nombre y apellido del array de profesionales
-			ModelMap model) throws Exception {
+			@RequestParam(name = "action") String action, // variable para identificar si el usuario presiona el boton aceptar o cancelar
+			@RequestParam(name = "fecha", required = false) String fecha,
+			@RequestParam(name = "antiage", required = false) String antiage,
+			@RequestParam(name = "despigmentante", required = false) String despigmentante,
+			@RequestParam(name = "hidratante", required = false) String hidratante,
+			@RequestParam(name = "rosacea", required = false) String rosacea,
+			@RequestParam(name = "antiacne", required = false) String antiacne,
+			@RequestParam(name = "horario", required = false) String horario,
+			ModelMap model) throws MiExcepcion {
 		
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		try {
-			//Servicio para guardar el turno facial en la base de datos6
-			servicioCliente.guardarTurno(idCliente, profesional, turnos);
-			model.addAttribute("datosCliente", datosCliente);
-			return "/pagina_cliente/misturnos";
-			
-		} catch (Exception e) {
-			System.out.println("Hay un error en el controlador confimarTurnoClienteFacial ");
-			model.addAttribute("datosCliente", datosCliente);
-			return "/pagina_cliente/misturnos";
+		//usamos un switch que depende si el usuario le da al boton de aceptar o cancelar del formulario
+		switch (action) {
+		case "aceptar":
+			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+			try {
+				//Servicio para guardar el turno facial en la base de datos
+				servicioCliente.guardarTurno(idCliente, profesional, turnos, fecha, antiage, despigmentante,
+						hidratante, rosacea, antiacne, horario);
+				String exito = "Gracias por seleccionar un turno";
+				model.addAttribute("exito", exito);
+				model.addAttribute("datosCliente", datosCliente);
+				model.addAttribute("showModalExito", true);
+				return "/pagina_cliente/misturnos";
+				
+				
+			} catch (MiExcepcion e) {
+				// si hay algun error en alguna validacion, se dispara este catch y se pasan de vuelta todos estos
+				//valores para que recargue la misma pagina del formulario con un mensaje de error y con todos los
+				//array de provincia, profesional y horarios
+				List <Persona> Profesional = servicioPersona.buscarNombreApellidoPorRol(Rol.PROFESIONAL);
+				String error = e.getMessage();
+				model.addAttribute("error", error);
+				model.addAttribute("datosCliente", datosCliente);
+				model.addAttribute("provincias", Provincias.values());
+				model.addAttribute("Profesional", Profesional);
+				model.addAttribute("horarios", Horarios.values());
+				model.addAttribute("Turnos", new Turnos());
+				model.addAttribute("showModalError", true);
+				return "/pagina_cliente/reservaDeTurnoClienteFacial";
+			}
+				
+		case "cancelar":
+			// si el usuario le da a cancelar, entonces entra en este case y lo redirecciona al metodo
+			// de tratamientos y este a su vez se encarga de mostrar la pag de los tratamientos
+			return "redirect:/tratamientos?email=" + email;
 		}
-		
-		
+		return "redirect:/confimarTurnoClienteFacial";
 	}
-	
-	
-	
-	
-	
+				
+			
 	@GetMapping("/reservaDeTurnoClienteCorporal")
 	public String reservaDeTurnoClienteCorporal(
 			@RequestParam(name = "email", required = false) String email,
@@ -161,36 +200,41 @@ public class ControladorCliente {
 					
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		if (usoDeFormulario && tratamiento.equals("facial")) {
-			//model.addAttribute("datosCliente", datosCliente);
-			//return "/pagina_cliente/reservaDeTurnoClienteFacial";
 			return "redirect:/reservaDeTurnoClienteFacial?idCliente=" + idCliente + "&email=" + email;
 			
 		}else if(usoDeFormulario && tratamiento.equals("corporal")) {
-			//model.addAttribute("datosCliente", datosCliente);
-			//return "/pagina_cliente/reservaDeTurnoClienteCorporal";
 			return "redirect:/reservaDeTurnoClienteCorporal?idCliente=" + idCliente + "&email=" + email;
 			
 			//Si el boolean usoDeFormulario es false, entonces dirige al usuario a llenar el formulario de preguntas
 		}else {
 			model.addAttribute("tratamiento", tratamiento);
 			model.addAttribute("datosCliente", datosCliente);
-			//model.addAttribute("idCliente", idCliente);
+			model.addAttribute("idCliente", idCliente);
 			model.addAttribute("email", email);
 			return "/pagina_cliente/formularioPreguntas";
 			
 		}
 	}
+	
 			
-			
+	
 	@GetMapping("/misturnos")
-	public String misturnos() {
-	return "/pagina_cliente/misturnos";	
+	public String misturnos(
+			@RequestParam(name = "email") String email,
+			Model model) {
+		
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		model.addAttribute("datosCliente", datosCliente);
+		return "/pagina_cliente/misturnos";	
 	}
+	
 	
 	@GetMapping("/misconsultas")
 	public String misconsultas() {
 	return "/pagina_cliente/misconsultas";	
 	}
+	
+	
 	
 	@GetMapping("/cambiarContrasenaCliente")
 	public String cambiarContrasenaCliente(
@@ -208,6 +252,7 @@ public class ControladorCliente {
 	}
 		
 	
+	
 	@GetMapping("/completarDatosCliente")
 	public String completarDatos(
 			@RequestParam(name = "email") String emailUsuario,
@@ -219,6 +264,8 @@ public class ControladorCliente {
 		return "/pagina_cliente/completarDatosCliente";
 	}
 	
+	
+	
 	//Devuelve la pagina homeCLiente con los datos del usuario que le pasemos por mmail
 	@GetMapping("/homeCliente")
 	public String homeCliente(
@@ -228,6 +275,8 @@ public class ControladorCliente {
 		return "/pagina_cliente/homeCliente";	
 		
 	}
+	
+	
 	
 	//Muestra todos los datos personales de la persona en la pagina misdatosCliente
 	@GetMapping("/misdatosCliente")
@@ -239,7 +288,6 @@ public class ControladorCliente {
 		model.addAttribute("datosCliente", datosCliente);
 	return "/pagina_cliente/misdatosCliente";	
 	}
-	
 	
 	
 	@PostMapping("guardarDatosCliente")
@@ -291,13 +339,14 @@ public class ControladorCliente {
 		return "/pagina_cliente/formularioPreguntas";
 	}
 	
+	
+	
 	/*Registra y valida los input del formulario de preguntas en la base de datos.
 	 * Tambien guarda los valores ingresado por el usuario, en caso de que haya algun error
 	 * en los datos ingresados, se vuelva a cargar la pagina con el mensaje de error y 
 	 * con los datos previamente ingresado, para que el usuario no los tenga que volver a cargar*/
 	@PostMapping("/guardarFormularioTurnos")
 	public String guardarFormularioTurnos(
-			
 			@RequestParam(name="fuma", required = false) String fuma,
 			@RequestParam(name="drogas", required = false) String drogas,
 			@RequestParam(name="alcohol", required = false) String alcohol,
@@ -402,23 +451,6 @@ public class ControladorCliente {
 		
 	}
 	
-	/*Redirecciona al formulario de preguntas en caso de haber un error en la validacion de los input*/
-/*	@GetMapping("/formularioPreguntas")
-	public String formularioPreguntas(
-			@RequestParam(name="tratamiento") String tratamiento,
-			@RequestParam(name="email") String email,
-			@RequestParam(name="error", required = false) String error,
-			ModelMap model) {
-		
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		model.addAttribute("datosCliente", datosCliente);
-		model.addAttribute("tratamiento", tratamiento);
-		model.addAttribute("error", error);
-		return "/pagina_cliente/formularioPreguntas";
-	} */
-
-
-	
 	@PostMapping("/actualizarDatosCliente")
 	public String actualizarDatosCliente(
 			@RequestParam(name="idCliente") String idCliente, //este atributo es enviado en un input oculto de la pag misdatosCliente
@@ -457,7 +489,7 @@ public class ControladorCliente {
 			model.addAttribute("emial", email);
 			model.addAttribute("datosCliente",datosCliente);
 			return "/pagina_cliente/misdatosCliente";
-			//return "redirect:/misdatosCliente?email=" + email;
+			
 		}
 		
 		try {

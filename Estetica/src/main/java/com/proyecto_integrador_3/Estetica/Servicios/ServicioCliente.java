@@ -5,6 +5,7 @@ import static java.lang.Boolean.FALSE;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
+import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
@@ -165,32 +167,110 @@ public class ServicioCliente {
 	}
 
 	@Transactional
-	public void guardarTurno(String idCliente, String profesional, Turnos turnos) {
+	public void guardarTurno(String idCliente, String profesional, Turnos turnos, String fecha,
+			String antiage, String despigmentante, String hidratante, String rosacea,
+			String antiacne, String horario) throws MiExcepcion {
 	
+		//Validamos que todos los valores vengan bien
+		validarGuardarTurno(profesional, turnos, fecha, antiage, despigmentante, hidratante, rosacea, antiacne, horario);
+		
+		/*Se crea la variable de tipo string para guardar el dato de la provincia que selecciono
+		 * el usuario, este dato viene adjunto en el objeto de tipo turno que se recibe del
+		 * formulario */
+		String provincia = turnos.getProvincias().toString(); // se para convertir el enum de la provincia  a string
+		
 		//Como se recibe el nombre y el apellido en un solo string aplicamos este codigo para separarlos
-				String [] nombreApellidoProfesional = profesional.split("/");
-				String nombreProfesional = nombreApellidoProfesional[0];
-				String apellidoProfesional = nombreApellidoProfesional[1];
-				
-				//Buscamos el dni del cliente que esta seleccionando el turno para adjuntarlo al objeto turno que se va a guardar en la base de datos
-				String dniCliente = null;
-				Optional<Persona> dniUsuario = repositorioPersona.findById(idCliente);
-				if (dniUsuario.isPresent()) {
-					Persona usu = dniUsuario.get();
-					dniCliente = usu.getDni();
-				}
-				
-				/*Se crea la variable de tipo string para guardar el dato de la provincia que selecciono
-				 * el usuario, este dato viene adjunto en el objeto de tipo turno que se recibe del
-				 * formulario */
-				String Provincia = turnos.getProvincias().toString(); // se para el enum de la provincia seleccionada a string
-				Turnos nuevoTurno = new Turnos(); // Creamos un nuevo objeto de tipo turno que es el que se va a guardar en la base de datos
-				nuevoTurno.setProvincia(Provincia);
-				nuevoTurno.setDniCliente(dniCliente);
-				nuevoTurno.setProfesional(nombreProfesional + " " + apellidoProfesional);
-				nuevoTurno.setActivo(TRUE);
-				repositorioTurnos.save(nuevoTurno);
+		System.out.println("profesional: " + profesional);
+		String [] nombreApellidoProfesional = profesional.split("/");
+		String nombreProfesional = nombreApellidoProfesional[0];
+		String apellidoProfesional = nombreApellidoProfesional[1];
+		
+		
+		//Creamos un array con los tratamientos y limpiamos los seleccionados  que vienen null
+		// A los que viene con un valos de string los va sumando en un contador y los que vienen null les asigna valor vacio
+		// esto para que en la base datos no me guanden la palabra null de los tratamientos no seleccionados
+		String [] tratamientos = {antiage, despigmentante, hidratante, rosacea, antiacne};
+		int contador = 0;
+		String tratamientosSeleccionados ="";
+		
+		for (int i = 0; i < tratamientos.length; i++) {
+			if (tratamientos[i] != null && tratamientos[i] != "") {
+				contador++;
+				tratamientosSeleccionados += tratamientos[i] + " ";
+			}else if(tratamientos[i] == null || tratamientos[i] == " " || tratamientos[i] == "" ) {
+				tratamientos[i] = "";
+				tratamientosSeleccionados += tratamientos[i];
+			}
+		}
+		
+		//Usamos este contador para saber cuantos turnos se seleccionaron y si es mayor a dos, se lanza
+		// un mensaje de error al usuario.
+		if (contador > 2) {
+			throw new MiExcepcion("Solo se pueden seleccionar dos tratamientos por turno");
+		}
+		
+		
+		//Recibimos la fecha como un string y la pasamos a Date y luego a LocalDate para guardarla en la base de datos.
+		LocalDate fechaUsuario = null;
+		Date fechaFormateada = null;
+		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+		try {
+			fechaFormateada = formato.parse(fecha);
+			fechaUsuario =  fechaFormateada.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+		} catch (ParseException e) {
+			throw new MiExcepcion("Debe seleccionar una fecha");
+		}
+		
+		
+		String horarios = turnos.getHorario().toString(); // se usa para convertir el enum de horarios a string
+		
+		//Buscamos el dni del cliente que esta seleccionando el turno para adjuntarlo al objeto turno que se va a guardar en la base de datos
+		String dniCliente = null;
+		Optional<Persona> dniUsuario = repositorioPersona.findById(idCliente);
+		if (dniUsuario.isPresent()) {
+			Persona usu = dniUsuario.get();
+			dniCliente = usu.getDni();
+		}
+		
+		
+		// Creamos un nuevo objeto de tipo turno que es el que se va a guardar en la base de datos
+		Turnos nuevoTurno = new Turnos(); 
+		nuevoTurno.setProvincia(provincia);
+		nuevoTurno.setProfesional(nombreProfesional + " " + apellidoProfesional);
+		nuevoTurno.setFecha(fechaUsuario);
+		nuevoTurno.setHorario(horarios);
+		nuevoTurno.setTratamiento(tratamientosSeleccionados);
+		nuevoTurno.setDniCliente(dniCliente);
+		nuevoTurno.setActivo(TRUE);
+		repositorioTurnos.save(nuevoTurno);
+		
 	}
+
+	public void validarGuardarTurno(String profesional, Turnos turnos, String fecha, String antiage,
+			String despigmentante, String hidratante, String rosacea,
+			String antiacne, String horario) throws MiExcepcion {
+		
+		if (turnos.getProvincias() == null) {
+			throw new MiExcepcion("Debe seleccionar una provincia");
+		}
+		
+		if (profesional.equals("Profesional") || profesional == null) {
+			throw new MiExcepcion("Debe seleccionar un profesional");
+		}
+		
+		if(fecha == null || fecha.isEmpty() || fecha == "") {
+			throw new MiExcepcion("Debe seleccionar una fecha");
+		}
+		
+		if(horario == null || horario.isEmpty() || horario == "") {
+			throw new MiExcepcion("Debe seleccionar un horario");
+		}
+		
+		if (antiage == null && despigmentante == null && hidratante == null && rosacea == null && antiacne == null) {
+			throw new MiExcepcion("Debe seleccionar almenos un tratamiento");
+		}
+	}
+		
 
 	 public void validarDatosCliente(String nombre, String apellido, String dni,  String sexo,
 			 String telefono, String direccion, String ocupacion) throws MiExcepcion {
@@ -271,8 +351,8 @@ public class ServicioCliente {
 		        	}
 						
 		        }
-		        
 	 }
+		        
 	 
 	 public void validarDatosFormularioTurno(String fuma, String drogas, String alcohol, String deportes, String ejercicios, 
 			 String medicamentos, String nombreMedicamento,String embarazo, String amamantando, String ciclo_menstrual, String alteracion_hormonal,
@@ -382,6 +462,7 @@ public class ServicioCliente {
 			 throw new MiExcepcion("Por favor indicar el motivo de la consulta");
 	 }
 	 
+}
 	 
 		        	
 	 
@@ -389,4 +470,3 @@ public class ServicioCliente {
 
 
 
-	 }
