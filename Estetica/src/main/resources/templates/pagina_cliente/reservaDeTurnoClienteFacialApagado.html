@@ -77,40 +77,37 @@
         </div>
         <div class="container">
 
-			<!--Este formulario es para llevar al metodo que busca crea y busca las fechas disponibles
-			se usa, cuando el usuario selecciona buscar en el input de fecha-->
-            <form th:action="@{/reservaDeTurnoClienteFacial}" method="get" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pb-1">
+            <form th:action="@{/reservaDeTurnoClienteFacial}" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pb-1">
             <label for="fecha" class="form-label mb-0 mt-2  fs-4">Seleccionar fecha <span class="text-danger ">*</span></label>
-            <input type="date" name="fecha" class="form-control" id="fecha" th:value="${fecha}" placeholder="Fecha">
+            <input type="date" name="fecha" class="form-control" id="fecha" placeholder="Fecha">
             <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
 		  	<input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
-            <button class="btn btn-primary mt-2">Buscar</button>
+            <button type="submit" class="btn btn-primary mt-2">Buscar</button>
             </form>
            
-			<!--Este formulario va al metodo que guarda el turno y elimina la fecha seleccionada por el usaurio-->           
 			<!--el campo th:object se relaciona con el onjeto turno creado en el controlador, a este objeto se le asigna todo los valores que puede tener el formulario y asi poder manejarlo en el controlador-->
-          <form th:action="@{/confimarTurnoClienteFacial}" method="post" th:object="${Turnos}" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2">
+          <form  action="" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2">
             <div>
               <label for="provincia" class="form-label mb-0 fs-4">Seleccione provincia <span class="text-danger ">*</span> </label>
-              <select th:field="*{provincias}" name="provincia" class="form-select" id="provincia" aria-label="Default select example">
+              <select  name="provincia" class="form-select" id="provincia" aria-label="Default select example" disabled>
                 <option value=""  selected>Seleccione una provincia</option>
                 <!--el th:value="${provincia.name()} viene por defecto al hacer un enum con una descripcion al lado, este metodo envia a esa descripcion como un string-->
-                <option th:each="provincia : ${provincias}" th:value="${provincia.name()}" th:text="${provincia.displayName}"></option> <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
+                 <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
               </select>
             </div>
             <div>
               <label for="profesional" class="form-label mb-0 mt-2 fs-4">Seleccione profesional <span class="text-danger ">*</span></label>
-              <select class="form-select" id="profesional" name="datosProfesional" aria-label="Default select example">
+              <select class="form-select" id="profesional" name="datosProfesional" aria-label="Default select example" disabled>
                 <option selected>Profesional</option>
-                <option th:each="nombreProfesional : ${Profesional}" th:text="${nombreProfesional.nombre + ' '  + nombreProfesional.apellido}" th:value="${nombreProfesional.nombre + '/'  + nombreProfesional.apellido}"></option>
+                
               </select>
             </div>
             <div>
               <label for="horario" class="form-label mb-0 mt-2 fs-4">Seleccionar hora <span class="text-danger ">*</span></label>
-              <select th:field="*{horario}" name="horario" class="form-select" id="horario" aria-label="Default select example">
+              <select  name="horario" class="form-select" id="horario" aria-label="Default select example" disabled>
                 <option value="" selected>Hora</option>
                 <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->
-                <option th:each="horario : ${horarios}" th:value="${horario}" th:text="${horario}"></option>
+                
               </select>
             </div>
             <p class="mt-4 mb-0 fs-4">Seleccionar tratamientos<span class="text-danger ">*</span></p>
@@ -118,31 +115,31 @@
             <div class="input-seleccion-check ">
               <div>
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="Facial antiage/" name="antiage" id="antiage">
+                  <input class="form-check-input" type="checkbox" value="Facial antiage/" name="antiage" id="antiage" disabled>
                   <label | class="form-check-label fs-6" for="antiage">
                     Facial antiage
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="Facial despigmentante/" name="despigmentante" id="despigmentante">
+                  <input class="form-check-input" type="checkbox" value="Facial despigmentante/" name="despigmentante" id="despigmentante" disabled>
                   <label class="form-check-label fs-6" for="despigmentante">
                     Facial despigmentante
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="Facial hidratante/" name="hidratante" id="hidratante">
+                  <input class="form-check-input" type="checkbox" value="Facial hidratante/" name="hidratante" id="hidratante" disabled>
                   <label class="form-check-label fs-6" for="hidratante">
                     Facial hidratante
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="Facial Rosacea/" name="rosacea" id="rosacea">
+                  <input class="form-check-input" type="checkbox" value="Facial Rosacea/" name="rosacea" id="rosacea" disabled>
                   <label class="form-check-label fs-6" for="rosacea">
                     Facial para rosacea
                   </label>
                 </div>
                 <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="Facial antiacne/" name="antiacne" id="antiacne">
+                  <input class="form-check-input" type="checkbox" value="Facial antiacne/" name="antiacne" id="antiacne" disabled>
                   <label class="form-check-label fs-6" for="antiacne">
                     Facial antiacne
                   </label>
@@ -152,16 +149,12 @@
             </div>
             <div class="boton-pag-turno">
             <div class="boton-de-registro text-center">
-              <a href="#"><button type="submit" name="action" value="aceptar" class="bn632-hover bn26">Enviar</button></a>
+              <a href="#"><button type="submit" name="action" value="aceptar" class="bn632-hover bn26 apagado" disabled>Enviar</button></a>
             </div>
             <div class="boton-de-registro text-center">
-              <a href="#"><button type="submit" name="action" value="cancelar" class="bn632-hover bn26">Cancelar</button></a>
+              <a href="#"><button type="submit" name="action" value="cancelar" class="bn632-hover bn26 apagado" disabled>Cancelar</button></a>
             </div>
           </div>
-          
-          <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
-		  <input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
-		  <input type="hidden" class="form-control" name="fecha" id="fecha" th:value="${fecha}" placeholder="">
 		  
           </form>
         </div>
@@ -169,7 +162,7 @@
 </div>
 </div>
 
-<!--Modal mensajes de error-->
+<
 		
 		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
      th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
@@ -189,7 +182,6 @@
 </div>
 
 
-				<!--Script para modal de error-->
 				
 <script th:inline="javascript">
     /*<![CDATA[*/
@@ -204,7 +196,9 @@
         });
     });
     /*]]>*/
+    
 </script>
+    
 
 
   </main>

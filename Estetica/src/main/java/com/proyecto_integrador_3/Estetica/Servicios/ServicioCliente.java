@@ -5,6 +5,7 @@ import static java.lang.Boolean.FALSE;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
@@ -171,6 +172,8 @@ public class ServicioCliente {
 			String antiage, String despigmentante, String hidratante, String rosacea,
 			String antiacne, String horario) throws MiExcepcion {
 	
+		System.out.println("Entro el guardar turno");
+		
 		//Validamos que todos los valores vengan bien
 		validarGuardarTurno(profesional, turnos, fecha, antiage, despigmentante, hidratante, rosacea, antiacne, horario);
 		
@@ -210,19 +213,22 @@ public class ServicioCliente {
 		}
 		
 		
-		//Recibimos la fecha como un string y la pasamos a Date y luego a LocalDate para guardarla en la base de datos.
-		LocalDate fechaUsuario = null;
-		Date fechaFormateada = null;
-		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-		try {
-			fechaFormateada = formato.parse(fecha);
-			fechaUsuario =  fechaFormateada.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-		} catch (ParseException e) {
-			throw new MiExcepcion("Debe seleccionar una fecha");
-		}
 		
 		
-		String horarios = turnos.getHorario().toString(); // se usa para convertir el enum de horarios a string
+//		//Recibimos la fecha como un string y la pasamos a Date y luego a LocalDate para guardarla en la base de datos.
+//		LocalDate fechaUsuario = null;
+//		Date fechaFormateada = null;
+//		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+//		try {
+//			fechaFormateada = formato.parse(fecha);
+//			fechaUsuario =  fechaFormateada.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+//		} catch (ParseException e) {
+//			throw new MiExcepcion("Debe seleccionar una fecha");
+//		}
+		
+		LocalDate fechaUsuario = pasarFechaStringToLocalDate(fecha);
+		
+		//String horarios = turnos.getHorario().toString(); // se usa para convertir el enum de horarios a string
 		
 		//Buscamos el dni del cliente que esta seleccionando el turno para adjuntarlo al objeto turno que se va a guardar en la base de datos
 		String dniCliente = null;
@@ -238,7 +244,7 @@ public class ServicioCliente {
 		nuevoTurno.setProvincia(provincia);
 		nuevoTurno.setProfesional(nombreProfesional + " " + apellidoProfesional);
 		nuevoTurno.setFecha(fechaUsuario);
-		nuevoTurno.setHorario(horarios);
+		nuevoTurno.setHorario(horario);
 		nuevoTurno.setTratamiento(tratamientosSeleccionados);
 		nuevoTurno.setDniCliente(dniCliente);
 		nuevoTurno.setActivo(TRUE);
@@ -461,6 +467,32 @@ public class ServicioCliente {
 		 if (motivo_consulta == null || motivo_consulta.isEmpty() || motivo_consulta.trim().isEmpty() || motivo_consulta.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar el motivo de la consulta");
 	 }
+	 
+	 public LocalDate pasarFechaStringToLocalDate(String fecha) throws MiExcepcion {
+		 
+		//Recibimos la fecha como un string y la pasamos a Date y luego a LocalDate para guardarla en la base de datos.
+			LocalDate fechaUsuario = null;
+			Date fechaFormateada = null;
+			SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+			try {
+				fechaFormateada = formato.parse(fecha);
+				fechaUsuario =  fechaFormateada.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+			} catch (ParseException e) {
+				throw new MiExcepcion("Debe seleccionar una fecha");
+			}
+			
+			return fechaUsuario;
+			
+	 }
+	 
+	 public boolean esFinDeSemana(LocalDate fecha) throws MiExcepcion {
+		 DayOfWeek dayOfWeek = fecha.getDayOfWeek();
+	        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
+	    }
+	 
+	 public boolean fechaYaPaso(LocalDate fecha) {
+	        return fecha.isBefore(LocalDate.now());
+	    }
 	 
 }
 	 

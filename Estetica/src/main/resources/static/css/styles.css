@@ -281,7 +281,7 @@ footer {
     /*Le da la transcision de aumento y bordes a los iconos de redes sociales del footer*/
     transition: all 0.3s;
     border-radius: 30%;
-    margin-left: 30px;
+    margin-left: 50px;
 }
 
 .iconos2:hover {
@@ -593,6 +593,11 @@ footer {
     box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
   }
 
+  .bn632-hover.bn26.apagado {
+    background-image: linear-gradient(to right, grey, grey, grey, grey);
+    box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+}
+
   /*ESTILOS DEL BOTON DE LOGIN*/
   .bn632-hover-login {
     width: 200px;
@@ -634,6 +639,8 @@ footer {
     );
     box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
   }
+
+ 
 
   /*-----------  PAGINA DATOS PERSONALES -----------*/
 .main-misdatos{
@@ -1207,10 +1214,6 @@ margin-bottom: 5px;
 
 .margen-registrarse{
 margin-bottom: 10px;
-}
-
-.iconos2 {
-    width: 60%;
 }
   
 }
