@@ -42,10 +42,10 @@
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/tratamientos(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Solicitar turno</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos (email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis turnos</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis turnos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misdatos (email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis consultas</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis consultas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>

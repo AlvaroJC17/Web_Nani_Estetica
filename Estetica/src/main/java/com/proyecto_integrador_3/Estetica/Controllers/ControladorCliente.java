@@ -200,11 +200,7 @@ public class ControladorCliente {
 			@RequestParam(name = "datosProfesional", required = false) String profesional, // se recibe los valores de nombre y apellido del array de profesionales
 			@RequestParam(name = "action") String action, // variable para identificar si el usuario presiona el boton aceptar o cancelar
 			@RequestParam(name = "fecha", required = false) String fecha,
-			@RequestParam(name = "antiage", required = false) String antiage,
-			@RequestParam(name = "despigmentante", required = false) String despigmentante,
-			@RequestParam(name = "hidratante", required = false) String hidratante,
-			@RequestParam(name = "rosacea", required = false) String rosacea,
-			@RequestParam(name = "antiacne", required = false) String antiacne,
+			@RequestParam(name = "facial", required = false) String facial,
 			@RequestParam(name = "horario", required = false) String horario,
 			ModelMap model) throws MiExcepcion {
 		
@@ -215,8 +211,7 @@ public class ControladorCliente {
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 			try {
 				//Servicio para guardar el turno facial en la base de datos
-				servicioCliente.guardarTurno(idCliente, profesional, turnos, fecha, antiage, despigmentante,
-						hidratante, rosacea, antiacne, horario, email);
+				servicioCliente.guardarTurno(idCliente, profesional, turnos, fecha, facial, horario, email);
 				
 				 // Eliminar el horario seleccionado de la lista de horarios disponibles para la fecha
                 List<String> horariosDisponibles = servicioHorario.obtenerHorariosDisponibles(fecha);
@@ -343,7 +338,13 @@ public class ControladorCliente {
 	
 	
 	@GetMapping("/misconsultas")
-	public String misconsultas() {
+	public String misconsultas(
+			@RequestParam(name="email") String email,
+			Model modelo) {
+		
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		modelo.addAttribute("email", email);
+		modelo.addAttribute("datosCliente", datosCliente);
 	return "/pagina_cliente/misconsultas";	
 	}
 	

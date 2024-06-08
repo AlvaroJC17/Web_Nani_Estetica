@@ -114,41 +114,15 @@
               </select>
             </div>
             <p class="mt-4 mb-0 fs-4">Seleccionar tratamientos<span class="text-danger ">*</span></p>
-            <p class="fs-6">Max. Dos servicios por turno</p>
             <div class="input-seleccion-check ">
               <div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="Facial antiage/" name="antiage" id="antiage">
+                <div class="form-check mt-3">
+                  <input class="form-check-input" type="checkbox" value="Tratamiento facial" name="facial" id="facial">
                   <label | class="form-check-label fs-6" for="antiage">
-                    Facial antiage
+                    Tratamiento facial
                   </label>
                 </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="Facial despigmentante/" name="despigmentante" id="despigmentante">
-                  <label class="form-check-label fs-6" for="despigmentante">
-                    Facial despigmentante
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="Facial hidratante/" name="hidratante" id="hidratante">
-                  <label class="form-check-label fs-6" for="hidratante">
-                    Facial hidratante
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="Facial Rosacea/" name="rosacea" id="rosacea">
-                  <label class="form-check-label fs-6" for="rosacea">
-                    Facial para rosacea
-                  </label>
-                </div>
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="Facial antiacne/" name="antiacne" id="antiacne">
-                  <label class="form-check-label fs-6" for="antiacne">
-                    Facial antiacne
-                  </label>
-                </div>
-              </div>
-                
+              </div>                
             </div>
             <div class="boton-pag-turno">
             <div class="boton-de-registro text-center">
@@ -162,12 +136,12 @@
           <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
 		  <input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
 		  <input type="hidden" class="form-control" name="fecha" id="fecha" th:value="${fecha}" placeholder="">
-		  
           </form>
         </div>
       </div>
 </div>
 </div>
+		  
 
 <!--Modal mensajes de error-->
 		
@@ -205,9 +179,9 @@
     });
     /*]]>*/
 </script>
-
-
   </main>
+
+
 
   <footer class="d-flex row p-0">
     <div class="divfooter col-lg-4">

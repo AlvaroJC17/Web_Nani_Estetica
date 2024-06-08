@@ -281,7 +281,7 @@ footer {
     /*Le da la transcision de aumento y bordes a los iconos de redes sociales del footer*/
     transition: all 0.3s;
     border-radius: 30%;
-    margin-left: 50px;
+    margin-left: 20px;
 }
 
 .iconos2:hover {
@@ -1096,6 +1096,12 @@ tr {
 
 @media (max-width: 400px) {
    
+    .iconos2 {
+        /*Le da la transcision de aumento y bordes a los iconos de redes sociales del footer*/
+        transition: all 0.3s;
+        border-radius: 30%;
+        margin-left: 0px;
+    }
 
     .fomularioSacarTurno{
         width: 100% !important;

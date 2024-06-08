@@ -168,11 +168,10 @@ public class ServicioCliente {
 
 	@Transactional
 	public void guardarTurno(String idCliente, String profesional, Turnos turnos, String fecha,
-			String antiage, String despigmentante, String hidratante, String rosacea,
-			String antiacne, String horario, String email) throws MiExcepcion {
+			String facial, String horario, String email) throws MiExcepcion {
 		
 		//Validamos que todos los valores vengan bien
-		validarGuardarTurno(profesional, turnos, fecha, antiage, despigmentante, hidratante, rosacea, antiacne, horario);
+		validarGuardarTurno(profesional, turnos, fecha, facial, horario);
 		
 		/*Se crea la variable de tipo string para guardar el dato de la provincia que selecciono
 		 * el usuario, este dato viene adjunto en el objeto de tipo turno que se recibe del
@@ -180,12 +179,12 @@ public class ServicioCliente {
 		String provincia = turnos.getProvincias().toString(); // se para convertir el enum de la provincia  a string
 		
 		//Como se recibe el nombre y el apellido en un solo string aplicamos este codigo para separarlos
-		System.out.println("profesional: " + profesional);
 		String [] nombreApellidoProfesional = profesional.split("/");
 		String nombreProfesional = nombreApellidoProfesional[0];
 		String apellidoProfesional = nombreApellidoProfesional[1];
 		
 		
+		/*
 		//Creamos un array con los tratamientos y limpiamos los seleccionados  que vienen null
 		// A los que viene con un valos de string los va sumando en un contador y los que vienen null les asigna valor vacio
 		// esto para que en la base datos no me guanden la palabra null de los tratamientos no seleccionados
@@ -209,10 +208,10 @@ public class ServicioCliente {
 			throw new MiExcepcion("Solo se pueden seleccionar dos tratamientos por turno");
 		}
 		
+		*/
 		
 		LocalDate fechaUsuario = pasarFechaStringToLocalDate(fecha);
 		
-		//String horarios = turnos.getHorario().toString(); // se usa para convertir el enum de horarios a string
 		
 		//Buscamos el dni del cliente que esta seleccionando el turno para adjuntarlo al objeto turno que se va a guardar en la base de datos
 		String dniCliente = null;
@@ -230,16 +229,15 @@ public class ServicioCliente {
 		nuevoTurno.setFecha(fechaUsuario);
 		nuevoTurno.setHorario(horario);
 		nuevoTurno.setEmail(email);
-		nuevoTurno.setTratamiento(tratamientosSeleccionados);
+		nuevoTurno.setTratamiento(facial);
 		nuevoTurno.setDniCliente(dniCliente);
 		nuevoTurno.setActivo(TRUE);
 		repositorioTurnos.save(nuevoTurno);
 		
 	}
 
-	public void validarGuardarTurno(String profesional, Turnos turnos, String fecha, String antiage,
-			String despigmentante, String hidratante, String rosacea,
-			String antiacne, String horario) throws MiExcepcion {
+	public void validarGuardarTurno(String profesional, Turnos turnos, String fecha, String facial,
+			String horario) throws MiExcepcion {
 		
 		if (turnos.getProvincias() == null) {
 			throw new MiExcepcion("Debe seleccionar una provincia");
@@ -257,7 +255,7 @@ public class ServicioCliente {
 			throw new MiExcepcion("Debe seleccionar un horario");
 		}
 		
-		if (antiage == null && despigmentante == null && hidratante == null && rosacea == null && antiacne == null) {
+		if (facial == null) {
 			throw new MiExcepcion("Debe seleccionar almenos un tratamiento");
 		}
 	}
