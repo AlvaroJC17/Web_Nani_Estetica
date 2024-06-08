@@ -33,6 +33,8 @@ public class ServicioHorario {
 	        repositorioHorariosDisponibles.save(horarioDisponible);
 	    }
 
+	    //Le pasamos un fecha y un horario, busca la fecha en la base de datos y verifica si el horario
+	    //esta guardado en la lista de esa fecha, sino esta guardado lo agrega nuevamnete a la lista
 	    public void agregarHorarioDisponible(String fecha, String horario) {
 	        HorariosDisponibles horarioDisponible = repositorioHorariosDisponibles.findById(fecha)
 	                .orElse(new HorariosDisponibles(fecha, List.of()));
@@ -48,7 +50,6 @@ public class ServicioHorario {
 		public void guardarHorariosDisponibles(String fecha, List<String> horarios) {
 			  HorariosDisponibles horariosDisponibles = new HorariosDisponibles(fecha, horarios);
 		        repositorioHorariosDisponibles.save(horariosDisponibles);
-		        System.out.println("Horarios guardados para la fecha " + fecha + ": " + horarios);
 		    }
 			
 		

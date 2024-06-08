@@ -122,9 +122,8 @@ public class ServicioCliente {
 				horas_sueno, exposicion_sol, protector_solar, reaplica_protector, consumo_carbohidratos,
 				tratamientos_faciales_anteriores, resultados_tratamiento_anterior, cuidado_de_piel,
 				motivo_consulta);
-		
+				
 		Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
-		
 		if (identificarCliente.isPresent()) {
 			Cliente formulario_cliente = identificarCliente.get(); // Atribuye el objeto presente a esta nueva variable
 			
@@ -170,9 +169,7 @@ public class ServicioCliente {
 	@Transactional
 	public void guardarTurno(String idCliente, String profesional, Turnos turnos, String fecha,
 			String antiage, String despigmentante, String hidratante, String rosacea,
-			String antiacne, String horario) throws MiExcepcion {
-	
-		System.out.println("Entro el guardar turno");
+			String antiacne, String horario, String email) throws MiExcepcion {
 		
 		//Validamos que todos los valores vengan bien
 		validarGuardarTurno(profesional, turnos, fecha, antiage, despigmentante, hidratante, rosacea, antiacne, horario);
@@ -213,19 +210,6 @@ public class ServicioCliente {
 		}
 		
 		
-		
-		
-//		//Recibimos la fecha como un string y la pasamos a Date y luego a LocalDate para guardarla en la base de datos.
-//		LocalDate fechaUsuario = null;
-//		Date fechaFormateada = null;
-//		SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-//		try {
-//			fechaFormateada = formato.parse(fecha);
-//			fechaUsuario =  fechaFormateada.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
-//		} catch (ParseException e) {
-//			throw new MiExcepcion("Debe seleccionar una fecha");
-//		}
-		
 		LocalDate fechaUsuario = pasarFechaStringToLocalDate(fecha);
 		
 		//String horarios = turnos.getHorario().toString(); // se usa para convertir el enum de horarios a string
@@ -245,6 +229,7 @@ public class ServicioCliente {
 		nuevoTurno.setProfesional(nombreProfesional + " " + apellidoProfesional);
 		nuevoTurno.setFecha(fechaUsuario);
 		nuevoTurno.setHorario(horario);
+		nuevoTurno.setEmail(email);
 		nuevoTurno.setTratamiento(tratamientosSeleccionados);
 		nuevoTurno.setDniCliente(dniCliente);
 		nuevoTurno.setActivo(TRUE);
@@ -485,7 +470,7 @@ public class ServicioCliente {
 			
 	 }
 	 
-	 public boolean esFinDeSemana(LocalDate fecha) throws MiExcepcion {
+	 public boolean esFinDeSemana(LocalDate fecha) {
 		 DayOfWeek dayOfWeek = fecha.getDayOfWeek();
 	        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
 	    }

@@ -12,7 +12,7 @@ h1, h2, h3, h4 {
     margin-bottom: 30px;
 }
 
-a, p, label {
+a, label {
     /* Para cambiar el color y quitar la decoracion de los todos los link de la pagina*/
    /* color: #78340f !important; */
     text-decoration: none;
@@ -360,6 +360,18 @@ footer {
     border-radius: 5px;
     font-size: 30px;
     background-color: #ebdf9d;
+    border: 2px solid white;
+    box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
+}
+
+.ft-misturnos{
+    /*Estilos de los cuadros de seleccion en el centro de la hoja, ademas de centar el texto*/
+    height: auto;
+    width: 355px;
+    margin: 21px;
+    border-radius: 5px;
+    font-size: 20px;
+    background-color: #c0dfda;
     border: 2px solid white;
     box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
 }
@@ -782,6 +794,8 @@ tr {
     text-align: center;
     margin-top: 20px;
 }
+
+
 
 /*-------- MEDIAS PARA RESPONSIVE ---------*/
 

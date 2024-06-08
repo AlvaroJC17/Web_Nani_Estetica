@@ -38,6 +38,7 @@ import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 
@@ -70,6 +71,9 @@ public class ControladorCliente {
 	
 	@Autowired
 	public ServicioHorario servicioHorario;
+	
+	@Autowired
+	public ServicioTurnos servicioTurnos;
 	
 	@GetMapping("tratamientoFacialApagado")
 	public String tratamientoFacialApagado(
@@ -138,26 +142,41 @@ public class ControladorCliente {
 		//Pasamos la fecha seleccionada a localDate para poder trabajar con los dias y dias de la semana
 		LocalDate fechaSeleccionada = servicioCliente.pasarFechaStringToLocalDate(fecha);
 		
+		//Meotod que recibe una fecha tipo LocalDate y devuelve true si la fecha es anterior a la actual
 		if (servicioCliente.fechaYaPaso(fechaSeleccionada)) {
 			String error = "No se puede seleccionar un fecha pasada";
 			return "redirect:/tratamientoFacialApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente ;
 		}
 		
+		//Meotodo que recibe una fecha tipo LocalDate y devuelve true si es fin de semana
 		if (servicioCliente.esFinDeSemana(fechaSeleccionada)) {
 			String error = "No trabajamos los fines de semanas";
 			return "redirect:/tratamientoFacialApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente ;
 		}
 		
-		
+		if (servicioTurnos.checkActiveTurnos(email)) {
+			String error = "Solo se permite tener un maximo de tres turnos activos,"
+					+ "si necesita modificar un turno o seleccionar uno nuevo puede"
+					+ "ir al apartado de mis turnos y cancerlar alguno de los turnos activos";
+			return "redirect:/tratamientoFacialApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente ;
+		}
 		
 		//Buscamos la lista de enum de profesionales y la mandamos al html
 		List <Persona> Profesional = servicioPersona.buscarNombreApellidoPorRol(Rol.PROFESIONAL);
+		
 		//Buscamos todos los datos del cliente y lo pasamos al html, sirve para visualizar la pagina y pasar los datos del cliente entre controladores
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		
 		/*Verifica si existe la fecha en la base de datos.
 		 * Si existe, nos devuelve la lista de horarios disponibles asociados a esa fehca
 		 * Si no existe, crea una lista de horarios asociadas y los asocia a esa fecha */
 		List<String> horariosDisponibles = servicioHorario.obtenerHorariosDisponibles(fecha);
+		
+		//Si la lista de horariosDisponibles esta vacia, devuelve el mensaje de error.
+		if (horariosDisponibles.isEmpty()) {
+			String error = "No hay turnos disponibles para la fecha seleccionada";
+			return "redirect:/tratamientoFacialApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente ;
+		}
 		//Guarda en la base de datos la lista de horarios disponibles pertenecientes a la fecha que le pasamos
 		servicioHorario.guardarHorariosDisponibles(fecha, horariosDisponibles);
 		
@@ -197,16 +216,26 @@ public class ControladorCliente {
 			try {
 				//Servicio para guardar el turno facial en la base de datos
 				servicioCliente.guardarTurno(idCliente, profesional, turnos, fecha, antiage, despigmentante,
-						hidratante, rosacea, antiacne, horario);
+						hidratante, rosacea, antiacne, horario, email);
 				
 				 // Eliminar el horario seleccionado de la lista de horarios disponibles para la fecha
                 List<String> horariosDisponibles = servicioHorario.obtenerHorariosDisponibles(fecha);
                 horariosDisponibles.remove(horario);
                 servicioHorario.actualizarHorariosDisponibles(fecha, horariosDisponibles);
-				
+                
+                //cuando el usuario selecciona un nuevo turno, eliminar el turno mas antiguo
+                //que tenga estado inactivo
+                servicioTurnos.eliminarTurnoMasAntiguoNoActivo(email);
+                System.out.println("Turno mas antiguo eliminado con exito");
+                
+                //Obtenemos una lista de turnos del usuario a traves de su email
+                List<Turnos> tunosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
+                        
                 //Se dispara el modal de exito y se redirecciona a la pagina de mis turnos
 				String exito = "Gracias por seleccionar un turno";
 				model.addAttribute("exito", exito);
+				model.addAttribute("datosTurno", tunosDisponibles);
+				model.addAttribute("email", email);
 				model.addAttribute("datosCliente", datosCliente);
 				model.addAttribute("showModalExito", true);
 				return "/pagina_cliente/misturnos";
@@ -292,14 +321,23 @@ public class ControladorCliente {
 	}
 	
 			
-	
 	@GetMapping("/misturnos")
 	public String misturnos(
 			@RequestParam(name = "email") String email,
 			Model model) {
 		
+		//cuando el usuario ingrese a turnos se verifica si algun turno tiene fecha anterior
+		//a la actual y si eso es afirmativo, entonces pasa el tuno a inactivo.
+		servicioTurnos.actualizarTurnosAntiguos(email);
+		
+		//datos del cliente y los pasa a la vista, sirve para renderizar la vista
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		
+		//busca todos los turnos disponinbles del usuario y los pasa a la vista
+		List<Turnos> tunosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
+		model.addAttribute("email", email);
 		model.addAttribute("datosCliente", datosCliente);
+		model.addAttribute("datosTurno", tunosDisponibles);
 		return "/pagina_cliente/misturnos";	
 	}
 	

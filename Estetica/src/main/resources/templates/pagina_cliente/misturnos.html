@@ -61,9 +61,65 @@
 
   
   <main>
-    <div class="main-interno">
+     <div class="main-interno">
       <h3>Mis turnos</h3>
-    </div>
+      <div class="container-fluid d-flex flex-wrap">
+
+<!--El iterStat es otro ietrador que agregamos en cada iteracion para darle un id unico a cada modal
+que se genere en iteracion, esto evita que al tener varios turnos, se cruce la info entre ellos al
+tener el mismo ID-->
+        <div class="ft-misturnos" th:each="turnos, iterStat : ${datosTurno}">
+          <div th:if="${turnos.activo}" class="bg-warning text-center text-white">Pendiente</div>
+          <div th:unless="${turnos.activo}" class="bg-danger text-center text-white">Cancelado</div>
+			<form class="" th:action="@{/cancelarTurno}" method="post">
+          <ul class="ps-2 mt-3" >
+            <li class="list-unstyled d-flex"><strong>Profesional:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.profesional}"></p> </li>
+            <li class="list-unstyled d-flex"><strong>Fecha:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.fecha}"></p> </li>
+            <li class="list-unstyled d-flex"><strong>Hora:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.horario}"></p> </li>
+            <li class="list-unstyled d-flex"><strong>Tratamiento:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.tratamiento}"></p> </li>
+            </ul>
+        
+		<!--Estos botones solo hacen el llamado al modal-->
+		  <button type="button" th:if="${turnos.activo}" class="btn btn-danger m-2" data-bs-toggle="modal" th:data-bs-target="${'#staticBackdrop' + iterStat.index}">Cancelar turno</button>
+          <div th:unless="${turnos.activo}" class=""></div>
+        
+          <!-- Modal Cancelar turno -->
+         											 <!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
+						<div class="modal fade" th:id="${'staticBackdrop' + iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+							<div class="modal-dialog">
+								<div style="background-color: #ebdf9d;" class="modal-content">
+									<div class="modal-header d-block  text-center border border-0">
+										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+										<h1 class="modal-title fs-4 fw-bold" id="staticBackdropLabel">¿Estas seguro de
+											cancelar el turno?</h1>
+									</div>
+									<div class="modal-body">
+										Para solicitar un nuevo turno debes dirigirte al portal de solicitar turno y
+										generar uno nuevo 
+									</div>
+									<div class="modal-footer border border-0">
+										<button type="button" class="btn btn-danger"
+											data-bs-dismiss="modal">Cerrar</button>
+										<a href="">
+											<!--Este boton es el que hace el llamado al metodo-->
+											<button type="submit" class="btn btn-primary">Aceptar</button>
+												
+										</a>
+									</div>
+								</div>
+							</div>
+						</div>
+						  <input hidden type="text" id="email" name="email" th:value="${email}"></input>
+          				  <input hidden type="text" id="fecha" name="fecha" th:value="${turnos.fecha}"></input>
+          				  <input hidden type="text" id="horario" name="horario" th:value="${turnos.horario}"></input>
+          				  <input hidden type="text" id="idTurno" name="idTurno" th:value="${turnos.id}"></input>
+          </form>
+            </div>
+            </div>
+            </div>
+   
+        
 
     
     					<!--Modal mensaje de exito al registrarse	-->
@@ -85,6 +141,9 @@
 			</div>
 		</div>
 	</div>
+	
+	
+	
 	
 	<!--Scrip para el modal de mensaje de exito-->
 			
@@ -171,6 +230,5 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
-</body>
 </body>
 </html>

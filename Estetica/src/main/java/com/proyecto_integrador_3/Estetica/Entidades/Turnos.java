@@ -29,7 +29,10 @@ public class Turnos {
 	protected String id;
 	
 	@Column(name = "dni")
-	String dniCliente;
+	String dni;
+	
+	@Column(name = "email")
+	String email;
 
 	@Column(name = "provincia")
 	String provincia;
@@ -68,9 +71,10 @@ public class Turnos {
 		
 	}
 		
-	public Turnos(String provincia, String profesional, LocalDate fecha, String horario, String tratamiento, String dniCliente,
-			Boolean activo) {
-		this.dniCliente = dniCliente;
+	public Turnos(String provincia, String profesional, LocalDate fecha, String horario, String tratamiento, String dni,
+			String email, Boolean activo) {
+		this.dni = dni;
+		this.email = email;
 		this.provincia = provincia;
 		this.profesional = profesional;
 		this.fecha = fecha;
@@ -81,6 +85,14 @@ public class Turnos {
 	
 
 	
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
 	public Boolean getActivo() {
 		return activo;
 	}
@@ -90,11 +102,11 @@ public class Turnos {
 	}
 
 	public String getDniCliente() {
-		return dniCliente;
+		return dni;
 	}
 
-	public void setDniCliente(String dniCliente) {
-		this.dniCliente = dniCliente;
+	public void setDniCliente(String dni) {
+		this.dni = dni;
 	}
 
 	// Getters y setters
