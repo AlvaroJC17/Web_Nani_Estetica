@@ -7,9 +7,11 @@
   <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="../css/styles.css">
-  <title>Reserva de turno</title>
+  <title>Reserva de turno corporal</title>
 </head>
 
 <body class="body-interno" th:each="datosCliente : ${datosCliente}">
@@ -42,10 +44,10 @@
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/tratamientos(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Solicitar turno</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos (email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis turnos</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis turnos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas (email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis consultas</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis consultas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
@@ -68,94 +70,142 @@
       <div class="  ft-reserva-turno">
         <div class="texto-solicitar-turno ">
           <div>
-          <p class="fs-4">Por favor complete todas las opciones a continuación para realizar la reserva de turno</p>
+          <p class="fs-4">Por favor seleccione una fecha para ver los horarios disponibles, luego complete
+                            toda la informacion solicitada para poder generar un turno.</p>
         </div>
         </div>
         <div class="container">
-          <form class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno" action="">
+
+			<!--Este formulario es para llevar al metodo que busca crea y busca las fechas disponibles
+			se usa, cuando el usuario selecciona buscar en el input de fecha-->
+            <form th:action="@{/reservaDeTurnoCliente}" method="get" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pb-1">
+            <label for="fecha" class="form-label mb-0 mt-2  fs-4">Seleccionar fecha <span class="text-danger ">*</span></label>
+            <input type="date" name="fecha" class="form-control" id="fecha" th:value="${fecha}" placeholder="Fecha">
+            <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
+		  	    <input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
+            <button class="btn btn-primary mt-2">Buscar</button>
+            </form>
+           
+			<!--Este formulario va al metodo que guarda el turno y elimina la fecha seleccionada por el usaurio-->           
+			<!--el campo th:object se relaciona con el onjeto turno creado en el controlador, a este objeto se le asigna todo los valores que puede tener el formulario y asi poder manejarlo en el controlador-->
+          <form th:action="@{/confimarTurnoCliente}" method="post" th:object="${Turnos}" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2">
             <div>
               <label for="provincia" class="form-label mb-0 fs-4">Seleccione provincia <span class="text-danger ">*</span> </label>
-              <select class="form-select" id="provincia" aria-label="Default select example">
-                <option selected>Provincia</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+              <select th:field="*{provincias}" name="provincia" class="form-select" id="provincia" aria-label="Default select example">
+                <option value=""  selected>Seleccione una provincia</option>
+                <!--el th:value="${provincia.name()} viene por defecto al hacer un enum con una descripcion al lado, este metodo envia a esa descripcion como un string-->
+                <option th:each="provincia : ${provincias}" th:value="${provincia.name()}" th:text="${provincia.displayName}"></option> <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
               </select>
             </div>
             <div>
               <label for="profesional" class="form-label mb-0 mt-2 fs-4">Seleccione profesional <span class="text-danger ">*</span></label>
-              <select class="form-select" id="profesional" aria-label="Default select example">
+              <select class="form-select" id="profesional" name="datosProfesional" aria-label="Default select example">
                 <option selected>Profesional</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+                <option th:each="nombreProfesional : ${Profesional}" th:text="${nombreProfesional.nombre + ' '  + nombreProfesional.apellido}" th:value="${nombreProfesional.nombre + '/'  + nombreProfesional.apellido}"></option>
               </select>
-            </div>
-            <div>
-              <label for="fecha" class="form-label mb-0 mt-2  fs-4">Seleccionar fecha <span class="text-danger ">*</span></label>
-              <input type="date" class="form-control" id="fecha" placeholder="Fecha">
             </div>
             <div>
               <label for="horario" class="form-label mb-0 mt-2 fs-4">Seleccionar hora <span class="text-danger ">*</span></label>
-              <select class="form-select" id="horario" aria-label="Default select example">
-                <option selected>Hora</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
+              <select th:field="*{horario}" name="horario" class="form-select" id="horario" aria-label="Default select example">
+                <option value="" selected>Hora</option>
+                <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->
+                <option th:each="horario : ${horarios}" th:value="${horario}" th:text="${horario}"></option>
               </select>
             </div>
+
+
             <p class="mt-4 mb-0 fs-4">Seleccionar tratamientos<span class="text-danger ">*</span></p>
             <p class="fs-6">Max. Dos servicios por turno</p>
             <div class="input-seleccion-check ">
-				
-              <div>
-				  
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="limpieza">
-                  <label class="form-check-label fs-6" for="limpieza">
-                    Limpieza corporal espalda y gluteos
-                  </label>
-                </div>
-                
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="pulido">
-                  <label class="form-check-label fs-6" for="pulido">
-                    Pulido corporal de espalda y gluteos
-                  </label>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="dermaplaning">
-                  <label class="form-check-label fs-6" for="dermaplaning">
-                    Dermaplaning corporal de espaldas y gluteos
-                  </label>
-                </div>
-
-                <div class="form-check">
-                  <input class="form-check-input" type="checkbox" value="" id="exfoliacion">
-                  <label class="form-check-label fs-6" for="exfoliacion">
-                    Exfoliacion y mascarilla en manos y pies
-                  </label>
-                </div>
-
-                
-              </div>
-                
-            </div>
+                <div>
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="espalda" value="Limpieza corporal" id="espalda">
+                    <label class="form-check-label fs-6" for="espalda">
+                      Limpieza corporal espalda y gluteos
+                    </label>
+                  </div>
+                  
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="pulido" value="Pulido corporal de espalda y gluteos" id="pulido">
+                    <label class="form-check-label fs-6" for="microneedling">
+                      Pulido corporal de espalda y gluteos
+                    </label>
+                  </div>
+  
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="dermaplaning" value="Dermaplaning corporal de espalda y gluteos" id="dermaplaning">
+                    <label class="form-check-label fs-6" for="microneedling">
+                      Dermaplaning corporal de espaldas y gluteos
+                    </label>
+                  </div>
+  
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="exfoliacion" value="Exfoliacion y mascarilla en manos y pies" id="exfoliacion">
+                    <label class="form-check-label fs-6" for="microneedling">
+                      Exfoliacion y mascarilla en manos y pies
+                    </label>
+                  </div>
+                  </div>
+                  </div>
             <div class="boton-pag-turno">
             <div class="boton-de-registro text-center">
-              <a href="#"><button type="submit" class="bn632-hover bn26">Enviar</button></a>
+              <a href="#"><button type="submit" name="action" value="aceptar" class="bn632-hover bn26">Enviar</button></a>
             </div>
             <div class="boton-de-registro text-center">
-              <a href="#"><button type="submit" class="bn632-hover bn26">Cancelar</button></a>
+              <a href="#"><button type="submit" name="action" value="cancelar" class="bn632-hover bn26">Cancelar</button></a>
             </div>
           </div>
+          
+          <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
+		  <input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
+		  <input type="hidden" class="form-control" name="fecha" id="fecha" th:value="${fecha}" placeholder="">
+		  <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
           </form>
         </div>
       </div>
 </div>
 </div>
+		  
+
+<!--Modal mensajes de error-->
+		
+		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
+     th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
+    <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+            <div class="modal-header border border-0 d-flex justify-content-center ">
+			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+            </div>
+            <div class="modal-body text-center text-danger text-uppercase fw-bold">
+                <p th:text="${error}"></p>
+            </div>
+            <div class="modal-footer border border-0">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+				<!--Script para modal de error-->
+				
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalError = /*[[${showModalError}]]*/ false;
+        if (showModalError) {
+            $('#errorModal').modal('show');
+        }
+
+        $('#errorModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
   </main>
+
+
 
   <footer class="d-flex row p-0">
     <div class="divfooter col-lg-4">

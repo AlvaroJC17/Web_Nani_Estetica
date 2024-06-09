@@ -42,10 +42,10 @@
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/tratamientos(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Solicitar turno</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos (email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis turnos</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis turnos</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas (email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis consultas</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis consultas</a>
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
@@ -71,7 +71,7 @@
 		filtrar cual es la planilla de solicitud de turnos que se le va a mostrar. Al usar un formulario y un
 		metodo post, el metodo que recibe esta informacion debe estar con la etiqueta @Postmaping-->
 		   <div class="ft">
-        <form th:action="@{/reservaDeTurnoCliente}" method="post">
+        <form th:action="@{/reservaDeTurnoClienteGeneral}" method="post">
             <input type="hidden" name="email" th:value="${datosCliente.email}" />
             <input type="hidden" name="idCliente" th:value="${datosCliente.id}" />
             <input type="hidden" name="tratamiento" th:value="facial" />
@@ -83,21 +83,22 @@
         </form>
     </div>
      
-      <!--En este enlace no se utilizo el form, sino que se dejo de la misma forma que esta en otros enlaces del programa.
-      Esto se hizo asi porque este enlace no necesita validar si se lleno el formulario de datos antes de dirigir a la pagina
-      de seleccion de turnos, sino que entra directo a dicha pagina.-->
-      <div class=" ft ">
-        <a th:href="@{/reservaDeTurnoClienteEstetico(email=${datosCliente.email}, idCliente=${datosCliente.id})}">
-          <div style="padding-left: 6px; padding-right: 6px;" class="d-flex justify-content-center align-items-center">
-            <img style="margin-left: 5px; margin-right: 5px;" class="iconosTratamientos" src="../imagenes/icons8-más-50.png" alt="">
-            <p class="texto-tarjetas-main-home ms-1 hover text-center">Tratamientos esteticos</p>
-          </div>
-        </a>
-      </div>
+       <div class="ft">
+        <form th:action="@{/reservaDeTurnoClienteGeneral}" method="post">
+            <input type="hidden" name="email" th:value="${datosCliente.email}" />
+            <input type="hidden" name="idCliente" th:value="${datosCliente.id}" />
+            <input type="hidden" name="tratamiento" th:value="estetico" />
+            <button style="background-color: #ebdf9d; color: rgba(var(--bs-link-color-rgb),var(--bs-link-opacity,1));"
+             type="submit" class="d-flex justify-content-center align-items-center border-0">
+              <img class="iconosTratamientos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
+              <p class="texto-tarjetas-main-home ms-1 hover">Tratamientos esteticos</p>
+            </button>
+        </form>
+    </div>
       
       <!--Aca tambien usamos formulario y el metodo post para obtener el valor de tratamiento y filtrarlo en el  metodo-->
        <div class="ft">
-        <form th:action="@{/reservaDeTurnoCliente}" method="post">
+        <form th:action="@{/reservaDeTurnoClienteGeneral}" method="post">
             <input type="hidden" name="email" th:value="${datosCliente.email}" />
             <input type="hidden" name="idCliente" th:value="${datosCliente.id}" />
             <input type="hidden" name="tratamiento" th:value="corporal" />

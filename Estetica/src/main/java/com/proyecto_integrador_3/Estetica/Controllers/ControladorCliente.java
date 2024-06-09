@@ -75,30 +75,49 @@ public class ControladorCliente {
 	@Autowired
 	public ServicioTurnos servicioTurnos;
 	
-	@GetMapping("tratamientoFacialApagado")
-	public String tratamientoFacialApagado(
+	@GetMapping("tratamientosApagado")
+	public String tratamientosApagado(
 			@RequestParam(name="idCliente") String idCliente,
 			@RequestParam(name="email") String email,
 			@RequestParam(name="error", required = false) String error,
+			@RequestParam(name="identificador", required = false) String identificador,
 			Model modelo) {
+	
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		if (error == null || error.isEmpty()) {
-			modelo.addAttribute("datosCliente", datosCliente);
-			modelo.addAttribute("idCliente", idCliente);
-			modelo.addAttribute("email", email);
-			return "/pagina_cliente/reservaDeTurnoClienteFacialApagado";
-		}else {
-			modelo.addAttribute("datosCliente", datosCliente);
-			modelo.addAttribute("error", error);
-			modelo.addAttribute("idCliente", idCliente);
-			modelo.addAttribute("email", email);
-			modelo.addAttribute("showModalError", true);
-			return "/pagina_cliente/reservaDeTurnoClienteFacialApagado";
-		}
 			
+				//estos son modelos en general
+				modelo.addAttribute("datosCliente", datosCliente);
+				modelo.addAttribute("idCliente", idCliente);
+				modelo.addAttribute("email", email);
+				modelo.addAttribute("identificador", identificador);
+				
+				if (error == null || error.isEmpty()) {
+				switch (identificador) {
+				case "tratamientoFacial":
+					return "/pagina_cliente/reservaDeTurnoClienteFacialApagado";
+				case "tratamientoCorporal":
+					return "/pagina_cliente/reservaDeTurnoClienteCorporalApagado";
+				case "tratamientoEstetico":
+					return "/pagina_cliente/reservaDeTurnoClienteEsteticoApagado";
+				}
+					
+			}else {
+				modelo.addAttribute("error", error); // estos son modelos que se suman a los generales si entra en el else
+				modelo.addAttribute("showModalError", true);
+				switch (identificador) {
+				case "tratamientoFacial":
+					return "/pagina_cliente/reservaDeTurnoClienteFacialApagado";
+				case "tratamientoCorporal":
+					return "/pagina_cliente/reservaDeTurnoClienteCorporalApagado";
+				case "tratamientoEstetico":	
+					return "/pagina_cliente/reservaDeTurnoClienteEsteticoApagado";
+				}				
+			}
+				return "";
 	}
-		
+	
+	
 	
 	/*Este metodo deriva a la pagina de tratamientos con los valores de mail y id del cliente*/
 	@GetMapping("/tratamientos")
@@ -112,8 +131,10 @@ public class ControladorCliente {
 		return "/pagina_cliente/tratamientos";
 	}
 	
-
-	/*Este metodo deriva a la pagina de turnos esteicos con los valores de mail y id del cliente*/
+	
+	/*
+	
+	//Este metodo deriva a la pagina de turnos esteicos con los valores de mail y id del cliente
 	@GetMapping("/reservaDeTurnoClienteEstetico")
 	public String reservaDeTurnoClienteEstetico(
 			@RequestParam(name = "email", required = false) String email,
@@ -124,18 +145,19 @@ public class ControladorCliente {
 		return "/pagina_cliente/reservaDeTurnoClienteEstetico";
 	}
 	
+	*/
 	
-	@GetMapping("/reservaDeTurnoClienteFacial")
-	public String reservaDeTurnoClienteFacial(
+	
+	@GetMapping("/reservaDeTurnoCliente")
+	public String reservaDeTurnoCliente(
 			@RequestParam(name = "email", required = false) String email,
 			@RequestParam(name = "idCliente", required = false) String idCliente,
 			@RequestParam(name = "fecha", required = false) String fecha,
+			@RequestParam(name="identificador", required = false) String identificador,
 			ModelMap model) throws MiExcepcion {
 	
 		//Si el usuario presiona buscar sin seleccionar una fecha, por defecto toma la fecha actual como valor
 		if (fecha.isEmpty() || fecha == null) {
-//			String error = "Es necesario seleccionar una fecha";
-//			return "redirect:/tratamientoFacialApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente ;
 			fecha = LocalDate.now().toString(); // Fecha por defecto es la fecha actual
 		}
 		
@@ -145,20 +167,40 @@ public class ControladorCliente {
 		//Meotod que recibe una fecha tipo LocalDate y devuelve true si la fecha es anterior a la actual
 		if (servicioCliente.fechaYaPaso(fechaSeleccionada)) {
 			String error = "No se puede seleccionar un fecha pasada";
-			return "redirect:/tratamientoFacialApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente ;
+			if (identificador.equals("tratamientoFacial")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador;
+			}else if(identificador.equals("tratamientoCorporal")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador;
+			}else if(identificador.equals("tratamientoEstetico")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador;
+			}
+				
 		}
 		
 		//Meotodo que recibe una fecha tipo LocalDate y devuelve true si es fin de semana
 		if (servicioCliente.esFinDeSemana(fechaSeleccionada)) {
 			String error = "No trabajamos los fines de semanas";
-			return "redirect:/tratamientoFacialApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente ;
+			if (identificador.equals("tratamientoFacial")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador ;
+			}else if(identificador.equals("tratamientoCorporal")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador ;
+			}else if(identificador.equals("tratamientoEstetico")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador;
+			}
 		}
 		
+		//Limitamos a que el usuario solo pueda tener un maximi de tres activos
 		if (servicioTurnos.checkActiveTurnos(email)) {
 			String error = "Solo se permite tener un maximo de tres turnos activos,"
 					+ "si necesita modificar un turno o seleccionar uno nuevo puede"
 					+ "ir al apartado de mis turnos y cancerlar alguno de los turnos activos";
-			return "redirect:/tratamientoFacialApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente ;
+			if (identificador.equals("tratamientoFacial")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador ;
+			}else if(identificador.equals("tratamientoCorporal")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador ;
+			}else if(identificador.equals("tratamientoEstetico")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador;
+			}
 		}
 		
 		//Buscamos la lista de enum de profesionales y la mandamos al html
@@ -175,43 +217,72 @@ public class ControladorCliente {
 		//Si la lista de horariosDisponibles esta vacia, devuelve el mensaje de error.
 		if (horariosDisponibles.isEmpty()) {
 			String error = "No hay turnos disponibles para la fecha seleccionada";
-			return "redirect:/tratamientoFacialApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente ;
+			if (identificador.equals("tratamientoFacial")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador ;
+			}else if(identificador.equals("tratamientoCorporal")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador ;
+			}else if(identificador.equals("tratamientoEstetico")) {
+				return "redirect:/tratamientosApagado?email=" + email + "&error=" + error + "&idCliente=" + idCliente + "&identificador=" + identificador;
+			}
 		}
 		//Guarda en la base de datos la lista de horarios disponibles pertenecientes a la fecha que le pasamos
 		servicioHorario.guardarHorariosDisponibles(fecha, horariosDisponibles);
 		
-		//Buscamos el nombre y apellido en la tabla persona mediante el rol PROFESIONAL
-		model.addAttribute("datosCliente", datosCliente);
-		model.addAttribute("provincias", Provincias.values()); // pasamos el array de enums al formulario para desplegar la lista de select
-		model.addAttribute("Profesional", Profesional); // pasamos el array de objetos tipo persona que tengan rol de profesional
-		model.addAttribute("horarios", horariosDisponibles);
-        model.addAttribute("fecha", fecha); // Pasar la fecha seleccionada al modelo
-		model.addAttribute("Turnos", new Turnos()); // creamos una instancia de Turnos para pasarla al formulario y cargarlo con todos los campos del formulario
-		return "/pagina_cliente/reservaDeTurnoClienteFacial";
+			//Buscamos el nombre y apellido en la tabla persona mediante el rol PROFESIONAL
+			model.addAttribute("datosCliente", datosCliente);
+			model.addAttribute("identificador", identificador);
+			model.addAttribute("provincias", Provincias.values()); // pasamos el array de enums al formulario para desplegar la lista de select
+			model.addAttribute("Profesional", Profesional); // pasamos el array de objetos tipo persona que tengan rol de profesional
+			model.addAttribute("horarios", horariosDisponibles);
+	        model.addAttribute("fecha", fecha); // Pasar la fecha seleccionada al modelo
+			model.addAttribute("Turnos", new Turnos()); // creamos una instancia de Turnos para pasarla al formulario y cargarlo con todos los campos del formulario
+			
+			//Si pasa todos los filtros anteriores, usa el identificador y redireciona a la pagina
+			switch (identificador) {
+			case "tratamientoFacial":
+				return "/pagina_cliente/reservaDeTurnoClienteFacial";
+			case "tratamientoCorporal":
+				return "/pagina_cliente/reservaDeTurnoClienteCorporal";
+			case "tratamientoEstetico":
+				return "/pagina_cliente/reservaDeTurnoClienteEstetico";
+			}
+			
+			return "";
 	}
-		
-		
+
 	
-	@PostMapping("/confimarTurnoClienteFacial")
-	public String confimarTurnoClienteFacial(
+	@PostMapping("/confimarTurnoCliente")
+	public String confimarTurnoCliente(
 			@ModelAttribute Turnos turnos, //Se recibe un objeto de tipo Turnos que viene con todo los valores de los campos del formulario
 			@RequestParam(name = "email", required = false) String email,
+			@RequestParam(name = "action") String action, // variable para identificar si el usuario presiona el boton aceptar o cancelar
+			@RequestParam(name = "identificador", required = false) String identificador,
 			@RequestParam(name = "idCliente", required = false) String idCliente,
 			@RequestParam(name = "datosProfesional", required = false) String profesional, // se recibe los valores de nombre y apellido del array de profesionales
-			@RequestParam(name = "action") String action, // variable para identificar si el usuario presiona el boton aceptar o cancelar
 			@RequestParam(name = "fecha", required = false) String fecha,
 			@RequestParam(name = "facial", required = false) String facial,
+			@RequestParam(name = "espalda", required = false) String espalda,
+			@RequestParam(name = "pulido", required = false) String pulido,
+			@RequestParam(name = "dermaplaning", required = false) String dermaplaning,
+			@RequestParam(name = "exfoliacion", required = false) String exfoliacion,
+			@RequestParam(name = "lifting", required = false) String lifting,
+			@RequestParam(name = "perfilado", required = false) String perfilado,
+			@RequestParam(name = "laminado", required = false) String laminado,
+			@RequestParam(name = "hydralips", required = false) String hydralips,
+			@RequestParam(name = "microneedling", required = false) String microneedling,
 			@RequestParam(name = "horario", required = false) String horario,
 			ModelMap model) throws MiExcepcion {
 		
 		//usamos un switch que depende si el usuario le da al boton de aceptar o cancelar del formulario
 		switch (action) {
+			
 		case "aceptar":
-			System.out.println("Entro en el case");
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 			try {
 				//Servicio para guardar el turno facial en la base de datos
-				servicioCliente.guardarTurno(idCliente, profesional, turnos, fecha, facial, horario, email);
+				servicioCliente.guardarTurno(idCliente, profesional, turnos, fecha, facial, espalda,
+						pulido, dermaplaning, exfoliacion, lifting, perfilado, laminado, hydralips,
+						microneedling, horario, email);
 				
 				 // Eliminar el horario seleccionado de la lista de horarios disponibles para la fecha
                 List<String> horariosDisponibles = servicioHorario.obtenerHorariosDisponibles(fecha);
@@ -225,17 +296,16 @@ public class ControladorCliente {
                 
                 //Obtenemos una lista de turnos del usuario a traves de su email
                 List<Turnos> tunosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
-                        
+                
                 //Se dispara el modal de exito y se redirecciona a la pagina de mis turnos
-				String exito = "Gracias por seleccionar un turno";
-				model.addAttribute("exito", exito);
-				model.addAttribute("datosTurno", tunosDisponibles);
-				model.addAttribute("email", email);
-				model.addAttribute("datosCliente", datosCliente);
-				model.addAttribute("showModalExito", true);
-				return "/pagina_cliente/misturnos";
-				
-				
+                String exito = "Gracias por seleccionar un turno";
+                model.addAttribute("exito", exito);
+                model.addAttribute("datosTurno", tunosDisponibles);
+                model.addAttribute("email", email);
+                model.addAttribute("datosCliente", datosCliente);
+                model.addAttribute("showModalExito", true);
+                return "/pagina_cliente/misturnos";
+              
 			} catch (MiExcepcion e) {
 				// si hay algun error en alguna validacion, se dispara este catch y se pasan de vuelta todos estos
 				//valores para que recargue la misma pagina del formulario con un mensaje de error y con todos los
@@ -246,6 +316,7 @@ public class ControladorCliente {
 				String error = e.getMessage();
 				model.addAttribute("error", error);
 				model.addAttribute("datosCliente", datosCliente);
+				model.addAttribute("identificador", identificador);
 				model.addAttribute("provincias", Provincias.values());
 				model.addAttribute("email", email);
 				model.addAttribute("fecha", fecha);
@@ -254,7 +325,16 @@ public class ControladorCliente {
 				model.addAttribute("Profesional", Profesional);
 				model.addAttribute("Turnos", new Turnos());
 				model.addAttribute("showModalError", true);
-				return "/pagina_cliente/reservaDeTurnoClienteFacial";
+				switch (identificador) {
+				case "tratamientoFacial":
+					return "/pagina_cliente/reservaDeTurnoClienteFacial";
+				
+				case "tratamientoCorporal":
+					return "/pagina_cliente/reservaDeTurnoClienteCorporal";
+					
+				case "tratamientoEstetico":
+					return "/pagina_cliente/reservaDeTurnoClienteEstetico";
+				}
 			}
 				
 		case "cancelar":
@@ -262,9 +342,10 @@ public class ControladorCliente {
 			// de tratamientos y este a su vez se encarga de mostrar la pag de los tratamientos
 			return "redirect:/tratamientos?email=" + email;
 		}
-		return "redirect:/confimarTurnoClienteFacial";
+		return "redirect:/tratamientos?email=" + email;
 	}
-				
+	
+	/*
 			
 	@GetMapping("/reservaDeTurnoClienteCorporal")
 	public String reservaDeTurnoClienteCorporal(
@@ -275,20 +356,22 @@ public class ControladorCliente {
 		model.addAttribute("datosCliente", datosCliente);
 		return "/pagina_cliente/reservaDeTurnoClienteCorporal";
 	}
+	
+	*/
 		
 	
 	/*Se usa postmapping por que los valores que recibe este metodo vienen de un formulario con un metodo post*/
 	/*Valida si el formulario de preguntas ya se lleno y le muestra al cliente la pagina correspondiente dependiendo de su seleccion*/
-	@PostMapping("/reservaDeTurnoCliente")
-	public String reservaDeTurnoCliente(
+	@PostMapping("/reservaDeTurnoClienteGeneral")
+	public String reservaDeTurnoClienteGeneral(
 			@RequestParam(name = "email", required = false) String email,
 			@RequestParam(name = "idCliente") String idCliente,
 			@RequestParam(name = "tratamiento") String tratamiento,
 			ModelMap model) {
 		
+		
 		/*El valor de tratamiento sirve para filtrar que pagina le vamos a mostrar
 		 * al cliente para solicitar turno, puede ser facial o corporal*/
-		
 		Boolean usoDeFormulario = null;
 		Optional<Cliente> formularioDeDatos = repositorioCliente.findById(idCliente);
 		if (formularioDeDatos.isPresent()) {
@@ -297,14 +380,22 @@ public class ControladorCliente {
 		}
 					
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		
+		//la variable identificador la usamos para los case de los otros metodos, asi le decimos si se selecciona tratamiento
+		//facial o tratamiento corporal
+		String identificador = null;
 		if (usoDeFormulario && tratamiento.equals("facial")) {
-			//return "redirect:/reservaDeTurnoClienteFacial?idCliente=" + idCliente + "&email=" + email;
-			return "redirect:/tratamientoFacialApagado?idCliente=" + idCliente + "&email=" + email;
+			identificador = "tratamientoFacial";
+			return "redirect:/tratamientosApagado?idCliente=" + idCliente + "&email=" + email + "&identificador=" + identificador;
 			
 		}else if(usoDeFormulario && tratamiento.equals("corporal")) {
-			return "redirect:/reservaDeTurnoClienteCorporal?idCliente=" + idCliente + "&email=" + email;
+			identificador = "tratamientoCorporal";
+			return "redirect:/tratamientosApagado?idCliente=" + idCliente + "&email=" + email + "&identificador=" + identificador;
 			
 			//Si el boolean usoDeFormulario es false, entonces dirige al usuario a llenar el formulario de preguntas
+		}else if(tratamiento.equals("estetico")){
+			identificador = "tratamientoEstetico";
+			return "redirect:/tratamientosApagado?idCliente=" + idCliente + "&email=" + email + "&identificador=" + identificador;
 		}else {
 			model.addAttribute("tratamiento", tratamiento);
 			model.addAttribute("datosCliente", datosCliente);
@@ -509,10 +600,13 @@ public class ControladorCliente {
 					protector_solar, reaplica_protector, consumo_carbohidratos, tratamientos_faciales_anteriores,
 					resultados_tratamiento_anterior, cuidado_de_piel, motivo_consulta);
 			
+			String identificador;
 			if (tratamiento.equals("facial")) {
-				return "redirect:/tratamientoFacialApagado?email=" + email + "&idCliente=" + idCliente;
+				identificador = "tratamientoFacial";
+				return "redirect:/tratamientosApagado?email=" + email + "&idCliente=" + idCliente + "&identificador=" + identificador;
 			}else if(tratamiento.equals("corporal")){
-				return "redirect:/reservaDeTurnoClienteCorporal?email=" + email + "&idCliente=" + idCliente;
+				identificador = "tratamientoCorporal";
+				return "redirect:/tratamientosApagado?email=" + email + "&idCliente=" + idCliente + "&identificador=" + identificador;
 			}else {
 				return "";
 			}

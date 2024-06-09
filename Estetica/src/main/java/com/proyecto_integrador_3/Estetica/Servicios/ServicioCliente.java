@@ -168,10 +168,14 @@ public class ServicioCliente {
 
 	@Transactional
 	public void guardarTurno(String idCliente, String profesional, Turnos turnos, String fecha,
-			String facial, String horario, String email) throws MiExcepcion {
+			String facial, String espalda, String pulido, String dermaplaning, String exfoliacion,
+			String lifting, String perfilado, String laminado, String hydralips, String microneedling,
+			String horario, String email) throws MiExcepcion {
 		
 		//Validamos que todos los valores vengan bien
-		validarGuardarTurno(profesional, turnos, fecha, facial, horario);
+		validarGuardarTurno(profesional, turnos, fecha, facial, espalda, pulido, dermaplaning,
+				exfoliacion, lifting, perfilado, laminado, hydralips,
+				microneedling, horario);
 		
 		/*Se crea la variable de tipo string para guardar el dato de la provincia que selecciono
 		 * el usuario, este dato viene adjunto en el objeto de tipo turno que se recibe del
@@ -184,11 +188,12 @@ public class ServicioCliente {
 		String apellidoProfesional = nombreApellidoProfesional[1];
 		
 		
-		/*
+		
 		//Creamos un array con los tratamientos y limpiamos los seleccionados  que vienen null
 		// A los que viene con un valos de string los va sumando en un contador y los que vienen null les asigna valor vacio
 		// esto para que en la base datos no me guanden la palabra null de los tratamientos no seleccionados
-		String [] tratamientos = {antiage, despigmentante, hidratante, rosacea, antiacne};
+		String [] tratamientos = {facial, espalda, pulido, dermaplaning, exfoliacion, lifting, perfilado, laminado, hydralips,
+				microneedling,};
 		int contador = 0;
 		String tratamientosSeleccionados ="";
 		
@@ -208,8 +213,8 @@ public class ServicioCliente {
 			throw new MiExcepcion("Solo se pueden seleccionar dos tratamientos por turno");
 		}
 		
-		*/
-		
+	
+		//Funcion para pasar un fecha de tipo String a LocalDate
 		LocalDate fechaUsuario = pasarFechaStringToLocalDate(fecha);
 		
 		
@@ -229,7 +234,7 @@ public class ServicioCliente {
 		nuevoTurno.setFecha(fechaUsuario);
 		nuevoTurno.setHorario(horario);
 		nuevoTurno.setEmail(email);
-		nuevoTurno.setTratamiento(facial);
+		nuevoTurno.setTratamiento(tratamientosSeleccionados);
 		nuevoTurno.setDniCliente(dniCliente);
 		nuevoTurno.setActivo(TRUE);
 		repositorioTurnos.save(nuevoTurno);
@@ -237,7 +242,8 @@ public class ServicioCliente {
 	}
 
 	public void validarGuardarTurno(String profesional, Turnos turnos, String fecha, String facial,
-			String horario) throws MiExcepcion {
+			String espalda, String pulido, String dermaplaning, String exfoliacion, String lifting,
+			String perfilado, String laminado, String hydralips, String microneedling, String horario) throws MiExcepcion {
 		
 		if (turnos.getProvincias() == null) {
 			throw new MiExcepcion("Debe seleccionar una provincia");
@@ -255,7 +261,9 @@ public class ServicioCliente {
 			throw new MiExcepcion("Debe seleccionar un horario");
 		}
 		
-		if (facial == null) {
+		if (facial == null && espalda == null && pulido == null && dermaplaning == null
+				&& exfoliacion == null && lifting == null && perfilado == null && laminado == null
+				&& hydralips == null && microneedling == null ) {
 			throw new MiExcepcion("Debe seleccionar almenos un tratamiento");
 		}
 	}
