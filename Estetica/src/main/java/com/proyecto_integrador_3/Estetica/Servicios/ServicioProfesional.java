@@ -5,6 +5,7 @@ import static java.lang.Boolean.TRUE;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -17,8 +18,10 @@ import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
@@ -39,6 +42,29 @@ public class ServicioProfesional {
 	
 	@Autowired
 	public RepositorioPersona repositorioPersona;
+	
+	@Autowired
+	public RepositorioCliente repositorioCliente;
+	
+	    
+	    //este me sirve
+	    public List<Persona> buscarPacienteByRolAndDni(String dni, Rol rol){
+	    	return repositorioPersona.buscarPacientePorRolYDni(rol, dni);
+	    }
+	    
+	
+	    //Este me sirve
+		public List <Persona> buscarPacienteByRolAndEmail2(String email, Rol rol){
+	    	return repositorioPersona.buscarPacientePorRolYEmail(rol, email);
+	    }
+		
+		// este me sirve
+		public List <Persona> buscarPacienteByRolAndNombre(String nombre, Rol rol){
+	    	return repositorioPersona.buscarPacientePorRolYNombre(rol, nombre);
+	    }
+		
+		
+	    
 
 	@Transactional
 	public void registrarProfesional(String email, String matricula, String especialidad,

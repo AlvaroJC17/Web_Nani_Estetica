@@ -43,7 +43,7 @@
 							<!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
 						</li>
 						<li class="nav-item">
-            			<a class="nav-link py-1 ajuste-texto-menu" href="./solicitartuno.html">Clientes</a>
+            			<a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Pacientes</a>
           				</li>
 						<li class="nav-item">
 							<a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Turnos</a>

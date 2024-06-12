@@ -122,7 +122,12 @@ public class Cliente extends Persona implements Serializable {
 	@Column(name = "motivo_consulta")
 	String motivo_consulta;
 	
+	@Column(name = "notas_profesional")
+	String notas_profesional;
 	
+	
+	
+
 	//Constructores
 	public Cliente(){
 		
@@ -157,7 +162,7 @@ public class Cliente extends Persona implements Serializable {
 			String cual_enfermedad, String tiroides, String paciente_oncologica, String fractura_facial, String cirugia_estetica, 
 			String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
 			String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
-			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta) {
+			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta, String notas_profesional) {
 		super();
 		this.fuma = fuma;
 		this.drogas = drogas;
@@ -193,6 +198,7 @@ public class Cliente extends Persona implements Serializable {
 		this.resultados_tratamiento_anterior = resultados_tratamiento_anterior;
 		this.cuidado_de_piel = cuidado_de_piel;
 		this.motivo_consulta = motivo_consulta;
+		this.notas_profesional = notas_profesional;
 	}
 
 /*	public Boolean getFormularioDatos() {
@@ -205,6 +211,13 @@ public class Cliente extends Persona implements Serializable {
 	
 	*/
 	
+	public String getNotas_profesional() {
+		return notas_profesional;
+	}
+
+	public void setNotas_profesional(String notas_profesional) {
+		this.notas_profesional = notas_profesional;
+	}
 	
 
 	public String getSufre_enfermedad() {

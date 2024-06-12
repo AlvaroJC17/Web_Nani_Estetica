@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,6 +21,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
@@ -46,6 +48,14 @@ public class ServicioCliente {
 	
 	@Autowired
 	private RepositorioPersona repositorioPersona;
+	
+	
+	
+	public List <Cliente> buscarPacientePorId(String idCliente){
+		return repositorioCliente.buscarPorId(idCliente);
+	}
+	
+	
 	
 	@Transactional
 	public void registrarCliente(String email, String dni, String nombre, String apellido, String ocupacion,
@@ -114,7 +124,9 @@ public class ServicioCliente {
 			String cual_enfermedad, String tiroides, String paciente_oncologica, String fractura_facial, String cirugia_estetica, 
 			String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
 			String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
-			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta) throws MiExcepcion {
+			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta, String notas_profesional) throws MiExcepcion {
+		
+		System.out.println("entro en el metodo y esta antes de validar datos");
 		
 		validarDatosFormularioTurno(fuma, drogas, alcohol, deportes, ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual, alteracion_hormonal, vitaminas, corticoides,
 				hormonas, metodo_anticonceptivo, sufre_enfermedad, cual_enfermedad, tiroides, paciente_oncologica,
@@ -122,11 +134,14 @@ public class ServicioCliente {
 				horas_sueno, exposicion_sol, protector_solar, reaplica_protector, consumo_carbohidratos,
 				tratamientos_faciales_anteriores, resultados_tratamiento_anterior, cuidado_de_piel,
 				motivo_consulta);
+		
+		System.out.println("valido los datos");
 				
 		Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
 		if (identificarCliente.isPresent()) {
 			Cliente formulario_cliente = identificarCliente.get(); // Atribuye el objeto presente a esta nueva variable
 			
+			System.out.println("encontro el cliente y va a guardar los datos");
 			formulario_cliente.setFuma(fuma);
 			formulario_cliente.setDrogas(drogas);
 			formulario_cliente.setAlcohol(alcohol);
@@ -161,7 +176,12 @@ public class ServicioCliente {
 			formulario_cliente.setCuidado_de_piel(cuidado_de_piel);
 			formulario_cliente.setMotivo_consulta(motivo_consulta);
 			formulario_cliente.setFomularioDatos(TRUE);
-        	repositorioCliente.save(formulario_cliente);
+			formulario_cliente.setNotas_profesional(notas_profesional);
+			
+			System.out.println("Antes de guardar los datos");
+			repositorioCliente.save(formulario_cliente);
+			System.out.println("Despues de guardar los datos");
+			
 		}
 		
 	}
@@ -377,8 +397,8 @@ public class ServicioCliente {
 		 if (medicamentos == null || medicamentos.isEmpty() || medicamentos.trim().isEmpty() || medicamentos.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar si toma algun medicamento");
 		 
-		 if (nombreMedicamento == null || nombreMedicamento.isEmpty() || nombreMedicamento.trim().isEmpty() || nombreMedicamento.equals("Seleccione")) 
-			 throw new MiExcepcion("Por favor indicar el nombre del medicamento");
+//		 if (nombreMedicamento == null || nombreMedicamento.isEmpty() || nombreMedicamento.trim().isEmpty() || nombreMedicamento.equals("Seleccione")) 
+//			 throw new MiExcepcion("Por favor indicar el nombre del medicamento");
 		 
 		 if (embarazo == null || embarazo.isEmpty() || embarazo.trim().isEmpty() || embarazo.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar si esta embarazada");

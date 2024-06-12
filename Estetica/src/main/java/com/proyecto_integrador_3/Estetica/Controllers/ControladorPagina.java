@@ -95,7 +95,6 @@ public class ControladorPagina {
 				return "login";
 			}
 				
-			
 			//Validamos con el mail ingresado si el usuario existe en la base de datos
 			// Si existe entonces le buscamos todos los valores de las variables mostradas abajo
 			Usuario usuario;

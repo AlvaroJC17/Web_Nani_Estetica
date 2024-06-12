@@ -41,5 +41,16 @@ public interface RepositorioPersona extends JpaRepository<Persona, String>{
     @Query("SELECT u, p FROM Usuario u INNER JOIN Persona p ON u.id = p.id WHERE u.rol = :rol")
 	List<Persona> buscarNombreApellidoPorRol(@Param("rol") Rol rol);
     
+    //Sirve para buscar persona y usuario medinate numero de DNi y rol
+    @Query("SELECT p FROM Usuario u INNER JOIN Persona p ON u.id = p.id WHERE u.rol = :rol AND p.dni = :dni")
+    List<Persona> buscarPacientePorRolYDni(@Param("rol") Rol rol, @Param("dni") String dni);
+    
+  //Sirve para buscar persona y usuario medinate nombre y rol
+    @Query("SELECT p FROM Usuario u INNER JOIN Persona p ON u.id = p.id WHERE u.rol = :rol AND p.nombre = :nombre")
+    List<Persona> buscarPacientePorRolYNombre(@Param("rol") Rol rol, @Param("nombre") String nombre);
+    
+  //Sirve para buscar persona y usuario medinate email y rol
+    @Query("SELECT p FROM Usuario u INNER JOIN Persona p ON u.id = p.id WHERE u.rol = :rol AND u.email = :email")
+    List<Persona> buscarPacientePorRolYEmail(@Param("rol") Rol rol, @Param("email") String email);
 
 }

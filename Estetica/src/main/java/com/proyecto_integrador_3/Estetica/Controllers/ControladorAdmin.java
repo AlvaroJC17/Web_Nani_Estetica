@@ -137,7 +137,7 @@ public class ControladorAdmin {
 			//@RequestParam(name = "activarMensaje", required = false) Boolean activarMensaje,
 			Model model) {
 		
-		/*Dato dos lo usamos como una variable para recibir la informacion del modal de exito de portalAdmin
+		/*Dato2 lo usamos como una variable para recibir la informacion del modal de exito de portalAdmin
 		 * no puedo usar le mismo nobre de dato porque me da error por lo que tuve que crear dato2, una vez
 		 * recibida la variable primero verifica si es vacia, si esta vacia se ejecuta el metodo normalmente, sino
 		 * esta vacia entonces le asigna el valor de dato2 a dato y se ejecuta el metodo normalmente */

@@ -25,6 +25,7 @@
         aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+      
       <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
         <a th:href="@{/homeProfesional(email=${datosProfesional.email})}">
           <div class="imagen-logo ajuste-texto-menu">
@@ -39,7 +40,7 @@
             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis Datos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" href="./solicitartuno.html">Clientes</a>
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Pacientes</a>
           </li>
           <li class="nav-item">
             <a class="nav-link  py-1 ajuste-texto-menu" href="./misturnos.html">Turnos</a>
@@ -55,6 +56,8 @@
           </li>
         </ul>
       </div>
+      
+      
     </div>
   </div>
 </nav>
@@ -63,6 +66,8 @@
   <div class="main-interno">
     <h3 th:text="'Hola, ' + ${datosProfesional.nombre}"></h3>
   <div class=" container">
+	  
+	  
       <div class="  ft">
         <a th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">
           <div class="d-flex justify-content-center align-items-center">
@@ -72,30 +77,30 @@
         </a>
       </div>
 
-      <div class=" ft ">
-        <a href="./tablamisdatos.html">
+       <div class="  ft">
+        <a th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">
           <div class="d-flex justify-content-center align-items-center">
-            <img class="iconos" src="./imagenes/icons8-más-50.png" alt="">
-            <p class="texto-tarjetas-main-home ms-1 hover">Clientes</p>
+            <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
+            <p class="texto-tarjetas-main-home ms-1 hover">Pacientes</p>
           </div>
         </a>
       </div>
 
-      <div class=" ft">
-        <a href="./misturnos.html">
+       <div class="  ft">
+        <a th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">
           <div class="d-flex justify-content-center align-items-center">
-            <img class="iconos" src="./imagenes/icons8-calendario-50.png" alt="">
+            <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Turnos</p>
           </div>
         </a>
       </div>
 
-      <div class=" ft">
-        <a  href="./misconsultas.html">
+       <div class="  ft">
+        <a th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">
           <div class="d-flex justify-content-center align-items-center">
-          <img class="iconos" src="./imagenes/icons8-boleta-de-calificaciones-50.png" alt="">
-          <p class="texto-tarjetas-main-home ms-1 hover">Consultas</p>
-        </div>
+            <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
+            <p class="texto-tarjetas-main-home ms-1 hover">Consultas</p>
+          </div>
         </a>
       </div>
       

@@ -78,6 +78,6 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, String>  {
 	@Query("SELECT p, u FROM Persona p INNER JOIN Usuario u ON p.id = u.id WHERE p.nombre = :nombre")
 	public Optional<Usuario> obtenerDatosPersonaUsuarioPorNombreOptional(@Param("nombre") String nombre);
 	
-	
+	  List<Usuario> findByRolAndEmail(Rol rol, String email);
 
 }

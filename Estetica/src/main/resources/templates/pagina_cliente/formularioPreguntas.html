@@ -62,6 +62,7 @@
 
 <main class="main-interno">
     <h3 class="">Formulario</h3>
+    
     <section class=" section-misdatosS">
       <p class="text-center fs-4">Antes de seleccionar tu turno te pedimos por favor que completes estos datos por unica vez para ahorrar
        tiempo a la hora de tu consulta y brindarte un servicio mas personalizado.
@@ -340,20 +341,15 @@
   </select>
 </div>
 <div class="col-md-6">
-    <label for="motivo_consulta" class="form-label texto-label">¿Cual es el motivo de la consulta?</label>
-    <select id="motivo_consulta" name="motivo_consulta" class="form-select rounded-0 " aria-label="Default select example">
-   	<option th:value="Seleccione" th:text="Seleccione" th:selected="${motivo_consulta == '' || motivo_consulta == null}"></option>
-         <option th:value="'Enfermedad de la piel'" th:text="'Enfermedad de la piel'" th:selected="${motivo_consulta == 'Enfermedad de la piel'}"></option>
-         <option th:value="'Condicion de la piel'" th:text="'Condicion de la piel'" th:selected="${motivo_consulta == 'Condicion de la piel'}"></option>
-         <option th:value="'Prevencion'" th:text="'Prevencion'" th:selected="${motivo_consulta == 'Prevencion'}"></option>
-  </select>
+    <label for="motivo_consulta" class="form-label texto-label">¿Motivo de la consulta?</label>
+  <input type="text" th:value="${motivo_consulta}" name="motivo_consulta" class="form-control" id="motivo_consulta" placeholder="">
 </div>
 
 </div>
 
 <div class="mb-3 row">
   <div class="col-md-6">
-    <label for="tratamientosFacialesAnteriores" class="form-label texto-label">¿Te has hecho tratamientos faciales anteriormente?</label>
+    <label for="tratamientosFacialesAnteriores" class="form-label texto-label">¿tratamientos faciales anteriores?</label>
     <select id="tratamientosFacialesAnteriores" name="tratamientosFacialesAnteriores" class="form-select rounded-0 " aria-label="Default select example">
     <option th:value="Seleccione" th:text="Seleccione" th:selected="${tratamientosFacialesAnteriores == '' || tratamientosFacialesAnteriores == null}"></option>
          <option th:value="SI" th:text="SI" th:selected="${tratamientosFacialesAnteriores == 'SI'}"></option>
@@ -377,7 +373,7 @@
   
 <div class="col-md-12">
   <label for="cuidado_de_piel" class="form-label texto-label">¿Describe brevemente como te cuidas las piel y que productos usas?</label>
-  <textarea type="text" style="height: 100px;" th:value="${cuidado_de_piel}" name="cuidado_de_piel" class="form-control" id="cuidado_de_piel" placeholder=""></textarea>
+  <textarea type="text" style="height: 100px;" th:text="${cuidado_de_piel}" th:value="${cuidado_de_piel}" name="cuidado_de_piel" class="form-control" id="cuidado_de_piel" placeholder=""></textarea>
 </div>
 	<input type="hidden" class="form-control" name="tratamiento" id="tratamiento" th:value="${tratamiento}" placeholder="">
 	<input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">

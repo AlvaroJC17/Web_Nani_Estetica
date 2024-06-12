@@ -131,23 +131,7 @@ public class ControladorCliente {
 		return "/pagina_cliente/tratamientos";
 	}
 	
-	
-	/*
-	
-	//Este metodo deriva a la pagina de turnos esteicos con los valores de mail y id del cliente
-	@GetMapping("/reservaDeTurnoClienteEstetico")
-	public String reservaDeTurnoClienteEstetico(
-			@RequestParam(name = "email", required = false) String email,
-			@RequestParam(name = "idCliente") String idCliente,
-			ModelMap model) {
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		model.addAttribute("datosCliente", datosCliente);
-		return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-	}
-	
-	*/
-	
-	
+
 	@GetMapping("/reservaDeTurnoCliente")
 	public String reservaDeTurnoCliente(
 			@RequestParam(name = "email", required = false) String email,
@@ -345,20 +329,6 @@ public class ControladorCliente {
 		return "redirect:/tratamientos?email=" + email;
 	}
 	
-	/*
-			
-	@GetMapping("/reservaDeTurnoClienteCorporal")
-	public String reservaDeTurnoClienteCorporal(
-			@RequestParam(name = "email", required = false) String email,
-			@RequestParam(name = "idCliente") String idCliente,
-			ModelMap model) {
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		model.addAttribute("datosCliente", datosCliente);
-		return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-	}
-	
-	*/
-		
 	
 	/*Se usa postmapping por que los valores que recibe este metodo vienen de un formulario con un metodo post*/
 	/*Valida si el formulario de preguntas ya se lleno y le muestra al cliente la pagina correspondiente dependiendo de su seleccion*/
@@ -588,6 +558,7 @@ public class ControladorCliente {
 			@RequestParam(name="resultados_tratamiento_anterior", required = false) String resultados_tratamiento_anterior,
 			@RequestParam(name="cuidado_de_piel", required = false) String cuidado_de_piel,
 			@RequestParam(name="motivo_consulta", required = false) String motivo_consulta,
+			@RequestParam(name="notas_profesional", required = false) String notas_profesional,
 			Model model) throws MiExcepcion{
 	
 		
@@ -598,7 +569,7 @@ public class ControladorCliente {
 					cual_enfermedad, tiroides, paciente_oncologica, fractura_facial, cirugia_estetica, 
 					indique_cirugia_estetica, tiene_implantes, marca_pasos, horas_sueno, exposicion_sol,
 					protector_solar, reaplica_protector, consumo_carbohidratos, tratamientos_faciales_anteriores,
-					resultados_tratamiento_anterior, cuidado_de_piel, motivo_consulta);
+					resultados_tratamiento_anterior, cuidado_de_piel, motivo_consulta, notas_profesional);
 			
 			String identificador;
 			if (tratamiento.equals("facial")) {
