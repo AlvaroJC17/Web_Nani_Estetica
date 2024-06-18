@@ -8,10 +8,12 @@ import static java.lang.Boolean.FALSE;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
@@ -35,6 +37,9 @@ public class ServicioTurnos {
 	ServicioCliente servicioCliente;
 	
 	
+	public List <Turnos> buscarTurnoPorClienteId(String idCliente){
+		return repositorioTurnos.findTurnosByClienteId(idCliente);
+	}
 
 	public Optional <Turnos> buscarTurnoPorId(String id){
 		return repositorioTurnos.findById(id);
@@ -116,11 +121,24 @@ public class ServicioTurnos {
 			}
         }
     }
-				 
+		
+    public List<Turnos> obtenerTurnosPorProfesionalYFecha(Profesional profesional, LocalDate fecha) {
+        return repositorioTurnos.findByProfesionalAndFecha(profesional, fecha);
+    }
+    
+    public List<String> obtenerHorariosDisponibles(Profesional profesional, LocalDate fecha) {
+        List<Turnos> turnosDelDia = repositorioTurnos.findByProfesionalAndFecha(profesional, fecha);
+        // Suponiendo que los horarios posibles son de 8 AM a 8 PM cada hora
+        List<String> horariosPosibles = List.of("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00");
+        List<String> horariosOcupados = turnosDelDia.stream().map(Turnos::getHorario).collect(Collectors.toList());
+        return horariosPosibles.stream().filter(h -> !horariosOcupados.contains(h)).collect(Collectors.toList());
+    }
+}
+    
 				 
 				 
            
-}
+
 			
 		
 		

@@ -10,10 +10,14 @@ import org.springframework.stereotype.Repository;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 
 @Repository
 public interface RepositorioPersona extends JpaRepository<Persona, String>{
+	
+	@Query("SELECT p FROM Persona p WHERE p.id = :id")
+	public Optional <Persona> buscarPersonaPorId(@Param("id") String id);
 	
 	//Metodo para mostrar una lista de la tabla de personas
 	@Query("SELECT p FROM Persona p")
@@ -52,5 +56,8 @@ public interface RepositorioPersona extends JpaRepository<Persona, String>{
   //Sirve para buscar persona y usuario medinate email y rol
     @Query("SELECT p FROM Usuario u INNER JOIN Persona p ON u.id = p.id WHERE u.rol = :rol AND u.email = :email")
     List<Persona> buscarPacientePorRolYEmail(@Param("rol") Rol rol, @Param("email") String email);
+
+    @Query("SELECT p, pr FROM Persona p JOIN Profesional pr ON p.id = pr.id WHERE pr.provincia IN :provincias AND p.rol = :rol")
+    List<Persona> buscarNombreApellidoPorRolYProvincia(@Param("rol") Rol rol, @Param("provincias") Provincias provincias);
 
 }

@@ -24,5 +24,7 @@ public interface RepositorioCliente extends JpaRepository<Cliente, String> {
 	@Query("SELECT c FROM Cliente c WHERE c.id = :id")
 	List<Cliente> buscarPorId(@Param("id") String idCliente);
 	
+	Optional <Cliente> findClienteById(String idCliente);
+	
 	
 }

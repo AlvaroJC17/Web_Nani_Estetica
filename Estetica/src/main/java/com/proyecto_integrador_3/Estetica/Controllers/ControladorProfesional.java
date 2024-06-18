@@ -292,6 +292,7 @@ public class ControladorProfesional {
 			@RequestParam(name = "especialidad") String especialidad,
 			@RequestParam(name = "sexo") String sexo,
 			@RequestParam(name = "telefono") String telefono,
+			@RequestParam(name = "provincia") String provincia,
 			@RequestParam(name = "direccion") String direccion,
 			@RequestParam(name = "emailUsuario") String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
 			ModelMap model) throws MiExcepcion {
@@ -299,8 +300,7 @@ public class ControladorProfesional {
 		try {
 			
 			//Guardamos los datos del formulario que lleno el nuevo cliente
-			servicioProfesional.registrarProfesional(emailUsuario, matricula, especialidad, direccion, telefono, sexo);
-				
+			servicioProfesional.registrarProfesional(emailUsuario, matricula, especialidad, provincia, direccion, telefono, sexo);				
 		} catch (MiExcepcion e) {
 			System.out.println(e.getMessage());
 			model.put("error", e.getMessage());

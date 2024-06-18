@@ -12,6 +12,27 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="../css/styles.css">
   <title>Reserva de turno</title>
+  
+   <script>
+        function autoSubmitProvincia() {
+            document.getElementById("formularioProvincia").submit();
+        }
+        
+        function autoSubmitProfesional() {
+            document.getElementById("formularioProfesional").submit();
+        }
+        
+         function autoSubmitFecha() {
+            document.getElementById("formularioFecha").submit();
+        }
+        
+         function autoSubmitHorario() {
+            document.getElementById("formularioHorario").submit();
+        }
+        
+    </script>
+    
+    
 </head>
 
 <body class="body-interno" th:each="datosCliente : ${datosCliente}">
@@ -79,40 +100,61 @@
 
 			<!--Este formulario es para llevar al metodo que busca crea y busca las fechas disponibles
 			se usa, cuando el usuario selecciona buscar en el input de fecha-->
-            <form th:action="@{/reservaDeTurnoCliente}" method="get" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pb-1">
-            <label for="fecha" class="form-label mb-0 mt-2  fs-4">Seleccionar fecha <span class="text-danger ">*</span></label>
-            <input type="date" name="fecha" class="form-control" id="fecha" th:value="${fecha}" placeholder="Fecha">
+            <form id="formularioProvincia" th:action="@{/buscarProfesionalPorProvincias}" method="get" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pb-0">
+             <label for="provincia" class="form-label mb-0 fs-4">Paso 1: Seleccione provincia <span class="text-danger ">*</span> </label>
+            <select onchange="autoSubmitProvincia()" name="provincia" class="form-select" id="provincia" aria-label="Default select example">
+            <option value=""  th:selected="${provinciaSeleccionada}" th:text="${provinciaSeleccionada == null ? 'Seleccione una provincia' : provinciaSeleccionada}"></option>
+            <!--el th:value="${provincia.name()} viene por defecto al hacer un enum con una descripcion al lado, este metodo envia a esa descripcion como un string-->
+            <option th:each="provincia : ${provincias}" th:value="${provincia.name()}" th:text="${provincia.displayName}"></option> <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
+            </select>
+            
+            <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
             <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
 		  	<input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
-            <button class="btn btn-primary mt-2">Buscar</button>
+       
             </form>
            
 			<!--Este formulario va al metodo que guarda el turno y elimina la fecha seleccionada por el usaurio-->           
 			<!--el campo th:object se relaciona con el onjeto turno creado en el controlador, a este objeto se le asigna todo los valores que puede tener el formulario y asi poder manejarlo en el controlador-->
-          <form th:action="@{/confimarTurnoCliente}" method="post" th:object="${Turnos}" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2">
+          <form id="formularioProfesional" th:action="@{/buscarProfesional}" method="post"  class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
             <div>
-              <label for="provincia" class="form-label mb-0 fs-4">Seleccione provincia <span class="text-danger ">*</span> </label>
-              <select th:field="*{provincias}" name="provincia" class="form-select" id="provincia" aria-label="Default select example">
-                <option value=""  selected>Seleccione una provincia</option>
-                <!--el th:value="${provincia.name()} viene por defecto al hacer un enum con una descripcion al lado, este metodo envia a esa descripcion como un string-->
-                <option th:each="provincia : ${provincias}" th:value="${provincia.name()}" th:text="${provincia.displayName}"></option> <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
+              <label for="profesional" class="form-label mb-0 mt-2 fs-4">Paso 2: Seleccione profesional <span class="text-danger ">*</span></label>
+              <select onchange="autoSubmitProfesional()" class="form-select" id="profesional" name="idProfesional" aria-label="Default select example">
+                <option th:selected="${nombreDelProfesional}" th:text="${nombreDelProfesional == null ? 'Seleccione una profesional' : nombreDelProfesional}">Profesional</option>
+                <option th:each="nombreProfesional : ${Profesionales}" th:text="${nombreProfesional.nombre + ' '  + nombreProfesional.apellido}" th:value="${nombreProfesional.id}"></option>
               </select>
             </div>
             <div>
-              <label for="profesional" class="form-label mb-0 mt-2 fs-4">Seleccione profesional <span class="text-danger ">*</span></label>
-              <select class="form-select" id="profesional" name="datosProfesional" aria-label="Default select example">
-                <option selected>Profesional</option>
-                <option th:each="nombreProfesional : ${Profesional}" th:text="${nombreProfesional.nombre + ' '  + nombreProfesional.apellido}" th:value="${nombreProfesional.nombre + '/'  + nombreProfesional.apellido}"></option>
-              </select>
+            
+            <input type="hidden" class="form-control" name="provinciaString" id="provinciaString" th:value="${provinciaString}" placeholder="">
+            <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
+            <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
+		  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
             </div>
-            <div>
-              <label for="horario" class="form-label mb-0 mt-2 fs-4">Seleccionar hora <span class="text-danger ">*</span></label>
-              <select th:field="*{horario}" name="horario" class="form-select" id="horario" aria-label="Default select example">
+          </form>
+          
+          <form id="formularioFecha" th:action="@{/seleccionDeFecha}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
+             <label  for="fechaSeleccionada" class="form-label mb-0 mt-2  fs-4">Paso 3: Seleccionar fecha <span class="text-danger ">*</span></label>
+            <input onchange="autoSubmitFecha()" type="date" name="fechaSeleccionada" class="form-control" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="Fecha">
+            
+            <input type="hidden" class="form-control" name="nombreDelProfesional" id="nombreDelProfesional" th:value="${nombreDelProfesional}" placeholder="">
+            <input type="hidden" class="form-control" name="idProfesional" id="idProfesional" th:value="${idProfesional}" placeholder="">
+            <input type="hidden" class="form-control" name="provinciaString" id="provinciaString" th:value="${provinciaString}" placeholder="">
+            <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
+            <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
+		  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
+		  </form>
+			  
+          
+            
+          <form  th:action="@{/confimarTurnoCliente}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
+              <label for="horario" class="form-label mb-0 mt-2 fs-4">Paso 4: Seleccionar hora <span class="text-danger ">*</span></label>
+              <select  name="horario" class="form-select" id="horario" aria-label="Default select example">
                 <option value="" selected>Hora</option>
                 <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->
                 <option th:each="horario : ${horarios}" th:value="${horario}" th:text="${horario}"></option>
               </select>
-            </div>
+         
             <p class="mt-4 mb-0 fs-4">Seleccionar tratamientos<span class="text-danger ">*</span></p>
             <div class="input-seleccion-check ">
               <div>
@@ -133,11 +175,17 @@
             </div>
           </div>
           
-          <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
-		  <input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
-		  <input type="hidden" class="form-control" name="fecha" id="fecha" th:value="${fecha}" placeholder="">
-		  <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
-          </form>
+          	<input type="hidden" class="form-control" name="fechaSeleccionada" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="">
+            <input type="hidden" class="form-control" name="nombreDelProfesional" id="nombreDelProfesional" th:value="${nombreDelProfesional}" placeholder="">
+            <input type="hidden" class="form-control" name="idProfesional" id="idProfesional" th:value="${idProfesional}" placeholder="">
+            <input type="hidden" class="form-control" name="provinciaString" id="provinciaString" th:value="${provinciaString}" placeholder="">
+            <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
+            <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
+		  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
+          
+		  </form>
+		 
+			  
         </div>
       </div>
 </div>

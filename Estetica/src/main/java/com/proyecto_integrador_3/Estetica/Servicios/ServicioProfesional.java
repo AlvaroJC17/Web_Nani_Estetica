@@ -18,6 +18,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
@@ -46,10 +47,27 @@ public class ServicioProfesional {
 	@Autowired
 	public RepositorioCliente repositorioCliente;
 	
+	public Optional <Persona> buscarDatosProfesionalPorId(String id){
+		return repositorioPersona.buscarPersonaPorId(id);
+	}
+	
+	
+		public Boolean validarProvincia(String provincia) throws MiExcepcion {
+			if (provincia == null || provincia.isEmpty() || provincia.equals("Seleccione provincia")) {
+				return false;
+			}else {
+				return true;
+			}
+				
+		}
 	    
 	    //este me sirve
 	    public List<Persona> buscarPacienteByRolAndDni(String dni, Rol rol){
 	    	return repositorioPersona.buscarPacientePorRolYDni(rol, dni);
+	    }
+	    
+	    public List<Persona> buscarProfesionaByRolAndProvincis(Rol rol, Provincias provincias){
+	    	return repositorioPersona.buscarNombreApellidoPorRolYProvincia(rol, provincias);
 	    }
 	    
 	
@@ -63,14 +81,27 @@ public class ServicioProfesional {
 	    	return repositorioPersona.buscarPacientePorRolYNombre(rol, nombre);
 	    }
 		
+		public List<Profesional> listarTodos() {
+	        return repositorioProfesional.findAll();
+	    }
+		
+		 public Profesional buscarProfesionalPorId(String id) {
+		        Optional<Profesional> optionalProfesional = repositorioProfesional.findById(id);
+		        return optionalProfesional.orElseThrow(() -> new RuntimeException("Profesional no encontrado con el ID: " + id));
+		    }
+
+	    public Profesional obtenerPorId(String id) {
+	        return repositorioProfesional.findById(id).orElse(null);
+	    }
+		
 		
 	    
 
 	@Transactional
 	public void registrarProfesional(String email, String matricula, String especialidad,
-			String direccion, String telefono, String sexo) throws MiExcepcion {
+			String provincia, String direccion, String telefono, String sexo) throws MiExcepcion {
 		
-		validarDatosProfesional(matricula, especialidad, sexo,telefono, direccion);
+		validarDatosProfesional(matricula, especialidad, sexo, telefono, provincia, direccion);
 
 		Optional <Usuario> datosUsuario = repositorioUsuario.buscarPorEmailOptional(email);
 		Optional <Persona> datosPersona = repositorioPersona.buscarPorEmailOptional(email);
@@ -84,6 +115,9 @@ public class ServicioProfesional {
 			Sexo nuevoSexo = null;
 			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
 			
+			Provincias Nuevaprovincia = null;
+			Nuevaprovincia = Provincias.valueOf(provincia.toUpperCase());
+			
 			Profesional nuevo_profesional = new Profesional();
 			nuevo_profesional.setEmail(email);
 			nuevo_profesional.setContrasena(datosDelUsuario.getContrasena());
@@ -96,6 +130,7 @@ public class ServicioProfesional {
 			nuevo_profesional.setMatricula(matricula);
 			nuevo_profesional.setEspecialidad(especialidad);;
 			nuevo_profesional.setTelefono(telefono);
+			nuevo_profesional.setProvincia(Nuevaprovincia);
 			nuevo_profesional.setDomicilio(direccion);
 			nuevo_profesional.setFechaNacimiento(datosDelUsuario.getFechaNacimiento());
 			nuevo_profesional.setSexo(nuevoSexo);
@@ -126,7 +161,7 @@ public class ServicioProfesional {
 		}
 	}
 	
-	 public void validarDatosProfesional(String matricula, String especialidad,  String sexo, String telefono, String direccion) throws MiExcepcion {
+	 public void validarDatosProfesional(String matricula, String especialidad,  String sexo, String telefono, String provincia, String direccion) throws MiExcepcion {
 	
 		 
 	/*	 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
@@ -134,10 +169,12 @@ public class ServicioProfesional {
 		 }
 		 if (apellido == null || apellido.isEmpty() || apellido.trim().isEmpty()) {
 			 throw new MiExcepcion("El apellido no puede estar vacio");
-		 }
-		 if (dni == null || dni.isEmpty() || dni.trim().isEmpty()) {
-			 throw new MiExcepcion("El dni no puede estar vacio"); 
-		 } */
+		 }*/
+		 
+		 
+		 if (provincia == null || provincia.isEmpty() || provincia.trim().isEmpty()) {
+			 throw new MiExcepcion("Debe seleccionar una provincia"); 
+		 } 
 		 
 		 if (matricula == null || matricula.isEmpty() || matricula.trim().isEmpty()) {
 			 throw new MiExcepcion("La matricula no puede estar vacia");

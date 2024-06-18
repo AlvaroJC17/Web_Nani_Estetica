@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Horarios Disponibles</title>
+</head>
+<body>
+    <h1>Horarios Disponibles</h1>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>Horario</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="horario : ${horariosDisponibles}">
+                <td th:text="${horario}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

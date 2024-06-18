@@ -17,7 +17,6 @@ import com.proyecto_integrador_3.Estetica.Enums.Rol;
 @Repository
 public interface RepositorioProfesional extends JpaRepository<Profesional, String> {
 
-
-    
-   ;
+    Optional <Profesional> findById(String id);
+   
 }

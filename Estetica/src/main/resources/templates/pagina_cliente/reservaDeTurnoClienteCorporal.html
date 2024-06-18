@@ -81,8 +81,9 @@
             <form th:action="@{/reservaDeTurnoCliente}" method="get" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pb-1">
             <label for="fecha" class="form-label mb-0 mt-2  fs-4">Seleccionar fecha <span class="text-danger ">*</span></label>
             <input type="date" name="fecha" class="form-control" id="fecha" th:value="${fecha}" placeholder="Fecha">
+            
             <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
-		  	    <input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
+		  	<input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
             <button class="btn btn-primary mt-2">Buscar</button>
             </form>
            

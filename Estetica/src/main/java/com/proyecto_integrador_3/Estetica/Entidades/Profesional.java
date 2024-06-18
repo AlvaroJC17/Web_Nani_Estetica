@@ -2,6 +2,7 @@ package com.proyecto_integrador_3.Estetica.Entidades;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
@@ -9,19 +10,28 @@ import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Enums.Tratamiento;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "Profesional")
 public class Profesional extends Persona implements Serializable {
-
+	
+	@OneToMany(mappedBy = "profesional", cascade = CascadeType.ALL)
+	private List<Turnos> turnos;
+	
+	@OneToMany(mappedBy = "profesional", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	private List<HorariosDisponibles> horariosDisponibles;
+	
 	@Column(name = "matricula")
 	private String matricula;
 	
@@ -45,9 +55,14 @@ public class Profesional extends Persona implements Serializable {
     public Profesional() {
     	
     }
+    
+    public Profesional(String id) {
+    	super(id);
+    }
 
 	public Profesional(String matricula, String especialidad, Tratamiento tratamientos, Provincias provincia, Double calificacion,
-			Double precioConsulta) {
+			Double precioConsulta, List<Turnos> turnos) {
+		this.turnos = turnos;
 		this.matricula = matricula;
 		this.especialidad = especialidad;
 		this.tratamientos = tratamientos;
@@ -60,6 +75,16 @@ public class Profesional extends Persona implements Serializable {
 			String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, String telefono) {
 		super(id, dni, contrasena, email, rol, activo, ValidacionForm, nombre, apellido, ocupacion, sexo, fechaNacimiento, domicilio, telefono);
 
+	}
+	
+	
+
+	public List<Turnos> getTurnos() {
+		return turnos;
+	}
+
+	public void setTurnos(List<Turnos> turnos) {
+		this.turnos = turnos;
 	}
 
 	public String getMatricula() {

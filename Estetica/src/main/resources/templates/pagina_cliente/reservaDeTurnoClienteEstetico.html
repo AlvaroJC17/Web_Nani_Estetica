@@ -78,9 +78,14 @@
 
 			<!--Este formulario es para llevar al metodo que busca crea y busca las fechas disponibles
 			se usa, cuando el usuario selecciona buscar en el input de fecha-->
-            <form th:action="@{/reservaDeTurnoCliente}" method="get" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pb-1">
-            <label for="fecha" class="form-label mb-0 mt-2  fs-4">Seleccionar fecha <span class="text-danger ">*</span></label>
-            <input type="date" name="fecha" class="form-control" id="fecha" th:value="${fecha}" placeholder="Fecha">
+            <form th:action="@{/buscarProfesionalPorProvincias}" method="get" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pb-1">
+              <label for="provincia" class="form-label mb-0 fs-4">Seleccione provincia <span class="text-danger ">*</span> </label>
+            <select  name="provincia" class="form-select" id="provincia" aria-label="Default select example">
+            <option value=""  selected>Seleccione una provincia</option>
+            <!--el th:value="${provincia.name()} viene por defecto al hacer un enum con una descripcion al lado, este metodo envia a esa descripcion como un string-->
+            <option th:each="provincia : ${provincias}" th:value="${provincia.name()}" th:text="${provincia.displayName}"></option> <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
+            </select>
+            
             <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
 		  	<input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
             <button class="btn btn-primary mt-2">Buscar</button>
@@ -90,11 +95,10 @@
 			<!--el campo th:object se relaciona con el onjeto turno creado en el controlador, a este objeto se le asigna todo los valores que puede tener el formulario y asi poder manejarlo en el controlador-->
           <form th:action="@{/confimarTurnoCliente}" method="post" th:object="${Turnos}" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2">
             <div>
-              <label for="provincia" class="form-label mb-0 fs-4">Seleccione provincia <span class="text-danger ">*</span> </label>
-              <select th:field="*{provincias}" name="provincia" class="form-select" id="provincia" aria-label="Default select example">
-                <option value=""  selected>Seleccione una provincia</option>
-                <!--el th:value="${provincia.name()} viene por defecto al hacer un enum con una descripcion al lado, este metodo envia a esa descripcion como un string-->
-                <option th:each="provincia : ${provincias}" th:value="${provincia.name()}" th:text="${provincia.displayName}"></option> <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
+               <label for="profesional" class="form-label mb-0 mt-2 fs-4">Seleccione profesional <span class="text-danger ">*</span></label>
+              <select class="form-select" id="profesional" name="datosProfesional" aria-label="Default select example">
+                <option selected>Profesional</option>
+                <option th:each="nombreProfesional : ${Profesionales}" th:text="${nombreProfesional.nombre + ' '  + nombreProfesional.apellido}" th:value="${nombreProfesional.nombre + '/'  + nombreProfesional.apellido}"></option>
               </select>
             </div>
             <div>

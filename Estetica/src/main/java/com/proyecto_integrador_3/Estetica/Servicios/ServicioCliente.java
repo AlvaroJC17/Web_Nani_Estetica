@@ -125,8 +125,7 @@ public class ServicioCliente {
 			String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
 			String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
 			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta, String notas_profesional) throws MiExcepcion {
-		
-		System.out.println("entro en el metodo y esta antes de validar datos");
+	
 		
 		validarDatosFormularioTurno(fuma, drogas, alcohol, deportes, ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual, alteracion_hormonal, vitaminas, corticoides,
 				hormonas, metodo_anticonceptivo, sufre_enfermedad, cual_enfermedad, tiroides, paciente_oncologica,
@@ -135,7 +134,6 @@ public class ServicioCliente {
 				tratamientos_faciales_anteriores, resultados_tratamiento_anterior, cuidado_de_piel,
 				motivo_consulta);
 		
-		System.out.println("valido los datos");
 				
 		Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
 		if (identificarCliente.isPresent()) {
@@ -177,37 +175,23 @@ public class ServicioCliente {
 			formulario_cliente.setMotivo_consulta(motivo_consulta);
 			formulario_cliente.setFomularioDatos(TRUE);
 			formulario_cliente.setNotas_profesional(notas_profesional);
-			
-			System.out.println("Antes de guardar los datos");
 			repositorioCliente.save(formulario_cliente);
-			System.out.println("Despues de guardar los datos");
+	
 			
 		}
 		
 	}
 
 	@Transactional
-	public void guardarTurno(String idCliente, String profesional, Turnos turnos, String fecha,
-			String facial, String espalda, String pulido, String dermaplaning, String exfoliacion,
+	public void guardarTurno(String idCliente, String nombreDelProfesional, String fechaSeleccionada,
+			String provinciaString, String idProfesional, String facial, String espalda, String pulido, String dermaplaning, String exfoliacion,
 			String lifting, String perfilado, String laminado, String hydralips, String microneedling,
 			String horario, String email) throws MiExcepcion {
 		
 		//Validamos que todos los valores vengan bien
-		validarGuardarTurno(profesional, turnos, fecha, facial, espalda, pulido, dermaplaning,
+		validarGuardarTurno(nombreDelProfesional, fechaSeleccionada, facial, espalda, pulido, dermaplaning,
 				exfoliacion, lifting, perfilado, laminado, hydralips,
 				microneedling, horario);
-		
-		/*Se crea la variable de tipo string para guardar el dato de la provincia que selecciono
-		 * el usuario, este dato viene adjunto en el objeto de tipo turno que se recibe del
-		 * formulario */
-		String provincia = turnos.getProvincias().toString(); // se para convertir el enum de la provincia  a string
-		
-		//Como se recibe el nombre y el apellido en un solo string aplicamos este codigo para separarlos
-		String [] nombreApellidoProfesional = profesional.split("/");
-		String nombreProfesional = nombreApellidoProfesional[0];
-		String apellidoProfesional = nombreApellidoProfesional[1];
-		
-		
 		
 		//Creamos un array con los tratamientos y limpiamos los seleccionados  que vienen null
 		// A los que viene con un valos de string los va sumando en un contador y los que vienen null les asigna valor vacio
@@ -235,7 +219,7 @@ public class ServicioCliente {
 		
 	
 		//Funcion para pasar un fecha de tipo String a LocalDate
-		LocalDate fechaUsuario = pasarFechaStringToLocalDate(fecha);
+		LocalDate fechaUsuario = pasarFechaStringToLocalDate(fechaSeleccionada);
 		
 		
 		//Buscamos el dni del cliente que esta seleccionando el turno para adjuntarlo al objeto turno que se va a guardar en la base de datos
@@ -246,11 +230,18 @@ public class ServicioCliente {
 			dniCliente = usu.getDni();
 		}
 		
+		Optional <Cliente> cliente = repositorioCliente.findClienteById(idCliente);
+		Cliente datosDelCliente = null;
+		if (cliente.isPresent()) {
+			datosDelCliente = cliente.get();
+		}
+		
 		
 		// Creamos un nuevo objeto de tipo turno que es el que se va a guardar en la base de datos
-		Turnos nuevoTurno = new Turnos(); 
-		nuevoTurno.setProvincia(provincia);
-		nuevoTurno.setProfesional(nombreProfesional + " " + apellidoProfesional);
+		Turnos nuevoTurno = new Turnos();
+		nuevoTurno.setProvincia(provinciaString);
+		nuevoTurno.setProfesional(new Profesional(idProfesional));
+		nuevoTurno.setCliente(datosDelCliente);
 		nuevoTurno.setFecha(fechaUsuario);
 		nuevoTurno.setHorario(horario);
 		nuevoTurno.setEmail(email);
@@ -261,19 +252,17 @@ public class ServicioCliente {
 		
 	}
 
-	public void validarGuardarTurno(String profesional, Turnos turnos, String fecha, String facial,
+	public void validarGuardarTurno(String nombreDelProfesional, String fechaSeleccionada, String facial,
 			String espalda, String pulido, String dermaplaning, String exfoliacion, String lifting,
 			String perfilado, String laminado, String hydralips, String microneedling, String horario) throws MiExcepcion {
 		
-		if (turnos.getProvincias() == null) {
-			throw new MiExcepcion("Debe seleccionar una provincia");
-		}
 		
-		if (profesional.equals("Profesional") || profesional == null) {
+		
+		if (nombreDelProfesional.equals("Profesional") || nombreDelProfesional == null) {
 			throw new MiExcepcion("Debe seleccionar un profesional");
 		}
 		
-		if(fecha == null || fecha.isEmpty() || fecha == "") {
+		if(fechaSeleccionada == null || fechaSeleccionada.isEmpty() || fechaSeleccionada == "") {
 			throw new MiExcepcion("Debe seleccionar una fecha");
 		}
 		
@@ -504,6 +493,7 @@ public class ServicioCliente {
 	 public boolean fechaYaPaso(LocalDate fecha) {
 	        return fecha.isBefore(LocalDate.now());
 	    }
+	 
 	 
 }
 	 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
+import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
@@ -159,6 +160,7 @@ public class ControladorPagina {
 				            		 return "pagina_profesional/homeProfesional";
 				            	 }else if(!validarForm) {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario);
+				            		 modelo.addAttribute("provincias", Provincias.values());
 				            		 return "pagina_profesional/completarDatosProfesional";
 				            	 }
 				             }

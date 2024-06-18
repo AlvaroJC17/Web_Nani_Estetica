@@ -2,15 +2,18 @@ package com.proyecto_integrador_3.Estetica.Entidades;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapsId;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
@@ -19,6 +22,9 @@ import jakarta.persistence.Table;
 @Table(name = "Cliente")
 public class Cliente extends Persona implements Serializable {
 	
+	
+	@OneToMany(mappedBy = "cliente", cascade = CascadeType.ALL)
+	private List<Turnos> turnos;
 	
 	@Column(name = "fumador")
 	String fuma;
@@ -132,6 +138,7 @@ public class Cliente extends Persona implements Serializable {
 	public Cliente(){
 		
 	}
+	
 	
 	public Cliente(String id) {
 	

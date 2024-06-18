@@ -56,6 +56,10 @@ public class Persona extends Usuario implements Serializable{
 	
 	//Constructores
 	public Persona() {}
+	
+	public Persona(String id) {
+		this.id = id;
+	}
 
 	public Persona(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm, String nombre, String apellido,
 			String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, String telefono) {
@@ -96,6 +100,19 @@ public class Persona extends Usuario implements Serializable{
 		this.fechaNacimiento = fechaNacimiento;
 		this.domicilio = domicilio;
 		this.telefono = telefono;
+		
+	}
+	
+
+	public Persona(String id, String contrasena, String email, Rol rol, Boolean activo, String nombre,
+			String apellido) {
+		this.id = id;
+		this.contrasena = contrasena;
+		this.email = email;
+		this.rol = rol;
+		this.activo = activo;
+		this.nombre = nombre;
+		this.apellido = apellido;
 		
 	}
 

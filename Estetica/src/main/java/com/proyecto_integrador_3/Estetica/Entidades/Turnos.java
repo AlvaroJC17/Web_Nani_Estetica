@@ -1,6 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -8,6 +9,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -19,7 +22,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 
 
 @Entity
-@Inheritance(strategy = InheritanceType.JOINED) // Esta etiqueta es la que permite crear tablas separadas en la base de datos
+//@Inheritance(strategy = InheritanceType.JOINED) // Esta etiqueta es la que permite crear tablas separadas en la base de datos
 @Table(name = "Turnos")
 public class Turnos {
 	
@@ -37,8 +40,13 @@ public class Turnos {
 	@Column(name = "provincia")
 	String provincia;
 	
-	@Column(name = "profesional")
-	String profesional;
+	@ManyToOne
+	@JoinColumn(name = "profesional_id")
+	private Profesional profesional;
+	
+	@ManyToOne
+	@JoinColumn(name = "cliente_id")
+	private Cliente cliente;
 	
 	@Column(name = "fecha")
 	@Temporal(TemporalType.DATE)
@@ -53,15 +61,13 @@ public class Turnos {
 	@Column(name = "activo")
 	Boolean activo;
 	
-	@Transient //Etiqueta para evitar que se cree una columna en la base de datos con este atributo
-	private Profesional profesional2;
-	
 	@Transient
 	private Provincias provincias;
 	
 	public Turnos() {
 		
 	}
+	
 	
 	public Turnos(String provincia) {
 		
@@ -71,7 +77,7 @@ public class Turnos {
 		
 	}
 		
-	public Turnos(String provincia, String profesional, LocalDate fecha, String horario, String tratamiento, String dni,
+	public Turnos(String provincia, Profesional profesional, LocalDate fecha, String horario, String tratamiento, String dni,
 			String email, Boolean activo) {
 		this.dni = dni;
 		this.email = email;
@@ -85,6 +91,15 @@ public class Turnos {
 	
 
 	
+	
+	public Cliente getCliente() {
+		return cliente;
+	}
+
+	public void setCliente(Cliente cliente) {
+		this.cliente = cliente;
+	}
+
 	public String getEmail() {
 		return email;
 	}
@@ -134,20 +149,20 @@ public class Turnos {
         this.provincias = provincias;
     }
 
-	public Profesional getProfesional2() {
-		return profesional2;
+	public String getDni() {
+		return dni;
 	}
 
-	public void setProfesional(Profesional profesional2) {
-		this.profesional2 = profesional2;
+	public void setDni(String dni) {
+		this.dni = dni;
 	}
 
-	public void setProfesional(String profesional) {
-		this.profesional = profesional;
-	}
-	
-	public String getProfesional() {
+	public Profesional getProfesional() {
 		return profesional;
+	}
+
+	public void setProfesional(Profesional profesional) {
+		this.profesional = profesional;
 	}
 
 	public LocalDate getFecha() {

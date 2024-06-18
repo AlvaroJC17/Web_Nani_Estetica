@@ -98,21 +98,28 @@
 									</select>
 								</div>
 								<div class="col-md-6">
-									<label for="direccion" class="form-label texto-label">Direccion</label>
-									<input type="text" class="form-control" name="direccion" id="direccion" placeholder="" required>
+									<label for="telefono" class="form-label texto-label">Telefono</label>
+									<input type="text" class="form-control" name="telefono" id="telefono"
+										placeholder="" required>
 								</div>
 							</div>
 
 							<div class="mb-3 row">
 								<div class="col-md-6">
-									<label for="telefono" class="form-label texto-label">Telefono</label>
-									<input type="text" class="form-control" name="telefono" id="telefono"
-										placeholder="" required>
-
+								<label for="provincia" class="form-label mb-0 fs-4">Seleccione provincia <span class="text-danger ">*</span> </label>
+              					<select  name="provincia" class="form-select" id="provincia" aria-label="Default select example">
+                				<option value=""  selected>Seleccione una provincia</option>
+                				<!--el th:value="${provincia.name()} viene por defecto al hacer un enum con una descripcion al lado, este metodo envia a esa descripcion como un string-->
+               					 <option th:each="provincia : ${provincias}" th:value="${provincia.name()}" th:text="${provincia.displayName}"></option> <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
+             					 </select>
 								</div>
+
 								<div class="col-md-6">
+									<label for="direccion" class="form-label texto-label">Direccion</label>
+									<input type="text" class="form-control" name="direccion" id="direccion" placeholder="" required>
 								</div>
-
+								
+								</div>
 								 <div  class="fs-5 mt-2 text-center"> <!--La variable emailUsuario viene del formulario login y del controlador loginUsuario-->
 	          					<input type="hidden" th:value="${emailUsuario}" class="form-control" name="emailUsuario" id="emailUsuario" placeholder="">
 	    	  					</div>
