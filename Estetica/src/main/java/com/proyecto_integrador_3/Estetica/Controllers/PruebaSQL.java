@@ -1,11 +1,18 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -151,6 +158,83 @@ public class PruebaSQL implements CommandLineRunner {
 //		        System.out.println(horario);
 //		    }
 //		}
+			String fecha = "2024-06-19";
+			String idProfesional = "b2249e1a-597b-4875-92b0-166f701b9437";
+	
+		        // Obtener los horarios disponibles para el profesional y la fecha dada
+		       // List<HorariosDisponibles> horariosDisponibles = repositorioHorariosDisponibles.findHorariosByProfesionalIdAndFecha(idProfesional, fecha);
+		        
+
+		        // Si no hay horarios disponibles para ese profesional y fecha, retornar una lista vacía
+		       
+
+		        // Formatear la fecha proporcionada a LocalDate
+
+		        // Obtener la fecha y hora actual
+
+		        // Lista para almacenar los horarios disponibles
+		        //List<String> horariosDisponiblesFormateados = new ArrayList<>();
+
+		        // Recorrer los horarios disponibles y concatenar la fecha y hora en un String
+//		        List <String> horariosDisponibles = servicioHorario.obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fecha);
+//		        if (horariosDisponibles.isEmpty()) {
+//		            System.out.println("la lista esta vacia");
+//		        }
+//		        for (String horario : horariosDisponibles) {
+//		        	LocalDateTime fechaHoraActual = LocalDateTime.now();
+//		        	DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//		            // Crear una variable String para la fecha y hora
+//		            String fechaHoraStr = fecha + " " + horario;
+//		            LocalDateTime fechaProporcionada = LocalDateTime.parse(fechaHoraStr, dateFormatter);
+//
+//		            // Parsear la variable String a LocalDateTime
+//		           // LocalDateTime fechaHoraProporcionada = LocalDateTime.parse(fechaHoraStr);
+//
+//		            // Comparar con la fecha y hora actual
+//		            if (fechaProporcionada.isAfter(fechaHoraActual)) {
+//		                
+//		            	System.out.println("imprimir horarios after: " + fechaProporcionada);
+//		            	
+//		            }else if(fechaProporcionada.isBefore(fechaHoraActual)) {
+//		            	System.out.println("imprimir fecha before: " + fechaProporcionada);
+//		            	horariosDisponibles.remove(horario);
+//		            	servicioHorario.actualizarHorariosDisponibles(fecha, horariosDisponibles, idProfesional);
+//		            }
+//		        }
+			
+		        
+//		        List<String> horariosDisponibles = servicioHorario.obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fecha);
+//		        if (horariosDisponibles.isEmpty()) {
+//		            System.out.println("la lista esta vacia");
+//		        }
+//
+//		        List<String> horariosAEliminar = new ArrayList<>();
+//		        LocalDateTime fechaHoraActual = LocalDateTime.now();
+//		        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+//
+//		        for (String horario : horariosDisponibles) {
+//		            // Crear una variable String para la fecha y hora
+//		            String fechaHoraStr = fecha + " " + horario;
+//		            LocalDateTime fechaProporcionada = LocalDateTime.parse(fechaHoraStr, dateFormatter);
+//
+//		            // Comparar con la fecha y hora actual
+//		            if (fechaProporcionada.isAfter(fechaHoraActual)) {
+//		                System.out.println("imprimir horarios after: " + fechaProporcionada);
+//		            } else if (fechaProporcionada.isBefore(fechaHoraActual)) {
+//		                horariosAEliminar.add(horario);
+//		                System.out.println("Se actualizo la lista de horarios para la fecha: " + fecha);
+//		            }
+//		        }
+//
+//		        // Eliminar los horarios fuera del bucle
+//		        horariosDisponibles.removeAll(horariosAEliminar);
+//		        servicioHorario.actualizarHorariosDisponibles(fecha, horariosDisponibles, idProfesional);
+
+		
+		     
+		    
+		
+	
 	}
 		
 		

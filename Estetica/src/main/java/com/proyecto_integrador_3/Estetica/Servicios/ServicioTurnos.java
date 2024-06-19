@@ -126,13 +126,7 @@ public class ServicioTurnos {
         return repositorioTurnos.findByProfesionalAndFecha(profesional, fecha);
     }
     
-    public List<String> obtenerHorariosDisponibles(Profesional profesional, LocalDate fecha) {
-        List<Turnos> turnosDelDia = repositorioTurnos.findByProfesionalAndFecha(profesional, fecha);
-        // Suponiendo que los horarios posibles son de 8 AM a 8 PM cada hora
-        List<String> horariosPosibles = List.of("08:00", "09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00", "19:00", "20:00");
-        List<String> horariosOcupados = turnosDelDia.stream().map(Turnos::getHorario).collect(Collectors.toList());
-        return horariosPosibles.stream().filter(h -> !horariosOcupados.contains(h)).collect(Collectors.toList());
-    }
+   
 }
     
 				 

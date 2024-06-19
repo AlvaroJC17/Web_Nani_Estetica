@@ -7,6 +7,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -187,6 +189,7 @@ public class ServicioCliente {
 			String provinciaString, String idProfesional, String facial, String espalda, String pulido, String dermaplaning, String exfoliacion,
 			String lifting, String perfilado, String laminado, String hydralips, String microneedling,
 			String horario, String email) throws MiExcepcion {
+		
 		
 		//Validamos que todos los valores vengan bien
 		validarGuardarTurno(nombreDelProfesional, fechaSeleccionada, facial, espalda, pulido, dermaplaning,

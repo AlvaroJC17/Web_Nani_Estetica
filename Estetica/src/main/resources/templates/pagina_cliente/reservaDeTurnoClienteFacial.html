@@ -135,7 +135,7 @@
           
           <form id="formularioFecha" th:action="@{/seleccionDeFecha}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
              <label  for="fechaSeleccionada" class="form-label mb-0 mt-2  fs-4">Paso 3: Seleccionar fecha <span class="text-danger ">*</span></label>
-            <input onchange="autoSubmitFecha()" type="date" name="fechaSeleccionada" class="form-control" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="Fecha">
+            <input th:attr="disabled=${isDisabled == null || !isDisabled ? 'disabled' : null}" onchange="autoSubmitFecha()" type="date" name="fechaSeleccionada" class="form-control" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="Fecha">
             
             <input type="hidden" class="form-control" name="nombreDelProfesional" id="nombreDelProfesional" th:value="${nombreDelProfesional}" placeholder="">
             <input type="hidden" class="form-control" name="idProfesional" id="idProfesional" th:value="${idProfesional}" placeholder="">
