@@ -89,11 +89,10 @@
     <h3>Reserva de turnos</h3>
   <div class=" container">
       <div class="  ft-reserva-turno">
-        <div class="texto-solicitar-turno ">
+        <div class="texto-solicitar-turno">
           <div>
           <p class="fs-4">Todos nustros tratamientos incluyen una limpieza facila profunda con extracciones.</p>
-          <p class="fs-4">Por favor seleccione una fecha para ver los horarios disponibles, luego complete
-                            toda la informacion solicitada para poder generar un turno.</p>
+          <p class="fs-4">Por favor siga los pasos a continuacion para solicitar un turno.</p>
         </div>
         </div>
         <div class="container">
@@ -120,7 +119,7 @@
             <div>
               <label for="profesional" class="form-label mb-0 mt-2 fs-4">Paso 2: Seleccione profesional <span class="text-danger ">*</span></label>
               <select onchange="autoSubmitProfesional()" class="form-select" id="profesional" name="idProfesional" aria-label="Default select example">
-                <option th:selected="${nombreDelProfesional}" th:text="${nombreDelProfesional == null ? 'Seleccione una profesional' : nombreDelProfesional}">Profesional</option>
+                <option th:selected="${nombreDelProfesional}" th:text="${nombreDelProfesional == null || #strings.isEmpty(nombreDelProfesional) ? 'Seleccione un profesional' : nombreDelProfesional}">Profesional</option>
                 <option th:each="nombreProfesional : ${Profesionales}" th:text="${nombreProfesional.nombre + ' '  + nombreProfesional.apellido}" th:value="${nombreProfesional.id}"></option>
               </select>
             </div>
@@ -149,7 +148,7 @@
             
           <form  th:action="@{/confimarTurnoCliente}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
               <label for="horario" class="form-label mb-0 mt-2 fs-4">Paso 4: Seleccionar hora <span class="text-danger ">*</span></label>
-              <select  name="horario" class="form-select" id="horario" aria-label="Default select example">
+              <select th:attr="disabled=${isHorarioDisabled == null || !isHorarioDisabled ? 'disabled' : null}" name="horario" class="form-select" id="horario" aria-label="Default select example">
                 <option value="" selected>Hora</option>
                 <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->
                 <option th:each="horario : ${horarios}" th:value="${horario}" th:text="${horario}"></option>
@@ -160,7 +159,7 @@
               <div>
                 <div class="form-check mt-3">
                   <input class="form-check-input" type="checkbox" value="Tratamiento facial" name="facial" id="facial">
-                  <label | class="form-check-label fs-6" for="antiage">
+                  <label  class="form-check-label fs-6" for="facial">
                     Tratamiento facial
                   </label>
                 </div>

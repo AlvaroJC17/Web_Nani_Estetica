@@ -70,6 +70,10 @@ public class ServicioProfesional {
 	    	return repositorioPersona.buscarNombreApellidoPorRolYProvincia(rol, provincias);
 	    }
 	    
+	    public List<Persona> buscarProfesionaByRolAndProvinciasYActivo(Rol rol, Provincias provincias, Boolean activo){
+	    	return repositorioPersona.buscarNombreApellidoPorRolProvinciaYActivo(rol, provincias, activo);
+	    }
+	    
 	
 	    //Este me sirve
 		public List <Persona> buscarPacienteByRolAndEmail2(String email, Rol rol){

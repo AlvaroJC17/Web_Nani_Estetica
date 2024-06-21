@@ -158,8 +158,6 @@ public class PruebaSQL implements CommandLineRunner {
 //		        System.out.println(horario);
 //		    }
 //		}
-			String fecha = "2024-06-19";
-			String idProfesional = "b2249e1a-597b-4875-92b0-166f701b9437";
 	
 		        // Obtener los horarios disponibles para el profesional y la fecha dada
 		       // List<HorariosDisponibles> horariosDisponibles = repositorioHorariosDisponibles.findHorariosByProfesionalIdAndFecha(idProfesional, fecha);
@@ -202,7 +200,9 @@ public class PruebaSQL implements CommandLineRunner {
 //		            }
 //		        }
 			
-		        
+//			String fecha = "2024-06-19";
+//			String idProfesional = "b2249e1a-597b-4875-92b0-166f701b9437";
+//		        
 //		        List<String> horariosDisponibles = servicioHorario.obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fecha);
 //		        if (horariosDisponibles.isEmpty()) {
 //		            System.out.println("la lista esta vacia");
@@ -231,6 +231,12 @@ public class PruebaSQL implements CommandLineRunner {
 //		        servicioHorario.actualizarHorariosDisponibles(fecha, horariosDisponibles, idProfesional);
 
 		
+//			List<Persona> prueba12 = servicioProfesional.buscarProfesionaByRolAndProvinciasYActivo(Rol.PROFESIONAL, Provincias.BUENOS_AIRES, TRUE);
+//					
+//			for(Persona persona: prueba12) {
+//				System.out.println("PROFESIONAL ROL, PROVINCIA, ACTIVO :" + persona.getNombre() + " " + persona.getId() + " " + persona.getActivo());
+//				
+//			}
 		     
 		    
 		

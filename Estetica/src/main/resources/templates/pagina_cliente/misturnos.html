@@ -110,10 +110,13 @@ tener el mismo ID-->
 								</div>
 							</div>
 						</div>
-						  <input hidden type="text" id="email" name="email" th:value="${email}"></input>
+						  <input hidden type="text" id="email" name="email" th:value="${emailCliente}"></input>
+						  <input hidden type="text" id="emailCliente" name="emailCliente" th:value="${turnos.email}"></input>
           				  <input hidden type="text" id="fecha" name="fecha" th:value="${turnos.fecha}"></input>
           				  <input hidden type="text" id="horario" name="horario" th:value="${turnos.horario}"></input>
           				  <input hidden type="text" id="idTurno" name="idTurno" th:value="${turnos.id}"></input>
+          				  <input hidden type="text" id="idProfesional" name="idProfesional" th:value="${turnos.profesional.id}"></input>
+          				  <input hidden type="text" id="idCliente" name="idCliente" th:value="${turnos.cliente.id}"></input>
           </form>
             </div>
             </div>

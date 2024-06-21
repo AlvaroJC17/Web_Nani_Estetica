@@ -190,11 +190,9 @@ public class ServicioCliente {
 			String lifting, String perfilado, String laminado, String hydralips, String microneedling,
 			String horario, String email) throws MiExcepcion {
 		
-		
 		//Validamos que todos los valores vengan bien
-		validarGuardarTurno(nombreDelProfesional, fechaSeleccionada, facial, espalda, pulido, dermaplaning,
-				exfoliacion, lifting, perfilado, laminado, hydralips,
-				microneedling, horario);
+		validarGuardarTurno(provinciaString, nombreDelProfesional, fechaSeleccionada, facial, espalda, pulido, dermaplaning,
+				exfoliacion, lifting, perfilado, laminado, hydralips, microneedling, horario);
 		
 		//Creamos un array con los tratamientos y limpiamos los seleccionados  que vienen null
 		// A los que viene con un valos de string los va sumando en un contador y los que vienen null les asigna valor vacio
@@ -255,17 +253,19 @@ public class ServicioCliente {
 		
 	}
 
-	public void validarGuardarTurno(String nombreDelProfesional, String fechaSeleccionada, String facial,
+	public void validarGuardarTurno(String provinciaString, String nombreDelProfesional, String fechaSeleccionada, String facial,
 			String espalda, String pulido, String dermaplaning, String exfoliacion, String lifting,
 			String perfilado, String laminado, String hydralips, String microneedling, String horario) throws MiExcepcion {
 		
+		if (provinciaString == null || provinciaString.isEmpty() || provinciaString == "") {
+			throw new MiExcepcion("Debe seleccionar una provincia");
+		}
 		
-		
-		if (nombreDelProfesional.equals("Profesional") || nombreDelProfesional == null) {
+		if (nombreDelProfesional == null || nombreDelProfesional.isEmpty() || nombreDelProfesional == "") {
 			throw new MiExcepcion("Debe seleccionar un profesional");
 		}
 		
-		if(fechaSeleccionada == null || fechaSeleccionada.isEmpty() || fechaSeleccionada == "") {
+		if(fechaSeleccionada == null || fechaSeleccionada.isEmpty() || nombreDelProfesional == "") {
 			throw new MiExcepcion("Debe seleccionar una fecha");
 		}
 		
@@ -279,7 +279,6 @@ public class ServicioCliente {
 			throw new MiExcepcion("Debe seleccionar almenos un tratamiento");
 		}
 	}
-		
 
 	 public void validarDatosCliente(String nombre, String apellido, String dni,  String sexo,
 			 String telefono, String direccion, String ocupacion) throws MiExcepcion {

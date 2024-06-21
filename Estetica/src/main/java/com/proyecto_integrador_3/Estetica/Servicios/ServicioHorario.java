@@ -99,55 +99,77 @@ public class ServicioHorario {
 	        repositorioHorariosDisponibles.save(horarioDisponible);
 	    }
 	    
+	    
+	    //Metodo para eliminar los horarios que se van quedadon viejos al pasar de las horas
+	    //Este metodo solo va eliminando horarios viejos si el dia para seleccionar el turno
+	    //es igual al dia actual,
 	    public void EliminarHorarioViejos(String idProfesional, String fecha) {
 	    	
 	    	List<String> horariosDisponibles = obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fecha);
+	    	
 	        if (horariosDisponibles.isEmpty()) {
 	            System.out.println("la lista de horarios a actualizar esta vacia");
+	            return; //Si la lista esta vacia, salimos del metodo
 	        }
-
+	        
+	        //Lista para ir guardando temporalmente los horarios pasados
 	        List<String> horariosAEliminar = new ArrayList<>();
+	        
+	        //Buscamos la fecha y hora actual
 	        LocalDateTime fechaHoraActual = LocalDateTime.now();
+	        
+	        //Designamos el formato de la fecha y hora a parsear
 	        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
 	        for (String horario : horariosDisponibles) {
 	            // Crear una variable String para la fecha y hora
 	            String fechaHoraStr = fecha + " " + horario;
+	            
+	            //Parseamos la fecha y hora a LocalDateTime
 	            LocalDateTime fechaProporcionada = LocalDateTime.parse(fechaHoraStr, dateFormatter);
 
 	            // Comparar con la fecha y hora actual
-	            if (fechaProporcionada.isAfter(fechaHoraActual)) {
-	                System.out.println("imprimir horarios after: " + fechaProporcionada);
-	            } else if (fechaProporcionada.isBefore(fechaHoraActual)) {
-	                horariosAEliminar.add(horario);
-	                System.out.println("Se actualizo la lista de horarios para la fecha: " + fecha);
+	            if (fechaProporcionada.isBefore(fechaHoraActual)) {
+	            	//si entra al if, agragamos ese horario a la lista temporal horariosAEliminar
+	            	horariosAEliminar.add(horario);
+	            	System.out.println("Se actualizo la lista de horarios para la fecha: " + fecha);
 	            }
 	        }
 
-	        // Eliminar los horarios fuera del bucle
+	        // Eliminamos los horarios guardados en la lista temporal de la lista de horarios disponibles
 	        horariosDisponibles.removeAll(horariosAEliminar);
+	        //Actualizamos la lista de horarios disponibles con los horarios eliminados
 	        actualizarHorariosDisponibles(fecha, horariosDisponibles, idProfesional);
 	    }
 	    
 	    
-	    
-	    
-	    
-	    
-//
-//	    //Le pasamos un fecha y un horario, busca la fecha en la base de datos y verifica si el horario
-//	    //esta guardado en la lista de esa fecha, sino esta guardado lo agrega nuevamnete a la lista
-//	    public void agregarHorarioDisponible(String fecha, String horario) {
-//	    	
-//	        HorariosDisponibles horarioDisponible = repositorioHorariosDisponibles.findById(fecha)
-//	                .orElse(new HorariosDisponibles(fecha, List.of()));
-//	        List<String> horarios = horarioDisponible.getHorarios();
-//	        if (!horarios.contains(horario)) {
-//	            horarios.add(horario);
-//	        }
-//	        horarioDisponible.setHorarios(horarios);
-//	        repositorioHorariosDisponibles.save(horarioDisponible);
-//	    }
+	    //Le pasamos un fecha y un horario, busca la fecha en la base de datos y verifica si el horario
+	    //esta guardado en la lista de esa fecha, sino esta guardado lo agrega nuevamnete a la lista
+	    public void agregarHorarioDisponible(String fecha, String horario, String idProfesional) {
+	    	
+	    	 // Obtener los horarios disponibles para el profesional y la fecha dada
+	        List<HorariosDisponibles> horariosDisponibles = repositorioHorariosDisponibles.findHorariosByProfesionalIdAndFecha(idProfesional, fecha);
+	        
+	        HorariosDisponibles horarioDisponible;
+	        if (horariosDisponibles.isEmpty()) {
+	            // Si no hay horarios disponibles para ese profesional y fecha, crear uno nuevo
+	            horarioDisponible = new HorariosDisponibles(fecha, List.of(horario), new Profesional(idProfesional));
+	        } else {
+	            // Si hay horarios disponibles, obtener el primero (suponiendo que solo hay uno por fecha y profesional)
+	            horarioDisponible = horariosDisponibles.get(0);
+	            List<String> horarios = horarioDisponible.getHorarios();
+	            
+	            // Si el horario no está ya en la lista, agregarlo
+	            if (!horarios.contains(horario)) {
+	                horarios.add(horario);
+	            }
+	            
+	            horarioDisponible.setHorarios(horarios);
+	        }
+	        
+	        // Guardar el registro actualizado
+	        repositorioHorariosDisponibles.save(horarioDisponible);
+	    }
 
 	   
 			

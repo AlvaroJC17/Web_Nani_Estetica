@@ -5,6 +5,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -144,23 +146,19 @@ public class ControladorCliente {
 			@RequestParam(name="provincia") String provincia,
 			ModelMap model) throws MiExcepcion {
 		
-	
-		
 		//pasamos la provincia a enum provincia
-		Provincias nuevaProvincia = null;
-		nuevaProvincia = Provincias.valueOf(provincia);
-		
-		
+		Provincias nuevoRolProvincia = null;
+		nuevoRolProvincia = Provincias.valueOf(provincia);
+	
 		//Buscamos todos los datos del cliente y lo pasamos al html, sirve para visualizar la pagina y pasar los datos del cliente entre controladores
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		Boolean isDisabled = false;
+		Boolean isDisabled = false; //Booleano para habilitar o deshabilitar el input de fecha
 		model.addAttribute("datosCliente", datosCliente);
 		model.addAttribute("identificador", identificador);
 		model.addAttribute("provinciaString", provincia);
 		model.addAttribute("isDisabled ", isDisabled);
-		model.addAttribute("provinciaSeleccionada", nuevaProvincia.getDisplayName());
+		model.addAttribute("provinciaSeleccionada", nuevoRolProvincia.getDisplayName()); //getDisplayName Muestra los nombre personalizados de los enum y no los nombres en Mayusculas
 		model.addAttribute("provincias", Provincias.values()); // pasamos el array de enums al formulario para desplegar la lista de select
-		
 		
 		String error = null;
 		//validamos que se seleccione una provincia
@@ -180,8 +178,8 @@ public class ControladorCliente {
 			}			
 		}
 		
-		//Buscamos los profesionales por provincia
-		List<Persona> profesionalesPorProvincia = servicioProfesional.buscarProfesionaByRolAndProvincis(Rol.PROFESIONAL, nuevaProvincia);
+		//Hacemos un busqueda de usuarios por rol profesional, provincia y que esten activos
+		List<Persona> profesionalesPorProvincia = servicioProfesional.buscarProfesionaByRolAndProvinciasYActivo(Rol.PROFESIONAL, nuevoRolProvincia, true);
 		
 		//si no hay problema con las validaciones anteriores, buscamos los profesionales
 		//y pasamos el nombre de la provincia y las agregamos a la vista.
@@ -323,22 +321,23 @@ public class ControladorCliente {
 			@RequestParam(name ="fechaSeleccionada", required = false) String fechaSeleccionada,
 			@RequestParam(name ="nombreDelProfesional", required = false) String nombreDelProfesional,
 			Model modelo) throws MiExcepcion{
+		 
 		
 				//Si el usuario presiona buscar sin seleccionar una fecha, por defecto toma la fecha actual como valor
 				if (fechaSeleccionada.isEmpty() || fechaSeleccionada == null) {
 					fechaSeleccionada = LocalDate.now().toString(); // Fecha por defecto es la fecha actual
 				}
 				
-				servicioHorario.EliminarHorarioViejos(idProfesional, fechaSeleccionada);
-				
 				//Pasamos la fecha seleccionada a localDate para poder trabajar con los dias y dias de la semana
 				LocalDate fechaSeleccionadaLocalDate = servicioCliente.pasarFechaStringToLocalDate(fechaSeleccionada);
+				
+				//Buscamos la fecha actual del sistema
+				LocalDate fechaActual = LocalDate.now();
 				
 				//Definimos la fecha maxima que se puede usar para sacar turnos
 				//fechaMaxima toma la fecha actual del sistema y le da un meximo de dos meses hacia adelante
 				LocalDate fechaMaxima = LocalDate.now().plusMonths(2);
 				
-		
 				/*Verifica si existe la fecha asociada a ese id profesional en la base de datos.
 				 * Si existe, nos devuelve la lista de horarios disponibles en la base de datos asociados a esa fecha
 				 * Si no existe, nos devuelve una lista de horarios pre establecida */
@@ -347,10 +346,18 @@ public class ControladorCliente {
 				//Guarda en la base de datos la lista de horarios disponibles pertenecientes a la fecha y el id del profesional que le pasamos
 				servicioHorario.guardarHorariosDisponibles(fechaSeleccionada, crearyObtenerHorariosDisponibles, idProfesional);
 				
+				//Solo si la fecha seleccionada es igual a la fecha actual, entonces se entra en este metodo
+				if (fechaSeleccionadaLocalDate.equals(fechaActual)) {
+					//Cada vez que se seleccione una fecha, se verifica los horarios pasados en comparacion con la hora actual
+					//y los borra, esto sirve para impedir que se seleccionen horarios de horas que ya pasaron
+					servicioHorario.EliminarHorarioViejos(idProfesional, fechaSeleccionada);
+				}
+				
 				//Obetenemos los horarios del profesional por fecha y id del profesional, puede devolver una lista con horarios disponibles
 				//o puede devolver una lista vacia si ya al profesional le solicitaron todos los horarios de esa fecha
 				List <String> ObtenerHorariosDisponibles = servicioHorario.obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fechaSeleccionada);
-				
+				//Despues de obtener los horarios, los ordenamos por fecha, para que siempre se muestren los horarios en orden de menor a mayor
+				Collections.sort(ObtenerHorariosDisponibles);
 		
 				//pasamos la provincia a enum provincia
 				Provincias nuevaProvincia = null;
@@ -364,6 +371,7 @@ public class ControladorCliente {
 				
 				//Pasamos todos los datos necesarios a la vista
 				Boolean isDisabled = null;
+				Boolean isHorarioDisabled = null;
 				modelo.addAttribute("datosCliente", datosCliente);
 				modelo.addAttribute("identificador", identificador);
 				modelo.addAttribute("fechaSeleccionada", fechaSeleccionada);
@@ -373,11 +381,7 @@ public class ControladorCliente {
 				modelo.addAttribute("Profesionales", profesionalesPorProvincia);
 				modelo.addAttribute("idProfesional", idProfesional);
 				modelo.addAttribute("provincias", Provincias.values());
-				
-
-		
-				
-				
+			
 	    //Metodo que recibe una fecha tipo LocalDate y devuelve true si la fecha es anterior a la actual
 				if (servicioCliente.fechaYaPaso(fechaSeleccionadaLocalDate)) {
 					String error = "No se puede seleccionar un fecha pasada";
@@ -445,7 +449,6 @@ public class ControladorCliente {
 				}
 				
 				
-				
 				//Limitamos a que el usuario solo pueda tener un maximi de tres activos
 				if (servicioTurnos.checkActiveTurnos(emailCliente)) {
 					String error = "Solo se permite tener un maximo de tres turnos activos,"
@@ -467,7 +470,9 @@ public class ControladorCliente {
 				
 				//Solo si todo sale bien, pasamos los turnos disponibles a la vista
 				isDisabled = true;
+				isHorarioDisabled = true;
 				modelo.addAttribute("isDisabled",isDisabled);
+				modelo.addAttribute("isHorarioDisabled", isHorarioDisabled);
 				modelo.addAttribute("horarios", ObtenerHorariosDisponibles);
 				
 				//Seleccionamos cual vista devolver en base al identificador que viene por parametro
@@ -517,10 +522,10 @@ public class ControladorCliente {
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 			try {
 				//Servicio para guardar el turno facial en la base de datos
-				servicioCliente.guardarTurno(idCliente, nombreDelProfesional, fechaSeleccionada,
-						provinciaString, idProfesional, facial, espalda, pulido, dermaplaning,
-						exfoliacion, lifting, perfilado, laminado, hydralips, microneedling, horario,
-						emailCliente);
+				servicioCliente.guardarTurno(idCliente, nombreDelProfesional, fechaSeleccionada, provinciaString,
+						idProfesional, facial, espalda, pulido, dermaplaning, exfoliacion, lifting, perfilado, laminado,
+						hydralips, microneedling, horario, emailCliente);
+				
 				
 				 // Primero buscamos y obtenemos una lista de los horarios disponibles por fecha e idprofesional
 				//luego removemos de la lista obtenida el horario seleccionado por el usuario.
@@ -533,7 +538,7 @@ public class ControladorCliente {
                 //cuando el usuario selecciona un nuevo turno, eliminar el turno mas antiguo
                 //que tenga estado inactivo
                 servicioTurnos.eliminarTurnoMasAntiguoNoActivo(emailCliente);
-                System.out.println("Turno mas antiguo eliminado con exito");
+                
                 
                 //Obtenemos una lista de turnos del usuario a traves de su id
                 List<Turnos> tunosDisponibles = servicioTurnos.buscarTurnoPorClienteId(idCliente);
@@ -543,6 +548,8 @@ public class ControladorCliente {
                 model.addAttribute("exito", exito);
                 model.addAttribute("datosTurno", tunosDisponibles);
                 model.addAttribute("emailCliente", emailCliente);
+                model.addAttribute("idProfesional", idProfesional);
+                model.addAttribute("idCliente", idCliente);
                 model.addAttribute("datosCliente", datosCliente);
                 model.addAttribute("showModalExito", true);
                 return "/pagina_cliente/misturnos";
@@ -553,17 +560,13 @@ public class ControladorCliente {
 				//array de provincia, profesional y horarios
 				
 				String error = e.getMessage();
-				Boolean isDisabled = true;
 				model.addAttribute("error", error);
 				model.addAttribute("datosCliente", datosCliente);
 				model.addAttribute("identificador", identificador);
 				model.addAttribute("provincias", Provincias.values());
 				model.addAttribute("emailCliente", emailCliente);
-				model.addAttribute("fechaSeleccionada", fechaSeleccionada);
 				model.addAttribute("idCliente", idCliente);
 				model.addAttribute("idProfesional", idProfesional);
-				model.addAttribute("nombreDelProfesional", nombreDelProfesional);
-				model.addAttribute("isDisabled", isDisabled);
 				model.addAttribute("provinciaString", provinciaString);
 				model.addAttribute("showModalError", true);
 				switch (identificador) {
@@ -609,6 +612,7 @@ public class ControladorCliente {
 					
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		Boolean isDisabled = null;  // esta booleano sirve para validar cuando mostramos el input de la seleccion de fechas, si es true se muestra activo si es false de muestra deshabilitado
+		Boolean isHorarioDisabled = null;
 		model.addAttribute("tratamiento", tratamiento);
 		model.addAttribute("datosCliente", datosCliente);
 		model.addAttribute("idCliente", idCliente);
@@ -621,24 +625,29 @@ public class ControladorCliente {
 		if (usoDeFormulario && tratamiento.equals("facial")) {
 			identificador = "tratamientoFacial";
 			isDisabled = false;
-			System.out.println("Valor de isDisabled: " +  isDisabled);
+			isHorarioDisabled = false;
 			model.addAttribute("identificador", identificador);
 			model.addAttribute("isDisabled", isDisabled);  // Mandamos el valor del booleano a la vista para determinar si mostrados el input de la fecha habilitado o no
+			model.addAttribute("isHorarioDisabled", isHorarioDisabled);
 			return "/pagina_cliente/reservaDeTurnoClienteFacial";
 			
 		}else if(usoDeFormulario && tratamiento.equals("corporal")) {
 			identificador = "tratamientoCorporal";
 			isDisabled = false;
+			isHorarioDisabled = false;
 			model.addAttribute("identificador", identificador);
 			model.addAttribute("isDisabled", isDisabled);
+			model.addAttribute("isHorarioDisabled", isHorarioDisabled);
 			return "/pagina_cliente/reservaDeTurnoClienteCorporal";
 			
 			//Si el boolean usoDeFormulario es false, entonces dirige al usuario a llenar el formulario de preguntas
 		}else if(tratamiento.equals("estetico")){
 			identificador = "tratamientoEstetico";
 			isDisabled = false;
+			isHorarioDisabled = false;
 			model.addAttribute("identificador", identificador);
 			model.addAttribute("isDisabled", isDisabled);
+			model.addAttribute("isHorarioDisabled", isHorarioDisabled);
 			return "/pagina_cliente/reservaDeTurnoClienteEstetico";
 		}else {
 			return "/pagina_cliente/formularioPreguntas";

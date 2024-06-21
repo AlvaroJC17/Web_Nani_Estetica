@@ -59,5 +59,9 @@ public interface RepositorioPersona extends JpaRepository<Persona, String>{
 
     @Query("SELECT p, pr FROM Persona p JOIN Profesional pr ON p.id = pr.id WHERE pr.provincia IN :provincias AND p.rol = :rol")
     List<Persona> buscarNombreApellidoPorRolYProvincia(@Param("rol") Rol rol, @Param("provincias") Provincias provincias);
+    
+    @Query("SELECT p, pr FROM Persona p JOIN Profesional pr ON p.id = pr.id WHERE pr.provincia IN :provincias AND p.rol = :rol AND p.activo = :activo")
+    List<Persona> buscarNombreApellidoPorRolProvinciaYActivo(@Param("rol") Rol rol, @Param("provincias") Provincias provincias, @Param("activo") boolean activo);
+
 
 }

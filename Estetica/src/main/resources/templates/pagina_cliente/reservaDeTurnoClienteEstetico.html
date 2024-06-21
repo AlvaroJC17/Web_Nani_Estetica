@@ -118,7 +118,7 @@
             <div>
               <label for="profesional" class="form-label mb-0 mt-2 fs-4">Paso 2: Seleccione profesional <span class="text-danger ">*</span></label>
               <select onchange="autoSubmitProfesional()" class="form-select" id="profesional" name="idProfesional" aria-label="Default select example">
-                <option th:selected="${nombreDelProfesional}" th:text="${nombreDelProfesional == null ? 'Seleccione una profesional' : nombreDelProfesional}">Profesional</option>
+                <option th:selected="${nombreDelProfesional}" th:text="${nombreDelProfesional == null ? 'Seleccione un profesional' : nombreDelProfesional}">Profesional</option>
                 <option th:each="nombreProfesional : ${Profesionales}" th:text="${nombreProfesional.nombre + ' '  + nombreProfesional.apellido}" th:value="${nombreProfesional.id}"></option>
               </select>
             </div>
