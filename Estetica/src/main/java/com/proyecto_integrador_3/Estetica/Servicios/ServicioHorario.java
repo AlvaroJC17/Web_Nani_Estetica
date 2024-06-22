@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -171,22 +172,14 @@ public class ServicioHorario {
 	        repositorioHorariosDisponibles.save(horarioDisponible);
 	    }
 
-	   
-			
-		
-		
-//		//Sirve para buscar una lista de horarios por idProfesional y fecha
-//		public List <HorariosDisponibles> obtenerHorariosProfesional(String idProfesional, String fecha){
-//			List<HorariosDisponibles> horarios = repositorioHorariosDisponibles.findHorariosByProfesionalIdAndFecha(idProfesional, fecha);
-//			return horarios;
-//		}
-//		
-//		public List<String> obtenerHorariosDisponiblesBeta(String fecha, String idProfesional) {
-//	        return repositorioHorariosDisponibles.findHorariosByProfesionalIdAndFecha(idProfesional, fecha)
-//	                .stream()
-//	                .flatMap(horario -> horario.getHorarios().stream())
-//	                .collect(Collectors.toList());
-//	    }
+	   public boolean turnoMenorA24Horas(LocalDateTime fechaSeleecionada, LocalDateTime fechaActual) {
+		   
+		   //Con el objeto duration podemos calcular la diferencia de horas entre dos fechas
+		   Duration difereciaDeHorasEntreLasFechas = Duration.between(fechaActual, fechaSeleecionada);
+		   System.out.println("MENOS DE 24 HORAS: " + difereciaDeHorasEntreLasFechas.toHours());
+		   //Pasamos el resultados a horas y devolvemos el booleano true si es menos a 24 horas
+		   return difereciaDeHorasEntreLasFechas.toHours() < 24;
+	   }
 			
 			
 		

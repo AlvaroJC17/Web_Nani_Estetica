@@ -78,6 +78,8 @@ tener el mismo ID-->
             <li class="list-unstyled d-flex"><strong>Hora:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.horario}"></p> </li>
             <li class="list-unstyled d-flex"><strong>Tratamiento:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.tratamiento}"></p> </li>
             </ul>
+            
+            <div th:if="${turnos.multa}" class="bg-danger fs-6 text-center text-white">ESTE TURNO POSEE UNA MULTA</div>
         
 		<!--Estos botones solo hacen el llamado al modal-->
 		  <button type="button" th:if="${turnos.activo}" class="btn btn-danger m-2" data-bs-toggle="modal" th:data-bs-target="${'#staticBackdrop' + iterStat.index}">Cancelar turno</button>
@@ -91,12 +93,19 @@ tener el mismo ID-->
 								<div style="background-color: #ebdf9d;" class="modal-content">
 									<div class="modal-header d-block  text-center border border-0">
 										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
-										<h1 class="modal-title fs-4 fw-bold" id="staticBackdropLabel">¿Estas seguro de
-											cancelar el turno?</h1>
+										<h1 class="modal-title fs-5 fw-bold" id="staticBackdropLabel">
+											Importante: Verificación de Cancelación de Turno</h1>
 									</div>
-									<div class="modal-body">
-										Para solicitar un nuevo turno debes dirigirte al portal de solicitar turno y
-										generar uno nuevo 
+									<div class="modal-body fs-6 lh-sm text-justify">
+										Por favor, verifica cuidadosamente el turno que deseas cancelar. Si la cancelación se 
+										realiza con <span class="bg-warning">menos de 24 horas</span> de anticipación respecto a la fecha y hora seleccionada 
+										del turno, <span class="bg-warning">serás multado y bloqueado</span> para seleccionar nuevos turnos hasta que hayas 
+										pagado la multa. En cambio si el turno es cancelado con <span class="bg-warning">más de 24 horas</span> de anticipación
+										<span class="bg-warning">no se aplicará ninguna sanción.</span> <br><br>
+
+										Si a pesar de esta advertencia deseas proceder con la cancelación, deberás dirigirte
+										nuevamente al portal de selección de turnos para generar uno nuevo.<br><br>
+										<span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
 									</div>
 									<div class="modal-footer border border-0">
 										<button type="button" class="btn btn-danger"

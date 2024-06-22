@@ -22,6 +22,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
+import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
@@ -30,10 +31,12 @@ import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioHorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
 @Component
@@ -58,6 +61,9 @@ public class PruebaSQL implements CommandLineRunner {
 	RepositorioHorariosDisponibles repositorioHorariosDisponibles;
 	
 	@Autowired
+	RepositorioTurnos repositorioTurnos;
+	
+	@Autowired
 	ServicioUsuario servicioUsuario;
 	
 	@Autowired
@@ -68,6 +74,9 @@ public class PruebaSQL implements CommandLineRunner {
 	
 	@Autowired
 	ServicioHorario servicioHorario;
+	
+	@Autowired
+	ServicioTurnos servicioTurnos;
 	
 	
 
@@ -238,8 +247,26 @@ public class PruebaSQL implements CommandLineRunner {
 //				
 //			}
 		     
-		    
 		
+//		    Optional <Turnos> bucarDatosTurno = repositorioTurnos.findByClienteIdAndMulta("917c171e-966e-47f5-b82a-5857777e29fd", TRUE);
+//		    		
+//		    if (bucarDatosTurno.isPresent()) {
+//				Turnos datosTurno = bucarDatosTurno.get();
+//				LocalDate fecha = datosTurno.getFecha();
+//				String horario = datosTurno.getHorario();
+//				Boolean multa = datosTurno.getMulta();
+//				String constoMulta = datosTurno.getCostoMulta();
+//				
+//				System.out.println("Fecha: " + fecha + " " + "horario: " + horario + " " + "multa: " + multa + " " + "Costo multa: " + constoMulta);
+//		    }
+//				
+				
+//		List<Turnos> turnosInactivosSinMulta = repositorioTurnos.findByEmailAndActivoFalseAndMultaFalse("santi@santi.com");
+//		
+//		for(Turnos turnos: turnosInactivosSinMulta) {
+//		System.out.println("Turnos: " +  turnos.getId());
+//		}
+//			
 	
 	}
 		

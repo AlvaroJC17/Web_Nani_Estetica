@@ -1,5 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import static java.lang.Boolean.TRUE;
+
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -81,49 +83,33 @@ public class ControladorCliente {
 	@Autowired
 	public ServicioTurnos servicioTurnos;
 	
-//	@GetMapping("tratamientosApagado")
-//	public String tratamientosApagado(
-//			@RequestParam(name="idCliente") String idCliente,
-//			@RequestParam(name="email") String email,
-//			@RequestParam(name="error", required = false) String error,
-//			@RequestParam(name="identificador", required = false) String identificador,
-//			Model modelo) {
-//	
-//		
-//		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-//			
-//				//estos son modelos en general
-//				modelo.addAttribute("datosCliente", datosCliente);
-//				modelo.addAttribute("idCliente", idCliente);
-//				modelo.addAttribute("email", email);
-//				modelo.addAttribute("provincias", Provincias.values());
-//				modelo.addAttribute("identificador", identificador);
-//				
-//				if (error == null || error.isEmpty()) {
-//				switch (identificador) {
-//				case "tratamientoFacial":
-//					return "/pagina_cliente/reservaDeTurnoClienteFacial";
-//				case "tratamientoCorporal":
-//					return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-//				case "tratamientoEstetico":
-//					return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-//				}
-//					
-//			}else {
-//				modelo.addAttribute("error", error); // estos son modelos que se suman a los generales si entra en el else
-//				modelo.addAttribute("showModalError", true);
-//				switch (identificador) {
-//				case "tratamientoFacial":
-//					return "/pagina_cliente/reservaDeTurnoClienteFacial";
-//				case "tratamientoCorporal":
-//					return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-//				case "tratamientoEstetico":	
-//					return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-//				}				
-//			}
-//				return "";
-//	}
 	
+	@GetMapping("/multas")
+	public String multas(
+			@RequestParam(name = "email", required = false) String email,
+			@RequestParam(name = "idCliente", required = false) String idCliente,
+			ModelMap model) {
+		
+		 Optional <Turnos> bucarDatosTurno = repositorioTurnos.findByClienteIdAndMulta(idCliente, TRUE);
+ 		
+		 LocalDate fecha = null;
+		 String horario = null;
+		 String costoMulta = null;
+		 
+		    if (bucarDatosTurno.isPresent()) {
+				Turnos datosTurno = bucarDatosTurno.get();
+				fecha = datosTurno.getFecha();
+				horario = datosTurno.getHorario();
+				costoMulta = datosTurno.getCostoMulta();
+		    }
+				
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		model.addAttribute("fecha", fecha);
+		model.addAttribute("horario", horario);
+		model.addAttribute("costoMulta", costoMulta);
+		model.addAttribute("datosCliente", datosCliente);
+		return "/pagina_cliente/multas";
+	}
 	
 	
 	/*Este metodo deriva a la pagina de tratamientos con los valores de mail y id del cliente*/
@@ -133,10 +119,29 @@ public class ControladorCliente {
 			@RequestParam(name = "idCliente", required = false) String idCliente,
 			ModelMap model) {
 		
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		model.addAttribute("datosCliente", datosCliente);
-		return "/pagina_cliente/tratamientos";
+		//Antes de mostrar los tratamientos disponibles, verificamos que no hay turno antiguos
+		//no asistodos, de ser afirmativo, le colocamos una multa al turno
+		servicioTurnos.actualizarTurnosAntiguos(email);
+		
+		Boolean tieneMultas = false;
+		Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findClienteById(idCliente);
+		if (obtenerDatosDeMultas.isPresent()) {
+			Cliente multasDelCliente = obtenerDatosDeMultas.get();
+			 tieneMultas = multasDelCliente.getMulta();
+		}
+		
+		//si el resultado de multa es true, entonces redirigimos a la pagina del mensaje de pago
+		if (tieneMultas) {
+			return "redirect:/multas?email=" + email + "&idCliente=" + idCliente; 
+		}else {
+			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+			model.addAttribute("datosCliente", datosCliente);
+			return "/pagina_cliente/tratamientos";
+		}
 	}
+			
+		
+		
 	
 	@GetMapping("/buscarProfesionalPorProvincias")
 	public String buscarProfesionalPorProvincias(
@@ -309,8 +314,6 @@ public class ControladorCliente {
 	}
 	
 	
-	
-	
 	@PostMapping("/seleccionDeFecha")
 	public String seleccionDeFecha(
 			@RequestParam(name ="idProfesional", required = false) String idProfesional,
@@ -399,21 +402,21 @@ public class ControladorCliente {
 						
 				}
 				
-	   //Metodo que recibe una fecha tipo LocalDate y devuelve true si es fin de semana
-				if (servicioCliente.esFinDeSemana(fechaSeleccionadaLocalDate)) {
-					String error = "No trabajamos los fines de semanas";
-					isDisabled = true;
-					modelo.addAttribute("error", error);
-					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isDisabled", isDisabled);
-					if (identificador.equals("tratamientoFacial")) {
-						return "/pagina_cliente/reservaDeTurnoClienteFacial";
-					}else if(identificador.equals("tratamientoCorporal")) {
-						return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-					}else if(identificador.equals("tratamientoEstetico")) {
-						return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-					}
-				}
+//	   //Metodo que recibe una fecha tipo LocalDate y devuelve true si es fin de semana
+//				if (servicioCliente.esFinDeSemana(fechaSeleccionadaLocalDate)) {
+//					String error = "No trabajamos los fines de semanas";
+//					isDisabled = true;
+//					modelo.addAttribute("error", error);
+//					modelo.addAttribute("showModalError", true);
+//					modelo.addAttribute("isDisabled", isDisabled);
+//					if (identificador.equals("tratamientoFacial")) {
+//						return "/pagina_cliente/reservaDeTurnoClienteFacial";
+//					}else if(identificador.equals("tratamientoCorporal")) {
+//						return "/pagina_cliente/reservaDeTurnoClienteCorporal";
+//					}else if(identificador.equals("tratamientoEstetico")) {
+//						return "/pagina_cliente/reservaDeTurnoClienteEstetico";
+//					}
+//				}
 				
 				//Definimos una fecha maxima de dos meses a partir de la fecha actual
 				//Con esto limitamos al usuario a que no pueda solicitar turnos mas alla de dos meses en adelante de la fecha actual

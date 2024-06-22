@@ -484,8 +484,16 @@ public class ServicioCliente {
 			}
 			
 			return fechaUsuario;
-			
 	 }
+	 
+	 public LocalDateTime pasarFechaStringToLocalDateTime(String fecha) throws MiExcepcion{
+		 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		 LocalDateTime fechaProporcionada = LocalDateTime.parse(fecha, dateFormatter);
+		 return fechaProporcionada;
+	 }
+			
+	
+			
 	 
 	 public boolean esFinDeSemana(LocalDate fecha) {
 		 DayOfWeek dayOfWeek = fecha.getDayOfWeek();

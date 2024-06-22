@@ -61,6 +61,12 @@ public class Turnos {
 	@Column(name = "activo")
 	Boolean activo;
 	
+	@Column(name = "multa")
+	Boolean multa;
+	
+	@Column(name = "costo_multa")
+	String costoMulta = "5000";
+	
 	@Transient
 	private Provincias provincias;
 	
@@ -78,7 +84,7 @@ public class Turnos {
 	}
 		
 	public Turnos(String provincia, Profesional profesional, LocalDate fecha, String horario, String tratamiento, String dni,
-			String email, Boolean activo) {
+			String email, Boolean activo, Boolean multa, String costoMulta) {
 		this.dni = dni;
 		this.email = email;
 		this.provincia = provincia;
@@ -87,11 +93,34 @@ public class Turnos {
 		this.horario = horario;
 		this.tratamiento = tratamiento;
 		this.activo = activo;
+		this.multa = multa;
+		this.costoMulta = costoMulta;
 	}
 	
 
 	
 	
+	
+	public String getCostoMulta() {
+		return costoMulta;
+	}
+
+
+	public void setCostoMulta(String costoMulta) {
+		this.costoMulta = costoMulta;
+	}
+
+
+	public Boolean getMulta() {
+		return multa;
+	}
+
+
+	public void setMulta(Boolean multa) {
+		this.multa = multa;
+	}
+
+
 	public Cliente getCliente() {
 		return cliente;
 	}

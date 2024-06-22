@@ -74,7 +74,7 @@
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
             </li> 
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesión</a>
             </li>
           </ul>
         </div>
@@ -91,8 +91,8 @@
       <div class="  ft-reserva-turno">
         <div class="texto-solicitar-turno">
           <div>
-          <p class="fs-4">Todos nustros tratamientos incluyen una limpieza facila profunda con extracciones.</p>
-          <p class="fs-4">Por favor siga los pasos a continuacion para solicitar un turno.</p>
+          <p class="fs-4">Todos nuestros tratamientos faciales incluyen una limpieza profunda con extracciones.</p>
+          <p class="fs-4">Por favor, siga los pasos a continuación para solicitar un turno.</p>
         </div>
         </div>
         <div class="container">
@@ -133,7 +133,7 @@
           </form>
           
           <form id="formularioFecha" th:action="@{/seleccionDeFecha}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
-             <label  for="fechaSeleccionada" class="form-label mb-0 mt-2  fs-4">Paso 3: Seleccionar fecha <span class="text-danger ">*</span></label>
+             <label  for="fechaSeleccionada" class="form-label mb-0 mt-2  fs-4">Paso 3: Seleccione fecha <span class="text-danger ">*</span></label>
             <input th:attr="disabled=${isDisabled == null || !isDisabled ? 'disabled' : null}" onchange="autoSubmitFecha()" type="date" name="fechaSeleccionada" class="form-control" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="Fecha">
             
             <input type="hidden" class="form-control" name="nombreDelProfesional" id="nombreDelProfesional" th:value="${nombreDelProfesional}" placeholder="">
@@ -147,7 +147,7 @@
           
             
           <form  th:action="@{/confimarTurnoCliente}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
-              <label for="horario" class="form-label mb-0 mt-2 fs-4">Paso 4: Seleccionar hora <span class="text-danger ">*</span></label>
+              <label for="horario" class="form-label mb-0 mt-2 fs-4">Paso 4: Seleccione hora <span class="text-danger ">*</span></label>
               <select th:attr="disabled=${isHorarioDisabled == null || !isHorarioDisabled ? 'disabled' : null}" name="horario" class="form-select" id="horario" aria-label="Default select example">
                 <option value="" selected>Hora</option>
                 <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->

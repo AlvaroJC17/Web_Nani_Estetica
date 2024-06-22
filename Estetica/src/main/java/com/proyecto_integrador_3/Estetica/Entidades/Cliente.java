@@ -131,6 +131,9 @@ public class Cliente extends Persona implements Serializable {
 	@Column(name = "notas_profesional")
 	String notas_profesional;
 	
+	@Column(name = "multa")
+	Boolean multa;
+	
 	
 	
 
@@ -169,7 +172,7 @@ public class Cliente extends Persona implements Serializable {
 			String cual_enfermedad, String tiroides, String paciente_oncologica, String fractura_facial, String cirugia_estetica, 
 			String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
 			String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
-			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta, String notas_profesional) {
+			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta, String notas_profesional, Boolean multa) {
 		super();
 		this.fuma = fuma;
 		this.drogas = drogas;
@@ -206,18 +209,32 @@ public class Cliente extends Persona implements Serializable {
 		this.cuidado_de_piel = cuidado_de_piel;
 		this.motivo_consulta = motivo_consulta;
 		this.notas_profesional = notas_profesional;
+		this.multa = multa;
 	}
 
-/*	public Boolean getFormularioDatos() {
-		return formularioDatos;
+
+	
+	
+	public List<Turnos> getTurnos() {
+		return turnos;
 	}
 
-	public void setFormularioDatos(Boolean formularioDatos) {
-		this.formularioDatos = formularioDatos;
+
+	public void setTurnos(List<Turnos> turnos) {
+		this.turnos = turnos;
 	}
-	
-	*/
-	
+
+
+	public Boolean getMulta() {
+		return multa;
+	}
+
+
+	public void setMulta(Boolean multa) {
+		this.multa = multa;
+	}
+
+
 	public String getNotas_profesional() {
 		return notas_profesional;
 	}

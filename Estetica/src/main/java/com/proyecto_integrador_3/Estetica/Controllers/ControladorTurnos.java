@@ -1,6 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,6 +10,7 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
@@ -41,15 +43,26 @@ public class ControladorTurnos {
 	ServicioCliente servicioCliente;
 	
 	
+	   
+//	 //Sirve para actualizar el precio de la multa en toda la base de datos  
+//	@PutMapping("/actualizarPrecioMulta")
+//	public void actualizarMultas(@RequestParam String nuevaMulta) {
+//		servicioTurnos.actualizarMultas(nuevaMulta);
+//	}
+	   
+	
 	//Controlador para visualizar turnos del cliente
 	@GetMapping("/misturnos")
 	public String misturnos(
 			@RequestParam(name = "email") String email,
-			Model model) {
+			Model model) throws MiExcepcion {
 		
 		//cuando el usuario ingrese a turnos se verifica si algun turno tiene fecha anterior
 		//a la actual y si eso es afirmativo, entonces pasa el tuno a inactivo.
 		servicioTurnos.actualizarTurnosAntiguos(email);
+		
+		//Elimina los turnos mas antiguo cuando la lista es mayor a 3 y no tienen multas
+		servicioTurnos.eliminarTurnoMasAntiguoNoActivo(email);
 		
 		//datos del cliente y los pasa a la vista, sirve para renderizar la vista
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
@@ -72,34 +85,32 @@ public class ControladorTurnos {
 			@RequestParam(name="idProfesional") String idProfesional,
 			@RequestParam(name="idCliente") String idCliente,
 			Model model
-			) {
+			) throws MiExcepcion {
 		
-		System.out.println("emialCliente: " + emailCliente);
-		System.out.println("idTurno: " + idTurno);
-		System.out.println("Fecha: " + fecha);
-		System.out.println("idProfesional: " + idProfesional);
-		System.out.println("idCliente: " + idCliente);
+		String fechaConHora = fecha + " " + horario;
+		LocalDateTime fechaSeleccionadaLocalDateTime = servicioCliente.pasarFechaStringToLocalDateTime(fechaConHora);
+		LocalDateTime fechaActual = LocalDateTime.now();
 		
-		//Delvuelve a la lista de horarios de determinada fecha el horario seleccionado por el usuario
+		//Si hay una diferencia menor a 24 horas entre la fecha seleccionada y la fecha actual
+		//entra en esta condicion
+		if (servicioHorario.turnoMenorA24Horas(fechaSeleccionadaLocalDateTime, fechaActual)) {
+			System.out.println("Entro a las 24h");
+			//Este servicio se encarga de cancelar y multar el turno y al cliente
+			servicioTurnos.multarTurnoAndClienteMenosDe24Horas(emailCliente, idTurno);
+		}else {
+			System.out.println("No entro en el 24h");
+			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
+			servicioTurnos.actualizarEstadoDelTurno(idTurno);
+		}
+		
+		//Regresa a la lista de horarios la hora seleccionada en el turno cancelado
 		servicioHorario.agregarHorarioDisponible(fecha, horario, idProfesional);
 		
-		//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
-		servicioTurnos.actualizarEstadoDelTurno(idTurno);
-		
-//		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-//		
-//		//Obtenemos una lista de todos los turnos que tiene el usuario con ese email
-//		List<Turnos> tunosDisponibles = servicioTurnos.buscarTurnoPorClienteId(idCliente);
-		
 		return "redirect:/misturnos?email=" + emailCliente;
-		
-//		model.addAttribute("email", email);
-//		model.addAttribute("datosCliente", datosCliente);
-//		model.addAttribute("datosTurno", tunosDisponibles);
-//		return "/pagina_cliente/misturnos";	
 	}
-	
-	
+		
+		
+		
 	
 	 @GetMapping("/turnos")
 	    public String turnos(Model model) {
