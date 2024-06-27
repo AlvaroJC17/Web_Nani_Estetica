@@ -18,6 +18,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
@@ -75,6 +76,7 @@ public class ServicioTurnos {
 		if (turnoPorId.isPresent()) {
 			Turnos actualizarTurnoActivo = turnoPorId.get();
 			actualizarTurnoActivo.setActivo(FALSE);
+			actualizarTurnoActivo.setEstado(EstadoDelTurno.CANCELADO);
 			repositorioTurnos.save(actualizarTurnoActivo);
 		}
 	}
@@ -129,6 +131,7 @@ public class ServicioTurnos {
 				if (fechaTurnoLocalDateTime.isBefore(fechaActual.plusMinutes(15)) && turno.getActivo()) { //comparamos la fecha del tunos con la fecha actual mas 15 min
 					turno.setMulta(TRUE); //Le colocamos una multa al turno que tiene fecha pasada
 					turno.setActivo(false); // Lo pasamos a inactivo
+					turno.setEstado(EstadoDelTurno.CANCELADO);
 					repositorioTurnos.save(turno);
 					
 					Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(email);
@@ -153,6 +156,7 @@ public class ServicioTurnos {
             if (turno.getActivo()) {
             	turno.setMulta(TRUE); // Le colocamos una multa al turno que tiene fecha pasada
             	turno.setActivo(false); // Lo pasamos a inactivo
+            	turno.setEstado(EstadoDelTurno.CANCELADO);
             	repositorioTurnos.save(turno);
             	
             	Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(email);

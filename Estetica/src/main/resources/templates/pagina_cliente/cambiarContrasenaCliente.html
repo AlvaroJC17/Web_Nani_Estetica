@@ -90,8 +90,8 @@
             <input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente" id="idCliente">
             <input type="hidden" th:value="${datosCliente.email}" class="form-control" name="emailCliente" id="emailCliente">
             
-            <div th:if="${exito}" class="fs-5 mt-5 text-success fw-bold text-center">
-	    	<p th:text="${exito}"></p>
+            <div th:if="${exito}" class="mt-5 text-black lh-sm">
+	    	<p class="text-center" th:utext="${exito}"></p>
 	   	</div>
 	   	<div th:if="${error}" class="fs-5 mt-5
 	   	 text-danger fw-bold text-center">

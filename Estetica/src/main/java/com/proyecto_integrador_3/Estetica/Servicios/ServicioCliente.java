@@ -23,6 +23,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
@@ -81,6 +82,7 @@ public class ServicioCliente {
 			nuevo_cliente.setActivo(datosCliente.getActivo());
 			nuevo_cliente.setValidacionForm(TRUE);
 			nuevo_cliente.setFomularioDatos(FALSE);
+			nuevo_cliente.setMulta(FALSE);
 			nuevo_cliente.setDni(dni);
 			nuevo_cliente.setNombre(nombre);
 			nuevo_cliente.setApellido(apellido);
@@ -89,8 +91,8 @@ public class ServicioCliente {
 			nuevo_cliente.setFechaNacimiento(datosCliente.getFechaNacimiento());
 			nuevo_cliente.setSexo(nuevoSexo);
 			nuevo_cliente.setOcupacion(ocupacion);
-			repositorioCliente.save(nuevo_cliente);
-			repositorioUsuario.delete(datosCliente);
+			repositorioUsuario.delete(datosCliente); //primero borramos todos los datos anteriores para que no choquen con el registro de los nuevos
+			repositorioCliente.save(nuevo_cliente); //Guardamos los nuevos datos del cliente
 		}
 	}
 			
@@ -110,7 +112,6 @@ public class ServicioCliente {
 			Sexo nuevoSexo = null;
 			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
 			
-			cliente_actualizado.setEmail(email);
         	cliente_actualizado.setOcupacion(ocupacion);
         	cliente_actualizado.setSexo(nuevoSexo);
         	cliente_actualizado.setDomicilio(domicilio);
@@ -248,7 +249,9 @@ public class ServicioCliente {
 		nuevoTurno.setEmail(email);
 		nuevoTurno.setTratamiento(tratamientosSeleccionados);
 		nuevoTurno.setDniCliente(dniCliente);
+		nuevoTurno.setMulta(FALSE);
 		nuevoTurno.setActivo(TRUE);
+		nuevoTurno.setEstado(EstadoDelTurno.PENDIENTE);
 		repositorioTurnos.save(nuevoTurno);
 		
 	}
@@ -312,23 +315,18 @@ public class ServicioCliente {
 	 	 
 	 public void validarActualizacionDeDatosCliente(String ocupacion, String domicilio, String sexo, String telefono) throws MiExcepcion {
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
-			 throw new MiExcepcion("La ocupacion no puede estar vacio");
+			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+ 					+ "<span class='fs-6'>El campo de la ocupación no puede estar vacío.</span>");
 		 }
 		 
 		 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {
-			 throw new MiExcepcion("La direccion no puede estar vacia");
+			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+ 								 + "<span class='fs-6'>El campo de la dirección no puede estar vacío.</span>");
 		 }
 		 
 		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
-			 throw new MiExcepcion("EL telefono no puede estar vacio");
-		 }
-		 
-		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
-			 throw new MiExcepcion("El sexo no puede estar vacio");
-		 }
-		 
-		 if (!sexo.equalsIgnoreCase("masculino") && !sexo.equalsIgnoreCase("femenino") && !sexo.equalsIgnoreCase("otro")) {
-			 throw new MiExcepcion("El sexo solo puede ser masculino, femenino u otro");
+			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+ 					+ "<span class='fs-6'>El campo del teléfono no puede estar vacío.</span>");
 		 }
 		 
 	 }
@@ -345,17 +343,20 @@ public class ServicioCliente {
 		        Matcher matcher = pattern.matcher(email);
 		        
 		        if (email == null || email.isEmpty() || email.trim().isEmpty()) {
-		            throw new MiExcepcion("El email no puede estar vacio");
+		            throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+		            					+ "<span class='fs-6'>El email no puede estar vacio.</span>");
 		        }
 
 		        // Verificar si la cadena cumple con la expresión regular
 		        if (!matcher.matches()) {
-		            throw new MiExcepcion("El correo electronico no es valido");
+		            throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+        								+ "<span class='fs-6'>El email no es valido, por favor verifique e intente nuevamente.</span>");
 		        } 
 		       
 		        if (!email.equalsIgnoreCase(emailAnterior)) {
 		        	if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
-		        		throw new MiExcepcion("El email ingresado ya se encuentra registrado, por favor ingrese otro");
+		        		throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+            								+ "<span class='fs-6'>El email ingresado ya se encuentra registrado.</span>");
 		        	}
 						
 		        }
@@ -497,7 +498,7 @@ public class ServicioCliente {
 	 
 	 public boolean esFinDeSemana(LocalDate fecha) {
 		 DayOfWeek dayOfWeek = fecha.getDayOfWeek();
-	        return dayOfWeek == DayOfWeek.SATURDAY || dayOfWeek == DayOfWeek.SUNDAY;
+	        return dayOfWeek == DayOfWeek.SUNDAY;
 	    }
 	 
 	 public boolean fechaYaPaso(LocalDate fecha) {

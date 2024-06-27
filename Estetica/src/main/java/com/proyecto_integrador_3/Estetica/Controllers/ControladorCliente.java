@@ -169,7 +169,9 @@ public class ControladorCliente {
 		//validamos que se seleccione una provincia
 		if (!servicioProfesional.validarProvincia(provincia)) {
 			isDisabled = false;
-			error = "Debe seleccionar un provincia";
+			error ="<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"+
+			"<span class='fs-6'>Es necesario que seleccione la provincia donde vive para poder ver que"
+			+ " profesionales estan disponibles.</span>";
 			model.addAttribute("error", error);
 			model.addAttribute("isDisabled", isDisabled);
 			model.addAttribute("showModalError", true);
@@ -193,7 +195,8 @@ public class ControladorCliente {
 		//Validamos que si la lista de profesionales esta vacia para esa provincia, mandamos un
 		//error con un mensaje
 		if (profesionalesPorProvincia.isEmpty()) {
-			error = "No hay profesionales disponibles para la provincia seleccionada";
+			error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+					+"<span class='fs-6'>Lamentamos informarle que no hay profesionales disponibles para la provincia seleccionada.</span>";
 			isDisabled = false;
 			model.addAttribute("error", error);
 			model.addAttribute("isDisabled", isDisabled);
@@ -339,7 +342,7 @@ public class ControladorCliente {
 				
 				//Definimos la fecha maxima que se puede usar para sacar turnos
 				//fechaMaxima toma la fecha actual del sistema y le da un meximo de dos meses hacia adelante
-				LocalDate fechaMaxima = LocalDate.now().plusMonths(2);
+				LocalDate fechaMaxima = LocalDate.now().plusMonths(1);
 				
 				/*Verifica si existe la fecha asociada a ese id profesional en la base de datos.
 				 * Si existe, nos devuelve la lista de horarios disponibles en la base de datos asociados a esa fecha
@@ -387,7 +390,9 @@ public class ControladorCliente {
 			
 	    //Metodo que recibe una fecha tipo LocalDate y devuelve true si la fecha es anterior a la actual
 				if (servicioCliente.fechaYaPaso(fechaSeleccionadaLocalDate)) {
-					String error = "No se puede seleccionar un fecha pasada";
+					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+							+ "<span fs-6'>No se puede seleccionar una fecha pasada, por favor verifique la fecha"
+							+ " en la que desea seleccionar el turno.</span>";
 					isDisabled = true;
 					modelo.addAttribute("error", error);
 					modelo.addAttribute("showModalError", true);
@@ -404,7 +409,11 @@ public class ControladorCliente {
 				
 //	   //Metodo que recibe una fecha tipo LocalDate y devuelve true si es fin de semana
 //				if (servicioCliente.esFinDeSemana(fechaSeleccionadaLocalDate)) {
-//					String error = "No trabajamos los fines de semanas";
+//					String error = "<span class='fw-bold fs-5'>Horarios de Atención:</span><br><br>" +
+//			                 "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>" +
+//			                 "<span class='fs-6'>Queremos informarle que nuestro horario de atención es de lunes a viernes de 9:00 a 18:00 y los sábados de 9:00 a 15:00.<br><br>" +
+//			                 "Agradecemos su comprensión y le pedimos disculpas por cualquier inconveniente que esto pueda causar."
+//			                 + " Para más información puede comunicarse con nosotros por cualquiera de nuestros canales digitales.</span>";
 //					isDisabled = true;
 //					modelo.addAttribute("error", error);
 //					modelo.addAttribute("showModalError", true);
@@ -421,7 +430,11 @@ public class ControladorCliente {
 				//Definimos una fecha maxima de dos meses a partir de la fecha actual
 				//Con esto limitamos al usuario a que no pueda solicitar turnos mas alla de dos meses en adelante de la fecha actual
 				if (fechaSeleccionadaLocalDate.isAfter(fechaMaxima)) {
-					String error = "Lo sentimos, todavia no hay turnos habilitados para esta fecha";
+					String error = "<span class='fs-6 fw-bold'>Estimado Cliente,</span><br><br>"
+							+ "<span class='fs-6'>Todavía no tenemos turnos habilitados para esta fecha, por favor tenga en cuenta que solo es posible solicitar turnos con un máximo de 30 días a partir"
+							+ " de la fecha actual. Esta política nos permite gestionar y organizar nuestros recursos de manera"
+							+ " eficiente, asegurando un mejor servicio para todos nuestros clientes.<br><br>"
+							+ "Le agradecemos su comprensión y colaboración. Si tiene alguna duda o necesita asistencia, no dude en contactarnos.</span>";
 					modelo.addAttribute("error", error);
 					isDisabled = true;
 					modelo.addAttribute("showModalError", true);
@@ -437,7 +450,10 @@ public class ControladorCliente {
 				
 				//Si la lista de horariosDisponibles esta vacia, devuelve el mensaje de error.
 				if (ObtenerHorariosDisponibles.isEmpty()) {
-					String error = "No hay turnos disponibles para la fecha seleccionada";
+					String error = "<span class='fs-6 fw-bold'>Estimado Cliente,</span><br><br>"
+							+ "<span class='fs-6'>Lamentamos informarle que no hay turnos disponibles para la fecha que ha"
+							+ " seleccionado. Le sugerimos intentar en otro momento o seleccionar una fecha diferente para su turno.<br><br>"
+							+ "Agradecemos su comprensión y le pedimos disculpas por cualquier inconveniente que esto pueda ocasionar.</span>";
 					isDisabled = true;
 					modelo.addAttribute("error", error);
 					modelo.addAttribute("showModalError", true);
@@ -454,9 +470,10 @@ public class ControladorCliente {
 				
 				//Limitamos a que el usuario solo pueda tener un maximi de tres activos
 				if (servicioTurnos.checkActiveTurnos(emailCliente)) {
-					String error = "Solo se permite tener un maximo de tres turnos activos,"
-							+ "si necesita modificar un turno o seleccionar uno nuevo puede"
-							+ "ir al apartado de mis turnos y cancerlar alguno de los turnos activos";
+					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+							+ "<span class='fs-6'>Solo se permite tener un máximo de tres turnos activos."
+							+ " Si necesita modificar un turno o seleccionar uno nuevo, puede"
+							+ " ir al apartado de \"Mis turnos\" y cancerlar alguno de los turnos activos.</span>";
 					isDisabled = true;
 					modelo.addAttribute("error", error);
 					modelo.addAttribute("showModalError", true);
@@ -539,15 +556,22 @@ public class ControladorCliente {
 				servicioHorario.actualizarHorariosDisponibles(fechaSeleccionada, horariosDisponibles, idProfesional);
                 
                 //cuando el usuario selecciona un nuevo turno, eliminar el turno mas antiguo
-                //que tenga estado inactivo
+                //que tenga estado inactivo y no tenga multas
                 servicioTurnos.eliminarTurnoMasAntiguoNoActivo(emailCliente);
                 
                 
                 //Obtenemos una lista de turnos del usuario a traves de su id
                 List<Turnos> tunosDisponibles = servicioTurnos.buscarTurnoPorClienteId(idCliente);
                 
+                
                 //Se dispara el modal de exito y se redirecciona a la pagina de mis turnos
-                String exito = "Gracias por seleccionar un turno";
+                String exito = "<span class='fs-6 fw-bold'>Estimado Cliente,</span><br><br>"
+                		+ "<span class='fs-6'>Gracias por seleccionar un turno con nosotros. Nos complace poder atenderle.<br><br>"
+                		+ "Es importante informarle que reservar un turno <span class='fw-bold'> no garantiza el precio del mismo</span>, ya que los precios pueden"
+                		+ " variar antes de la fecha seleccionada del turno. En caso de algún aumento, le será notificado con antelación.<br><br>"
+                		+ "Agradecemos su comprensión y quedamos a su disposición para cualquier consulta.<br><br>"
+                		+ "Atentamente,<br><br>"
+                		+ "Nani Estetica</span>";
                 model.addAttribute("exito", exito);
                 model.addAttribute("datosTurno", tunosDisponibles);
                 model.addAttribute("emailCliente", emailCliente);
@@ -723,6 +747,7 @@ public class ControladorCliente {
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosCliente", datosCliente);
+		model.addAttribute("sexos", Sexo.values());
 	return "/pagina_cliente/misdatosCliente";	
 	}
 	
@@ -773,6 +798,7 @@ public class ControladorCliente {
 			@RequestParam(name="telefono", required = false) String telefono,
 			ModelMap model) throws MiExcepcion {
 		
+		System.out.println("ID cliente: " + idCliente);
 		//Buscamos mediante el id el mail anterior del cliente y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
 		// entonces usamos este mail anterior para poder pasarlo al controlador de misdatosClientes y poder visualizar los datos del cliente
 		// Tambien buscamos los valores previamente guardados en la base de datos para poder compararlos con los nuevos
@@ -787,18 +813,30 @@ public class ControladorCliente {
 		if (identificarCliente.isPresent()) {
 			Cliente datosAnteriorCliente = identificarCliente.get();
 			emailAnterior = datosAnteriorCliente.getEmail();
-			ocupacionAnterior = datosAnteriorCliente.getOcupacion();
-			domicilioAnterior = datosAnteriorCliente.getDomicilio();
+			ocupacionAnterior = datosAnteriorCliente.getOcupacion().toUpperCase();
+			domicilioAnterior = datosAnteriorCliente.getDomicilio().toUpperCase();
 			sexoAnterior = datosAnteriorCliente.getSexo();
-			nuevoSexo = sexoAnterior.toString();
-			telefonoAnterior = datosAnteriorCliente.getTelefono();
+			nuevoSexo = sexoAnterior.toString().toUpperCase();
+			telefonoAnterior = datosAnteriorCliente.getTelefono().toUpperCase();
+		}
+		
+		//Cuando el cliente le da guardar a los datos sin modificar nada el sexo viene con valor vacioa
+		//por eso armamos este condicional para manejar el error y asignarle un valor a sexo
+		//que es el valor que tiene guardado en cliente en la base
+		if (sexo == null || sexo.isEmpty()) {
+			sexo = nuevoSexo;
+		}
+		
+		if (ocupacionAnterior == null || ocupacionAnterior.isEmpty()) {
+			ocupacionAnterior = ocupacion;
 		}
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email); //Buscamos todos los datos pertenecientes al cliente despues de haber sido actualizados en la base de datos y los mostramos en el campo correspondiente
-		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
+		//Teniendo el valor de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
 				//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
-		if (ocupacionAnterior.equals(ocupacion) && emailAnterior.equals(email) && domicilioAnterior.equals(domicilio) && nuevoSexo.equals(sexo) && telefonoAnterior.equals(telefono)) {
+		if (ocupacionAnterior.equals(ocupacion.toUpperCase()) && domicilioAnterior.equals(domicilio.toUpperCase()) && nuevoSexo.equals(sexo.toUpperCase()) && telefonoAnterior.equals(telefono.toUpperCase())) {
 			model.addAttribute("emial", email);
+			model.addAttribute("sexos", Sexo.values());
 			model.addAttribute("datosCliente",datosCliente);
 			return "/pagina_cliente/misdatosCliente";
 			
@@ -808,9 +846,11 @@ public class ControladorCliente {
 			//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
 			servicioCliente.modificarCliente(idCliente, ocupacion, email, emailAnterior, domicilio, sexo, telefono );
 			List <Usuario> datosClienteActualizados = servicioUsuario.buscarPorEmail(email);
-			String exito = "Datos actualizados correctamente";
+			String exito = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+							+"<span class='fs-6'>Sus datos han sido actualizados de forma exitosa</span>";
 			model.addAttribute("datosCliente",datosClienteActualizados);
 			model.addAttribute("exito",exito);
+			model.addAttribute("sexos", Sexo.values());
 			model.addAttribute("showModalExito", true);
 			return "/pagina_cliente/misdatosCliente";
 			
@@ -818,6 +858,7 @@ public class ControladorCliente {
 			String error = e.getMessage(); // en la exepcion e.getmessage obtenenos el valor de la exepcion personalizada que se de y la enviamos al controlador de misdatosCliente para ser monstrada en pantalla
 			List <Usuario> datosClienteAnterior = servicioUsuario.buscarPorEmail(emailAnterior); //Buscamos los datos ateriores a la excepcion y los mostramos en caso de que haya un error por parte del usuario
 			model.addAttribute("datosCliente",datosClienteAnterior);
+			model.addAttribute("sexos", Sexo.values());
 			model.addAttribute("error",error);
 			model.addAttribute("showModalError", true);
 			return "/pagina_cliente/misdatosCliente";

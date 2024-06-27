@@ -105,10 +105,10 @@
 								name="emailProfesional" id="emailProfesional">
 
 							<div th:if="${exito}" class="fs-5 mt-5 text-success fw-bold text-center">
-								<p th:text="${exito}"></p>
+								<p th:utext="${exito}"></p>
 							</div>
 							<div th:if="${error}" class="fs-5 mt-5 text-danger fw-bold text-center">
-								<p th:text="${error}"></p>
+								<p th:utext="${error}"></p>
 							</div>
 
 							<div class="d-flex justify-content-center mt-4  text-center ">

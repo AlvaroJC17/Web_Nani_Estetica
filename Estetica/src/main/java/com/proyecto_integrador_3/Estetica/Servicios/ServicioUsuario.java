@@ -190,16 +190,18 @@ public class ServicioUsuario {
 		
 		 
 		 @Transactional
-		    public void modificarRol(String id, Rol rol) {
+		    public void modificarRol(String id, Rol nuevoRol) {
 
 		        Optional<Usuario> presente = repositorioUsuario.findById(id);
 
 		        if (presente.isPresent()) {
 		        	Usuario usuario_rol = new Admin();
 		        	usuario_rol = presente.get();
-		        	usuario_rol.setRol(rol);
 		        	usuario_rol.setValidacionForm(FALSE); //volvemos el form a false para que el cambio de rol obligue al usuario a llenar la nueva planilla de su rol
+		        	usuario_rol.setRol(nuevoRol);
 		        	repositorioUsuario.save(usuario_rol);
+						
+		        	
 		        }
 		        
 		    }
@@ -210,7 +212,9 @@ public class ServicioUsuario {
 	  public void validarEmail(String email) throws MiExcepcion {
 			  
 			  if (Objects.equals(email, null) || email.isEmpty() || email.trim().isEmpty()) {
-		            throw new MiExcepcion("El correo electronico no puede estar vacío");
+		            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+		            					 +"<span class='fs-6'>El campo de correo electrónico no puede quedar vacío."
+		            					 + " Por favor ingrese un correo electrónico válido</span>");
 		        }
 		  }
 		 
@@ -226,15 +230,20 @@ public class ServicioUsuario {
 	        Matcher matcher = pattern.matcher(email);
 
 	        if (Objects.equals(email, null) || email.isEmpty() || email.trim().isEmpty()) {
-	            throw new MiExcepcion("El correo electronico no puede estar vacío");
+	            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+   					 +"<span class='fs-6'>El campo de correo electrónico no puede quedar vacío."
+   					 + " Por favor ingrese un correo electrónico válido</span>");
 	        }
 	        // Verificar si la cadena cumple con la expresión regular
 	        if (!matcher.matches()) {
-	            throw new MiExcepcion("El correo electronico no es valido");
+	            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+   					 +"<span class='fs-6'>El correo electrónico no es válido.</span>");
 	        } 
 	       
 	        if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
-	            throw new MiExcepcion("El correo electronico ya se encuentra registrado");
+	            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+   					 +"<span class='fs-6'>El correo electrónico ya se encuentra registrado, por favor"
+   					 + "ingrese otro.</span>");
 	        }
 
 	    }
@@ -255,17 +264,26 @@ public class ServicioUsuario {
 	         
 	         
 	         if (pass.isEmpty()) {
-	        	 throw new MiExcepcion("La constrasena no puede estar vacía");
+	        	 throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+    					 +"<span class='fs-6'>El campo de la contraseña por puede quedar vacío."
+    					 + "Por favor ingrese una contraseña válida.</span>");
 	         }
 	         if (pass2.isEmpty()) {
-	        	 throw new MiExcepcion("La constrasena no puede estar vacía");
+	        	 throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+    					 +"<span class='fs-6'>El campo de la contraseña por puede quedar vacío."
+    					 + "Por favor ingrese una contraseña válida.</span>");
 			}
 	         // Verificar si la cadena cumple con la expresión regular
 	         if (!matcher.matches()) {
-	        	 throw new MiExcepcion("La contrasena debe tener al menos 8 digitos, una mayuscula, una minuscula y un numero.");
+	        	 throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+    					 +"<span class='fs-6'>La contraseña debe tener al menos 8 dígitos, de los cuales de haber mínimo"
+    					 + " una letra mayúscula,"
+    					 + " una letra minúscula y un número.</span>");
 	         }  
 	         if (!pass.equals(pass2)) {
-	        	 throw new MiExcepcion("Las contrasenas no son iguales");
+	        	 throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+    					 +"<span class='fs-6'>Las contraseñas ingresadas no coinciden, por favor"
+    					 + " intente nuevamente.</span>");
 	         }
 	         return true;
 	    }
@@ -324,7 +342,9 @@ public class ServicioUsuario {
 	    		
 	    		//Validamos que la fecha no sea null antes de pasarla a LocalDate
 	    		if (Objects.equals(fechaNacimiento, null) || fechaNacimiento.isEmpty()) {
-	    			throw new MiExcepcion("La fecha de nacimiento no puede estar vacia");
+	    			throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+	    					 +"<span class='fs-6'>El campo de la fecha de nacimiento no puede"
+	    					 + " estar vacío.</span>");
 				}
 	    		
 	    		// pasamos la fecha de String a date y luego a LocalDate
@@ -342,7 +362,9 @@ public class ServicioUsuario {
 	  
 	    		//Validamos que el usuario sea mayor de 13 años
 	    		if (edad <= 13) {
-	    			throw new MiExcepcion("No cumples la edad minima para usar nuestros servicios");
+	    			throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+	    					 +"<span class='fs-6'>Lamentamos informarte que no cumples con la edad mínima"
+	    					 + " requerida para utilizar los servicios de nuestra página.</span>");
 				}
 	    		return true;
 	    	}

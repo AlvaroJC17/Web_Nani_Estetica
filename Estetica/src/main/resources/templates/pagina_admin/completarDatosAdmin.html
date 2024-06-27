@@ -95,8 +95,8 @@
 	          	<input type="hidden" th:value="${emailUsuario}" class="form-control" name="emailUsuario" id="emailUsuario" placeholder="">
 	    	  </div>
 	    	  
-	    	  <div th:if="${error}" class="fs-5 mt-2 text-center">
-	     		<p th:text="${error}"></p>
+	    	  <div th:if="${error}" class="mt-2 text-black lh-sm">
+	     		<p class="text-center" th:utext="${error}"></p>
 	  		  </div>
             
           </div>

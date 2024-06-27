@@ -1,9 +1,12 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
+import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -70,6 +73,10 @@ public class Turnos {
 	@Transient
 	private Provincias provincias;
 	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "estado")
+	EstadoDelTurno estado;
+	
 	public Turnos() {
 		
 	}
@@ -84,7 +91,7 @@ public class Turnos {
 	}
 		
 	public Turnos(String provincia, Profesional profesional, LocalDate fecha, String horario, String tratamiento, String dni,
-			String email, Boolean activo, Boolean multa, String costoMulta) {
+			String email, Boolean activo, Boolean multa, String costoMulta, EstadoDelTurno estado) {
 		this.dni = dni;
 		this.email = email;
 		this.provincia = provincia;
@@ -95,12 +102,23 @@ public class Turnos {
 		this.activo = activo;
 		this.multa = multa;
 		this.costoMulta = costoMulta;
+		this.estado = estado;
 	}
 	
 
-	
-	
-	
+
+
+
+	public EstadoDelTurno getEstado() {
+		return estado;
+	}
+
+
+	public void setEstado(EstadoDelTurno estado) {
+		this.estado = estado;
+	}
+
+
 	public String getCostoMulta() {
 		return costoMulta;
 	}

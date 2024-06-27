@@ -220,34 +220,19 @@ public class ControladorAdmin {
 		List<Usuario> usuarioEmail = servicioUsuario.buscarPorEmail(datoIngresadoUsuario);
 		
 		String error = "Es necesario seleccionar un usuario";
+		model.addAttribute("usuariosEmail", emailAdministrador); // sirve para mostrar el nav
+		model.addAttribute("dato2", datoIngresadoUsuario); //Esta variable es para el modal
+		model.addAttribute("dato", datoIngresadoUsuario); // esta variable dato es para el hiden imput del formulario modificarUsuario 
+		model.addAttribute("error", error);
+		model.addAttribute("showModalError", true);
 		if (!usuarioDni.isEmpty()) {
-			System.out.println("Entro en dni");
 			model.addAttribute("usuarios", usuarioDni); // Esta variable hace la iteracion de los usuarios a mostrar
-			model.addAttribute("usuariosEmail", emailAdministrador); // sirve para mostrar el nav
-			model.addAttribute("dato2", datoIngresadoUsuario); //Esta variable es para el modal
-			model.addAttribute("dato", datoIngresadoUsuario); // esta variable dato es para el hiden imput del formulario modificarUsuario 
-			model.addAttribute("error", error);
-			model.addAttribute("showModalError", true);
-			return "/pagina_admin/portalAdmin";
-			
+			return "/pagina_admin/portalAdmin";	
 		}else if(!usuarioNombre.isEmpty()) {
-			System.out.println("Entro en nombre");
 			model.addAttribute("usuarios", usuarioNombre);
-			model.addAttribute("usuariosEmail", emailAdministrador);
-			model.addAttribute("dato2", datoIngresadoUsuario);
-			model.addAttribute("dato", datoIngresadoUsuario);
-			model.addAttribute("error", error);
-			model.addAttribute("showModalError", true);
 			return "/pagina_admin/portalAdmin";
-			
 		}else if(!usuarioEmail.isEmpty()) {
-			System.out.println("Entro en email");
 			model.addAttribute("usuarios", usuarioEmail);
-			model.addAttribute("usuariosEmail", emailAdministrador);
-			model.addAttribute("dato2", datoIngresadoUsuario);
-			model.addAttribute("dato", datoIngresadoUsuario);
-			model.addAttribute("error", error);
-			model.addAttribute("showModalError", true);
 			return "/pagina_admin/portalAdmin";
 		}
 		return "/pagina_admin/portalAdmin";
@@ -276,14 +261,15 @@ public class ControladorAdmin {
 			return "redirect:/mensajeErrorNoID?emailAdmin=" + emailAdministrador + "&datoIngresadoUsuario=" + dato ;
 		}
 			
+		
 		//Validamos que la opcion rol no sea "Modifical rol" y pasamos el valor de String a Rol
 		Rol nuevoRol = null;
-		
 		if (!"Modifical rol".equals(nuevoRolNombre)) {
 			try {
 	            // Convertir el nuevoRol solo si no es "Modificar Rol"
 	            nuevoRol = Rol.valueOf(nuevoRolNombre.toUpperCase());
 	        } catch (IllegalArgumentException e) {
+	        	System.out.println("No se puede convertir el rol a string");
 	            System.out.println(e.getMessage());
 	        }
 		}
@@ -390,20 +376,19 @@ public class ControladorAdmin {
 				model.addAttribute("usuariosEmail", emailAdministrador);
 				model.addAttribute("exito", exito);
 				model.addAttribute("showModalBorradoExitoso", true);
-				//model.addAttribute("dato2",email);
 				return "/pagina_admin/portalAdmin";
-				//return "redirect:/listarUsuariosOcultos?email=" + emailAdministrador + "&exito=" + exito; //Enviamos mail y mensaje de exito
+
 			} catch (Exception e) {
 				error = "Usuario no se pudo eliminar";
 				model.addAttribute("usuariosEmail", emailAdministrador);
 				model.addAttribute("error", error);
 				model.addAttribute("showModalError", true);
 				return "/pagina_admin/portalAdmin";
-				//return "redirect:/listarUsuariosOcultos?email=" + emailAdministrador + "&error=" + error; //Enviamos mail y mensaje de error;
 			}
 		}
 		return "/pagina_admin/portalAdmin";
 	}
+				
 		
 	
 	
@@ -469,7 +454,6 @@ public class ControladorAdmin {
 			model.addAttribute("email", email);
 			model.addAttribute("datosAdmin",datosAdmin);
 			return "/pagina_admin/misdatosAdmin";
-			//return "redirect:/misdatosAdmin?email=" + email;
 		}
 		
 		try {

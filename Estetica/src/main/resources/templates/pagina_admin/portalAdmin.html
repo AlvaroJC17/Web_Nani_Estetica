@@ -63,7 +63,7 @@
 			<section class=" section-misdatos">
 				<div class="container-fluid form-misdatos d-block  justify-content-center align-items-center ">
 					<div>
-						<h3 class="text-center mb-5 ">Lista de usuarios</h3>
+						<h3 class="text-center mb-5 ">Buscador de usuarios</h3>
 					</div>
 
 					<div class="">
@@ -91,8 +91,8 @@
 				<div class="modal-header border border-0 d-flex justify-content-center">
 					<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
 				</div>
-				<div class="modal-body text-center text-danger text-uppercase fw-bold">
-					<p th:text="${exito}"></p>
+				<div class="modal-body text-black lh-sm">
+					<p class="text-center" th:utext="${exito}"></p>
 				</div>
 				<div class="modal-footer border border-0">
 					<!--Recibe el valor de ${dato2} cuando el usuario da a buscar a un usuario en el buscador
@@ -198,13 +198,14 @@
 								<div style="background-color: #ebdf9d;" class="modal-content">
 									<div class="modal-header d-block  text-center border border-0">
 										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
-										<h1 class="modal-title fs-4 fw-bold" id="staticBackdropLabel">¿Estas seguro de modificar el
+										<h1 class="modal-title text-black lh-sm text-center fs-5 fw-bold" id="staticBackdropLabel">¿Estas seguro de modificar el
 											rol de este usuario?</h1>
 									</div>
-									<div class="modal-body">
-										Al modificar el rol de este usuario le das diferentes tipos de permisos como pueden ser permisos
+									<div class="modal-body text-black lh-sm text-center">
+										<span class="fs-6 fw-bold">Estimado usuario,</span><br><br>
+										<span class="fs-6">Al modificar el rol de este usuario le das diferentes tipos de permisos como pueden ser permisos
 										de profesional o de administrador, asi que por verifica que el rol que le estes asigando al usuario
-										sea el adecuado.
+										sea el adecuado.</span>
 									</div>
 									<div class="modal-footer border border-0">
 										<button type="button" class="btn btn-danger"
@@ -227,14 +228,15 @@
 								<div style="background-color: #ebdf9d;" class="modal-content">
 									<div class="modal-header d-block  text-center border border-0">
 										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
-										<h1 class="modal-title fs-4 fw-bold" id="staticBackdropLabel">¿Estas seguro de
+										<h1 class="modal-title text-black lh-sm fs-4 fw-bold text-center" id="staticBackdropLabel">¿Estas seguro de
 											darle de alta a este usuario?</h1>
 									</div>
-									<div class="modal-body">
-										Al darle de alta a un usuario, este queda activo nuevamente en el sistema, por
+									<div class="modal-body lh-sm text-center">
+										<span class="fs-6 fw-bold">Estimado usuario,</span><br><br>
+										<span class="fs-6">Al darle de alta a un usuario, este queda activo nuevamente en el sistema, por
 										lo que puede
 										volver a iniciar sesion en su cuenta y usar los servicios ofrecidos por la
-										pagina.
+										pagina.</span>
 									</div>
 									<div class="modal-footer border border-0">
 										<button type="button" class="btn btn-danger"
@@ -256,14 +258,15 @@
 								<div style="background-color: #ebdf9d;" class="modal-content">
 									<div class="modal-header d-block  text-center border border-0">
 										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
-										<h1 class="modal-title fs-4 fw-bold" id="staticBackdropLabel">¿Estas seguro de
+										<h1 class="modal-title text-black lh-sm fs-4 fw-bold text-center" id="staticBackdropLabel">¿Estas seguro de
 											darle de baja a este usuario?</h1>
 									</div>
-									<div class="modal-body">
-										Si le das de baja al usuario, este quedara inhabilitado del sistema, por lo que
+									<div class="modal-body lh-sm text-center">
+										<span class="fs-6 fw-bold">Estimado usuario,</span><br><br>
+										<span class="fs-6">Si le das de baja al usuario, este quedara inhabilitado del sistema, por lo que
 										no podra iniciar sesión en su cuenta ni
 										usar los servicios ofrecidos por la pagina. Esta acción se puede revertir dadole
-										de alta nuevamente al usuario.
+										de alta nuevamente al usuario.</span>
 									</div>
 									<div class="modal-footer border border-0">
 										<button type="button" class="btn btn-danger"
@@ -287,12 +290,14 @@
 								<div style="background-color: #ebdf9d;" class="modal-content">
 									<div class="modal-header d-block  text-center border border-0">
 										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
-										<h1 class="modal-title fs-4 fw-bold" id="staticBackdropLabel">¿Estas seguro de
+										<h1 class="modal-title fs-4 fw-bold text-black lh-sm text-center" id="staticBackdropLabel">¿Estas seguro de
 											eliminar este usuario?</h1>
 									</div>
-									<div class="modal-body">
-										Si eliminas el usuario, se borraran todos sus datos de la base de datos y no se
-										podran recuperar.
+									<div class="modal-body text-black lh-sm">
+										<span class="fs-6 fw-bold">Estimado usuario,</span><br><br>
+										<span class="fs-6">Si eliminas este usuario, todos sus datos se borrarán
+											 permanentemente de la base de datos y no podrán ser recuperados. Esta 
+											 acción es irreversible.</span>
 									</div>
 									<div class="modal-footer border border-0">
 										<button type="button" class="btn btn-danger"
@@ -321,8 +326,8 @@
             <div class="modal-header border border-0 d-flex justify-content-center ">
 			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
             </div>
-            <div class="modal-body text-center text-danger text-uppercase fw-bold">
-                <p th:text="${error}">Ha ocurrido un error. Por favor, revise los datos ingresados.</p>
+            <div class="modal-body text-black lh-sm">
+                <p class="text-center" th:utext="${error}"></p>
             </div>
             <div class="modal-footer border border-0">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
@@ -340,8 +345,8 @@
             <div class="modal-header border border-0 d-flex justify-content-center ">
 			<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
             </div>
-            <div class="modal-body text-center text-danger text-uppercase fw-bold">
-                <p th:text="${exito}">Ha ocurrido un error. Por favor, revise los datos ingresados.</p>
+            <div class="modal-body text-black lh-sm">
+                <p class="text-center" th:utext="${exito}"></p>
             </div>
             <div class="modal-footer border border-0">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>

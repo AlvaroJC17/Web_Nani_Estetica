@@ -511,8 +511,8 @@
             <img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif"
               alt="imagen de aprobado">
           </div>
-          <div class="modal-body text-center text-danger text-uppercase fw-bold">
-            <p class="fs-6" th:text="${exito}"></p>
+          <div class="modal-body text-black lh-sm">
+            <p class="text-center" th:utext="${exito}"></p>
           </div>
           <div class="modal-footer border border-0">
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
@@ -531,8 +531,8 @@
           <div class="modal-header border border-0 d-flex justify-content-center ">
             <img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
           </div>
-          <div class="modal-body text-center text-danger text-uppercase fw-bold">
-            <p th:text="${error}"></p>
+          <div class="modal-body text-black lh-sm">
+            <p class="text-center" th:utext="${error}"></p>
           </div>
           <div class="modal-footer border border-0">
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>

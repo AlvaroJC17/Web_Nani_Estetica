@@ -147,7 +147,7 @@
             
           <form  th:action="@{/confimarTurnoCliente}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
               <label for="horario" class="form-label mb-0 mt-2 fs-4">Paso 4: Seleccionar hora <span class="text-danger ">*</span></label>
-              <select  name="horario" class="form-select" id="horario" aria-label="Default select example">
+              <select th:attr="disabled=${isHorarioDisabled == null || !isHorarioDisabled ? 'disabled' : null}" name="horario" class="form-select" id="horario" aria-label="Default select example">
                 <option value="" selected>Hora</option>
                 <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->
                 <option th:each="horario : ${horarios}" th:value="${horario}" th:text="${horario}"></option>
@@ -225,8 +225,8 @@
             <div class="modal-header border border-0 d-flex justify-content-center ">
 			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
             </div>
-            <div class="modal-body text-center text-danger text-uppercase fw-bold">
-                <p th:text="${error}"></p>
+            <div class="modal-body text-black lh-sm">
+                <p class="text-center" th:utext="${error}"></p>
             </div>
             <div class="modal-footer border border-0">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>

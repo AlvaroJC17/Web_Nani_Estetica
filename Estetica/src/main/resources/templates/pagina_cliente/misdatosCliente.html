@@ -66,7 +66,6 @@
     <h3 class="">Datos personales</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
-        <form th:action="@{/actualizarDatosCliente}" method="post">
           <div class="row">
           <div class="mb-3 col-lg-4">
             <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
@@ -87,14 +86,18 @@
             <input type="date" th:value="${#strings.toUpperCase(datosCliente.fechaNacimiento)}"  class="form-control" id="nacimiento" placeholder="" disabled>
           </div>
           <div class="mb-3 col-lg-6 ">
-            <label for="ocupacion" class="form-label texto-label">Ocupación</label>
-            <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosCliente.ocupacion)}" class="form-control" id="ocupacion" placeholder="">
+			<label for="email" class="form-label texto-label">Email</label>
+            <input type="email" name="email" th:value="${#strings.toUpperCase(datosCliente.email)}" class="form-control" id="email" placeholder="" disabled>
           </div>
         </div>
+        
+        
+
+        <form th:action="@{/actualizarDatosCliente}" method="post">
         <div class="row">
           <div class="mb-3 col-lg-6">
-            <label for="email" class="form-label texto-label">Email</label>
-            <input type="email" name="email" th:value="${#strings.toUpperCase(datosCliente.email)}" class="form-control" id="email" placeholder="">
+			<label for="ocupacion" class="form-label texto-label">Ocupación</label>
+            <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosCliente.ocupacion)}" class="form-control" id="ocupacion" placeholder="">
           </div>
           <div class="mb-3 col-lg-6">
             <label for="domicilio" class="form-label texto-label">Direccion</label>
@@ -104,7 +107,10 @@
         <div class="row ">
           <div class="mb-3 col-lg-6">
             <label for="sexo" class="form-label texto-label">Sexo</label>
-            <input type="text" name="sexo" th:value="${#strings.toUpperCase(datosCliente.sexo)}" class="form-control" id="sexo" placeholder="">
+            <select  name="sexo" class="form-select" id="sexo" aria-label="Default select example">
+            <option value=""  th:selected="${datosCliente.sexo}" th:text="${datosCliente.sexo}"></option>
+            <option th:each="sexo : ${sexos}" th:value="${sexo.name()}" th:text="${sexo.name()}"></option>
+            </select>
           </div>
           <div class="mb-3 col-lg-6">
             <label for="telefono" class="form-label texto-label">Telefono</label>
@@ -113,7 +119,7 @@
         </div>
         
         <input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente" id="idCliente"> <!--input oculto para enviar el id del cliente al controlador actualizarDatosCliente-->
-        
+        <input type="hidden" th:value="${datosCliente.email}" class="form-control" name="email" id="email">
 	 
         <div class="boton-de-registro mt-4  text-center">
           <a href="#"><button type="submit" class="bn632-hover bn26">Guardar</button></a>
@@ -135,8 +141,8 @@
 				<div class="modal-header border border-0 d-flex justify-content-center">
 					<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
 				</div>
-				<div class="modal-body text-center text-danger text-uppercase fw-bold">
-					<p class="fs-6" th:text="${exito}"></p>
+				<div class="modal-body text-black lh-sm">
+					<p class="text-center" th:utext="${exito}"></p>
 				</div>
 				<div class="modal-footer border border-0">
 					<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
@@ -154,8 +160,8 @@
             <div class="modal-header border border-0 d-flex justify-content-center ">
 			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
             </div>
-            <div class="modal-body text-center text-danger text-uppercase fw-bold">
-                <p th:text="${error}"></p>
+            <div class="modal-body text-black lh-sm">
+                <p class="text-center" th:utext="${error}"></p>
             </div>
             <div class="modal-footer border border-0">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>

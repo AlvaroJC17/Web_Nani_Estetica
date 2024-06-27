@@ -69,8 +69,9 @@
 que se genere en iteracion, esto evita que al tener varios turnos, se cruce la info entre ellos al
 tener el mismo ID-->
         <div class="ft-misturnos" th:each="turnos, iterStat : ${datosTurno}">
-          <div th:if="${turnos.activo}" class="bg-warning text-center text-white">Pendiente</div>
-          <div th:unless="${turnos.activo}" class="bg-danger text-center text-white">Cancelado</div>
+          <div th:if="${turnos.estado.toString() == 'PENDIENTE'}" class="bg-warning text-center text-white">Pendiente</div>
+		  <div th:if="${turnos.estado.toString() == 'CANCELADO'}" class="bg-danger text-center text-white">Cancelado</div>
+		  <div th:if="${turnos.estado.toString() == 'ASISTIDO'}" class="bg-success text-center text-white">Asistido</div>
 			<form class="" th:action="@{/cancelarTurno}" method="post">
           <ul class="ps-2 mt-3" >
             <li class="list-unstyled d-flex"><strong>Profesional:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.profesional.nombre + ' ' + turnos.profesional.apellido}"></p> </li>
@@ -79,11 +80,11 @@ tener el mismo ID-->
             <li class="list-unstyled d-flex"><strong>Tratamiento:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.tratamiento}"></p> </li>
             </ul>
             
-            <div th:if="${turnos.multa}" class="bg-danger fs-6 text-center text-white">ESTE TURNO POSEE UNA MULTA</div>
         
 		<!--Estos botones solo hacen el llamado al modal-->
 		  <button type="button" th:if="${turnos.activo}" class="btn btn-danger m-2" data-bs-toggle="modal" th:data-bs-target="${'#staticBackdrop' + iterStat.index}">Cancelar turno</button>
           <div th:unless="${turnos.activo}" class=""></div>
+            <div th:if="${turnos.multa}" class="bg-danger fs-6 text-center text-white">ESTE TURNO POSEE UNA MULTA</div>
         
           <!-- Modal Cancelar turno -->
          											 <!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
@@ -96,12 +97,14 @@ tener el mismo ID-->
 										<h1 class="modal-title fs-5 fw-bold" id="staticBackdropLabel">
 											Importante: Verificación de Cancelación de Turno</h1>
 									</div>
-									<div class="modal-body fs-6 lh-sm text-justify">
+									<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+										<span class="fw-bold">Estimado cliente,</span><br><br>
+										
 										Por favor, verifica cuidadosamente el turno que deseas cancelar. Si la cancelación se 
-										realiza con <span class="bg-warning">menos de 24 horas</span> de anticipación respecto a la fecha y hora seleccionada 
-										del turno, <span class="bg-warning">serás multado y bloqueado</span> para seleccionar nuevos turnos hasta que hayas 
-										pagado la multa. En cambio si el turno es cancelado con <span class="bg-warning">más de 24 horas</span> de anticipación
-										<span class="bg-warning">no se aplicará ninguna sanción.</span> <br><br>
+										realiza con <span class="fw-bold">menos de 24 horas</span> de anticipación respecto a la fecha y hora seleccionada 
+										del turno, <span class="fw-bold">serás multado y bloqueado</span> para seleccionar nuevos turnos hasta que hayas 
+										pagado la multa. En cambio si el turno es cancelado con <span class="fw-bold">más de 24 horas</span> de anticipación
+										<span class="fw-bold">no se aplicará ninguna sanción.</span> <br><br>
 
 										Si a pesar de esta advertencia deseas proceder con la cancelación, deberás dirigirte
 										nuevamente al portal de selección de turnos para generar uno nuevo.<br><br>
@@ -144,8 +147,8 @@ tener el mismo ID-->
 				<div class="modal-header border border-0 d-flex justify-content-center">
 					<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
 				</div>
-				<div class="modal-body text-center text-danger text-uppercase fw-bold">
-					<p class="fs-6" th:text="${exito}"></p>
+				<div class="modal-body text-black lh-sm">
+					<p style="text-align: justify;" class="text-center" th:utext="${exito}"></p>
 				</div>
 				<div class="modal-footer border border-0">
 					<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>

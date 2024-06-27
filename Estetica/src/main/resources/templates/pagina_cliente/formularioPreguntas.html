@@ -399,8 +399,8 @@
             <div class="modal-header border border-0 d-flex justify-content-center ">
 			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
             </div>
-            <div class="modal-body text-center text-danger text-uppercase fw-bold">
-                <p th:text="${error}">Ha ocurrido un error. Por favor, revise los datos ingresados.</p>
+            <div class="modal-body text-black lh-sm">
+                <p class="text-center" th:utext="${error}">Ha ocurrido un error. Por favor, revise los datos ingresados.</p>
             </div>
             <div class="modal-footer border border-0">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>

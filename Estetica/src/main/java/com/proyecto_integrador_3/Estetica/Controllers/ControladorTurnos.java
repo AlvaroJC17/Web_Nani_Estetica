@@ -2,6 +2,7 @@ package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,11 +69,12 @@ public class ControladorTurnos {
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		
 		//busca todos los turnos disponinbles del usuario y los pasa a la vista
-		List<Turnos> tunosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
+		List<Turnos> turnosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
+		
 		
 		model.addAttribute("email", email);
 		model.addAttribute("datosCliente", datosCliente);
-		model.addAttribute("datosTurno", tunosDisponibles);
+		model.addAttribute("datosTurno", turnosDisponibles);
 		return "/pagina_cliente/misturnos";	
 	}
 
@@ -94,11 +96,9 @@ public class ControladorTurnos {
 		//Si hay una diferencia menor a 24 horas entre la fecha seleccionada y la fecha actual
 		//entra en esta condicion
 		if (servicioHorario.turnoMenorA24Horas(fechaSeleccionadaLocalDateTime, fechaActual)) {
-			System.out.println("Entro a las 24h");
 			//Este servicio se encarga de cancelar y multar el turno y al cliente
 			servicioTurnos.multarTurnoAndClienteMenosDe24Horas(emailCliente, idTurno);
 		}else {
-			System.out.println("No entro en el 24h");
 			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
 			servicioTurnos.actualizarEstadoDelTurno(idTurno);
 		}

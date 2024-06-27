@@ -330,18 +330,23 @@ public class ControladorProfesional {
 		Optional<Profesional> identificarProfesional = repositorioProfesional.findById(idProfesional);
 		if (identificarProfesional.isPresent()) {
 			Profesional datosAnteriorProfesional = identificarProfesional.get();
-			emailAnterior = datosAnteriorProfesional.getEmail();
-			domicilioAnterior = datosAnteriorProfesional.getDomicilio();
+			emailAnterior = datosAnteriorProfesional.getEmail().toUpperCase();
+			domicilioAnterior = datosAnteriorProfesional.getDomicilio().toUpperCase();
 			sexoAnterior = datosAnteriorProfesional.getSexo();
-			nuevoSexo = sexoAnterior.toString();
-			telefonoAnterior = datosAnteriorProfesional.getTelefono();
+			nuevoSexo = sexoAnterior.toString().toUpperCase();
+			telefonoAnterior = datosAnteriorProfesional.getTelefono().toUpperCase();
 		}
+		
+		System.out.println("Compararion Ocupacion: " + email + " " + "=" + " " + emailAnterior);
+		System.out.println("Compararion Domicilio: " + domicilio + " " + "=" + " " + domicilioAnterior);
+		System.out.println("Compararion Sexo: " + sexo + " " + "=" + " " + nuevoSexo);
+		System.out.println("Compararion Telefono: " + telefono + " " + "=" + " " + telefonoAnterior);
 			
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
 		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
 		//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
-		if (emailAnterior.equals(email) && domicilioAnterior.equals(domicilio) && nuevoSexo.equals(sexo) && telefonoAnterior.equals(telefono)) {
+		if (emailAnterior.equals(email.toUpperCase()) && domicilioAnterior.equals(domicilio.toUpperCase()) && nuevoSexo.equals(sexo.toUpperCase()) && telefonoAnterior.equals(telefono.toUpperCase())) {
 			model.addAttribute("email", email);
 			model.addAttribute("datosProfesional",datosProfesional);
 			return "/pagina_profesional/misdatosProfesional";

@@ -64,7 +64,13 @@ public class ControladorPagina {
 
 		 try {
 	        	servicioUsuario.guardarUsuario(email, password, password2, fechaNacimiento );
-	        	String exito = "¡Gracias por registrarte!, ahora inicia sesión y completa tus datos personales para poder usar tu cuenta";
+	        	String exito = "<span class='fs-6 fw-bold'>¡Gracias por registrarte!</span><br><br>"
+	        			+ "<span class='fs-6'>Gracias por unirte a nuestra plataforma. Hemos enviado un correo electrónico"
+	        			+ " con los pasos para validar tu cuenta. Por favor, revisa tu bandeja de entrada"
+	        			+ " y sigue las instrucciones para completar la validación. Si no encuentras el mensaje en la"
+	        			+ "bandeja de entrada, revisa la bandeja de span.<br><br>"
+	        			+ "Después de validar tu cuenta, inicia sesión para completar tu perfil y comenzar a"
+	        			+ " utilizar nuestros servicios.</span>";
 	        	modelo.addAttribute("exito", exito);
 	        	modelo.addAttribute("showModalExito", true);
 	        	return "registrarse";
@@ -114,7 +120,10 @@ public class ControladorPagina {
 		         rol = usuario.getRol();
 		         
 		         //Verificamos que el usuario este activo
-		         String error1 = "Usuario no se encuentra activo";
+		         String error1 = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+    					 +"<span class='fs-6'>Tu cuenta no se encuentra activa para utilizar nuestros servicios."
+    					 + " Por favor, ponte en contacto con nuestro soporte técnico para resolver este problema.</span><br><br>"
+    					 + "Gracias.";
 		         if (!activo) {
 						model.addAttribute("error", error1);
 						modelo.addAttribute("showModalError", true);
@@ -124,7 +133,10 @@ public class ControladorPagina {
 			     
 		     // Si usuario no existe en la base de datos, tiramos el error y el mensaje    
 		     }else {
-		    	 String error3 = "Usuario o contraseña incorrectos";
+		    	 String error3 = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+    					 +"<span class='fs-6'>La contraseña o el nombre de usuario que has ingresado son incorrectos."
+    					 + "  Por favor, verifica tus datos e intenta nuevamente.</span><br><br>"
+    					 + "Gracias.";
 		    	 modelo.addAttribute("error", error3);
 		    	 modelo.addAttribute("email", email);
 		    	 modelo.addAttribute("showModalError", true);
