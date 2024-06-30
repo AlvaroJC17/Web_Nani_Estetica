@@ -71,6 +71,7 @@ public class Persona extends Usuario implements Serializable{
 		this.sexo = sexo;
 		this.domicilio = domicilio;
 		this.telefono = telefono;
+		
 	}
 	
 	public Persona(String dni, String nombre, String apellido, String ocupacion, Sexo sexo, String domicilio,

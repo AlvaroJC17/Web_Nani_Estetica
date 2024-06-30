@@ -19,11 +19,11 @@ import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
-import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
 @Controller
@@ -39,10 +39,10 @@ public class ControladorProfesional {
 	public ServicioCliente servicioCliente;
 	
 	@Autowired
-	public RepositorioProfesional repositorioProfesional;
+	public ServicioTurnos servicioTurnos;
 	
 	@Autowired
-	public RepositorioCliente repositorioCliente;
+	public RepositorioProfesional repositorioProfesional;
 	
 	@Autowired
 	public RepositorioUsuario repositorioUsuario;
@@ -110,7 +110,7 @@ public class ControladorProfesional {
 							
 		try {
 					System.out.println("entes de entrar en el metodo");
-			servicioCliente.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes,
+					servicioTurnos.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes,
 					ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual,
 					alteracion_hormonal, vitaminas, corticoides, hormonas, metodo_anticonceptivo,
 					sufre_enfermedad, cual_enfermedad, tiroides, paciente_oncologica, fractura_facial,

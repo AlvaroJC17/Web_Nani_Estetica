@@ -74,19 +74,13 @@ public class ServicioAdmin {
 			Sexo nuevoSexo = null;
 			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
 			
-			/*SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-			Date fecha = null;
-			try {
-				fecha = formato.parse(fechaNacimiento);
-			} catch (ParseException e) {
-				e.printStackTrace();
-			}*/
-			
 			Admin nuevo_admin = new Admin();
 			nuevo_admin.setEmail(email);
 			nuevo_admin.setContrasena(datosDelUsuario.getContrasena());
 			nuevo_admin.setRol(datosDelUsuario.getRol());
 			nuevo_admin.setActivo(datosDelUsuario.getActivo());
+			nuevo_admin.setEmailValidado(datosDelUsuario.getEmailValidado());
+			nuevo_admin.setFechaCreacion(datosDelUsuario.getFechaCreacion());
 			nuevo_admin.setValidacionForm(TRUE);
 			nuevo_admin.setDni(dniPersona);
 			nuevo_admin.setNombre(nombrePersona);
@@ -125,31 +119,11 @@ public class ServicioAdmin {
 	}
 	 
 	 public void validarDatosAdmin(String sexo, String telefono, String direccion, String ocupacion) throws MiExcepcion {
-	
-		 /*
-		 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
-			 throw new MiExcepcion("El nombre no puede estar vacio");
-		 }
-		 if (apellido == null || apellido.isEmpty() || apellido.trim().isEmpty()) {
-			 throw new MiExcepcion("El apellido no puede estar vacio");
-		 }
-		 if (dni == null || dni.isEmpty() || dni.trim().isEmpty()) {
-			 throw new MiExcepcion("El dni no puede estar vacio");
-		 } 
-		 
-		 if(repositorioPersona.buscarPorDniOptional(dni).isPresent()) {
-			 throw new MiExcepcion("El numero de dni ya está registrado");
-		 }
-		 */
 		 
 		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
 			 throw new MiExcepcion("El sexo no puede estar vacio");
 		 }
-		 /*
-		 if (fechaNacimiento == null || fechaNacimiento.toString().isEmpty() || fechaNacimiento.trim().isEmpty()) {
-			 throw new MiExcepcion("La fecha de nacimiento no puede estar vacia");
-		 }
-		 */
+
 		 if (telefono == null || telefono.isEmpty() || telefono.trim().isEmpty()) {
 			 throw new MiExcepcion("EL telefono no puede estar vacio");
 		 }
@@ -160,8 +134,7 @@ public class ServicioAdmin {
 			 throw new MiExcepcion("La ocupacion no puede estar vacio");
 		 }
 	 
- }
-	 
+	 }
 	 
 	 public void validarActualizacionDeDatosAdmin(String ocupacion, String domicilio, String sexo, String telefono) throws MiExcepcion {
 		 

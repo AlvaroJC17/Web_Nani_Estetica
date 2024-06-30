@@ -1,29 +1,28 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.time.LocalDate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
-import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
-import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
-import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
-import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 
 import jakarta.transaction.Transactional;
@@ -34,18 +33,23 @@ public class ServicioUsuario {
 	  @Autowired
 	  public RepositorioUsuario repositorioUsuario;
 	  
-	  @Autowired
-	  public RepositorioCliente repositorioCliente;
 	  
-	  @Autowired
-	  public RepositorioPersona repositorioPersona;
+	  //La anotacion Scheduled indica que es un tarea programada y el cron indica en el momento que
+	  //se va a realizar, en este caso es a las 12 de la noche
+	  //y este metodo se encarga de borrar los registros imcompletos
+	  //Es importante recordar tambien colocar la etiqueta @EnableScheduling en la pagina principal de la aplicacion, donde este el run
+	  @Scheduled(cron = "0 0 0 * * ?") // Ejecuta todos los días a medianoche
+	  @Transactional 
+	  public void limpiarRegistrosIncompletos() {
+	        LocalDateTime limite = LocalDateTime.now().minusDays(1);
+	        List<Usuario> usuariosIncompletos = repositorioUsuario.findByEmailValidadoFalseAndFechaCreacionBefore(limite);
+	        usuariosIncompletos.forEach(repositorioUsuario::delete);
+	        System.err.println("¡¡¡¡¡¡¡¡¡¡¡¡¡SE BORRARON LOS REGISTROS INCOMPLETOS!!!!!!!!!!!!");
+	    }
 	  
+	    
 	  @Transactional
-	    public void guardarUsuario(String email, String password, String password2, String fechaNacimiento) throws MiExcepcion {
-
-		  verificarEmail(email);
-		  verificarPassword(password, password2);
-		  validarEdad(fechaNacimiento);
+	    public void guardarUsuario(String email, String password, String password2, String fechaNacimiento, String idUsuarioNoValidado) throws MiExcepcion {
 		  
 		    //pasamos la fecha de string a date
 	        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
@@ -56,14 +60,23 @@ public class ServicioUsuario {
 				e.printStackTrace();
 			}
 			
-	        Usuario usuario = new Usuario();
-	        usuario.setEmail(email);
-	        usuario.setContrasena(password);
-	        usuario.setFechaNacimiento(fecha);
-	        usuario.setActivo(TRUE);
-	        usuario.setRol(Rol.CLIENTE);
-	        usuario.setValidacionForm(FALSE);
-	        repositorioUsuario.save(usuario);
+			Optional <Usuario> usuarioNoValidado = buscarPorIdOptional(idUsuarioNoValidado);
+			if (usuarioNoValidado.isPresent()) {
+				
+				Usuario NuevoUsuario = usuarioNoValidado.get();
+				NuevoUsuario.setEmail(email);
+				NuevoUsuario.setContrasena(password);
+				NuevoUsuario.setFechaNacimiento(fecha);
+				NuevoUsuario.setActivo(TRUE);
+				NuevoUsuario.setRol(Rol.CLIENTE);
+				NuevoUsuario.setEmailValidado(TRUE);
+				NuevoUsuario.setValidacionForm(FALSE);
+				repositorioUsuario.save(NuevoUsuario);
+			}else {
+				throw new MiExcepcion("Usuario no encontrando");
+			}
+				
+				
 	        
 	    }
 	  
@@ -82,69 +95,69 @@ public class ServicioUsuario {
 	  }
 	            
 	                        	  
-	  @Transactional()
+	  
 	    public List<Usuario> listarUsuarios() {
-		  List<Usuario> usuario = new ArrayList();
+		  List<Usuario> usuario = new ArrayList<Usuario>();
 		  usuario = repositorioUsuario.listarUsuarios();
 		  return usuario;
 	  }
 
 	  
-		@Transactional
+		
 		public List<Usuario> buscarId(String dni) {
 			List<Usuario> idUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorId(dni);
 		return idUsuario;
 		}
 
-		@Transactional
+		
 		public List<Usuario> buscarDni(String dni) {
 			List<Usuario> dniUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorDNI(dni);
 		return dniUsuario;
 		}
 		
-		@Transactional
+		
 		public List<Usuario> buscarNombre(String nombre) {
 			List<Usuario> nombreUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorNombre(nombre);
 		return nombreUsuario;
 		}
 		
-		@Transactional
+		
 		public List<Usuario> buscarPorEmail(String email) {
 			List<Usuario> emailUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorEmail(email);
 		return emailUsuario;
 		}
 		
-		@Transactional
+		
 		public Optional<Usuario> buscarPorEmailOptional(String email) {
 			Optional<Usuario> emailUsuario = repositorioUsuario.buscarPorEmailOptional(email);
 		return emailUsuario;
 		}
 		
-		@Transactional
+		
 		public Optional<Usuario> buscarPorIdOptional(String id) {
 			Optional<Usuario> usuarioId = repositorioUsuario.buscarPorIdOptional(id);
 		return usuarioId;
 		}
 		
-		@Transactional
+	
 		public Optional<Usuario> buscarPorDniOptional(String dni) {
 			Optional<Usuario> dnilUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorDniOptional(dni);
 		return dnilUsuario;
 		}
 		
-		@Transactional
+	
 		public Optional<Usuario> buscarPorNombreOptional(String nombre) {
 			Optional<Usuario> nombreUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorNombreOptional(nombre);
 		return nombreUsuario;
 		}
 		
-		@Transactional
+	
 		public Optional<Usuario> buscarContrasena(String contrasena) {
 			Optional<Usuario> contrasenaUsuario = repositorioUsuario.buscarContrasena(contrasena);
 		return contrasenaUsuario;
 		}
 		
-		@Transactional
+
 		public List<Usuario> buscarRol(Rol rol) {
 			List<Usuario> rolUsuario = repositorioUsuario.findByRol(rol);
 		return rolUsuario;
@@ -152,6 +165,7 @@ public class ServicioUsuario {
 		
 
 		//Borra un admin de la base de datos
+		@Transactional
 		public void borrarUsuario(String id) {
 			Optional <Usuario> identificarUsuario = repositorioUsuario.findById(id);
 			
@@ -209,6 +223,12 @@ public class ServicioUsuario {
 	  
 	  //VALIDACIONES
 		 
+		 public void validarDatosDelUsuario(String email, String password, String password2, String fechaNacimiento) throws MiExcepcion {
+			 verificarEmail(email);
+			 verificarPassword(password, password2);
+			 validarEdad(fechaNacimiento);
+		 }
+		 
 	  public void validarEmail(String email) throws MiExcepcion {
 			  
 			  if (Objects.equals(email, null) || email.isEmpty() || email.trim().isEmpty()) {
@@ -243,7 +263,7 @@ public class ServicioUsuario {
 	        if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
 	            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
    					 +"<span class='fs-6'>El correo electrónico ya se encuentra registrado, por favor"
-   					 + "ingrese otro.</span>");
+   					 + " ingrese otro.</span>");
 	        }
 
 	    }
@@ -265,12 +285,12 @@ public class ServicioUsuario {
 	         
 	         if (pass.isEmpty()) {
 	        	 throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-    					 +"<span class='fs-6'>El campo de la contraseña por puede quedar vacío."
+    					 +"<span class='fs-6'>El campo de la contraseña no puede quedar vacío."
     					 + "Por favor ingrese una contraseña válida.</span>");
 	         }
 	         if (pass2.isEmpty()) {
 	        	 throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-    					 +"<span class='fs-6'>El campo de la contraseña por puede quedar vacío."
+    					 +"<span class='fs-6'>El campo de la contraseña no puede quedar vacío."
     					 + "Por favor ingrese una contraseña válida.</span>");
 			}
 	         // Verificar si la cadena cumple con la expresión regular

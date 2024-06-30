@@ -2,52 +2,35 @@ package com.proyecto_integrador_3.Estetica.Controllers;
 
 import static java.lang.Boolean.TRUE;
 
-import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
+import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
-import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
+import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
-import com.proyecto_integrador_3.Estetica.Enums.Provincias;
-import com.proyecto_integrador_3.Estetica.Enums.Horarios;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
-import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
-import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
-import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
-import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
-
-import jakarta.persistence.EntityManager;
 
 @Controller
 //@RequestMapping(")
@@ -55,12 +38,6 @@ public class ControladorCliente {
 
 	@Autowired
 	public RepositorioCliente repositorioCliente;
-	
-	@Autowired
-	public RepositorioPersona repositorioPersona;
-	
-	@Autowired
-	public RepositorioUsuario repositorioUsuario;
 	
 	@Autowired
 	public RepositorioTurnos repositorioTurnos;
@@ -73,9 +50,6 @@ public class ControladorCliente {
 	
 	@Autowired
 	public ServicioUsuario servicioUsuario;
-	
-	@Autowired
-	public ServicioPersona servicioPersona;
 	
 	@Autowired
 	public ServicioHorario servicioHorario;
@@ -335,7 +309,7 @@ public class ControladorCliente {
 				}
 				
 				//Pasamos la fecha seleccionada a localDate para poder trabajar con los dias y dias de la semana
-				LocalDate fechaSeleccionadaLocalDate = servicioCliente.pasarFechaStringToLocalDate(fechaSeleccionada);
+				LocalDate fechaSeleccionadaLocalDate = servicioHorario.pasarFechaStringToLocalDate(fechaSeleccionada);
 				
 				//Buscamos la fecha actual del sistema
 				LocalDate fechaActual = LocalDate.now();
@@ -389,7 +363,7 @@ public class ControladorCliente {
 				modelo.addAttribute("provincias", Provincias.values());
 			
 	    //Metodo que recibe una fecha tipo LocalDate y devuelve true si la fecha es anterior a la actual
-				if (servicioCliente.fechaYaPaso(fechaSeleccionadaLocalDate)) {
+				if (servicioHorario.fechaYaPaso(fechaSeleccionadaLocalDate)) {
 					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 							+ "<span fs-6'>No se puede seleccionar una fecha pasada, por favor verifique la fecha"
 							+ " en la que desea seleccionar el turno.</span>";
@@ -542,7 +516,7 @@ public class ControladorCliente {
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 			try {
 				//Servicio para guardar el turno facial en la base de datos
-				servicioCliente.guardarTurno(idCliente, nombreDelProfesional, fechaSeleccionada, provinciaString,
+				servicioTurnos.guardarTurno(idCliente, nombreDelProfesional, fechaSeleccionada, provinciaString,
 						idProfesional, facial, espalda, pulido, dermaplaning, exfoliacion, lifting, perfilado, laminado,
 						hydralips, microneedling, horario, emailCliente);
 				

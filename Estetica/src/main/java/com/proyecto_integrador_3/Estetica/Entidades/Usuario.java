@@ -2,6 +2,7 @@ package com.proyecto_integrador_3.Estetica.Entidades;
 
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
@@ -54,6 +55,12 @@ public class Usuario implements Serializable {
 	@Temporal(TemporalType.DATE)
 	protected Date fechaNacimiento;
 	
+	@Column(name="email_validado")
+	protected Boolean emailValidado = false;
+	
+	@Column(name="fecha_creacion")
+	protected LocalDateTime fechaCreacion;
+	
 	@Transient
 	@OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "persona_id", referencedColumnName = "id")
@@ -70,6 +77,27 @@ public class Usuario implements Serializable {
 		this.activo = activo;
 		this.ValidacionForm = ValidacionForm;
 		this.fechaNacimiento = fechaNacimiento;
+
+	
+		
+	}
+	
+	
+
+	public LocalDateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
+
+	public Boolean getEmailValidado() {
+		return emailValidado;
+	}
+
+	public void setEmailValidado(Boolean emailValidado) {
+		this.emailValidado = emailValidado;
 	}
 
 	public String getId() {

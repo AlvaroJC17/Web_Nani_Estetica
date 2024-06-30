@@ -1,16 +1,16 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +19,14 @@ import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioHorariosDisponibles;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class ServicioHorario {
 	
 	 @Autowired
-	    private RepositorioHorariosDisponibles repositorioHorariosDisponibles;
-	 
-	 @Autowired
-	 ServicioCliente servicioCliente;
+	 private RepositorioHorariosDisponibles repositorioHorariosDisponibles;
+	
 	
 	 //busca la lista de horarios guardados en la base de datos pertenecientes a la fecha y el profesional que le pasamos por parametro
 	 //si la fecha no existe en la base de datos, entonces crea una lista de horarios para esa fecha y para ese profesional
@@ -45,6 +45,7 @@ public class ServicioHorario {
 	 //le pasamos una fecha,  una lista de horarios y un idprofesional y los guarda en la base de datos
 	 //Si la lista de horarios existe, la edita con la nueva lista que le estamos pasando
 	 // Sino existe crea una nueva lista de horarios para la fecha y profesional que le pasamos y los guarda en la base
+	 @Transactional
 		public void guardarHorariosDisponibles(String fecha, List<String> horarios, String idProfesional) {
 			
 			 // Buscar si ya existe un registro de HorariosDisponibles para la fecha y profesional dado
@@ -85,7 +86,8 @@ public class ServicioHorario {
 	 //Le pasamos una fecha, una lista y un idProfesional, busca una lista de horarios en la base de datos
 	 //Si la lista que encuentra esta vacia, crea una nueva lista para esa fecha, horarios e idprofesional
 	 // Sino esta vacia, obtiene los valores de la lista y la actualiza con los nuevos valores que le estamos pasando y luego los guarda en la base de datos
-	    public void actualizarHorariosDisponibles(String fecha, List<String> horarios, String idProfesional) {
+		@Transactional
+		public void actualizarHorariosDisponibles(String fecha, List<String> horarios, String idProfesional) {
 
 	    	List<HorariosDisponibles> horariosDisponibles = repositorioHorariosDisponibles.findHorariosByProfesionalIdAndFecha(idProfesional, fecha);
 	        HorariosDisponibles horarioDisponible;
@@ -146,6 +148,7 @@ public class ServicioHorario {
 	    
 	    //Le pasamos un fecha y un horario, busca la fecha en la base de datos y verifica si el horario
 	    //esta guardado en la lista de esa fecha, sino esta guardado lo agrega nuevamnete a la lista
+	    @Transactional
 	    public void agregarHorarioDisponible(String fecha, String horario, String idProfesional) {
 	    	
 	    	 // Obtener los horarios disponibles para el profesional y la fecha dada
@@ -176,10 +179,41 @@ public class ServicioHorario {
 		   
 		   //Con el objeto duration podemos calcular la diferencia de horas entre dos fechas
 		   Duration difereciaDeHorasEntreLasFechas = Duration.between(fechaActual, fechaSeleecionada);
-		   System.out.println("MENOS DE 24 HORAS: " + difereciaDeHorasEntreLasFechas.toHours());
 		   //Pasamos el resultados a horas y devolvemos el booleano true si es menos a 24 horas
 		   return difereciaDeHorasEntreLasFechas.toHours() < 24;
 	   }
+	   
+	   public LocalDate pasarFechaStringToLocalDate(String fecha) throws MiExcepcion {
+			 
+			//Recibimos la fecha como un string y la pasamos a Date y luego a LocalDate para guardarla en la base de datos.
+				LocalDate fechaUsuario = null;
+				Date fechaFormateada = null;
+				SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
+				try {
+					fechaFormateada = formato.parse(fecha);
+					fechaUsuario =  fechaFormateada.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
+				} catch (ParseException e) {
+					throw new MiExcepcion("Debe seleccionar una fecha");
+				}
+				
+				return fechaUsuario;
+		 }
+		 
+		 public LocalDateTime pasarFechaStringToLocalDateTime(String fecha) throws MiExcepcion{
+			 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			 LocalDateTime fechaProporcionada = LocalDateTime.parse(fecha, dateFormatter);
+			 return fechaProporcionada;
+		 }
+				
+		
+		 public boolean esFinDeSemana(LocalDate fecha) {
+			 DayOfWeek dayOfWeek = fecha.getDayOfWeek();
+		        return dayOfWeek == DayOfWeek.SUNDAY;
+		    }
+		 
+		 public boolean fechaYaPaso(LocalDate fecha) {
+		        return fecha.isBefore(LocalDate.now());
+		    }
 			
 			
 		

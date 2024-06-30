@@ -1,8 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Collections;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,6 @@ import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
@@ -19,7 +16,6 @@ import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
-import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
@@ -40,11 +36,8 @@ public class ControladorTurnos {
 	@Autowired
 	ServicioProfesional servicioProfesional;
 	
-	@Autowired
-	ServicioCliente servicioCliente;
 	
-	
-	   
+	  
 //	 //Sirve para actualizar el precio de la multa en toda la base de datos  
 //	@PutMapping("/actualizarPrecioMulta")
 //	public void actualizarMultas(@RequestParam String nuevaMulta) {
@@ -90,7 +83,7 @@ public class ControladorTurnos {
 			) throws MiExcepcion {
 		
 		String fechaConHora = fecha + " " + horario;
-		LocalDateTime fechaSeleccionadaLocalDateTime = servicioCliente.pasarFechaStringToLocalDateTime(fechaConHora);
+		LocalDateTime fechaSeleccionadaLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTime(fechaConHora);
 		LocalDateTime fechaActual = LocalDateTime.now();
 		
 		//Si hay una diferencia menor a 24 horas entre la fecha seleccionada y la fecha actual
@@ -181,7 +174,7 @@ public class ControladorTurnos {
 		
 			
 			try {
-				servicioCliente.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes, ejercicios,
+				servicioTurnos.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes, ejercicios,
 						medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual, alteracion_hormonal,
 						vitaminas, corticoides, hormonas, metodo_anticonceptivo, sufre_enfermedad,
 						cual_enfermedad, tiroides, paciente_oncologica, fractura_facial, cirugia_estetica, 
@@ -262,17 +255,6 @@ public class ControladorTurnos {
 			
 		}
 
-//	    @PostMapping("/turnos/disponibles")
-//	    public String mostrarHorariosDisponibles(@RequestParam("profesionalId") String profesionalId, @RequestParam("fecha") String fecha, Model model) {
-//	        Profesional profesional = servicioProfesional.obtenerPorId(profesionalId);
-//	        LocalDate fechaSeleccionada = LocalDate.parse(fecha);
-//	        List<String> horariosDisponibles = servicioTurnos.obtenerHorariosDisponibles(profesional, fechaSeleccionada);
-//
-//	        model.addAttribute("profesional", profesional);
-//	        model.addAttribute("fecha", fecha);
-//	        model.addAttribute("horariosDisponibles", horariosDisponibles);
-//	        return "pagina_cliente/horariosDisponibles";
-//	    }
 }
 	
 	

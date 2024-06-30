@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Repository;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -79,5 +80,9 @@ public interface RepositorioUsuario extends JpaRepository<Usuario, String>  {
 	public Optional<Usuario> obtenerDatosPersonaUsuarioPorNombreOptional(@Param("nombre") String nombre);
 	
 	  List<Usuario> findByRolAndEmail(Rol rol, String email);
+	  
+	  List<Usuario> findByEmailValidadoFalse();
+	  
+	  List<Usuario> findByEmailValidadoFalseAndFechaCreacionBefore(LocalDateTime fecha);
 
 }

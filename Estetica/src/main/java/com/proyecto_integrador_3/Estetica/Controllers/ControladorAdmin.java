@@ -3,8 +3,8 @@ package com.proyecto_integrador_3.Estetica.Controllers;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import org.aspectj.apache.bcel.classfile.Module.Require;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
+import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
@@ -22,7 +23,6 @@ import com.proyecto_integrador_3.Estetica.Repository.RepositorioAdmin;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioAdmin;
-import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
@@ -36,22 +36,19 @@ public class ControladorAdmin {
 	public RepositorioAdmin repositorioAdmin;
 	
 	@Autowired
-	public ServicioAdmin servicioAdmin;
-	
-	@Autowired
-	public ServicioUsuario servicioUsuario;
-	
-	@Autowired
 	public RepositorioUsuario repositorioUsuario;
 	
 	@Autowired
 	public RepositorioPersona repositorioPersona;
 	
 	@Autowired
-	public ServicioPersona servicioPersona;
+	public ServicioAdmin servicioAdmin;
 	
 	@Autowired
-	public ServicioCliente servicioCliente;
+	public ServicioUsuario servicioUsuario;
+	
+	@Autowired
+	public ServicioPersona servicioPersona;
 	
 	
 	@GetMapping("/portalAdmin")
@@ -110,6 +107,13 @@ public class ControladorAdmin {
 	@GetMapping("/listarUsuariosVisibles")
     public String listarUsuariosVisibles(@RequestParam(name = "email") String email, ModelMap model) throws MiExcepcion {
 		List<Usuario> usuarios = repositorioUsuario.joinUsuarioPersona();
+		
+		//Excluye del resultado al usuario que este usando el listado
+		//esto es para que no se pueda modificar a si mismo
+		 usuarios = usuarios.stream()
+                 .filter(usuario -> !usuario.getEmail().equals(email))
+                 .collect(Collectors.toList());
+		
 		model.addAttribute("usuariosEmail", email);
 		model.addAttribute("usuarios", usuarios);
 		return "/pagina_admin/portalAdmin";
@@ -169,27 +173,50 @@ public class ControladorAdmin {
 		
 		// Si cumple las condiciones para pasar los condicionales de arriba, entonces
 		//usamos el valor de dato, segun corresponda
-		List<Usuario> usuarioDni = servicioUsuario.buscarDni(datoSinEspacios);
-		List<Usuario>	usuarioNombre = servicioUsuario.buscarNombre(datoSinEspacios);
-		List<Usuario> usuarioEmail = servicioUsuario.buscarPorEmail(datoSinEspacios);
+		List<Usuario> usuarioDni = servicioUsuario.buscarDni(datoSinEspacios); //buscamos la lista de usuarios por dni, con esto verificamos que el usuario existe
+		List<Persona> dniUsuario = repositorioPersona.buscarPorDni(datoSinEspacios); //buscamos la persona con ese mismo dato y sacamos el dni
+		//Obtenemos el dni del usuario para compararlo mas adelante
+		String dni = null;
+		for (Persona usuario : dniUsuario) {
+		    dni = usuario.getDni();
+		}
 		
-		if (!usuarioDni.isEmpty()) {
+		List<Usuario>	usuarioNombre = servicioUsuario.buscarNombre(datoSinEspacios); //Buscamos usuario por nombre
+		List<Persona> nombreUsuario = repositorioPersona.buscarPorNombre(datoSinEspacios); //Obtenemos el nombre del usuario
+		//obtenemos el nombre del usuario
+		String nombre = null;
+		for (Persona usuario : nombreUsuario) {
+		    nombre = usuario.getNombre();
+		}
+		
+		List<Usuario> usuarioEmail = servicioUsuario.buscarPorEmail(datoSinEspacios); //buscamos al usuario por mail, no es necesario tambien buscar por Persona porque el email esta en la tabla usuario
+		//Obtenemos el email
+		String email = null;
+		for (Usuario usuario : usuarioEmail) {
+			email = usuario.getEmail();
+		}
+		
+		//Si la lista no esta vacia (usuario existe) y el dato que ingreso no es igual a el del mismo usuario entonces entra en el condicional
+		//con esto evitamos que el usuario se busque a si mismo y se modifique a si mismo
+		if (!usuarioDni.isEmpty() && !dni.equalsIgnoreCase(datoSinEspacios)) {
 			model.addAttribute("usuarios", usuarioDni); // asignamos el valor de la variable administradoresDni a la variable html administradores y asi poder iterarla en el documento
 			model.addAttribute("usuariosEmail", emailAdmin);
 			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
 			return "/pagina_admin/portalAdmin";
 		}	
-						
-		if (!usuarioNombre.isEmpty()) {
+			
+		//Igual que el anterior
+		if (!usuarioNombre.isEmpty() && !nombre.equalsIgnoreCase(datoSinEspacios)) {
 			model.addAttribute("usuarios", usuarioNombre);
 			model.addAttribute("usuariosEmail", emailAdmin);
 			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
 			return "/pagina_admin/portalAdmin";
 		}	
 
+		//Igual que el anterior
 		/*Le enviamos el valor de dato2 al modal de exito. Solo lo colocamos en este pedazo de codigo porque solo estamos
 		 * usando el mail de los usuario como dato2*/
-		if (!usuarioEmail.isEmpty()) {
+		if (!usuarioEmail.isEmpty() && !email.equalsIgnoreCase(datoSinEspacios)) {
 			model.addAttribute("usuarios", usuarioEmail);
 			model.addAttribute("usuariosEmail", emailAdmin);
 			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
@@ -389,32 +416,6 @@ public class ControladorAdmin {
 		return "/pagina_admin/portalAdmin";
 	}
 				
-		
-	
-	
-	
-	/*
-	//Lista usuarios y persona haciendo un join de tablas por ID
-	//Este metodo esta relacionado con el de modificarUsuario y la variable mail viene de él
-	@GetMapping("/listarUsuariosPorId")
-	public String listarUsuariosPorId(
-			String id,
-			String email,
-			@RequestParam(name = "error", required = false)String error,
-			@RequestParam(name = "exito", required = false)String exito,
-			Model model) {
-		
-		List<Usuario> usuarios = servicioUsuario.buscarId(id);
-		model.addAttribute("usuariosEmail", email);
-		model.addAttribute("usuarios", usuarios);
-		model.addAttribute("exito", exito);
-		model.addAttribute("error", error);
-		return "/pagina_admin/portalAdmin";
-	}
-	 */
-	
-	
-	
 	//Metodo para que el admin puede modificar los datos permitidos
 	@PostMapping("/actualizarDatosAdmin")
 	public String actualizarDatosAdmin(

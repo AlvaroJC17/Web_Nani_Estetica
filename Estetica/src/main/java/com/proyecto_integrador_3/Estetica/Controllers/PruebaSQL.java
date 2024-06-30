@@ -1,31 +1,15 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
-import static java.lang.Boolean.FALSE;
-import static java.lang.Boolean.TRUE;
-
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
-import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
-import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
-import com.proyecto_integrador_3.Estetica.Entidades.Persona;
-import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
-import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
-import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
-import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
+import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioAdmin;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioHorariosDisponibles;
@@ -33,6 +17,7 @@ import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioEmail;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
@@ -78,6 +63,12 @@ public class PruebaSQL implements CommandLineRunner {
 	@Autowired
 	ServicioTurnos servicioTurnos;
 	
+	@Autowired
+	ServicioEmail servicioEmail;
+	
+	@Autowired
+	JavaMailSender javaMailSender;
+	
 	
 
 	
@@ -91,13 +82,45 @@ public class PruebaSQL implements CommandLineRunner {
 		//Codigo para crear un administrador default en la base de datos cuando se inicia
 		//el programa por primera vez
 		if (!repositorioAdmin.existsByRol(Rol.ADMIN)) {
-            Admin admin = new Admin("1791", "QWEasd12", "admin@admin.com", Rol.ADMIN, true, "Legion", "Foxy");
+            Admin admin = new Admin();
+            admin.setActivo(true);
+            admin.setApellido("Cortesia");
+            admin.setContrasena("QWEasd12");
+            admin.setDni("17911977");
+            admin.setDomicilio("El bosque");
+            admin.setEmail("admin@admin.com");
+            admin.setEmailValidado(true);
+            admin.setFechaCreacion(LocalDateTime.now());
+            admin.setNombre("Alvaro");
+            admin.setRol(Rol.ADMIN);
+            admin.setValidacionForm(true);
+            admin.setOcupacion("Ingeniero");
+            admin.setTelefono("22736382");
+            admin.setSexo(Sexo.MASCULINO);
             repositorioAdmin.save(admin);
             System.out.println("Administrador creado: " + admin);
         } else {
             System.out.println("Ya existe un administrador en la base de datos.");
         }
 		
+//		EmailUsuarios pruebaCorreo = new EmailUsuarios();
+//		pruebaCorreo.setDestinatario("alvarocortesia@gmail.com");
+//		pruebaCorreo.setAsunto("Prueba de plantilla");
+//		pruebaCorreo.setMensaje("Esto es una prueba usando la plantilla para HTML");
+//		String plantillaHTML = "emailValidarCorreo";
+//		
+//		try {
+//			
+//			servicioEmail.enviarEmailUsuario(pruebaCorreo, plantillaHTML);
+//			System.out.println("Mail enviado exitosamente");
+//			
+//		} catch (Exception e) {
+//			System.out.println(e.getMessage());
+//			System.out.println("No se pudo enviar el mail");
+//		}
+		
+		
+		// <!-- -->java -jar myapp.jar --spring.profiles.active=dev
 		
 //		List <Usuario> prueba1 = repositorioUsuario.buscarPorNombre("cliente");
 //		prueba1.forEach(System.out::println);

@@ -109,7 +109,29 @@
           </div>
         </div>
       </div>
+      
+      
+      <!--Modal mensaje de exito al registrarse	-->
+    					
+    <div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
+	tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
+	th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
+		<div class="modal-dialog">
+			<div style="background-color: #ebdf9d;" class="modal-content">
+				<div class="modal-header border border-0 d-flex justify-content-center">
+					<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
+				</div>
+				<div class="modal-body text-black lh-sm">
+					<p style="text-align: justify;" class="text-center" th:utext="${exito}"></p>
+				</div>
+				<div class="modal-footer border border-0">
+					<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
 
+	
 
 <!--Modal mensajes de error-->
 		
@@ -129,6 +151,23 @@
         </div>
     </div>
 </div>
+
+<!--Scrip para el modal de mensaje de exito-->
+			
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalExito = /*[[${showModalExito}]]*/ false;
+        if (showModalExito) {
+            $('#exitoModal').modal('show');
+        }
+
+        $('#exitoModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
 
 				<!--Script para modal de error-->
 				

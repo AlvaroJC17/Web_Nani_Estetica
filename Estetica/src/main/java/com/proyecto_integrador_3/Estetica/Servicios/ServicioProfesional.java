@@ -2,9 +2,6 @@ package com.proyecto_integrador_3.Estetica.Servicios;
 
 import static java.lang.Boolean.TRUE;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -13,8 +10,6 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.proyecto_integrador_3.Estetica.Entidades.Admin;
-import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
@@ -22,7 +17,6 @@ import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
-import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
@@ -33,9 +27,6 @@ import jakarta.transaction.Transactional;
 public class ServicioProfesional {
 	
 	@Autowired
-	public ServicioUsuario servicioUsuario;
-	
-	@Autowired
 	public RepositorioUsuario repositorioUsuario;
 	
 	@Autowired
@@ -44,8 +35,7 @@ public class ServicioProfesional {
 	@Autowired
 	public RepositorioPersona repositorioPersona;
 	
-	@Autowired
-	public RepositorioCliente repositorioCliente;
+
 	
 	public Optional <Persona> buscarDatosProfesionalPorId(String id){
 		return repositorioPersona.buscarPersonaPorId(id);
@@ -128,6 +118,8 @@ public class ServicioProfesional {
 			nuevo_profesional.setRol(datosDelUsuario.getRol());
 			nuevo_profesional.setActivo(datosDelUsuario.getActivo());
 			nuevo_profesional.setValidacionForm(TRUE);
+			nuevo_profesional.setEmailValidado(datosDelUsuario.getEmailValidado());
+			nuevo_profesional.setFechaCreacion(datosDelUsuario.getFechaCreacion());
 			nuevo_profesional.setDni(datosPersonalesPersona.getDni());
 			nuevo_profesional.setNombre(datosPersonalesPersona.getNombre());
 			nuevo_profesional.setApellido(datosPersonalesPersona.getApellido());
@@ -167,15 +159,7 @@ public class ServicioProfesional {
 	
 	 public void validarDatosProfesional(String matricula, String especialidad,  String sexo, String telefono, String provincia, String direccion) throws MiExcepcion {
 	
-		 
-	/*	 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
-			 throw new MiExcepcion("El nombre no puede estar vacio");
-		 }
-		 if (apellido == null || apellido.isEmpty() || apellido.trim().isEmpty()) {
-			 throw new MiExcepcion("El apellido no puede estar vacio");
-		 }*/
-		 
-		 
+				 
 		 if (provincia == null || provincia.isEmpty() || provincia.trim().isEmpty()) {
 			 throw new MiExcepcion("Debe seleccionar una provincia"); 
 		 } 
@@ -187,17 +171,9 @@ public class ServicioProfesional {
 			 throw new MiExcepcion("La especialidad no puede estar vacia");
 		 }
 		 
-		/* if(repositorioPersona.buscarPorDniOptional(dni).isPresent()) {
-			 throw new MiExcepcion("El numero de dni ya está registrado");
-		 }*/
-		 
 		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
 			 throw new MiExcepcion("El sexo no puede estar vacio");
 		 }
-		 /*
-		 if (fechaNacimiento == null || fechaNacimiento.toString().isEmpty() || fechaNacimiento.trim().isEmpty()) {
-			 throw new MiExcepcion("La fecha de nacimiento no puede estar vacia");
-		 }*/
 		 
 		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
 			 throw new MiExcepcion("EL telefono no puede estar vacio");
@@ -209,11 +185,6 @@ public class ServicioProfesional {
 
 	 
 	 public void validarActualizacionDeDatosProfesional(String domicilio, String sexo, String telefono) throws MiExcepcion {
-		/*
-		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
-			 throw new MiExcepcion("La ocupacion no puede estar vacia");
-		 }
-		 */
 		 
 		 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {
 			 throw new MiExcepcion("La direccion no puede estar vacia");
