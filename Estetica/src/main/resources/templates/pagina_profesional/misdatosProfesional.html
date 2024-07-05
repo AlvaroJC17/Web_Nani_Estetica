@@ -94,7 +94,7 @@
         <div class="row">
           <div class="mb-3 col-lg-6">
             <label for="email" class="form-label texto-label">Email</label>
-            <input type="email" name="email" th:value="${#strings.toUpperCase(datosProfesional.email)}" class="form-control" id="email" placeholder="">
+            <input type="email" name="email" th:value="${#strings.toUpperCase(datosProfesional.email)}" class="form-control" id="email" placeholder="" disabled>
           </div>
           <div class="mb-3 col-lg-6">
             <label for="sexo" class="form-label texto-label">Sexo</label>
@@ -114,7 +114,8 @@
         </div>
        
        <input type="hidden" th:value="${datosProfesional.id}" class="form-control" name="idProfesional" id="idProfesional"> <!--input oculto para enviar el id del profesional al controlador actualizarDatosProfesional-->
-        
+       <input type="hidden" th:value="${datosProfesional.email}" class="form-control" name="email" id="email">
+       
         <div class="boton-de-registro text-center">
           <a href="#"><button class="bn632-hover bn26">Guardar</button></a>
         </div>

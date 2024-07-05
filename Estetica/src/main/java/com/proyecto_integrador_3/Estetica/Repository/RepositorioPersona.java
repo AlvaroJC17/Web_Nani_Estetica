@@ -19,6 +19,8 @@ public interface RepositorioPersona extends JpaRepository<Persona, String>{
 	@Query("SELECT p FROM Persona p WHERE p.id = :id")
 	public Optional <Persona> buscarPersonaPorId(@Param("id") String id);
 	
+	
+	 
 	//Metodo para mostrar una lista de la tabla de personas
 	@Query("SELECT p FROM Persona p")
 	public List<Persona> listarPersonas();

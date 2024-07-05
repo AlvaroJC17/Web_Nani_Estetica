@@ -79,6 +79,7 @@ public class ServicioCliente {
 			Optional<CodigoDeVerificacion> datosTabla = servicioCodigoDeVerificacion.obtenerDatosTablaCodigoPorUsuarioId(datosCliente.getId());
 			if (datosTabla.isPresent()) {
 				datos = datosTabla.get();
+				System.out.println("Datos de codigo: " + datos);
 			}
 		
 			Cliente nuevo_cliente = new Cliente();
@@ -99,11 +100,14 @@ public class ServicioCliente {
 			nuevo_cliente.setFechaNacimiento(datosCliente.getFechaNacimiento());
 			nuevo_cliente.setSexo(nuevoSexo);
 			nuevo_cliente.setOcupacion(ocupacion);
-			repositorioCodigoDeVerificacion.delete(datos);//primero borramos los datos del usuario de la tabla de codigo
+			if (datos != null) { //se agrega este condicional, porque cuando nuevo cliente es por un cambio de rol, el valor dato es null
+				repositorioCodigoDeVerificacion.delete(datos);//primero borramos los datos del usuario de la tabla de codigo
+			}
 			repositorioUsuario.delete(datosCliente); //segundo borramos todos los datos anteriores del usuario para que no choquen con el registro de los nuevos
 			repositorioCliente.save(nuevo_cliente); //Guardamos los datos del usuario como un nuevo cliente
 		}
 	}
+				
 			
 	
 
@@ -134,6 +138,20 @@ public class ServicioCliente {
 	 public void validarDatosCliente(String nombre, String apellido, String dni,  String sexo,
 			 String telefono, String direccion, String ocupacion) throws MiExcepcion {
 		 
+		 // Expresión regular para validar un telefono
+		 String regex = "\\d{7,10}";
+		 
+		 // Compilar la expresión regular
+		 Pattern pattern = Pattern.compile(regex);
+		 
+		 // Crear un objeto Matcher
+		 Matcher matcher = pattern.matcher(telefono);
+		 
+		 if (!matcher.matches()) {
+			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+		 } 
+		 
 		 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
 			 throw new MiExcepcion("El nombre no puede estar vacio");
 		 }
@@ -162,6 +180,21 @@ public class ServicioCliente {
 	 
 	 	 
 	 public void validarActualizacionDeDatosCliente(String ocupacion, String domicilio, String sexo, String telefono) throws MiExcepcion {
+		
+		 // Expresión regular para validar un telefono
+		 String regex = "\\d{7,10}";
+		 
+		 // Compilar la expresión regular
+		 Pattern pattern = Pattern.compile(regex);
+		 
+		 // Crear un objeto Matcher
+		 Matcher matcher = pattern.matcher(telefono);
+		 
+		 if (!matcher.matches()) {
+			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+		 } 
+		 
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
 			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
  					+ "<span class='fs-6'>El campo de la ocupación no puede estar vacío.</span>");

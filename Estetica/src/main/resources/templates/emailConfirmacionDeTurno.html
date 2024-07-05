@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+        <title>Confirmación de turno</title>
+        
+        <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            text-align: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #ddd;
+        }
+        .header h1 {
+            margin: 0;
+            color: #4CAF50;
+        }
+        .content {
+            padding: 20px;
+        }
+        .content h2 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .turno-details {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .turno-details p {
+            margin: 5px 0;
+        }
+        .warnings {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            border-radius: 5px;
+            color: #856404;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px 0;
+            border-top: 1px solid #ddd;
+            margin-top: 20px;
+        }
+        .footer p {
+            margin: 0;
+            font-weight: bold;
+            font-size: 1.1em;
+            color: #777;
+        }
+    </style>
+      </head>
+
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Confirmación de Turno</h1>
+        </div>
+        <div class="content">
+            <h2>Hola, [[${cliente}]].</h2>
+            <p>Le confirmamos su turno con los siguientes detalles:</p>
+            <div class="turno-details">
+                <p><strong>Profesional:</strong> [[${profesional}]]</p>
+                <p><strong>Fecha:</strong> [[${fecha}]]</p>
+                <p><strong>Hora:</strong> [[${horario}]]</p>
+                <p><strong>Tratamiento:</strong> [[${tratamiento}]]</p>
+            </div>
+            <div class="warnings">
+                <p><strong>Aviso:</strong></p>
+                <p>- La reserva del turno no garantiza el precio del mismo, ya que los precios pueden variar.</p>
+                <p>- Si el turno es cancelado menos de 24 horas antes de la fecha y hora seleccionada, será sancionado con una multa.</p>
+            </div>
+        </div>
+        <div class="footer">
+            <p>Gracias por su preferencia.</p>
+            <p>Nani estética.</p>
+        </div>
+    </div>
+</body>
+
+</html>

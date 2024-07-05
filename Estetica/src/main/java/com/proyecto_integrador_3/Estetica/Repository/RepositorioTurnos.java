@@ -20,10 +20,9 @@ import jakarta.transaction.Transactional;
 @Repository
 public interface RepositorioTurnos extends JpaRepository<Turnos, String> {
 
+	Optional<Turnos> findById(String idTurno);
 	
-//	//Metodo para buscar por DNI
-//		@Query("SELECT u FROM Turno u WHERE t.dni = :dni")
-//		Optional<Turnos> buscarTurnoPorDni(@Param("dni") String dni);
+	//Optional<Turnos> buscarTurnoPorDni(@Param("dni") String dni);
 		
 	List<Turnos> findByDni(String dniCliente);
 	

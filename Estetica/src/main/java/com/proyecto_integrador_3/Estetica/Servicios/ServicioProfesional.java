@@ -159,6 +159,19 @@ public class ServicioProfesional {
 	
 	 public void validarDatosProfesional(String matricula, String especialidad,  String sexo, String telefono, String provincia, String direccion) throws MiExcepcion {
 	
+		 // Expresión regular para validar un telefono
+		 String regex = "\\d{7,10}";
+		 
+		 // Compilar la expresión regular
+		 Pattern pattern = Pattern.compile(regex);
+		 
+		 // Crear un objeto Matcher
+		 Matcher matcher = pattern.matcher(telefono);
+		 
+		 if (!matcher.matches()) {
+			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+		 } 
 				 
 		 if (provincia == null || provincia.isEmpty() || provincia.trim().isEmpty()) {
 			 throw new MiExcepcion("Debe seleccionar una provincia"); 
@@ -185,6 +198,20 @@ public class ServicioProfesional {
 
 	 
 	 public void validarActualizacionDeDatosProfesional(String domicilio, String sexo, String telefono) throws MiExcepcion {
+		 
+		 // Expresión regular para validar un telefono
+		 String regex = "\\d{7,10}";
+		 
+		 // Compilar la expresión regular
+		 Pattern pattern = Pattern.compile(regex);
+		 
+		 // Crear un objeto Matcher
+		 Matcher matcher = pattern.matcher(telefono);
+		 
+		 if (!matcher.matches()) {
+			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+		 } 
 		 
 		 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {
 			 throw new MiExcepcion("La direccion no puede estar vacia");

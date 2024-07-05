@@ -7,6 +7,8 @@
 	<script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
 		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
 	<link rel="stylesheet" href="./css/styles.css">
@@ -36,7 +38,7 @@
 			</div>
 		</div>
 		<div class="row">
-			<nav class="navbar navbar1 navbar-expand-md col-12 col-sm-10 ">
+			<nav class="navbar navbar1 navbar-expand-md">
 				<div class="container-fluid navbar2">
 					<button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse"
 						data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
@@ -52,15 +54,12 @@
 					</div>
 				</div>
 			</nav>
-			<div class="d-flex justify-content-center  align-items-center col-12 col-sm-2 cabecera">
-				<a class="registrarse" th:href="@{/login}">INICIAR SESION</a>
-			</div>
 		</div>
 	</nav>
 
 
-	<main class="main-registrarse-2">
-		<div class="d-flex justify-content-center  align-items-center div-registrarse">
+	<main class="">
+		<div class="">
 			<section class=" section-completar-datos">
 				<div class="row  ">
 					<div class="img-registrarse col-md-4 d-flex justify-content-center align-items-center"> </div>
@@ -71,52 +70,52 @@
 						</div>
 						<form th:action="@{/guardarDatosProfesional}" method="post">
 							<p class="ps-3 fs-1 mb-0 ">Completar Datos Profesional</p>
-							<p class="ps-3">Complete todos los datos para poder acceder a su sesion</p>
+							<p class="ps-3">Complete todos los datos para poder acceder a su sesión</p>
 							<div class="mb-3 row">
 							
 							<div class="mb-3 row">
 								<div class="col-md-6">
-									<label for="matricula" class="form-label texto-label">N° Matricula</label>
-									<input type="text" class="form-control" name="matricula" id="matricula"
-										placeholder="" required>
+									<label for="matricula" class="form-label texto-label">N° Matrícula<span class="text-danger fw-bold">*</span></label>
+									<input type="text" th:value="${matricula}" class="form-control" name="matricula" id="matricula"
+										placeholder="si no posee matrícula, complete con 0000" required>
 								</div>
 								<div class="col-md-6">
-									<label for="especialidad" class="form-label texto-label">Especialidad</label>
-									<input type="text" class="form-control" name="especialidad" id="especialidad"
-										placeholder="" required>
-								</div>
-							</div>
-
-							<div class="mb-3 row">
-								<div class="col-md-6">
-									<label for="sexo" class="form-label texto-label">Sexo</label>
-									<select id="sexo" name="sexo" class="form-select" aria-label="Default select example">
-										<option selected>Seleccione</option>
-										<option value="femenino">Femenino</option>
-										<option value="masculino">Masculino</option>
-										<option value="otro">Otro</option>
-									</select>
-								</div>
-								<div class="col-md-6">
-									<label for="telefono" class="form-label texto-label">Telefono</label>
-									<input type="text" class="form-control" name="telefono" id="telefono"
+									<label for="especialidad" class="form-label texto-label">Especialidad<span class="text-danger fw-bold">*</span></label>
+									<input type="text" th:value="${especialidad}" class="form-control" name="especialidad" id="especialidad"
 										placeholder="" required>
 								</div>
 							</div>
 
 							<div class="mb-3 row">
+								  <div class="col-md-6">
+					              <label for="sexo" class="form-label texto-label">Sexo<span class="text-danger fw-bold">*</span></label>
+					              <select id="sexo" name="sexo" class="form-select" aria-label="Default select example">
+					              <option th:value="Seleccione" th:text="Seleccione" th:selected="${sexo == '' || sexo == null}"></option>
+					         	  <option th:value="Femenino" th:text="Femenino" th:selected="${sexo == 'Femenino'}"></option>
+					         	  <option th:value="Masculino" th:text="Masculino" th:selected="${sexo == 'Masculino'}"></option>
+					         	  <option th:value="Otro" th:text="Otro" th:selected="${sexo == 'Otro'}"></option>
+					            </select>
+					          </div>
 								<div class="col-md-6">
-								<label for="provincia" class="form-label mb-0 fs-4">Seleccione provincia <span class="text-danger ">*</span> </label>
+									<label for="telefono" class="form-label texto-label">Teléfono<span class="text-danger fw-bold">*</span></label>
+									<input type="text" th:value="${telefono}" class="form-control" name="telefono" id="telefono"
+										placeholder="(11)1111-1111" required>
+								</div>
+							</div>
+
+							<div class="mb-3 row">
+								<div class="col-md-6">
+								<label  for="provincia" class="form-label texto-label mb-0">Seleccione provincia <span class="text-danger ">*</span> </label>
               					<select  name="provincia" class="form-select" id="provincia" aria-label="Default select example">
-                				<option value=""  selected>Seleccione una provincia</option>
+                				<option value=""  selected>Provincia donde ofrecerá sus servicios</option>
                 				<!--el th:value="${provincia.name()} viene por defecto al hacer un enum con una descripcion al lado, este metodo envia a esa descripcion como un string-->
                					 <option th:each="provincia : ${provincias}" th:value="${provincia.name()}" th:text="${provincia.displayName}"></option> <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
              					 </select>
 								</div>
 
 								<div class="col-md-6">
-									<label for="direccion" class="form-label texto-label">Direccion</label>
-									<input type="text" class="form-control" name="direccion" id="direccion" placeholder="" required>
+									<label for="direccion" class="form-label texto-label">Dirección<span class="text-danger fw-bold">*</span></label>
+									<input type="text" th:value="${direccion}" class="form-control" name="direccion" id="direccion" placeholder="ingrese dirección y altura" required>
 								</div>
 								
 								</div>
@@ -124,10 +123,6 @@
 	          					<input type="hidden" th:value="${emailUsuario}" class="form-control" name="emailUsuario" id="emailUsuario" placeholder="">
 	    	  					</div>
 	    	  
-	    	  					<div th:if="${error}" class="text-black lh-sm">
-	     						<p class="text-center" th:utext="${error}"></p>
-	  		 					 </div>
-
 								<div class="boton-de-registro text-center ">
 									<a class="" href="./registrarse2.html"><button type="submit" class="bn632-hover bn26">Guardar</button></a>
 								</div>
@@ -138,6 +133,40 @@
 				</div>
 			</section>
 		</div>
+		
+		<!--Modal mensajes de error-->
+		
+		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
+     th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
+    <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+            <div class="modal-header border border-0 d-flex justify-content-center ">
+			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+            </div>
+            <div class="modal-body text-black lh-sm">
+                <p class="text-center" th:utext="${error}"></p>
+            </div>
+            <div class="modal-footer border border-0">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalError = /*[[${showModalError}]]*/ false;
+        if (showModalError) {
+            $('#errorModal').modal('show');
+        }
+
+        $('#errorModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
 	</main>
 
 

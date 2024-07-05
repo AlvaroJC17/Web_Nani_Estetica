@@ -1,6 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
+import com.proyecto_integrador_3.Estetica.Enums.Rol;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -77,6 +78,10 @@ public class Turnos {
 	@Column(name = "estado")
 	EstadoDelTurno estado;
 	
+	@Enumerated(EnumType.STRING)
+	@Column(name = "cancelado_por")
+	Rol canceladoPor;
+	
 	public Turnos() {
 		
 	}
@@ -91,7 +96,7 @@ public class Turnos {
 	}
 		
 	public Turnos(String provincia, Profesional profesional, LocalDate fecha, String horario, String tratamiento, String dni,
-			String email, Boolean activo, Boolean multa, String costoMulta, EstadoDelTurno estado) {
+			String email, Boolean activo, Boolean multa, String costoMulta, EstadoDelTurno estado, Rol canceladoPor) {
 		this.dni = dni;
 		this.email = email;
 		this.provincia = provincia;
@@ -103,10 +108,21 @@ public class Turnos {
 		this.multa = multa;
 		this.costoMulta = costoMulta;
 		this.estado = estado;
+		this.canceladoPor = canceladoPor;
 	}
 	
 
 
+
+
+	public Rol getCanceladoPor() {
+		return canceladoPor;
+	}
+
+
+	public void setCanceladoPor(Rol canceladoPor) {
+		this.canceladoPor = canceladoPor;
+	}
 
 
 	public EstadoDelTurno getEstado() {

@@ -91,6 +91,7 @@ public class ControladorTurnos {
 		if (servicioHorario.turnoMenorA24Horas(fechaSeleccionadaLocalDateTime, fechaActual)) {
 			//Este servicio se encarga de cancelar y multar el turno y al cliente
 			servicioTurnos.multarTurnoAndClienteMenosDe24Horas(emailCliente, idTurno);
+			
 		}else {
 			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
 			servicioTurnos.actualizarEstadoDelTurno(idTurno);

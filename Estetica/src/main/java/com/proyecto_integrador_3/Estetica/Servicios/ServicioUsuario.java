@@ -20,9 +20,11 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
+import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioCodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 
 import jakarta.transaction.Transactional;
@@ -33,16 +35,33 @@ public class ServicioUsuario {
 	  @Autowired
 	  public RepositorioUsuario repositorioUsuario;
 	  
+	  @Autowired
+	  public RepositorioCodigoDeVerificacion repositorioCodigoDeVerificacion;
+	  
 	  
 	  //La anotacion Scheduled indica que es un tarea programada y el cron indica en el momento que
 	  //se va a realizar, en este caso es a las 12 de la noche
 	  //y este metodo se encarga de borrar los registros imcompletos
 	  //Es importante recordar tambien colocar la etiqueta @EnableScheduling en la pagina principal de la aplicacion, donde este el run
-	  @Scheduled(cron = "0 0 0 * * ?") // Ejecuta todos los días a medianoche
+	 @Scheduled(cron = "0 0 0 * * ?") // Ejecuta todos los días a medianoche
+	 // @Scheduled(cron = "0 * * * * *") // Ejecuta a cada minuto
 	  @Transactional 
 	  public void limpiarRegistrosIncompletos() {
 	        LocalDateTime limite = LocalDateTime.now().minusDays(1);
+	        //Obtenemos una lista de usuarios que no tengas el email validado y que la fecha sea anterior a 24hrs
 	        List<Usuario> usuariosIncompletos = repositorioUsuario.findByEmailValidadoFalseAndFechaCreacionBefore(limite);
+	        //Con este for iteramos sobre los usuarios y obtenemos sus id
+	        for(Usuario usuario: usuariosIncompletos) {
+	        	//Con los id de los usuarios obtenemos la lista de codigos
+				List <CodigoDeVerificacion> listCodigos = repositorioCodigoDeVerificacion.findByUsuarioIdAndUsadoFalse(usuario.getId());
+				//Con este for iteramos sobre los codigos encontrados y los borramos
+				for (CodigoDeVerificacion codigo : listCodigos) {
+			        repositorioCodigoDeVerificacion.delete(codigo);
+			    }
+			}
+	       
+	        //Una vez que se borraron los codigos, ahora iteramos sobre los usuarios encontrados
+	        //y los borramos
 	        usuariosIncompletos.forEach(repositorioUsuario::delete);
 	        System.err.println("¡¡¡¡¡¡¡¡¡¡¡¡¡SE BORRARON LOS REGISTROS INCOMPLETOS!!!!!!!!!!!!");
 	    }
@@ -69,7 +88,7 @@ public class ServicioUsuario {
 				NuevoUsuario.setFechaNacimiento(fecha);
 				NuevoUsuario.setActivo(TRUE);
 				NuevoUsuario.setRol(Rol.CLIENTE);
-				NuevoUsuario.setEmailValidado(TRUE);
+				//NuevoUsuario.setEmailValidado(TRUE);
 				NuevoUsuario.setValidacionForm(FALSE);
 				repositorioUsuario.save(NuevoUsuario);
 			}else {
@@ -205,11 +224,9 @@ public class ServicioUsuario {
 		 
 		 @Transactional
 		    public void modificarRol(String id, Rol nuevoRol) {
-
-		        Optional<Usuario> presente = repositorioUsuario.findById(id);
-
+			 Optional<Usuario> presente = repositorioUsuario.findById(id);
 		        if (presente.isPresent()) {
-		        	Usuario usuario_rol = new Admin();
+		        	Usuario usuario_rol = new Usuario();
 		        	usuario_rol = presente.get();
 		        	usuario_rol.setValidacionForm(FALSE); //volvemos el form a false para que el cambio de rol obligue al usuario a llenar la nueva planilla de su rol
 		        	usuario_rol.setRol(nuevoRol);

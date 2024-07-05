@@ -95,6 +95,12 @@ public class ControladorAdmin {
 		} catch (MiExcepcion e) {
 			System.out.println(e.getMessage());
 			model.put("error", e.getMessage());
+			model.addAttribute("sexo", sexo);
+			model.addAttribute("telefono", telefono);
+			model.addAttribute("direccion", direccion);
+			model.addAttribute("ocupacion", ocupacion);
+			model.addAttribute("emailUsuario", emailUsuario);
+			model.addAttribute("showModalError", true);
 			return "/pagina_admin/completarDatosAdmin";
 		}
 		return "redirect:/homeAdmin?email=" + emailUsuario; //redirecionamos al metodo homeAdmin enviando la varibale mail
@@ -137,7 +143,8 @@ public class ControladorAdmin {
 	public String buscarDniNombreEmail(
 			@RequestParam(name = "dato") String dato,  //la variable dato puede ser un nombre, dni o mail
 			@RequestParam(name = "emailAdmin") String emailAdmin,
-			@RequestParam(name ="dato2", required = false) String dato2,
+			@RequestParam(name ="dato2", required = false) String dato2, //proviene del metodo modificarUsuario
+			@RequestParam(name ="usuarioModificado", required = false) String usuarioModificado, //proviene del metodo modificarUsuario
 			//@RequestParam(name = "activarMensaje", required = false) Boolean activarMensaje,
 			Model model) {
 		
@@ -148,6 +155,8 @@ public class ControladorAdmin {
 		if (dato2 != null) {
 			dato = dato2;
 		}
+		
+		System.out.println("dato: " + dato);
 					
 		String error = null;
 		String datoSinEspacios = dato.trim(); //Le quitamos los espacios en blanco al principio y final de la palabra
@@ -174,31 +183,15 @@ public class ControladorAdmin {
 		// Si cumple las condiciones para pasar los condicionales de arriba, entonces
 		//usamos el valor de dato, segun corresponda
 		List<Usuario> usuarioDni = servicioUsuario.buscarDni(datoSinEspacios); //buscamos la lista de usuarios por dni, con esto verificamos que el usuario existe
-		List<Persona> dniUsuario = repositorioPersona.buscarPorDni(datoSinEspacios); //buscamos la persona con ese mismo dato y sacamos el dni
-		//Obtenemos el dni del usuario para compararlo mas adelante
-		String dni = null;
-		for (Persona usuario : dniUsuario) {
-		    dni = usuario.getDni();
-		}
-		
 		List<Usuario>	usuarioNombre = servicioUsuario.buscarNombre(datoSinEspacios); //Buscamos usuario por nombre
-		List<Persona> nombreUsuario = repositorioPersona.buscarPorNombre(datoSinEspacios); //Obtenemos el nombre del usuario
-		//obtenemos el nombre del usuario
-		String nombre = null;
-		for (Persona usuario : nombreUsuario) {
-		    nombre = usuario.getNombre();
-		}
-		
 		List<Usuario> usuarioEmail = servicioUsuario.buscarPorEmail(datoSinEspacios); //buscamos al usuario por mail, no es necesario tambien buscar por Persona porque el email esta en la tabla usuario
-		//Obtenemos el email
-		String email = null;
-		for (Usuario usuario : usuarioEmail) {
-			email = usuario.getEmail();
-		}
 		
 		//Si la lista no esta vacia (usuario existe) y el dato que ingreso no es igual a el del mismo usuario entonces entra en el condicional
 		//con esto evitamos que el usuario se busque a si mismo y se modifique a si mismo
-		if (!usuarioDni.isEmpty() && !dni.equalsIgnoreCase(datoSinEspacios)) {
+		if (!usuarioDni.isEmpty()) {
+			usuarioDni = usuarioDni.stream()
+	                 .filter(usuario -> !usuario.getEmail().equals(emailAdmin)) //Filtramos del resultados de las listas al usuario que esta haciendo la busqueda, para que no pueda encontrarse a si mismo
+	                 .collect(Collectors.toList());
 			model.addAttribute("usuarios", usuarioDni); // asignamos el valor de la variable administradoresDni a la variable html administradores y asi poder iterarla en el documento
 			model.addAttribute("usuariosEmail", emailAdmin);
 			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
@@ -206,7 +199,10 @@ public class ControladorAdmin {
 		}	
 			
 		//Igual que el anterior
-		if (!usuarioNombre.isEmpty() && !nombre.equalsIgnoreCase(datoSinEspacios)) {
+		if (!usuarioNombre.isEmpty()) {
+			usuarioNombre = usuarioNombre.stream()
+	                 .filter(usuario -> !usuario.getEmail().equals(emailAdmin)) //Filtramos del resultados de las listas al usuario que esta haciendo la busqueda, para que no pueda encontrarse a si mismo
+	                 .collect(Collectors.toList());
 			model.addAttribute("usuarios", usuarioNombre);
 			model.addAttribute("usuariosEmail", emailAdmin);
 			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
@@ -216,7 +212,10 @@ public class ControladorAdmin {
 		//Igual que el anterior
 		/*Le enviamos el valor de dato2 al modal de exito. Solo lo colocamos en este pedazo de codigo porque solo estamos
 		 * usando el mail de los usuario como dato2*/
-		if (!usuarioEmail.isEmpty() && !email.equalsIgnoreCase(datoSinEspacios)) {
+		if (!usuarioEmail.isEmpty()) {
+			usuarioEmail = usuarioEmail.stream()
+	                 .filter(usuario -> !usuario.getEmail().equals(emailAdmin)) //Filtramos del resultados de las listas al usuario que esta haciendo la busqueda, para que no pueda encontrarse a si mismo
+	                 .collect(Collectors.toList());
 			model.addAttribute("usuarios", usuarioEmail);
 			model.addAttribute("usuariosEmail", emailAdmin);
 			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
@@ -227,6 +226,16 @@ public class ControladorAdmin {
 			 * activar el modal con el mensaje de advertencia*/
 			return "/pagina_admin/portalAdmin";
 		}			
+		
+//		System.out.println("antes de entrar: " + usuarioModificado);
+//		if (!usuarioEmail.isEmpty() && usuarioModificado.equalsIgnoreCase("usuarioModificado") ) {
+//			System.out.println("Esta entrando aqui: " + usuarioModificado);
+//			model.addAttribute("usuarios", usuarioEmail);
+//			model.addAttribute("usuariosEmail", emailAdmin);
+//			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
+//			model.addAttribute("dato2", datoSinEspacios);
+//			return "/pagina_admin/portalAdmin";
+//		}
 			model.addAttribute("usuariosEmail", emailAdmin);
 			model.addAttribute("dato2", datoSinEspacios);
 			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
@@ -324,12 +333,14 @@ public class ControladorAdmin {
 			if (!rolActual.equals(nuevoRol)) { // si los roles son direfentes ejecuta esto
 				//metodo para moficar el rol
 				servicioUsuario.modificarRol(id, nuevoRol);
+				//String usuarioModificado = "usuarioModificado";
 				exito = "Actializacion realizada correctamente";
 				model.addAttribute("usuariosEmail", emailAdministrador);
 				model.addAttribute("showModalExito", true);
 				model.addAttribute("usuarios", usuarios);
 				model.addAttribute("exito", exito);
 				model.addAttribute("dato2",email); // enviamos el mismo mail del usuario como dato para el formulario de buscarDNIoNombre
+				//model.addAttribute("usuarioModificado", usuarioModificado);
 				return "/pagina_admin/portalAdmin";
 			}else {
 				error = "El usuario ya posee un rol de " + nuevoRol;

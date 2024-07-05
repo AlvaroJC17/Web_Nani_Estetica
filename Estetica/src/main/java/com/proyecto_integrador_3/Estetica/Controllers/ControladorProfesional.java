@@ -16,6 +16,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
@@ -109,7 +110,6 @@ public class ControladorProfesional {
 
 							
 		try {
-					System.out.println("entes de entrar en el metodo");
 					servicioTurnos.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes,
 					ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual,
 					alteracion_hormonal, vitaminas, corticoides, hormonas, metodo_anticonceptivo,
@@ -304,6 +304,14 @@ public class ControladorProfesional {
 		} catch (MiExcepcion e) {
 			System.out.println(e.getMessage());
 			model.put("error", e.getMessage());
+			model.addAttribute("provincias", Provincias.values());
+			model.addAttribute("matricula", matricula);
+			model.addAttribute("especialidad",especialidad);
+			model.addAttribute("sexo",sexo);
+			model.addAttribute("telefono", telefono);
+			model.addAttribute("direccion", direccion);
+			model.addAttribute("emailUsuario", emailUsuario);
+			model.addAttribute("showModalError", true);
 			return "pagina_profesional/completarDatosProfesional";
 		}
 		return "redirect:/homeProfesional?email=" + emailUsuario; //redirecionamos al metodo homeProfesional enviando la varibale mail
@@ -336,13 +344,7 @@ public class ControladorProfesional {
 			nuevoSexo = sexoAnterior.toString().toUpperCase();
 			telefonoAnterior = datosAnteriorProfesional.getTelefono().toUpperCase();
 		}
-		
-		System.out.println("Compararion Ocupacion: " + email + " " + "=" + " " + emailAnterior);
-		System.out.println("Compararion Domicilio: " + domicilio + " " + "=" + " " + domicilioAnterior);
-		System.out.println("Compararion Sexo: " + sexo + " " + "=" + " " + nuevoSexo);
-		System.out.println("Compararion Telefono: " + telefono + " " + "=" + " " + telefonoAnterior);
-			
-		
+					
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
 		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
 		//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje

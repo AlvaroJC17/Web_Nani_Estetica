@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,8 @@ public interface RepositorioCodigoDeVerificacion extends JpaRepository<CodigoDeV
 	CodigoDeVerificacion findByCodigoAndUsuario(String codigo, Usuario usuario);
 	
 	Optional<CodigoDeVerificacion> findByUsuarioId(String usuarioId);
+	
+	List<CodigoDeVerificacion> findByUsuarioIdAndUsadoFalse(String id);
 	
 	
 }

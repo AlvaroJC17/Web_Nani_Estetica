@@ -1,6 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -8,6 +9,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
+import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioAdmin;
@@ -103,6 +105,13 @@ public class PruebaSQL implements CommandLineRunner {
             System.out.println("Ya existe un administrador en la base de datos.");
         }
 		
+//		 LocalDateTime limite = LocalDateTime.now();
+//		 List<Usuario> usuariosIncompletos = repositorioUsuario.findByEmailValidadoFalseAndFechaCreacionBefore(limite);
+//		
+//		 for(Usuario usuario: usuariosIncompletos) {
+//				System.out.println("Nombre :" + usuario.getId() );
+//			}
+		 
 //		EmailUsuarios pruebaCorreo = new EmailUsuarios();
 //		pruebaCorreo.setDestinatario("alvarocortesia@gmail.com");
 //		pruebaCorreo.setAsunto("Prueba de plantilla");

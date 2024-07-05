@@ -13,10 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
+import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
+import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
@@ -41,6 +43,9 @@ public class ServicioTurnos {
 	
 	@Autowired
 	ServicioHorario servicioHorario;
+	
+	@Autowired
+	ServicioEmail servicioEmail;
 	
 	
 //	@Transactional
@@ -76,7 +81,22 @@ public class ServicioTurnos {
 			Turnos actualizarTurnoActivo = turnoPorId.get();
 			actualizarTurnoActivo.setActivo(FALSE);
 			actualizarTurnoActivo.setEstado(EstadoDelTurno.CANCELADO);
-			repositorioTurnos.save(actualizarTurnoActivo);
+			actualizarTurnoActivo.setCanceladoPor(Rol.CLIENTE);
+			Turnos turnoCancelado = repositorioTurnos.save(actualizarTurnoActivo);
+			
+			//Creamos el objeto con los datos del email para poder enviarlo
+			EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
+			cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
+			cancelarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
+			
+			//asignamos a la variable el nombre de la plantilla que vamos a utilizar
+			String plantillaHTML= "emailCancelacionDeTurno";
+			
+			//Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
+			Boolean multa = false;
+			
+			//Llamamos al servicio para enviar el email
+			servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnoCancelado, plantillaHTML, multa);
 		}
 	}
 	
@@ -155,12 +175,29 @@ public class ServicioTurnos {
         if (turnoOptional.isPresent()) {
             Turnos turno = turnoOptional.get();
             
+            //Buscamos el turno y le actualizamos sus valores a cancelado
             if (turno.getActivo()) {
             	turno.setMulta(TRUE); // Le colocamos una multa al turno que tiene fecha pasada
             	turno.setActivo(false); // Lo pasamos a inactivo
             	turno.setEstado(EstadoDelTurno.CANCELADO);
-            	repositorioTurnos.save(turno);
+            	turno.setCanceladoPor(Rol.CLIENTE);
+            	Turnos turnoCancelado24h = repositorioTurnos.save(turno);
             	
+            	//Creamos el objeto con los datos del email para poder enviarlo
+                EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
+                cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
+                cancelarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
+                
+                //Asiganmos la plantilla html para la cancelacion del turno
+                String plantillaHTML= "emailCancelacionDeTurno"; 
+                
+                //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
+                Boolean multa = true;
+                
+                //Enviamos al servicio para mandar al email con la cancelacion del turno
+                servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnoCancelado24h, plantillaHTML, multa); 
+            	
+                //Buscamos al cliente y le asigamos la multa
             	Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(email);
             	if (obtenerDatosDeMultas.isPresent()) {
             		Cliente multasDelCliente = obtenerDatosDeMultas.get();
@@ -170,8 +207,8 @@ public class ServicioTurnos {
             }
         }
     }
-    
-        
+            
+               
     @Transactional
 	public void formularioTurnos(String idCliente, String email, String fuma, String drogas, String alcohol, String deportes,
 			String ejercicios, String medicamentos, String nombreMedicamento, String embarazo, String amamantando,
@@ -304,7 +341,32 @@ public class ServicioTurnos {
 		nuevoTurno.setMulta(FALSE);
 		nuevoTurno.setActivo(TRUE);
 		nuevoTurno.setEstado(EstadoDelTurno.PENDIENTE);
-		repositorioTurnos.save(nuevoTurno);
+		Turnos turnoGuardado =repositorioTurnos.save(nuevoTurno); //Guardo el turno como una nueva entidad para porder aprovechar
+		//la funcionalidad de jpa que perminte obtener los datos de un objeto recien guarado siempre y cuando este haya sido
+		//guardado como una entidad nueva.
+		
+		 //Despues de generar todo el proceso del turno se envia un mail de confirmacion
+        //al cliente, para esto debemos instancias un objeto EmailUsuario y pasarle toda
+        //la info necesario que debe llevar el correo
+        EmailUsuarios confirmarPorEmailTurno = new EmailUsuarios();
+        confirmarPorEmailTurno.setAsunto("Nani estética - CONFIMACIÓN DE TURNO");
+        confirmarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
+        confirmarPorEmailTurno.setMensaje("Estimado usuario, gracias por seleccionar un turno");
+        
+       
+        //plantilla html para enviar el email con la confirmacion del turno
+        String plantillaHTML = "emailConfirmacionDeTurno";
+        
+        //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
+        Boolean multa = false;
+        
+        //Servicion que contiene el metodo encargado de enviar el mail, recibe como parametro
+        //un objeto EmailUsuario
+        servicioEmail.enviarConfirmacionOCancelacionTurno(confirmarPorEmailTurno, turnoGuardado, plantillaHTML, multa);
+		
+		
+		
+		
 		
 	}
 

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
+import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
@@ -27,6 +28,7 @@ import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioEmail;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
@@ -57,7 +59,11 @@ public class ControladorCliente {
 	@Autowired
 	public ServicioTurnos servicioTurnos;
 	
+	@Autowired
+	public ServicioEmail servicioEmail;
 	
+	
+	//Muestra las multas del cliente con todo sus datos
 	@GetMapping("/multas")
 	public String multas(
 			@RequestParam(name = "email", required = false) String email,
@@ -94,7 +100,7 @@ public class ControladorCliente {
 			ModelMap model) {
 		
 		//Antes de mostrar los tratamientos disponibles, verificamos que no hay turno antiguos
-		//no asistodos, de ser afirmativo, le colocamos una multa al turno
+		//no asistidos, de ser afirmativo, le colocamos una multa al turno
 		servicioTurnos.actualizarTurnosAntiguos(email);
 		
 		Boolean tieneMultas = false;
@@ -381,25 +387,25 @@ public class ControladorCliente {
 						
 				}
 				
-//	   //Metodo que recibe una fecha tipo LocalDate y devuelve true si es fin de semana
-//				if (servicioCliente.esFinDeSemana(fechaSeleccionadaLocalDate)) {
-//					String error = "<span class='fw-bold fs-5'>Horarios de Atención:</span><br><br>" +
-//			                 "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>" +
-//			                 "<span class='fs-6'>Queremos informarle que nuestro horario de atención es de lunes a viernes de 9:00 a 18:00 y los sábados de 9:00 a 15:00.<br><br>" +
-//			                 "Agradecemos su comprensión y le pedimos disculpas por cualquier inconveniente que esto pueda causar."
-//			                 + " Para más información puede comunicarse con nosotros por cualquiera de nuestros canales digitales.</span>";
-//					isDisabled = true;
-//					modelo.addAttribute("error", error);
-//					modelo.addAttribute("showModalError", true);
-//					modelo.addAttribute("isDisabled", isDisabled);
-//					if (identificador.equals("tratamientoFacial")) {
-//						return "/pagina_cliente/reservaDeTurnoClienteFacial";
-//					}else if(identificador.equals("tratamientoCorporal")) {
-//						return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-//					}else if(identificador.equals("tratamientoEstetico")) {
-//						return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-//					}
-//				}
+	   //Metodo que recibe una fecha tipo LocalDate y devuelve true si es fin de semana
+				if (servicioHorario.esFinDeSemana(fechaSeleccionadaLocalDate)) {
+					String error = "<span class='fw-bold fs-5'>Horarios de Atención:</span><br><br>" +
+			                 "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>" +
+			                 "<span class='fs-6'>Queremos informarle que nuestro horario de atención es de lunes a viernes de 9:00 a 18:00 y los sábados de 9:00 a 15:00.<br><br>" +
+			                 "Agradecemos su comprensión y le pedimos disculpas por cualquier inconveniente que esto pueda causar."
+			                 + " Para más información puede comunicarse con nosotros por cualquiera de nuestros canales digitales.</span>";
+					isDisabled = true;
+					modelo.addAttribute("error", error);
+					modelo.addAttribute("showModalError", true);
+					modelo.addAttribute("isDisabled", isDisabled);
+					if (identificador.equals("tratamientoFacial")) {
+						return "/pagina_cliente/reservaDeTurnoClienteFacial";
+					}else if(identificador.equals("tratamientoCorporal")) {
+						return "/pagina_cliente/reservaDeTurnoClienteCorporal";
+					}else if(identificador.equals("tratamientoEstetico")) {
+						return "/pagina_cliente/reservaDeTurnoClienteEstetico";
+					}
+				}
 				
 				//Definimos una fecha maxima de dos meses a partir de la fecha actual
 				//Con esto limitamos al usuario a que no pueda solicitar turnos mas alla de dos meses en adelante de la fecha actual
@@ -515,7 +521,8 @@ public class ControladorCliente {
 		case "aceptar":
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 			try {
-				//Servicio para guardar el turno facial en la base de datos
+				//Servicio para guardar el turno  en la base de datos
+				
 				servicioTurnos.guardarTurno(idCliente, nombreDelProfesional, fechaSeleccionada, provinciaString,
 						idProfesional, facial, espalda, pulido, dermaplaning, exfoliacion, lifting, perfilado, laminado,
 						hydralips, microneedling, horario, emailCliente);
@@ -532,7 +539,6 @@ public class ControladorCliente {
                 //cuando el usuario selecciona un nuevo turno, eliminar el turno mas antiguo
                 //que tenga estado inactivo y no tenga multas
                 servicioTurnos.eliminarTurnoMasAntiguoNoActivo(emailCliente);
-                
                 
                 //Obtenemos una lista de turnos del usuario a traves de su id
                 List<Turnos> tunosDisponibles = servicioTurnos.buscarTurnoPorClienteId(idCliente);
@@ -559,7 +565,7 @@ public class ControladorCliente {
 				// si hay algun error en alguna validacion, se dispara este catch y se pasan de vuelta todos estos
 				//valores para que recargue la misma pagina del formulario con un mensaje de error y con todos los
 				//array de provincia, profesional y horarios
-				
+				System.out.println(e.getMessage());
 				String error = e.getMessage();
 				model.addAttribute("error", error);
 				model.addAttribute("datosCliente", datosCliente);

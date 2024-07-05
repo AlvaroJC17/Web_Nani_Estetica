@@ -31,8 +31,8 @@
           </div>
         </div>
       </div>
-      <div class="row">
-      <nav class="navbar navbar1 navbar-expand-md col-12 col-sm-10 ">
+      <div class="">
+      <nav class="navbar navbar1 navbar-expand-md">
         <div class="container-fluid navbar2">
           <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
             aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -47,9 +47,6 @@
           </div>
         </div>
       </nav>
-      <div class="d-flex justify-content-center  align-items-center col-12 col-sm-2 cabecera">
-        <a class="registrarse" th:href="@{/login}">INICIAR SESION</a>
-      </div>
     </div>
   </nav>
 
@@ -96,7 +93,7 @@
           <div class="mb-3 row">
              <div class="col-md-6">
               <label for="direccion" class="form-label texto-label">Dirección<span class="text-danger fw-bold">*</span></label>
-              <input type="text" th:value="${direccion}" class="form-control" name="direccion" id="direccion" placeholder="Ingrese dirección">
+              <input type="text" th:value="${direccion}" class="form-control" name="direccion" id="direccion" placeholder="Ingrese dirección y altura">
             </div>  
           <div class="col-md-6">
               <label for="telefono" class="form-label texto-label">Teléfono<span class="text-danger fw-bold">*</span></label>
@@ -204,7 +201,7 @@
     </div>
     <div class="mb-3">
       <label for="exampleFormControlInput22" class="form-label texto-label">TELEFONO</label>
-      <input type="text" class="form-control footer-interno" id="exampleFormControlInput22" placeholder="11 - 1111 - 1111">
+      <input type="text" class="form-control footer-interno" id="exampleFormControlInput22" placeholder="Solo números sin espacios ni guiones">
     </div>
     <div class="mb-3">
       <label for="exampleFormControlInput23" class="form-label texto-label">EMAIL</label>

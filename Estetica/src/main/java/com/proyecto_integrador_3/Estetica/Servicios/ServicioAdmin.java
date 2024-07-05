@@ -120,6 +120,20 @@ public class ServicioAdmin {
 	 
 	 public void validarDatosAdmin(String sexo, String telefono, String direccion, String ocupacion) throws MiExcepcion {
 		 
+		 // Expresión regular para validar un telefono
+		 String regex = "\\d{7,10}";
+		 
+		 // Compilar la expresión regular
+		 Pattern pattern = Pattern.compile(regex);
+		 
+		 // Crear un objeto Matcher
+		 Matcher matcher = pattern.matcher(telefono);
+		 
+		 if (!matcher.matches()) {
+			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+		 } 
+	        
 		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
 			 throw new MiExcepcion("El sexo no puede estar vacio");
 		 }
@@ -137,6 +151,20 @@ public class ServicioAdmin {
 	 }
 	 
 	 public void validarActualizacionDeDatosAdmin(String ocupacion, String domicilio, String sexo, String telefono) throws MiExcepcion {
+		 
+		 // Expresión regular para validar un telefono
+		 String regex = "\\d{7,10}";
+		 
+		 // Compilar la expresión regular
+		 Pattern pattern = Pattern.compile(regex);
+		 
+		 // Crear un objeto Matcher
+		 Matcher matcher = pattern.matcher(telefono);
+		 
+		 if (!matcher.matches()) {
+			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+		 } 
 		 
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
 			 throw new MiExcepcion("La ocupacion no puede estar vacia");
@@ -170,6 +198,11 @@ public class ServicioAdmin {
 
 		        // Crear un objeto Matcher
 		        Matcher matcher = pattern.matcher(email);
+		        
+		        if (!matcher.matches()) {
+		            throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+        								+ "<span class='fs-6'>El email no es valido, por favor verifique e intente nuevamente.</span>");
+		        } 
 		        
 		        if (email == null || email.isEmpty() || email.trim().isEmpty()) {
 		            throw new MiExcepcion("El email no puede estar vacio");
