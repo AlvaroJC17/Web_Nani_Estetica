@@ -64,19 +64,29 @@
 
        <div class="container-fluid ">
 		   
-        <p class="fw-bold">Estimado Cliente, <span class="fw-bold" th:text="${datosCliente.nombre}">[Nombre Cliente]</span></p>
+        <p class="fw-bold">Estimado cliente, <span class="fw-bold" th:text="${datosCliente.nombre}">[Nombre Cliente]</span></p>
 
-        <p class="">Nos dirigimos a usted para informarle que, según nuestros registros, no asistió al turno 
-          programado el <span class="fw-bold" th:text="${fecha}"> [Fecha del Turno] </span> a las <span class="fw-bold" th:text="${horario}"> [Hora del Turno] </span>. Lamentamos informarle que, de 
-          acuerdo con nuestra política de cancelación y asistencia, se ha aplicado una multa 
-          por inasistencia.</p>
-
+        <p class="">Nos dirigimos a usted para informarle que, según nuestros registros, no asistió al (los) turno 
+          programado. Lamentamos informarle que, de acuerdo con nuestra política de cancelación y asistencia, se ha aplicado una multa 
+          por inasistencia. A continuación le mostramos el detalle de los turnos y las multas. </p>
+          
+          <p >Detalles de los turnos con multa:</p>
+       <div style="display:inline-block;" >		   
+           <ul style="border-bottom: 1px solid white; padding-bottom: 10px;" th:each="turnoConMulta : ${turnosConMulta}">
+            <li> <span class="fw-bold">Profesional:</span> <span th:text="${turnosConNombreProfesional[turnoConMulta.id]}"></span></li>
+            <li> <span class="fw-bold">Fecha:</span> <span th:text="${turnoConMulta.fecha}"></span></li>
+            <li> <span class="fw-bold">Hora:</span> <span th:text="${turnoConMulta.horario}"></span></li>
+            <li> <span class="fw-bold">Tratamiento:</span> <span th:text="${turnoConMulta.tratamiento}"></span></li>
+        	<li> <span class="fw-bold">Costo de la multa:</span> <span th:text="'$' + ${turnoConMulta.costoMulta}"></span></li>
+        </ul>
+	   </div>
+          
           <p>Detalles de la multa:</p>
           <ul>
-            <li> <span class="fw-bold">Monto de la multa:</span> <span th:text="'$'+ ${costoMulta}"> $[Monto de la Multa]</span></li>
-            <li> <span class="fw-bold"> Número de cuenta para el pago:</span> [Número de Cuenta]</li>
-            <li> <span class="fw-bold">Banco:</span>  [Nombre del Banco]</li>
-            <li> <span class="fw-bold">Titular de la cuenta:</span>  [Nombre del Titular]</li>
+            <li> <span class="fw-bold">Monto total de la multa:</span> <span th:text="'$'+ ${totalCostoMultas}"></span></li>
+            <li> <span class="fw-bold"> Número de cuenta para el pago:</span></li>
+            <li> <span class="fw-bold">Banco:</span></li>
+            <li> <span class="fw-bold">Titular de la cuenta:</span></li>
         </ul>
 
         <p class="">Para evitar cualquier inconveniente adicional, le solicitamos que realice el pago 

@@ -96,7 +96,8 @@ public class ServicioProfesional {
 			String provincia, String direccion, String telefono, String sexo) throws MiExcepcion {
 		
 		validarDatosProfesional(matricula, especialidad, sexo, telefono, provincia, direccion);
-
+		
+		try {
 		Optional <Usuario> datosUsuario = repositorioUsuario.buscarPorEmailOptional(email);
 		Optional <Persona> datosPersona = repositorioPersona.buscarPorEmailOptional(email);
 		
@@ -133,6 +134,9 @@ public class ServicioProfesional {
 			repositorioProfesional.save(nuevo_profesional);
 			repositorioUsuario.delete(datosDelUsuario);
 		}
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor " + e);
+		}
 	}
 	
 	@Transactional
@@ -141,19 +145,22 @@ public class ServicioProfesional {
 		verificarEmailProfesional(email, emailAnterior);
 		validarActualizacionDeDatosProfesional(domicilio, sexo, telefono);
 		
-		Optional<Profesional> identificarProfesional = repositorioProfesional.findById(idAdmin);
-		
-		if (identificarProfesional.isPresent()) {
-			Profesional profesional_actualizado = identificarProfesional.get(); // Atribuye el objeto presente a esta nueva variable
-			
-			Sexo nuevoSexo = null;
-			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
-			
-			profesional_actualizado.setEmail(email);
-			profesional_actualizado.setSexo(nuevoSexo);
-			profesional_actualizado.setDomicilio(domicilio);
-			profesional_actualizado.setTelefono(telefono);
-        	repositorioProfesional.save(profesional_actualizado);
+		try {
+			Optional<Profesional> identificarProfesional = repositorioProfesional.findById(idAdmin);
+			if (identificarProfesional.isPresent()) {
+				Profesional profesional_actualizado = identificarProfesional.get(); // Atribuye el objeto presente a esta nueva variable
+				
+				Sexo nuevoSexo = null;
+				nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
+				
+				profesional_actualizado.setEmail(email);
+				profesional_actualizado.setSexo(nuevoSexo);
+				profesional_actualizado.setDomicilio(domicilio);
+				profesional_actualizado.setTelefono(telefono);
+				repositorioProfesional.save(profesional_actualizado);
+			}
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor " + e);
 		}
 	}
 	

@@ -285,7 +285,7 @@ public class ControladorAdmin {
             @RequestParam(name = "action") String action,
             @RequestParam(name = "usuarioEmail", required = false) String usuarioEmail,
             @RequestParam(name = "dato", required = false) String dato, //viene del formulario modificarUsuario y esta su vez viene del metodo buscarDNIoNombre
-            Model model) {
+            Model model) throws MiExcepcion {
 		
 		String exito;
 		String error;

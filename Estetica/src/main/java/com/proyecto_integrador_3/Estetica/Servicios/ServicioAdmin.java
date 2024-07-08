@@ -53,6 +53,7 @@ public class ServicioAdmin {
 		
 		validarDatosAdmin(sexo, telefono, direccion, ocupacion);
 
+		try {
 		Optional <Usuario> datosUsuario = servicioUsuario.buscarPorEmailOptional(email);
 		if (datosUsuario.isPresent()) {
 			Usuario datosDelUsuario = datosUsuario.get();
@@ -93,7 +94,11 @@ public class ServicioAdmin {
 			repositorioAdmin.save(nuevo_admin);
 			repositorioUsuario.delete(datosDelUsuario);
 		}
+		} catch (Exception e) {
+			System.out.println("Error al conectar con el servidor " + e);
+		}
 	}
+				
 	
 	@Transactional
 	public void modificarAdmin(String idAdmin, String ocupacion, String email, String emailAnterior, String domicilio, String sexo, String telefono) throws MiExcepcion {
@@ -101,8 +106,9 @@ public class ServicioAdmin {
 		verificarEmailAdmin(email, emailAnterior);
 		validarActualizacionDeDatosAdmin(ocupacion, domicilio, sexo, telefono);
 		
-		Optional<Admin> identificarAdmin = repositorioAdmin.findById(idAdmin);
 		
+		try {
+		Optional<Admin> identificarAdmin = repositorioAdmin.findById(idAdmin);
 		if (identificarAdmin.isPresent()) {
 			Admin admin_actualizado = identificarAdmin.get(); // Atribuye el objeto presente a esta nueva variable
 			
@@ -114,8 +120,12 @@ public class ServicioAdmin {
 			admin_actualizado.setSexo(nuevoSexo);
 			admin_actualizado.setDomicilio(domicilio);
 			admin_actualizado.setTelefono(telefono);
-        	repositorioAdmin.save(admin_actualizado);
+			repositorioAdmin.save(admin_actualizado);
 		}
+		} catch (Exception e) {
+			System.out.println("Error al conectar con el servidor " + e);
+		}
+				
 	}
 	 
 	 public void validarDatosAdmin(String sexo, String telefono, String direccion, String ocupacion) throws MiExcepcion {

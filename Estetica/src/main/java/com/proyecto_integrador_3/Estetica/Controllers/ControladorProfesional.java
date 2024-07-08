@@ -141,7 +141,7 @@ public class ControladorProfesional {
 			@RequestParam(name="email", required = false) String email,
 			@RequestParam(name="idCliente", required = false) String idCliente,
 			@RequestParam(name="dato", required = false) String dato,
-			Model modelo) {
+			Model modelo) throws MiExcepcion {
 
 		
 		//Datos del profesional para los menu de la pagina

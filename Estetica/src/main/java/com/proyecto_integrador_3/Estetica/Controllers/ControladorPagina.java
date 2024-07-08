@@ -69,7 +69,7 @@ public class ControladorPagina {
 			@RequestParam(name="contrasena") String password,
 			@RequestParam(name="contrasena2") String password2,
 			@RequestParam(name="fechaNacimiento") String fechaNacimiento,
-			Model model) {
+			Model model) throws MiExcepcion {
 		
 		//evitamos que el usuario deje espacios en blanco al inicio o final del string
 		String codigoUsuarioSinEspacios = CodigoUsuario.trim();
@@ -176,9 +176,8 @@ public class ControladorPagina {
         	modelo.addAttribute("showModalError", true);
             return "registrarse";
 		}
-		
-		
 	}
+		
 	
 	 	//Login de un usuario, dependiendo de su rol lo redirecciona a un home determinado y si es logueo
 	 	// por primera vez lo redirecciona a una formulario para completar los datos

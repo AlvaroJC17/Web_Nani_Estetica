@@ -50,8 +50,13 @@ public class ServicioCliente {
 	
 	
 	
-	public List <Cliente> buscarPacientePorId(String idCliente){
-		return repositorioCliente.buscarPorId(idCliente);
+	public List <Cliente> buscarPacientePorId(String idCliente) throws MiExcepcion{
+		try {
+			return repositorioCliente.buscarPorId(idCliente);
+		} catch (Exception e) {
+			throw new MiExcepcion("Error con conectar el servidor " + e);
+		}
+			
 	}
 	
 	
@@ -66,6 +71,7 @@ public class ServicioCliente {
 		Sexo nuevoSexo = null;
 		nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
 		
+		try {
 		//Con este optional buscamos los datos del usuario que le vamos a pasar al nuevo cliente
 		//y despues borrar ese usuario
 		Optional <Usuario> datosUsuario = servicioUsuario.buscarPorEmailOptional(email);
@@ -100,25 +106,28 @@ public class ServicioCliente {
 			nuevo_cliente.setFechaNacimiento(datosCliente.getFechaNacimiento());
 			nuevo_cliente.setSexo(nuevoSexo);
 			nuevo_cliente.setOcupacion(ocupacion);
-			if (datos != null) { //se agrega este condicional, porque cuando nuevo cliente es por un cambio de rol, el valor dato es null
-				repositorioCodigoDeVerificacion.delete(datos);//primero borramos los datos del usuario de la tabla de codigo
-			}
-			repositorioUsuario.delete(datosCliente); //segundo borramos todos los datos anteriores del usuario para que no choquen con el registro de los nuevos
-			repositorioCliente.save(nuevo_cliente); //Guardamos los datos del usuario como un nuevo cliente
+				if (datos != null) { //se agrega este condicional, porque cuando nuevo cliente es por un cambio de rol, el valor dato es null
+					repositorioCodigoDeVerificacion.delete(datos);//primero borramos los datos del usuario de la tabla de codigo
+				}
+				repositorioUsuario.delete(datosCliente); //segundo borramos todos los datos anteriores del usuario para que no choquen con el registro de los nuevos
+				repositorioCliente.save(nuevo_cliente); //Guardamos los datos del usuario como un nuevo cliente
 		}
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor " + e);
+		}
+		
 	}
 				
-			
-	
-
+		
 	@Transactional
 	public void modificarCliente(String idCliente, String ocupacion, String email, String emailAnterior, String domicilio, String sexo, String telefono) throws MiExcepcion {
 		
 		verificarEmailCliente(email, emailAnterior);
 		validarActualizacionDeDatosCliente(ocupacion, domicilio, sexo, telefono);
 		
-		Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
 		
+		try {
+		Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
 		if (identificarCliente.isPresent()) {
 			Cliente cliente_actualizado = identificarCliente.get(); // Atribuye el objeto presente a esta nueva variable
 			
@@ -129,8 +138,12 @@ public class ServicioCliente {
         	cliente_actualizado.setSexo(nuevoSexo);
         	cliente_actualizado.setDomicilio(domicilio);
         	cliente_actualizado.setTelefono(telefono);
-        	repositorioCliente.save(cliente_actualizado);
-		}
+        		repositorioCliente.save(cliente_actualizado);
+        	}
+        	} catch (Exception e) {
+        		throw new MiExcepcion("Error al conectar con el servidor " + e);
+        	}
+				
 	}
 	
 	

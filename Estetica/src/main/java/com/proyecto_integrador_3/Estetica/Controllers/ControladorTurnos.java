@@ -51,6 +51,7 @@ public class ControladorTurnos {
 			@RequestParam(name = "email") String email,
 			Model model) throws MiExcepcion {
 		
+		try {
 		//cuando el usuario ingrese a turnos se verifica si algun turno tiene fecha anterior
 		//a la actual y si eso es afirmativo, entonces pasa el tuno a inactivo.
 		servicioTurnos.actualizarTurnosAntiguos(email);
@@ -64,12 +65,25 @@ public class ControladorTurnos {
 		//busca todos los turnos disponinbles del usuario y los pasa a la vista
 		List<Turnos> turnosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
 		
-		
 		model.addAttribute("email", email);
 		model.addAttribute("datosCliente", datosCliente);
 		model.addAttribute("datosTurno", turnosDisponibles);
 		return "/pagina_cliente/misturnos";	
+			
+		} catch (Exception e) {
+			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+			List<Turnos> turnosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+			model.addAttribute("email", email);
+			model.addAttribute("datosCliente", datosCliente);
+			model.addAttribute("datosTurno", turnosDisponibles);
+			return "/pagina_cliente/misturnos";	
+		}
 	}
+		
+			
 
 	@PostMapping("/cancelarTurno")
 	public String cancelarTurnos(
@@ -86,6 +100,7 @@ public class ControladorTurnos {
 		LocalDateTime fechaSeleccionadaLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTime(fechaConHora);
 		LocalDateTime fechaActual = LocalDateTime.now();
 		
+		try {
 		//Si hay una diferencia menor a 24 horas entre la fecha seleccionada y la fecha actual
 		//entra en esta condicion
 		if (servicioHorario.turnoMenorA24Horas(fechaSeleccionadaLocalDateTime, fechaActual)) {
@@ -101,6 +116,17 @@ public class ControladorTurnos {
 		servicioHorario.agregarHorarioDisponible(fecha, horario, idProfesional);
 		
 		return "redirect:/misturnos?email=" + emailCliente;
+		} catch (Exception e) {
+			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+			List<Turnos> turnosDisponibles = servicioTurnos.obtenerTurnosPorEmail(emailCliente);
+			String error = e.getMessage();
+			model.addAttribute("emailCliente", emailCliente);
+			model.addAttribute("datosCliente", datosCliente);
+			model.addAttribute("datosTurno", turnosDisponibles);
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+			return "/pagina_cliente/misturnos";
+		}
 	}
 		
 		

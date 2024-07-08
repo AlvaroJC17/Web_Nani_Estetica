@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
+import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 
 import jakarta.transaction.Transactional;
@@ -20,18 +21,26 @@ public class ServicioPersona {
 	
 	//Borra una persona de la base de datos
 	@Transactional
-	public void borrarPersona(String id) {
-		Optional <Persona> identificarPersona = repositorioPersona.findById(id);
-		
-		if (identificarPersona.isPresent()) {
-			Persona personaDelete = identificarPersona.get();
-			repositorioPersona.delete(personaDelete);
+	public void borrarPersona(String id) throws MiExcepcion {
+	
+		try {			
+			Optional <Persona> identificarPersona = repositorioPersona.findById(id);
+			if (identificarPersona.isPresent()) {
+				Persona personaDelete = identificarPersona.get();
+				repositorioPersona.delete(personaDelete);
+			}
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con la base de datos " + e);
 		}
 	}
 	
-	
-	public List<Persona> buscarNombreApellidoPorRol(Rol rol) {
-		List<Persona> nombreApellidoPorRol = repositorioPersona.buscarNombreApellidoPorRol(rol);
-		return nombreApellidoPorRol;
+	public List<Persona> buscarNombreApellidoPorRol(Rol rol) throws MiExcepcion {
+		try {
+			List<Persona> nombreApellidoPorRol = repositorioPersona.buscarNombreApellidoPorRol(rol);
+			return nombreApellidoPorRol;
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor " + e);
+		}
+			
 	}
 }

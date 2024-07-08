@@ -158,6 +158,43 @@ tener el mismo ID-->
 		</div>
 	</div>
 	
+	<!--Modal mensajes de error-->
+		
+		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
+     th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
+    <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+            <div class="modal-header border border-0 d-flex justify-content-center ">
+			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+            </div>
+            <div class="modal-body text-black lh-sm">
+                <p class="text-center" th:utext="${error}"></p> <!--utext permite recibir texto en string con etiquetas html-->
+            </div>
+            <div class="modal-footer border border-0">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+				<!--Script para modal de error-->
+				
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalError = /*[[${showModalError}]]*/ false;
+        if (showModalError) {
+            $('#errorModal').modal('show');
+        }
+
+        $('#errorModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
+	
 	
 	
 	

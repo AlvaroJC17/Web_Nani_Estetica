@@ -69,108 +69,147 @@ public class ServicioTurnos {
 		return repositorioTurnos.findByEmail(email);
 	}
 	
-	 public boolean checkActiveTurnos(String email) {
-	        List<Turnos> activeTurnos = repositorioTurnos.findByActivoAndEmail(true, email);
-	        return activeTurnos.size() > 2;
-	    }
+	 public boolean checkActiveTurnos(String email) throws MiExcepcion {
+		 try {
+			 List<Turnos> activeTurnos = repositorioTurnos.findByActivoAndEmail(true, email);
+			 return activeTurnos.size() > 2;
+		 } catch (Exception e) {
+			 throw new MiExcepcion("Error al conectar con el servidor " + e);
+		 }
+	 }
+			
 	
 	 @Transactional
-	public void actualizarEstadoDelTurno(String id) {
-		Optional<Turnos> turnoPorId = buscarTurnoPorId(id);
-		if (turnoPorId.isPresent()) {
-			Turnos actualizarTurnoActivo = turnoPorId.get();
-			actualizarTurnoActivo.setActivo(FALSE);
-			actualizarTurnoActivo.setEstado(EstadoDelTurno.CANCELADO);
-			actualizarTurnoActivo.setCanceladoPor(Rol.CLIENTE);
-			Turnos turnoCancelado = repositorioTurnos.save(actualizarTurnoActivo);
-			
-			//Creamos el objeto con los datos del email para poder enviarlo
-			EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
-			cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
-			cancelarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
-			
-			//asignamos a la variable el nombre de la plantilla que vamos a utilizar
-			String plantillaHTML= "emailCancelacionDeTurno";
-			
-			//Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
-			Boolean multa = false;
-			
-			//Llamamos al servicio para enviar el email
-			servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnoCancelado, plantillaHTML, multa);
-		}
-	}
+	public void actualizarEstadoDelTurno(String id) throws MiExcepcion {
+		 try {
+			 Optional<Turnos> turnoPorId = buscarTurnoPorId(id);
+			 if (turnoPorId.isPresent()) {
+				 Turnos actualizarTurnoActivo = turnoPorId.get();
+				 actualizarTurnoActivo.setActivo(FALSE);
+				 actualizarTurnoActivo.setEstado(EstadoDelTurno.CANCELADO);
+				 actualizarTurnoActivo.setCanceladoPor(Rol.CLIENTE);
+				 Turnos turnoCancelado;
+				 turnoCancelado = repositorioTurnos.save(actualizarTurnoActivo);
+				 
+				 //Creamos el objeto con los datos del email para poder enviarlo
+				 EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
+				 cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
+				 cancelarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
+				 
+				 //asignamos a la variable el nombre de la plantilla que vamos a utilizar
+				 String plantillaHTML= "emailCancelacionDeTurno";
+				 
+				 //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
+				 Boolean multa = false;
+				 
+				 try {
+					 //Llamamos al servicio para enviar el email
+					 servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnoCancelado, plantillaHTML, multa);
+				 } catch (Exception e) {
+					 throw new MiExcepcion("Error al enviar el email de cancelacion de turno");
+				 }
+				 
+			 }
+		 } catch (Exception e) {
+			 throw new MiExcepcion("Error al conectar con el servidor " + e);
+		 }
+	 }
+		 
+		 
 	
 	//Busca los turnos por email en orden ascendente
-	public List<Turnos> getTurnosByEmail(String email) {
-        return repositorioTurnos.findByEmailOrderByFechaAsc(email);
-    }
+	public List<Turnos> getTurnosByEmail(String email) throws MiExcepcion {
+		try {
+			return repositorioTurnos.findByEmailOrderByFechaAsc(email);
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor " + e);
+		}
+	}
+			
 
 	//busca los turnos en orden de mas viejo a mas nuevo y cuando el tamaño de los turnos del usuario
 	// es mayor a 3, elimina el mas antigua de la base de datos
 	@Transactional
-	public void eliminarTurnoMasAntiguo(String email) {
-        List<Turnos> turnos = getTurnosByEmail(email);
-        if (turnos.size() > 3 ) {
-            Turnos turnoMasAntiguo = turnos.get(0);
-            repositorioTurnos.delete(turnoMasAntiguo);
-        }
-    }
+	public void eliminarTurnoMasAntiguo(String email) throws MiExcepcion {
+		try {
+			List<Turnos> turnos = getTurnosByEmail(email);
+			if (turnos.size() > 3 ) {
+				Turnos turnoMasAntiguo = turnos.get(0);
+				repositorioTurnos.delete(turnoMasAntiguo);
+			}
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor " + e);
+		}
+	}
     
-    public List<Turnos> getTurnosNoActivosByEmail(String email) {
-        return repositorioTurnos.findByEmailAndActivoOrderByFechaAsc(email, false);
+    public List<Turnos> getTurnosNoActivosByEmail(String email) throws MiExcepcion {
+    	try {
+    		return repositorioTurnos.findByEmailAndActivoOrderByFechaAsc(email, false);
+    	} catch (Exception e) {
+    		throw new MiExcepcion("Error al conectar con el servidor " + e);
+    	}
+			
     }
 
     	
     //Cando hay mas de tres turnos en la bandeja, busca el mas antiguo que no tenga multa y lo borra de la base de datos
     @Transactional
     public void eliminarTurnoMasAntiguoNoActivo(String email) throws MiExcepcion {
-    	List<Turnos> turnos = getTurnosByEmail(email);
-        if (turnos.size() > 3) {
-            List<Turnos> turnosNoActivosSinMulta = repositorioTurnos.findByEmailAndActivoFalseAndMultaFalse(email);
-            while (turnos.size() > 3 && !turnosNoActivosSinMulta.isEmpty()) {
-                Turnos turnoMasAntiguoNoActivo = turnosNoActivosSinMulta.get(0);
-                repositorioTurnos.delete(turnoMasAntiguoNoActivo);
-                turnosNoActivosSinMulta = repositorioTurnos.findByEmailAndActivoFalseAndMultaFalse(email);  // Refresca la lista de turnos no activos sin multa
-                turnos = getTurnosByEmail(email);  // Refresca la lista de todos los turnos
-            }
-        }
+    	try {
+    		List<Turnos> turnos = getTurnosByEmail(email);
+    		if (turnos.size() > 3) {
+    			List<Turnos> turnosNoActivosSinMulta = repositorioTurnos.findByEmailAndActivoFalseAndMultaFalse(email);
+    			while (turnos.size() > 3 && !turnosNoActivosSinMulta.isEmpty()) {
+    				Turnos turnoMasAntiguoNoActivo = turnosNoActivosSinMulta.get(0);
+    				repositorioTurnos.delete(turnoMasAntiguoNoActivo);
+    				turnosNoActivosSinMulta = repositorioTurnos.findByEmailAndActivoFalseAndMultaFalse(email);  // Refresca la lista de turnos no activos sin multa
+    				turnos = getTurnosByEmail(email);  // Refresca la lista de todos los turnos
+    			}
+    		}
+    	} catch (Exception e) {
+    		throw new MiExcepcion("Error al conectar con el servidor " + e);
+    	}
     }
+    	
     
     
     //pasa los turnos activos con fecha anterior a la actual a inactivo y les asigna una multa al turno y al cliente
     @Transactional
-    public void actualizarTurnosAntiguos(String email) {
-        List<Turnos> turnos = getTurnosByEmail(email);
-          LocalDateTime fechaActual = LocalDateTime.now();
-        
-        for (Turnos turno : turnos) {
-            String fechaTurno = turno.getFecha().toString();
-            String horarioTurno = turno.getHorario().toString();
-            String fechaAndHorario = fechaTurno + " " + horarioTurno;
-            LocalDateTime fechaTurnoLocalDateTime = null;
-			try {
-				fechaTurnoLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTime(fechaAndHorario);
-				if (fechaTurnoLocalDateTime.isBefore(fechaActual.plusMinutes(15)) && turno.getActivo()) { //comparamos la fecha del tunos con la fecha actual mas 15 min
-					turno.setMulta(TRUE); //Le colocamos una multa al turno que tiene fecha pasada
-					turno.setActivo(false); // Lo pasamos a inactivo
-					turno.setEstado(EstadoDelTurno.CANCELADO);
-					repositorioTurnos.save(turno);
-					
-					Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(email);
-					if (obtenerDatosDeMultas.isPresent()) {
-						Cliente multasDelCliente = obtenerDatosDeMultas.get();
-						 multasDelCliente.setMulta(TRUE); // Le colocamos una multa al cliente
-						 repositorioCliente.save(multasDelCliente);
-					}
-				}
-			} catch (MiExcepcion e) {
-				System.out.println("no se pudo convertir la fecha a date en el metodo actulizarTurnosAntiguo");
-			}
-        }
+    public void actualizarTurnosAntiguos(String email) throws MiExcepcion {
+    	try {
+    		List<Turnos> turnos = getTurnosByEmail(email);
+    		LocalDateTime fechaActual = LocalDateTime.now();
+    		
+    		for (Turnos turno : turnos) {
+    			String fechaTurno = turno.getFecha().toString();
+    			String horarioTurno = turno.getHorario().toString();
+    			String fechaAndHorario = fechaTurno + " " + horarioTurno;
+    			LocalDateTime fechaTurnoLocalDateTime = null;
+    			fechaTurnoLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTime(fechaAndHorario);
+    			if (fechaTurnoLocalDateTime.isBefore(fechaActual.plusMinutes(15)) && turno.getActivo()) { //comparamos la fecha del tunos con la fecha actual mas 15 min
+    				turno.setMulta(TRUE); //Le colocamos una multa al turno que tiene fecha pasada
+    				turno.setActivo(false); // Lo pasamos a inactivo
+    				turno.setEstado(EstadoDelTurno.CANCELADO);
+    				repositorioTurnos.save(turno);
+    				
+    				Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(email);
+    				if (obtenerDatosDeMultas.isPresent()) {
+    					Cliente multasDelCliente = obtenerDatosDeMultas.get();
+    					multasDelCliente.setMulta(TRUE); // Le colocamos una multa al cliente
+    					repositorioCliente.save(multasDelCliente);
+    				}
+    			}
+    		}
+    	} catch (MiExcepcion e) {
+    		System.out.println("Error al conectar con el servidor, no se pudieron cancelar los turnos antiguos " + e);
+    	}
     }
+    	
     
     @Transactional
-    public void multarTurnoAndClienteMenosDe24Horas(String email, String idTurno) {
+    public void multarTurnoAndClienteMenosDe24Horas(String email, String idTurno) throws MiExcepcion {
+    	
+    	try {
     	Optional<Turnos> turnoOptional = repositorioTurnos.findById(idTurno);
         if (turnoOptional.isPresent()) {
             Turnos turno = turnoOptional.get();
@@ -181,8 +220,10 @@ public class ServicioTurnos {
             	turno.setActivo(false); // Lo pasamos a inactivo
             	turno.setEstado(EstadoDelTurno.CANCELADO);
             	turno.setCanceladoPor(Rol.CLIENTE);
-            	Turnos turnoCancelado24h = repositorioTurnos.save(turno);
+            	Turnos turnoCancelado24h;
+            		turnoCancelado24h = repositorioTurnos.save(turno);
             	
+					
             	//Creamos el objeto con los datos del email para poder enviarlo
                 EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
                 cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
@@ -194,8 +235,13 @@ public class ServicioTurnos {
                 //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
                 Boolean multa = true;
                 
-                //Enviamos al servicio para mandar al email con la cancelacion del turno
-                servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnoCancelado24h, plantillaHTML, multa); 
+                try {
+                	//Enviamos al servicio para mandar al email con la cancelacion del turno
+                	servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnoCancelado24h, plantillaHTML, multa); 
+                } catch (Exception e) {
+                	throw new MiExcepcion("Error al enviar el email con la cancelacion de turno");
+                }
+					
             	
                 //Buscamos al cliente y le asigamos la multa
             	Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(email);
@@ -206,7 +252,13 @@ public class ServicioTurnos {
             	}
             }
         }
+    	} catch (Exception e) {
+    		throw new MiExcepcion("Error al conectar con el servidor " + e);
+    	}
     }
+            		
+            		
+						
             
                
     @Transactional
@@ -227,11 +279,11 @@ public class ServicioTurnos {
 				motivo_consulta);
 		
 				
+		try {
 		Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
 		if (identificarCliente.isPresent()) {
 			Cliente formulario_cliente = identificarCliente.get(); // Atribuye el objeto presente a esta nueva variable
 			
-			System.out.println("encontro el cliente y va a guardar los datos");
 			formulario_cliente.setFuma(fuma);
 			formulario_cliente.setDrogas(drogas);
 			formulario_cliente.setAlcohol(alcohol);
@@ -268,14 +320,15 @@ public class ServicioTurnos {
 			formulario_cliente.setFomularioDatos(TRUE);
 			formulario_cliente.setNotas_profesional(notas_profesional);
 			repositorioCliente.save(formulario_cliente);
-	
-			
 		}
-		
-	}
-
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor, no se lograron"
+					+ "guardar los datos ingresados " + e);
+		}
+    }
+				
 	@Transactional
-	public void guardarTurno(String idCliente, String nombreDelProfesional, String fechaSeleccionada,
+	public Turnos guardarTurno(String idCliente, String nombreDelProfesional, String fechaSeleccionada,
 			String provinciaString, String idProfesional, String facial, String espalda, String pulido, String dermaplaning, String exfoliacion,
 			String lifting, String perfilado, String laminado, String hydralips, String microneedling,
 			String horario, String email) throws MiExcepcion {
@@ -312,7 +365,8 @@ public class ServicioTurnos {
 		//Funcion para pasar un fecha de tipo String a LocalDate
 		LocalDate fechaUsuario = servicioHorario.pasarFechaStringToLocalDate(fechaSeleccionada);
 		
-		
+		//Rodeamos con try para manejar si se produce un error cualquiera al intentar guardar los datos en la base
+		try {
 		//Buscamos el dni del cliente que esta seleccionando el turno para adjuntarlo al objeto turno que se va a guardar en la base de datos
 		String dniCliente = null;
 		Optional<Persona> dniUsuario = repositorioPersona.findById(idCliente);
@@ -327,7 +381,6 @@ public class ServicioTurnos {
 			datosDelCliente = cliente.get();
 		}
 		
-		
 		// Creamos un nuevo objeto de tipo turno que es el que se va a guardar en la base de datos
 		Turnos nuevoTurno = new Turnos();
 		nuevoTurno.setProvincia(provinciaString);
@@ -341,37 +394,27 @@ public class ServicioTurnos {
 		nuevoTurno.setMulta(FALSE);
 		nuevoTurno.setActivo(TRUE);
 		nuevoTurno.setEstado(EstadoDelTurno.PENDIENTE);
-		Turnos turnoGuardado =repositorioTurnos.save(nuevoTurno); //Guardo el turno como una nueva entidad para porder aprovechar
 		//la funcionalidad de jpa que perminte obtener los datos de un objeto recien guarado siempre y cuando este haya sido
 		//guardado como una entidad nueva.
-		
-		 //Despues de generar todo el proceso del turno se envia un mail de confirmacion
-        //al cliente, para esto debemos instancias un objeto EmailUsuario y pasarle toda
-        //la info necesario que debe llevar el correo
-        EmailUsuarios confirmarPorEmailTurno = new EmailUsuarios();
-        confirmarPorEmailTurno.setAsunto("Nani estética - CONFIMACIÓN DE TURNO");
-        confirmarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
-        confirmarPorEmailTurno.setMensaje("Estimado usuario, gracias por seleccionar un turno");
-        
-       
-        //plantilla html para enviar el email con la confirmacion del turno
-        String plantillaHTML = "emailConfirmacionDeTurno";
-        
-        //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
-        Boolean multa = false;
-        
-        //Servicion que contiene el metodo encargado de enviar el mail, recibe como parametro
-        //un objeto EmailUsuario
-        servicioEmail.enviarConfirmacionOCancelacionTurno(confirmarPorEmailTurno, turnoGuardado, plantillaHTML, multa);
-		
-		
-		
-		
+		Turnos turnoGuardado;
+		turnoGuardado =repositorioTurnos.save(nuevoTurno); //Guardo el turno como una nueva entidad para porder aprovechar
+		return turnoGuardado;
+
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor, el turno no pudo ser generado " + e);
+		}
 		
 	}
+		
 
-	public List<Turnos> obtenerTurnosPorProfesionalYFecha(Profesional profesional, LocalDate fecha) {
-		return repositorioTurnos.findByProfesionalAndFecha(profesional, fecha);
+	public List<Turnos> obtenerTurnosPorProfesionalYFecha(Profesional profesional, LocalDate fecha) throws MiExcepcion {
+		try {
+			return repositorioTurnos.findByProfesionalAndFecha(profesional, fecha);
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor, no se lograron obtener los turnos"
+					+ "por profesional y fecha " + e);
+		}
+			
 	}
 	
                         

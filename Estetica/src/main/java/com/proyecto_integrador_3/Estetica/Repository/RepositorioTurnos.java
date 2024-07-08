@@ -37,6 +37,9 @@ public interface RepositorioTurnos extends JpaRepository<Turnos, String> {
 	//Buscamos turnos por emial que esten inactivos y que no tengan multas
 	List<Turnos> findByEmailAndActivoFalseAndMultaFalse(String email);
 	
+	//Buscamos turnos inactivos y que tengan multas usanso  el id del cliente
+	List<Turnos> findByClienteIdAndActivoFalseAndMultaTrue(String idCliente);
+	
 //	//Actualiza el valor de la multa en toda la columna en la tabla de turnos
 //	@Modifying
 //    @Transactional

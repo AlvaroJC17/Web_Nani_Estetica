@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCodigoDeVerificacion;
 
 import jakarta.transaction.Transactional;
@@ -42,7 +43,7 @@ public class ServicioCodigoDeVerificacion {
 	  // el unico valor que usamos en este metodo del objeto usuario es su id.
 	  //este metodo tambien se encargar de enviar el mail al usuario
 	  @Transactional
-	public void generarGuardarYEnviarCodigo(Usuario usuario, String email) {
+	public void generarGuardarYEnviarCodigo(Usuario usuario, String email) throws MiExcepcion {
         String codigo = generadorDeCodigos();
         LocalDateTime expiracion = LocalDateTime.now().plusMinutes(5);
 
@@ -52,34 +53,57 @@ public class ServicioCodigoDeVerificacion {
         codigoVerificacion.setUsuario(usuario);
         codigoVerificacion.setUsado(false);
 
-        repositorioCodigoDeVerificacion.save(codigoVerificacion);
-        
+        try {
+        	repositorioCodigoDeVerificacion.save(codigoVerificacion);
+        } catch (Exception e) {
+        	throw new MiExcepcion("Error al conectar con el servidor " + e);
+        }
+			        
         EmailUsuarios datosDelEmail = new EmailUsuarios();
         datosDelEmail.setAsunto("Nani estética - Validar correo eléctronico");
         datosDelEmail.setDestinatario("alvarocortesia@gmail.com");
         datosDelEmail.setMensaje(codigo);
         
-        servicioEmail.enviarEmailUsuario(datosDelEmail);
-	}
+        try {
+			servicioEmail.enviarEmailUsuario(datosDelEmail);
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al enviar email con codigo de verificación " + e);
+		}
+	  }
+			
 	
 	//Metodo para comparar el codigo ingesado por el usuario con el que esta guardado en la base de datos
 	//ademos valida que el codigo no haya expirado y que no este usado y sino fue usado entonces lo pasa
 	//a usado
 	  @Transactional
-	  public boolean validarCodigoIngresado(String codigoUsuario, Usuario usuario) {
-		  CodigoDeVerificacion codigoVerificacion = repositorioCodigoDeVerificacion.findByCodigoAndUsuario(codigoUsuario, usuario);
+	  public boolean validarCodigoIngresado(String codigoUsuario, Usuario usuario) throws MiExcepcion {
 
+		  try {
+			  CodigoDeVerificacion codigoVerificacion = repositorioCodigoDeVerificacion.findByCodigoAndUsuario(codigoUsuario, usuario);
 	        if (codigoVerificacion != null && codigoVerificacion.esValido()) {
 	            codigoVerificacion.setUsado(true);
 	            repositorioCodigoDeVerificacion.save(codigoVerificacion);
 	            return true;
 	        }
 	        return false;
-	    }
+		  } catch (Exception e) {
+			  System.out.println("Error al conectar con el servidor " + e);
+		  }
+		  return false;
+	  }
+	        
+	           
+					
 	  
 	  //meotod para buscar en un registro en la tabla de codigos por id del usuario
-	  public Optional<CodigoDeVerificacion> obtenerDatosTablaCodigoPorUsuarioId(String usuarioId) {
-		    return repositorioCodigoDeVerificacion.findByUsuarioId(usuarioId);
+	  public Optional<CodigoDeVerificacion> obtenerDatosTablaCodigoPorUsuarioId(String usuarioId) throws MiExcepcion {
+		  
+		  try {
+			  return repositorioCodigoDeVerificacion.findByUsuarioId(usuarioId);
+		  } catch (Exception e) {
+			 throw new MiExcepcion("Error al conectar con el servidor " + e);
+		  }  
+			
 		}
 
 }

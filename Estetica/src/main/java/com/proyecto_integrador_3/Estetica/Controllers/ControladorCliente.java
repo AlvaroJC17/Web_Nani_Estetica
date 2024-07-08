@@ -4,7 +4,9 @@ import static java.lang.Boolean.TRUE;
 
 import java.time.LocalDate;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +28,7 @@ import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioEmail;
@@ -43,6 +46,9 @@ public class ControladorCliente {
 	
 	@Autowired
 	public RepositorioTurnos repositorioTurnos;
+	
+	@Autowired
+	public RepositorioPersona repositorioPersona;
 	
 	@Autowired
 	public ServicioCliente servicioCliente;
@@ -68,25 +74,45 @@ public class ControladorCliente {
 	public String multas(
 			@RequestParam(name = "email", required = false) String email,
 			@RequestParam(name = "idCliente", required = false) String idCliente,
-			ModelMap model) {
+			ModelMap model) throws MiExcepcion {
+		    
 		
-		 Optional <Turnos> bucarDatosTurno = repositorioTurnos.findByClienteIdAndMulta(idCliente, TRUE);
- 		
-		 LocalDate fecha = null;
-		 String horario = null;
-		 String costoMulta = null;
-		 
-		    if (bucarDatosTurno.isPresent()) {
-				Turnos datosTurno = bucarDatosTurno.get();
-				fecha = datosTurno.getFecha();
-				horario = datosTurno.getHorario();
-				costoMulta = datosTurno.getCostoMulta();
-		    }
+		List<Turnos> turnosConMulta = repositorioTurnos.findByClienteIdAndActivoFalseAndMultaTrue(idCliente);
+		int totalCostoMultas = 0;
+		 Map<String, String> turnosConNombreProfesional = new HashMap<>(); //Creamos una lista donde se van a asociar el id del turno con el nombre del profesional
+		for (Turnos turnos : turnosConMulta) {
+			try {
+				int costoDeMultas = Integer.parseInt(turnos.getCostoMulta());
+				totalCostoMultas += costoDeMultas;
+			} catch (Exception e) {
+				System.err.println("No se puede convertir int, el string tiene un formato no valido: " + turnos.getCostoMulta());
+			}
 				
+			String idProfesional = turnos.getProfesional().getId();
+			//Buscamos el nombre del profesional asociado a ese turno para pasarlo al email de confirmacion
+			Optional <Persona> datosProfesional = repositorioPersona.findById(idProfesional);
+	    	String nombreDelProfesional = null;
+	    	String apellidoDelProfesional = null;
+	    	String nombreCompletoProfesional = null;
+			if (datosProfesional.isPresent()) {
+				Persona nombreProfesional = datosProfesional.get();
+				nombreDelProfesional = nombreProfesional.getNombre();
+				apellidoDelProfesional = nombreProfesional.getApellido();
+				nombreCompletoProfesional = apellidoDelProfesional + " " + nombreDelProfesional;
+			}
+			
+			 if (nombreCompletoProfesional != null) {
+		            // Agregamos el nombre del profesional al mapa junto al id del turno iterado
+		            turnosConNombreProfesional.put(turnos.getId(), nombreCompletoProfesional);
+		          
+		        }
+			
+		}
+		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		model.addAttribute("fecha", fecha);
-		model.addAttribute("horario", horario);
-		model.addAttribute("costoMulta", costoMulta);
+		model.addAttribute("turnosConMulta", turnosConMulta);
+		model.addAttribute("totalCostoMultas", totalCostoMultas);
+		model.addAttribute("turnosConNombreProfesional", turnosConNombreProfesional);
 		model.addAttribute("datosCliente", datosCliente);
 		return "/pagina_cliente/multas";
 	}
@@ -101,7 +127,12 @@ public class ControladorCliente {
 		
 		//Antes de mostrar los tratamientos disponibles, verificamos que no hay turno antiguos
 		//no asistidos, de ser afirmativo, le colocamos una multa al turno
-		servicioTurnos.actualizarTurnosAntiguos(email);
+		try {
+			servicioTurnos.actualizarTurnosAntiguos(email);
+		} catch (MiExcepcion e) {
+			System.out.println("Error en el portal de tratamientos");
+			e.printStackTrace();
+		}
 		
 		Boolean tieneMultas = false;
 		Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findClienteById(idCliente);
@@ -120,9 +151,6 @@ public class ControladorCliente {
 		}
 	}
 			
-		
-		
-	
 	@GetMapping("/buscarProfesionalPorProvincias")
 	public String buscarProfesionalPorProvincias(
 			@RequestParam(name = "email", required = false) String email,
@@ -520,14 +548,32 @@ public class ControladorCliente {
 			
 		case "aceptar":
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+			Boolean envioDeMailExitoso = false; //Si el servicio guardarTurno tira excepcion, se mantiene el false
 			try {
 				//Servicio para guardar el turno  en la base de datos
 				
-				servicioTurnos.guardarTurno(idCliente, nombreDelProfesional, fechaSeleccionada, provinciaString,
+				Turnos turnoGuardado = servicioTurnos.guardarTurno(idCliente, nombreDelProfesional, fechaSeleccionada, provinciaString,
 						idProfesional, facial, espalda, pulido, dermaplaning, exfoliacion, lifting, perfilado, laminado,
 						hydralips, microneedling, horario, emailCliente);
 				
+				//Despues de generar todo el proceso del turno se envia un mail de confirmacion
+				//al cliente, para esto debemos instancias un objeto EmailUsuario y pasarle toda
+				//la info necesario que debe llevar el correo
+				EmailUsuarios confirmarPorEmailTurno = new EmailUsuarios();
+				confirmarPorEmailTurno.setAsunto("Nani estética - CONFIMACIÓN DE TURNO");
+				confirmarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
 				
+				//plantilla html para enviar el email con la confirmacion del turno
+				String plantillaHTML = "emailConfirmacionDeTurno";
+				
+				//Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
+				Boolean multa = false;
+				
+				//Servicion que contiene el metodo encargado de enviar el mail, recibe como parametro
+				//un objeto EmailUsuario
+				servicioEmail.enviarConfirmacionOCancelacionTurno(confirmarPorEmailTurno, turnoGuardado, plantillaHTML, multa);
+				envioDeMailExitoso = true; // Si el servicio enviarConfirmacionOCancelacionTurno es exitoso, se cambia a true
+								
 				 // Primero buscamos y obtenemos una lista de los horarios disponibles por fecha e idprofesional
 				//luego removemos de la lista obtenida el horario seleccionado por el usuario.
 				List <String> horariosDisponibles = servicioHorario.obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fechaSeleccionada);
@@ -565,7 +611,12 @@ public class ControladorCliente {
 				// si hay algun error en alguna validacion, se dispara este catch y se pasan de vuelta todos estos
 				//valores para que recargue la misma pagina del formulario con un mensaje de error y con todos los
 				//array de provincia, profesional y horarios
-				System.out.println(e.getMessage());
+				if (!envioDeMailExitoso) {
+					List <String> horariosDisponibles = servicioHorario.obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fechaSeleccionada);
+					horariosDisponibles.remove(horario);
+					servicioHorario.actualizarHorariosDisponibles(fechaSeleccionada, horariosDisponibles, idProfesional);
+				}
+				System.out.println("Entro en el catch principal");
 				String error = e.getMessage();
 				model.addAttribute("error", error);
 				model.addAttribute("datosCliente", datosCliente);

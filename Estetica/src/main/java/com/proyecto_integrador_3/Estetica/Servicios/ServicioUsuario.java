@@ -46,8 +46,10 @@ public class ServicioUsuario {
 	 @Scheduled(cron = "0 0 0 * * ?") // Ejecuta todos los días a medianoche
 	 // @Scheduled(cron = "0 * * * * *") // Ejecuta a cada minuto
 	  @Transactional 
-	  public void limpiarRegistrosIncompletos() {
+	  public void limpiarRegistrosIncompletos() throws MiExcepcion {
 	        LocalDateTime limite = LocalDateTime.now().minusDays(1);
+				
+	        try {
 	        //Obtenemos una lista de usuarios que no tengas el email validado y que la fecha sea anterior a 24hrs
 	        List<Usuario> usuariosIncompletos = repositorioUsuario.findByEmailValidadoFalseAndFechaCreacionBefore(limite);
 	        //Con este for iteramos sobre los usuarios y obtenemos sus id
@@ -64,6 +66,9 @@ public class ServicioUsuario {
 	        //y los borramos
 	        usuariosIncompletos.forEach(repositorioUsuario::delete);
 	        System.err.println("¡¡¡¡¡¡¡¡¡¡¡¡¡SE BORRARON LOS REGISTROS INCOMPLETOS!!!!!!!!!!!!");
+	        } catch (Exception e) {
+				throw new MiExcepcion("Error al conectar con el servidor e intentar borrar los registros incompletos " + e);
+			}
 	    }
 	  
 	    
@@ -77,26 +82,27 @@ public class ServicioUsuario {
 				fecha = formato.parse(fechaNacimiento);
 			} catch (ParseException e) {
 				e.printStackTrace();
+				System.out.println("Error al parsear la fecha");
 			}
 			
-			Optional <Usuario> usuarioNoValidado = buscarPorIdOptional(idUsuarioNoValidado);
-			if (usuarioNoValidado.isPresent()) {
-				
-				Usuario NuevoUsuario = usuarioNoValidado.get();
-				NuevoUsuario.setEmail(email);
-				NuevoUsuario.setContrasena(password);
-				NuevoUsuario.setFechaNacimiento(fecha);
-				NuevoUsuario.setActivo(TRUE);
-				NuevoUsuario.setRol(Rol.CLIENTE);
-				//NuevoUsuario.setEmailValidado(TRUE);
-				NuevoUsuario.setValidacionForm(FALSE);
-				repositorioUsuario.save(NuevoUsuario);
-			}else {
-				throw new MiExcepcion("Usuario no encontrando");
-			}
-				
-				
-	        
+			try {
+				Optional <Usuario> usuarioNoValidado = buscarPorIdOptional(idUsuarioNoValidado);
+				if (usuarioNoValidado.isPresent()) {
+					Usuario NuevoUsuario = usuarioNoValidado.get();
+					NuevoUsuario.setEmail(email);
+					NuevoUsuario.setContrasena(password);
+					NuevoUsuario.setFechaNacimiento(fecha);
+					NuevoUsuario.setActivo(TRUE);
+					NuevoUsuario.setRol(Rol.CLIENTE);
+					//NuevoUsuario.setEmailValidado(TRUE);
+					NuevoUsuario.setValidacionForm(FALSE);
+					repositorioUsuario.save(NuevoUsuario);
+				}else {
+					throw new MiExcepcion("Usuario no encontrando");
+				}
+			} catch (Exception e) {
+				throw new MiExcepcion("Error al conectar con el servidor " + e);
+			}	
 	    }
 	  
 	  @Transactional
@@ -104,25 +110,29 @@ public class ServicioUsuario {
 		  
 		  verificarPasswordCambioContrasena(id, oldPass, newPass, repeatNewPass); //verificamos que la contraseña anterior y la nueva no sean iguales o que la contraseña anteriro sea correcta
 
-	        Optional<Usuario> presente = repositorioUsuario.findById(id);
-
-	        if (presente.isPresent()) {
-	            Usuario usuario = presente.get();
-	            usuario.setContrasena(newPass);
-	            repositorioUsuario.save(usuario);
-	        }
+		  try {
+			  Optional<Usuario> presente = repositorioUsuario.findById(id);
+			  if (presente.isPresent()) {
+				  Usuario usuario = presente.get();
+				  usuario.setContrasena(newPass);
+				  repositorioUsuario.save(usuario);
+			  }
+		  } catch (Exception e) {
+			  throw new MiExcepcion("Error al conectar con el servidor " + e);
+		  }
 	  }
-	            
-	                        	  
-	  
-	    public List<Usuario> listarUsuarios() {
-		  List<Usuario> usuario = new ArrayList<Usuario>();
-		  usuario = repositorioUsuario.listarUsuarios();
-		  return usuario;
-	  }
+			
 
-	  
-		
+	    public List<Usuario> listarUsuarios() throws MiExcepcion {
+	    	try {
+	    		List<Usuario> usuario = new ArrayList<Usuario>();
+	    		usuario = repositorioUsuario.listarUsuarios();
+	    		return usuario;
+	    	} catch (Exception e) {
+	    		throw new MiExcepcion("Error al conectar con el servidor " + e);
+	    	}
+	    }
+				
 		public List<Usuario> buscarId(String dni) {
 			List<Usuario> idUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorId(dni);
 		return idUsuario;
@@ -185,69 +195,80 @@ public class ServicioUsuario {
 
 		//Borra un admin de la base de datos
 		@Transactional
-		public void borrarUsuario(String id) {
-			Optional <Usuario> identificarUsuario = repositorioUsuario.findById(id);
-			
-			if (identificarUsuario.isPresent()) {
-				Usuario usuarioDelete = identificarUsuario.get();
-				repositorioUsuario.delete(usuarioDelete);
-				
+		public void borrarUsuario(String id) throws MiExcepcion {
+			try {
+				Optional <Usuario> identificarUsuario = repositorioUsuario.findById(id);
+				if (identificarUsuario.isPresent()) {
+					Usuario usuarioDelete = identificarUsuario.get();
+					repositorioUsuario.delete(usuarioDelete);
+				}
+			} catch (Exception e) {
+				throw new MiExcepcion("Error al conectar con el servidor " + e);
 			}
 		}
+					
+				
+			
 		
 		 @Transactional
-		    public void bajaUsuario(String id) {
-		        Optional<Usuario> presente = repositorioUsuario.findById(id);
-
-		        if (presente.isPresent()) {
-		        	Usuario usuario_baja = new Usuario();
-		        	usuario_baja = presente.get();
-		        	usuario_baja.setActivo(FALSE); //El valor false se importa de un clase propia de java
-		        	repositorioUsuario.save(usuario_baja);
-		        }
-		    }
+		    public void bajaUsuario(String id) throws MiExcepcion {
+			 try {
+				 Optional<Usuario> presente = repositorioUsuario.findById(id);
+				 if (presente.isPresent()) {
+					 Usuario usuario_baja = new Usuario();
+					 usuario_baja = presente.get();
+					 usuario_baja.setActivo(FALSE); //El valor false se importa de un clase propia de java
+					 repositorioUsuario.save(usuario_baja);
+				 }
+			 } catch (Exception e) {
+				 throw new MiExcepcion("Error al conectar con el servidor " + e);
+			 }
+		 }
+				 
+				
 		 
 		 //Metodo para cambiar a usuarios que estaban inactivos a activos
 		 @Transactional
-		    public void altaUsuario(String id) {
-
-		        Optional<Usuario> presente = repositorioUsuario.findById(id);
-
-		        if (presente.isPresent()) {
-		        	Usuario usuario_alta = new Usuario();
-		        	usuario_alta = presente.get();
-		        	usuario_alta.setActivo(TRUE);
-		        	repositorioUsuario.save(usuario_alta);
-		        }
-		    }
-		
-		 
+		    public void altaUsuario(String id) throws MiExcepcion {
+			 try {
+				 Optional<Usuario> presente = repositorioUsuario.findById(id);
+				 if (presente.isPresent()) {
+					 Usuario usuario_alta = new Usuario();
+					 usuario_alta = presente.get();
+					 usuario_alta.setActivo(TRUE);
+					 repositorioUsuario.save(usuario_alta);
+				 }
+			 } catch (Exception e) {
+				 throw new MiExcepcion("Error al conectar con el servidor " + e);
+			 }
+		 }
+				
 		 @Transactional
-		    public void modificarRol(String id, Rol nuevoRol) {
-			 Optional<Usuario> presente = repositorioUsuario.findById(id);
-		        if (presente.isPresent()) {
-		        	Usuario usuario_rol = new Usuario();
-		        	usuario_rol = presente.get();
-		        	usuario_rol.setValidacionForm(FALSE); //volvemos el form a false para que el cambio de rol obligue al usuario a llenar la nueva planilla de su rol
-		        	usuario_rol.setRol(nuevoRol);
-		        	repositorioUsuario.save(usuario_rol);
-						
-		        	
-		        }
-		        
-		    }
-		
-	  
-	  //VALIDACIONES
+		    public void modificarRol(String id, Rol nuevoRol) throws MiExcepcion {
+			 try {
+				 Optional<Usuario> presente = repositorioUsuario.findById(id);
+				 if (presente.isPresent()) {
+					 Usuario usuario_rol = new Usuario();
+					 usuario_rol = presente.get();
+					 usuario_rol.setValidacionForm(FALSE); //volvemos el form a false para que el cambio de rol obligue al usuario a llenar la nueva planilla de su rol
+					 usuario_rol.setRol(nuevoRol);
+					 repositorioUsuario.save(usuario_rol);
+				 }
+			 } catch (Exception e) {
+				 throw new MiExcepcion("Error al conectar con el servidor " + e);
+			 }
+		 }
+				
 		 
+		 //VALIDACIONES
 		 public void validarDatosDelUsuario(String email, String password, String password2, String fechaNacimiento) throws MiExcepcion {
 			 verificarEmail(email);
 			 verificarPassword(password, password2);
 			 validarEdad(fechaNacimiento);
 		 }
 		 
-	  public void validarEmail(String email) throws MiExcepcion {
 			  
+		 public void validarEmail(String email) throws MiExcepcion {
 			  if (Objects.equals(email, null) || email.isEmpty() || email.trim().isEmpty()) {
 		            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
 		            					 +"<span class='fs-6'>El campo de correo electrónico no puede quedar vacío."
