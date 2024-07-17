@@ -1,25 +1,29 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
 import java.io.Serializable;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
+import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
-import com.proyecto_integrador_3.Estetica.Enums.Tratamiento;
-import com.proyecto_integrador_3.Estetica.Entidades.Persona;
+import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.MapsId;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 
 @Entity
@@ -35,12 +39,6 @@ public class Profesional extends Persona implements Serializable {
 	@Column(name = "matricula")
 	private String matricula;
 	
-	@Column(name = "especialidad")
-	private String especialidad;
-
-    @Enumerated(EnumType.STRING)
-    private Tratamiento tratamientos;
-    
     @Enumerated(EnumType.STRING)
     private Provincias provincia;
     
@@ -49,6 +47,27 @@ public class Profesional extends Persona implements Serializable {
 
     @Column(name = "precioConsulta")
     private Double precioConsulta;
+    
+    @ElementCollection(targetClass = Especialidad.class)
+    @CollectionTable(name = "especialidad", joinColumns = @JoinColumn(name = "profesional_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "especialidad")
+    private List<Especialidad> especialidad;
+    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "profesional_id")
+    private List<Tratamiento> tratamientos = new ArrayList<>();
+       
+    @ElementCollection(targetClass = DiasDeLaSemana.class, fetch = FetchType.EAGER)
+    @CollectionTable(name = "dias_de_la_semana", joinColumns = @JoinColumn(name = "profesional_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "dias_de_la_semana")
+    private List<DiasDeLaSemana> DiasDeLaSemana;
+    
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "profesional_horarios", joinColumns = @JoinColumn(name = "profesional_id"))
+    @Column(name = "horarios_laborales")
+    private List<String> horariosLaborales = new ArrayList<>();
     
   
     
@@ -60,8 +79,9 @@ public class Profesional extends Persona implements Serializable {
     	super(id);
     }
 
-	public Profesional(String matricula, String especialidad, Tratamiento tratamientos, Provincias provincia, Double calificacion,
-			Double precioConsulta, List<Turnos> turnos) {
+	public Profesional(String matricula, Provincias provincia, Double calificacion,
+			Double precioConsulta, List<Turnos> turnos, List<String> horariosLaborales, List<DiasDeLaSemana> DiasDeLaSemana,
+			List<Tratamiento> tratamientos, List<Especialidad> especialidad) {
 		this.turnos = turnos;
 		this.matricula = matricula;
 		this.especialidad = especialidad;
@@ -69,6 +89,8 @@ public class Profesional extends Persona implements Serializable {
 		this.provincia = provincia;
 		this.calificacion = calificacion;
 		this.precioConsulta = precioConsulta;
+		this.horariosLaborales = horariosLaborales;
+		this.DiasDeLaSemana = DiasDeLaSemana;
 	}
 
 	public Profesional(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm, String nombre,
@@ -78,6 +100,22 @@ public class Profesional extends Persona implements Serializable {
 	}
 	
 	
+
+	public List<Especialidad> getEspecialidad() {
+		return especialidad;
+	}
+
+	public void setEspecialidad(List<Especialidad> especialidad) {
+		this.especialidad = especialidad;
+	}
+
+	public List<Tratamiento> getTratamientos() {
+		return tratamientos;
+	}
+
+	public void setTratamientos(List<Tratamiento> tratamientos) {
+		this.tratamientos = tratamientos;
+	}
 
 	public List<Turnos> getTurnos() {
 		return turnos;
@@ -94,22 +132,32 @@ public class Profesional extends Persona implements Serializable {
 	public void setMatricula(String matricula) {
 		this.matricula = matricula;
 	}
-	
-	public String getEspecialidad() {
-		return especialidad;
-	}
-	
-	public void setEspecialidad(String especialidad) {
-		this.especialidad = especialidad;
+
+	public List<HorariosDisponibles> getHorariosDisponibles() {
+		return horariosDisponibles;
 	}
 
-	public Tratamiento getTratamientos() {
-		return tratamientos;
+	public void setHorariosDisponibles(List<HorariosDisponibles> horariosDisponibles) {
+		this.horariosDisponibles = horariosDisponibles;
 	}
 
-	public void setTratamientos(Tratamiento tratamientos) {
-		this.tratamientos = tratamientos;
+
+	public List<DiasDeLaSemana> getDiasDeLaSemana() {
+		return DiasDeLaSemana;
 	}
+
+	public void setDiasDeLaSemana(List<DiasDeLaSemana> diasDeLaSemana) {
+		DiasDeLaSemana = diasDeLaSemana;
+	}
+
+	public List<String> getHorariosLaborales() {
+		return horariosLaborales;
+	}
+
+	public void setHorariosLaborales(List<String> horariosLaborales) {
+		this.horariosLaborales = horariosLaborales;
+	}
+
 
 	public Provincias getProvincia() {
 		return provincia;

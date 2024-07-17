@@ -1,7 +1,9 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -9,9 +11,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
+import com.proyecto_integrador_3.Estetica.Entidades.Persona;
+import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
+import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioAdmin;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioHorariosDisponibles;
@@ -104,6 +111,26 @@ public class PruebaSQL implements CommandLineRunner {
         } else {
             System.out.println("Ya existe un administrador en la base de datos.");
         }
+	
+		/*
+		TratamientoEnum[] tratamientos = TratamientoEnum.values();
+			
+			String palabra = "FACIALES";
+			
+			 List<String> tratamientosFiltrados = Arrays.stream(tratamientos)
+		                .filter(tratamiento -> tratamiento.name().contains(palabra))
+		                .map(TratamientoEnum::getDisplayName)
+		                .collect(Collectors.toList());
+			 
+			 tratamientosFiltrados.forEach(System.out::println);
+		
+		*/
+		
+//		List<Profesional> profesional = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, Provincias.BUENOS_AIRES, Especialidad.FACIAL, true);
+//
+//		for (Profesional persona : profesional) {
+//			System.out.println("Prueba: " + persona.getNombre() + " " + persona.getApellido());
+//		}
 		
 //		 LocalDateTime limite = LocalDateTime.now();
 //		 List<Usuario> usuariosIncompletos = repositorioUsuario.findByEmailValidadoFalseAndFechaCreacionBefore(limite);

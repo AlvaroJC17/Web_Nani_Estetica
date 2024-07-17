@@ -11,8 +11,101 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
-	<link rel="stylesheet" href="./css/styles.css">
+	<link rel="stylesheet" href="../css/styles.css">
 	<title>completarDatosProfesional</title>
+
+  <script>
+
+ //   <!--Script para la seleccion de especialidad, tratamientos y dias de la semana-->
+
+    function agregarOpcion(selectId, listaId, campoOpcionesId) {
+        const select = document.getElementById(selectId);
+        const selectedOption = select.options[select.selectedIndex].text;
+        const lista = document.getElementById(listaId);
+
+        if (!Array.from(lista.options).some(option => option.value === selectedOption)) {
+            const optionElement = document.createElement('option');
+            optionElement.value = selectedOption;
+            optionElement.text = selectedOption;
+            lista.add(optionElement);
+        }
+
+        actualizarCampoOpciones(listaId, campoOpcionesId);
+    }
+
+    function actualizarCampoOpciones(listaId, campoOpcionesId) {
+        const lista = document.getElementById(listaId);
+        const opcionesSeleccionadas = Array.from(lista.options).map(option => option.value);
+        document.getElementById(campoOpcionesId).value = opcionesSeleccionadas.join(',');
+    }
+
+    function eliminarOpcion(listaId, campoOpcionesId) {
+        const lista = document.getElementById(listaId);
+        lista.remove(lista.selectedIndex);
+        actualizarCampoOpciones(listaId, campoOpcionesId);
+    }
+
+
+   // <!--Scrip para la seleccion de horarios-->
+
+    function agregarHorario() {
+            const horas = document.getElementById('horas').value;
+            const minutos = document.getElementById('minutos').value;
+            const horario = horas + ':' + minutos;
+            const lista = document.getElementById('listaHorarios');
+
+            if (!Array.from(lista.options).some(option => option.value === horario)) {
+                const optionElement = document.createElement('option');
+                optionElement.value = horario;
+                optionElement.text = horario;
+                lista.add(optionElement);
+            }
+
+            actualizarCampoHorarios();
+        }
+
+        function actualizarCampoHorarios() {
+            const lista = document.getElementById('listaHorarios');
+            const horariosSeleccionados = Array.from(lista.options).map(option => option.value);
+            document.getElementById('horariosSeleccionados').value = horariosSeleccionados.join(',');
+        }
+
+        function eliminarHorario() {
+            const lista = document.getElementById('listaHorarios');
+            lista.remove(lista.selectedIndex);
+            actualizarCampoHorarios();
+        }
+
+     //   <!--Scrip para la seleccion de tratamientos-->
+     
+        function agregarTratamiento() {
+            const tratamiento = document.getElementById('tratamiento').value;
+            const costo = document.getElementById('costo').value;
+            const tratamientoCosto = tratamiento + ' - $' + costo;
+            const lista = document.getElementById('listaTratamientos');
+
+            if (!Array.from(lista.options).some(option => option.value === tratamientoCosto)) {
+                const optionElement = document.createElement('option');
+                optionElement.value = tratamientoCosto;
+                optionElement.text = tratamientoCosto;
+                lista.add(optionElement);
+            }
+
+            actualizarCampoTratamientos();
+        }
+
+        function actualizarCampoTratamientos() {
+            const lista = document.getElementById('listaTratamientos');
+            const tratamientosSeleccionados = Array.from(lista.options).map(option => option.value);
+            document.getElementById('tratamientosSeleccionados').value = tratamientosSeleccionados.join(',');
+        }
+
+        function eliminarTratamiento() {
+            const lista = document.getElementById('listaTratamientos');
+            lista.remove(lista.selectedIndex);
+            actualizarCampoTratamientos();
+        }
+</script>
 </head>
 
 <body class="">
@@ -70,7 +163,7 @@
 						</div>
 						<form th:action="@{/guardarDatosProfesional}" method="post">
 							<p class="ps-3 fs-1 mb-0 ">Completar Datos Profesional</p>
-							<p class="ps-3">Complete todos los datos para poder acceder a su sesión</p>
+							<p class="ps-3 fs-5">Complete todos los datos para poder acceder a su sesión</p>
 							<div class="mb-3 row">
 							
 							<div class="mb-3 row">
@@ -80,9 +173,8 @@
 										placeholder="si no posee matrícula, complete con 0000" required>
 								</div>
 								<div class="col-md-6">
-									<label for="especialidad" class="form-label texto-label">Especialidad<span class="text-danger fw-bold">*</span></label>
-									<input type="text" th:value="${especialidad}" class="form-control" name="especialidad" id="especialidad"
-										placeholder="" required>
+                  <label for="direccion" class="form-label texto-label">Dirección<span class="text-danger fw-bold">*</span></label>
+									<input type="text" th:value="${direccion}" class="form-control" name="direccion" id="direccion" placeholder="ingrese dirección y altura" required>
 								</div>
 							</div>
 
@@ -103,7 +195,7 @@
 								</div>
 							</div>
 
-							<div class="mb-3 row">
+							<div class="mb-3 row mb-5">
 								<div class="col-md-6">
 								<label  for="provincia" class="form-label texto-label mb-0">Seleccione provincia <span class="text-danger ">*</span> </label>
               					<select  name="provincia" class="form-select" id="provincia" aria-label="Default select example">
@@ -112,13 +204,177 @@
                					 <option th:each="provincia : ${provincias}" th:value="${provincia.name()}" th:text="${provincia.displayName}"></option> <!--cuando uso enum, para mostrar el nombre se debe usar el metodo name()-->
              					 </select>
 								</div>
-
 								<div class="col-md-6">
-									<label for="direccion" class="form-label texto-label">Dirección<span class="text-danger fw-bold">*</span></label>
-									<input type="text" th:value="${direccion}" class="form-control" name="direccion" id="direccion" placeholder="ingrese dirección y altura" required>
 								</div>
-								
-								</div>
+              </div>
+
+
+                <div style="border-top: 1px solid white;" class="mb-5">
+                  <p class="ps-3 fs-5 mb-4 mt-3">Seleccione la especialidad o especialidades con las que trabaja (pueden ser más de una):</p>
+                  <div class="row d-flex align-items-center justify-content-center">
+                    <div class="col-md-6">
+                      <label for="opciones1" class="form-label texto-label mb-0">Selecciona una opción:</label>
+                        <select aria-label="Default select example" class="form-select" id="opciones1" name="especialidad" onchange="agregarOpcion()">
+                        <option th:each="especialidades : ${especialidad}" th:value="${especialidades}" th:text="${especialidades}">Opción 2</option>
+                        </select>
+                      </div>
+         
+                        
+
+                    <div class="col-md-6 text-center">
+                      <label class="fs-5 form-label texto-label mb-0" for="listaSeleccionadas1">Opciones seleccionadas:</label>
+                      <select aria-label="Default select example" class="form-select" id="listaSeleccionadas1" name="listaSeleccionadas1" size="5" multiple>
+					  
+                      </select>
+                    </div>
+                  </div>
+
+                  
+                  <div class="d-flex justify-content-center mt-4">
+                    <div style="margin-right: 5px; margin-top: 10px;" class="">
+                      <button class="btn btn-primary" type="button" onclick="agregarOpcion('opciones1', 'listaSeleccionadas1', 'opcionesSeleccionadas1')">Agregar especialidad</button>
+                    
+                  </div>
+                  <div style="margin-left: 5px; margin-top: 10px;" class="">
+                    <button class="btn btn-danger" type="button" onclick="eliminarOpcion('listaSeleccionadas1', 'opcionesSeleccionadas1')">Eliminar especialidad</button>
+                  </div>
+                </div>
+                    <input type="hidden" id="opcionesSeleccionadas1" name="especialidadesSeleccionadas" value="">
+                    
+
+                </div>
+                    
+
+                <div style="border-top: 1px solid white;" class="mb-5">
+                  <p class="ps-3 fs-5 mb-4 mt-3">Seleccione los tratamientos que ofrecerá (puede ser más de uno):</p>
+                  <div class="row d-flex align-items-end justify-content-center">
+                    <div class="col-md-6">
+                      <label class="form-label texto-label mb-0" for="tratamiento">Tratamiento:</label>
+                      <select aria-label="Default select example" class="form-select" id="tratamiento" name="tratamientos">
+                          <option th:each="tratamientos : ${tratamiento}" th:value="${tratamientos}" th:text="${tratamientos}">Opción 2</option>
+                          
+                      </select>
+                      
+                      <div>
+                        <label lass="form-label texto-label mb-0" for="costo">Costo:</label>
+                        <input  aria-label="Default select example" class="form-control" type="number" id="costo" name="costo" placeholder="ingrese costo del tratamiento" />
+                      </div>
+                    </div>
+
+                    <div class="col-md-6 text-center">
+                      <label class="fs-5 form-label texto-label mb-0" for="listaTratamientos">Tratamientos seleccionados:</label>
+                      <select aria-label="Default select example" class="form-select" id="listaTratamientos" name="listaTratamientos" size="5" multiple>
+                      
+                    </select>
+                  </div>
+                </div>
+                     
+
+                  
+                  <div class="d-flex justify-content-center mt-4">
+                    <div style="margin-right: 5px; margin-top: 10px;" class="">
+                      <button class="btn btn-primary" type="button" onclick="agregarTratamiento()">Agregar Tratamiento</button>
+                  </div>
+                  <div style="margin-left: 5px; margin-top: 10px;" class="">
+                    <button class="btn btn-danger" type="button" onclick="eliminarTratamiento()">Eliminar Tratamiento</button>
+                  </div>
+                </div>
+                    <input type="hidden" id="tratamientosSeleccionados" name="tratamientosSeleccionados" />
+
+                </div>
+
+                <div style="border-top: 1px solid white;" class="mb-5">
+                  <p class="ps-3 fs-5 mb-4 mt-3">Seleccione los días de la semana que ofrecerá servicios (puede ser más de uno):</p>
+                  <div class="row d-flex align-items-center justify-content-center">
+                    <div class="col-md-6">
+                      <label for="opciones3" class="form-label texto-label mb-0">Selecciona una opción:</label>
+                        <select aria-label="Default select example" class="form-select" id="opciones3" name="opciones3" onchange="agregarOpcion()">
+                        <option th:each="DiasDeLaSemanas : ${DiasDeLaSemana}" th:value="${DiasDeLaSemanas}" th:text="${DiasDeLaSemanas}">Opción 2</option>
+                        </select>
+                      </div>
+
+                    <div class="col-md-6 text-center">
+                      <label class="fs-5 form-label texto-label mb-0" for="listaSeleccionadas3">Opciones seleccionadas:</label>
+                      <select aria-label="Default select example" class="form-select" id="listaSeleccionadas3" name="listaSeleccionadas3" size="5" multiple>
+						 
+                      </select>
+                    </div>
+                  </div>
+
+                  
+                  <div class="d-flex justify-content-center mt-4">
+                    <div style="margin-right: 5px; margin-top: 10px;" class="">
+                      <button class="btn btn-primary" type="button" onclick="agregarOpcion('opciones3', 'listaSeleccionadas3', 'opcionesSeleccionadas3')">Agregar día</button>
+                    
+                  </div>
+                  <div style="margin-left: 5px; margin-top: 10px;" class="">
+                    <button class="btn btn-danger" type="button" onclick="eliminarOpcion('listaSeleccionadas3', 'opcionesSeleccionadas3')">Eliminar día</button>
+                  </div>
+                </div>
+                    <input type="hidden" id="opcionesSeleccionadas3" name="DiasDeLaSemanaSeleccionados" value="">
+                
+              </div>
+
+
+                <div style="border-top: 1px solid white;" class="mb-5">
+                  <p class="ps-3 mb-0 fs-5 mb-4 mt-3">Indique los horarios en los que prestara servicio (puede agregar máximo 10 horarios):</p>
+                  <p class="ps-3 fs-5">Seleccione la hora y los minutos y presione agregar para ir armando la lista de horarios.</p>
+                  <p class="ps-3 fs-5 mb-4"> <span class="fw-bold">Nota:</span>  La selección de horarios que haga se aplicara para todos los días laborales seleccionados por igual.</p>
+                  <div class="row d-flex align-items-end justify-content-center">
+
+                    <div class="col-md-6">
+                     <div>
+                      <label class="form-label texto-label mb-0" for="horas">Selecciona la hora:</label>
+        <select aria-label="Default select example" class="form-select" id="horas" name="horas">
+            <!-- Opciones de horas (puedes agregar más) -->
+            <option value="08">08</option>
+            <option value="09">09</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label texto-label mb-0" for="minutos">Selecciona los minutos:</label>
+        <select aria-label="Default select example" class="form-select" id="minutos" name="minutos">
+            <!-- Opciones de minutos -->
+            <option value="00">00</option>
+            <option value="15">15</option>
+            <option value="30">30</option>
+            <option value="45">45</option>
+        </select>
+      </div>
+                    </div>
+
+                    <div class="col-md-6 text-center">
+                      <label class="form-label texto-label mb-0" for="listaHorarios">Horarios seleccionados:</label>
+                   <select aria-label="Default select example" class="form-select" id="listaHorarios" name="listaHorarios" size="5" multiple>
+					   
+                 </select>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-center mt-4">
+                    <div style="margin-right: 5px; margin-top: 10px;">
+                      <button class="btn btn-primary" type="button" onclick="agregarHorario()">Agregar horario</button>
+                    </div>
+
+                    <div style="margin-left: 5px; margin-top: 10px;">
+                      <button class="btn btn-danger" type="button" onclick="eliminarHorario()">Eliminar horario</button>
+                    </div>
+                  </div>
+                    <input type="hidden" id="horariosSeleccionados" name="horariosSeleccionados">
+
+
+                </div>
+
 								 <div  class="fs-5 mt-2 text-center"> <!--La variable emailUsuario viene del formulario login y del controlador loginUsuario-->
 	          					<input type="hidden" th:value="${emailUsuario}" class="form-control" name="emailUsuario" id="emailUsuario" placeholder="">
 	    	  					</div>

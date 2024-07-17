@@ -1,6 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -32,13 +33,29 @@ public class HorariosDisponibles {
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "horarios", joinColumns = @JoinColumn(name = "horarios_disponibles_id"))
     @Column(name = "horario")
-    private List<String> horarios;
+    private List<String> horarios = new ArrayList<>();
     
     @ManyToOne
     @JoinColumn(name = "profesional_id", referencedColumnName = "id")
     private Profesional profesional;
     
-    public HorariosDisponibles() {
+    public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public Profesional getProfesional() {
+		return profesional;
+	}
+
+	public void setProfesional(Profesional profesional) {
+		this.profesional = profesional;
+	}
+
+	public HorariosDisponibles() {
     	
     }
 
@@ -46,6 +63,11 @@ public class HorariosDisponibles {
 		this.fecha = fecha;
         this.horarios = horarios;
         this.profesional = profesional;
+	}
+	
+	public HorariosDisponibles(List<String> horarios, Profesional profesional) {
+		this.horarios = horarios;
+		this.profesional = profesional;
 	}
 
 	

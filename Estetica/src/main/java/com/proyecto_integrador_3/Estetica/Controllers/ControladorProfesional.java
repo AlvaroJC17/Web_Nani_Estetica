@@ -1,5 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -15,10 +17,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
+import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
+import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
@@ -289,24 +295,31 @@ public class ControladorProfesional {
 	@PostMapping("/guardarDatosProfesional")
 	public String guardarDatosProfesional(
 			@RequestParam(name = "matricula") String matricula,
-			@RequestParam(name = "especialidad") String especialidad,
 			@RequestParam(name = "sexo") String sexo,
 			@RequestParam(name = "telefono") String telefono,
 			@RequestParam(name = "provincia") String provincia,
 			@RequestParam(name = "direccion") String direccion,
+			@RequestParam(name = "especialidadesSeleccionadas") String especialidadesSeleccionadas,
+			@RequestParam(name = "tratamientosSeleccionados") String tratamientosSeleccionados,
+			@RequestParam(name = "DiasDeLaSemanaSeleccionados") String DiasDeLaSemanaSeleccionados,
+			@RequestParam(name = "horariosSeleccionados") String horariosSeleccionados,
 			@RequestParam(name = "emailUsuario") String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
 			ModelMap model) throws MiExcepcion {
 		
 		try {
 			
 			//Guardamos los datos del formulario que lleno el nuevo cliente
-			servicioProfesional.registrarProfesional(emailUsuario, matricula, especialidad, provincia, direccion, telefono, sexo);				
+			servicioProfesional.registrarProfesional(emailUsuario, matricula, provincia, direccion, telefono, sexo,
+					especialidadesSeleccionadas, DiasDeLaSemanaSeleccionados, horariosSeleccionados, tratamientosSeleccionados);				
 		} catch (MiExcepcion e) {
 			System.out.println(e.getMessage());
 			model.put("error", e.getMessage());
+			//Pasamos todo a la vista si hay error, para que el usuario no tenga que volver a ingresar todos los datos de nuevo si hay errores
 			model.addAttribute("provincias", Provincias.values());
+			model.addAttribute("especialidad", Especialidad.values());
+   		 	model.addAttribute("tratamiento", TratamientoEnum.values());
+   		 	model.addAttribute("DiasDeLaSemana", DiasDeLaSemana.values());
 			model.addAttribute("matricula", matricula);
-			model.addAttribute("especialidad",especialidad);
 			model.addAttribute("sexo",sexo);
 			model.addAttribute("telefono", telefono);
 			model.addAttribute("direccion", direccion);

@@ -9,7 +9,9 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
+import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 
@@ -64,6 +66,10 @@ public interface RepositorioPersona extends JpaRepository<Persona, String>{
     
     @Query("SELECT p, pr FROM Persona p JOIN Profesional pr ON p.id = pr.id WHERE pr.provincia IN :provincias AND p.rol = :rol AND p.activo = :activo")
     List<Persona> buscarNombreApellidoPorRolProvinciaYActivo(@Param("rol") Rol rol, @Param("provincias") Provincias provincias, @Param("activo") boolean activo);
+    
+   
+
+
 
 
 }

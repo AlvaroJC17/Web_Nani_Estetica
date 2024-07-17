@@ -16,8 +16,10 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
+import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioHorariosDisponibles;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 
 import jakarta.transaction.Transactional;
 
@@ -26,6 +28,9 @@ public class ServicioHorario {
 	
 	 @Autowired
 	 private RepositorioHorariosDisponibles repositorioHorariosDisponibles;
+	 
+	 @Autowired
+	 private RepositorioProfesional repositorioProfesional;
 	
 	
 	 //busca la lista de horarios guardados en la base de datos pertenecientes a la fecha y el profesional que le pasamos por parametro
@@ -33,12 +38,23 @@ public class ServicioHorario {
 	 //Si existe, entonces devuelve la lista de horarios pertenecientes a esa fecha y profesional
 	 public List<String> crearyObtenerHorariosDisponibles(String fecha, String idProfesional) throws MiExcepcion {
 		 
+		 //Buscamos los horarios que le profesional registro y lo guardamos en la variable horariosDisponibles
+		 Optional<Profesional> obtenerHorariosLaborales = repositorioProfesional.findById(idProfesional);
+		 List<String> horariosDisponinbles = new ArrayList<>();
+		 if (obtenerHorariosLaborales.isPresent()) {
+			Profesional profesional = obtenerHorariosLaborales.get();
+			horariosDisponinbles = profesional.getHorariosLaborales();
+		}
+	
 		 try {
+			 //Verificamos que el profesional seleccionado tenga horarios en la fecha seleccionada
 			 List<HorariosDisponibles> horarios = repositorioHorariosDisponibles.findHorariosByProfesionalIdAndFecha(idProfesional, fecha);
 			
+			 //sino tiene horarios, creamos una lista nueva de horarios con los que selecciono el profesional
 		    if (horarios.isEmpty()) {
-		        return List.of("10:00", "11:00", "12:00", "13:00", "14:00", "21:00");
+		        return horariosDisponinbles;
 		    } else {
+		    	//Si tiene horarios, los obtenemos
 		        return horarios.get(0).getHorarios();
 		    }
 		 } catch (Exception e) {
@@ -57,14 +73,19 @@ public class ServicioHorario {
 			 // Buscar si ya existe un registro de HorariosDisponibles para la fecha y profesional dado
 		    Optional<HorariosDisponibles> optionalHorarios = repositorioHorariosDisponibles.findOptionalHorariosByProfesionalIdAndFecha(idProfesional, fecha);
 				
+		    //Buscamos si hay horarios para la fecha seleccionada, si exitenm los actualizamos con la lista de horarios proporcionada
 		    	if (optionalHorarios.isPresent()) {
 		    		// Si ya existe, actualizar los horarios existentes con los nuevos horarios
 		    		HorariosDisponibles horariosDisponibles = optionalHorarios.get();
-		    		horariosDisponibles.setHorarios(horarios);
-		    		repositorioHorariosDisponibles.save(horariosDisponibles);
+		    		horariosDisponibles.getHorarios().clear(); // Limpiar la colección antes de añadir nuevos elementos
+		            horariosDisponibles.getHorarios().addAll(horarios); // Añadir los nuevos horarios
+		            repositorioHorariosDisponibles.save(horariosDisponibles);
 		    	} else {
-		    		// Si no existe, crear un nuevo objeto HorariosDisponibles y guardarlo
-		    		HorariosDisponibles nuevoHorariosDisponibles = new HorariosDisponibles(fecha, horarios, new Profesional(idProfesional));
+		    		// Si no existe, crear un nuevo objeto HorariosDisponibles con la lista de horarios proporcionada y se guarda en la base de datos
+		    		HorariosDisponibles nuevoHorariosDisponibles = new HorariosDisponibles();
+		    		nuevoHorariosDisponibles.setFecha(fecha);
+		    		nuevoHorariosDisponibles.setHorarios(new ArrayList<>(horarios)); //Acá es importante generar un nuevo array para guardar la lista de horarios, sino jpa me borra la lista original de la base de datos
+		    		nuevoHorariosDisponibles.setProfesional(new Profesional(idProfesional));
 		    		repositorioHorariosDisponibles.save(nuevoHorariosDisponibles);
 		    	}
 		    } catch (Exception e) {
@@ -224,6 +245,47 @@ public class ServicioHorario {
 				}
 				return fechaUsuario;
 	    }
+	    
+	    public Boolean diasLaborales(String fecha, String idProfesional) throws MiExcepcion {
+	    	try {
+	    		LocalDate fechaLocalDate = pasarFechaStringToLocalDate(fecha);
+	    		DayOfWeek diaDeLaSemanaSeleccionado = fechaLocalDate.getDayOfWeek();
+	    			
+	    		try {
+	    		List<DiasDeLaSemana> diasLaborales = null;
+	    		Optional<Profesional> buscarDiasDeLaSemana = repositorioProfesional.findById(idProfesional);	
+	    		if (buscarDiasDeLaSemana.isPresent()) {
+					Profesional diasSeleccionados = buscarDiasDeLaSemana.get();
+					diasLaborales = diasSeleccionados.getDiasDeLaSemana();
+				}	
+	    		
+	    		for (DiasDeLaSemana diasDeLaSemana : diasLaborales) {
+					int numeroDelaSemana= Integer.parseInt(diasDeLaSemana.getDisplayName());
+					System.out.println("numero de la semana en int: " + numeroDelaSemana);
+					System.out.println("dia de semana en numero string: " + diasDeLaSemana.getDisplayName());
+					System.out.println("Dia de la semana seleccionado: " + diaDeLaSemanaSeleccionado);
+					System.out.println("dia de la semana del profesional: " + DayOfWeek.of(numeroDelaSemana));
+					if (diaDeLaSemanaSeleccionado == DayOfWeek.of(numeroDelaSemana)) {
+						return false;
+					}
+					continue;
+				}
+	    		
+	    		} catch (Exception e) {
+	    			System.out.println("Error al conectar con el servidor dias de la semana " + e.getMessage());
+	    		}
+	    		
+	    	} catch (Exception f) {
+	    		System.out.println("Error al parsear la fecha");
+	    		f.printStackTrace();
+	    	}
+	    	
+	    	return true;
+	    }
+				
+			
+	    		
+	    	
 				
 		 
 		 public LocalDateTime pasarFechaStringToLocalDateTime(String fecha) throws MiExcepcion{

@@ -13,11 +13,15 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
+import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
+import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
+import com.proyecto_integrador_3.Estetica.Utilidad.Dias;
 
 @Controller
 public class ControladorPagina {
@@ -269,6 +273,9 @@ public class ControladorPagina {
 				            	 }else if(!validarForm) {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario);
 				            		 modelo.addAttribute("provincias", Provincias.values());
+				            		 modelo.addAttribute("especialidad", Especialidad.values());
+				            		 modelo.addAttribute("tratamiento", TratamientoEnum.values());
+				            		 modelo.addAttribute("DiasDeLaSemana", DiasDeLaSemana.values());
 				            		 return "pagina_profesional/completarDatosProfesional";
 				            	 }
 				             }

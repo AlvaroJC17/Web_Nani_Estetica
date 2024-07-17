@@ -118,7 +118,7 @@
           <form id="formularioProfesional" th:action="@{/buscarProfesional}" method="post"  class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
             <div>
               <label for="profesional" class="form-label mb-0 mt-2 fs-4">Paso 2: Seleccione profesional <span class="text-danger ">*</span></label>
-              <select onchange="autoSubmitProfesional()" class="form-select" id="profesional" name="idProfesional" aria-label="Default select example">
+              <select th:attr="disabled=${isProfesionalDisabled == null || !isProfesionalDisabled ? 'disabled' : null}" onchange="autoSubmitProfesional()" class="form-select" id="profesional" name="idProfesional" aria-label="Default select example">
                 <option th:selected="${nombreDelProfesional}" th:text="${nombreDelProfesional == null || #strings.isEmpty(nombreDelProfesional) ? 'Seleccione un profesional' : nombreDelProfesional}">Profesional</option>
                 <option th:each="nombreProfesional : ${Profesionales}" th:text="${nombreProfesional.nombre + ' '  + nombreProfesional.apellido}" th:value="${nombreProfesional.id}"></option>
               </select>
@@ -167,10 +167,10 @@
             </div>
             <div class="boton-pag-turno">
             <div class="boton-de-registro text-center">
-              <a href="#"><button type="submit" name="action" value="aceptar" class="bn632-hover bn26">Enviar</button></a>
+              <button type="submit" name="action" value="aceptar" class="bn632-hover bn26">Enviar</button>
             </div>
             <div class="boton-de-registro text-center">
-              <a href="#"><button type="submit" name="action" value="cancelar" class="bn632-hover bn26">Cancelar</button></a>
+              <button type="submit" name="action" value="cancelar" class="bn632-hover bn26">Cancelar</button>
             </div>
           </div>
           

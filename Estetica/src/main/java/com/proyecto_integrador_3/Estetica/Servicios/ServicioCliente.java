@@ -67,7 +67,7 @@ public class ServicioCliente {
 		
 		validarDatosCliente(nombre, apellido, dni, sexo, telefono, direccion, ocupacion);
 
-		//Pasamos la fecha de nacimiento de String a un objeto tipo Date
+		
 		Sexo nuevoSexo = null;
 		nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
 		

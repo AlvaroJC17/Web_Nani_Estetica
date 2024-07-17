@@ -2,6 +2,8 @@ package com.proyecto_integrador_3.Estetica.Servicios;
 
 import static java.lang.Boolean.TRUE;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -10,12 +12,17 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
+import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
+import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
@@ -92,11 +99,65 @@ public class ServicioProfesional {
 	    
 
 	@Transactional
-	public void registrarProfesional(String email, String matricula, String especialidad,
-			String provincia, String direccion, String telefono, String sexo) throws MiExcepcion {
+	public void registrarProfesional(String email, String matricula, String provincia,
+			String direccion, String telefono, String sexo, String especialidadesSeleccionadas,
+			String DiasDeLaSemanaSeleccionados, String horariosSeleccionados, String tratamientosSeleccionados ) throws MiExcepcion {
 		
-		validarDatosProfesional(matricula, especialidad, sexo, telefono, provincia, direccion);
+		   //Validamos todos los datos ingresados por el usuario antes de crear al profesional
+				validarDatosProfesional(matricula, sexo, telefono, provincia, direccion,
+						especialidadesSeleccionadas, DiasDeLaSemanaSeleccionados, horariosSeleccionados, tratamientosSeleccionados);
 		
+		//Obtenemos el string de especialidades, lo dividimos y lo pasamos a una lista de enum Especialidades
+		List<Especialidad> listaEspecialidad = new ArrayList<>();
+		List<String> especialidadesList = Arrays.asList(especialidadesSeleccionadas.split(","));
+		for (String especialidades : especialidadesList) {
+			 Especialidad nuevoEspecialidad = null;
+			 nuevoEspecialidad = Especialidad.valueOf(especialidades.toUpperCase());
+			 listaEspecialidad.add(nuevoEspecialidad);
+		}
+		
+		//Obtenemos el string de diasDeLaSemana, lo dividimos y lo pasamos a una lista de enum DiasDeLaSemana
+		List<DiasDeLaSemana> listaDiasDeLaSemana = new ArrayList<>();
+		List<String> diasDeLaSemanaList = Arrays.asList(DiasDeLaSemanaSeleccionados.split(","));
+		for (String diasDeLaSemana : diasDeLaSemanaList) {
+			DiasDeLaSemana nuevoDiasDeLaSemana = null;
+			nuevoDiasDeLaSemana = DiasDeLaSemana.valueOf(diasDeLaSemana.toUpperCase());
+			listaDiasDeLaSemana.add(nuevoDiasDeLaSemana);
+		}
+		
+		//Obtenemos el string de horarios, lo dividimos y guardamos en una lista de String
+		List<String> horariosList = Arrays.asList(horariosSeleccionados.split(","));
+		
+		
+		//Obtenemos el string de tratamientos con sus precios, los dividimos y los usamos para crear
+		//un objeto Tratamiento y luego creamos una lista de objetos Tratamientos
+		List<String> tratamientosList = Arrays.asList(tratamientosSeleccionados.split(",")); // acá separamos los tratamientos
+	        // 2. Separar cada tratamiento de su costo
+	        List<Tratamiento> listaTratamientos = new ArrayList<>(); //Lista donde guardaremos los objetos Tratamiento
+	        for (String tratamientoCosto : tratamientosList) {
+	        	String[] partes = tratamientoCosto.split(" - \\$"); //Acá separamos el tratamiento del costo
+	        	
+	        	 // Validar que el tratamiento tenga el formato correcto
+	            if (partes.length < 2 || partes[0].trim().isEmpty() || partes[1].trim().isEmpty()) {
+	                throw new MiExcepcion("Error: El tratamiento \"" + tratamientoCosto + "\" no tiene un formato válido.");
+	            }
+	            
+	            String nombreTratamiento = partes[0]; // Acá separamos el tratamiento que corresponde al indice [0] del array y lo guardamos en una variable
+	            int costoTratamiento = Integer.parseInt(partes[1]); //Acá separamos el costo que corresponde al indice [1] del array, lo parseamos a un int y lo guardamos en una variable.
+	            
+	            // Validar que el tratamiento tenga un costo válido
+	            if (costoTratamiento < 0) {
+	                throw new MiExcepcion("Error: El tratamiento \"" + nombreTratamiento + "\" tiene un costo inválido.");
+	            }
+	                 
+	            //Pasamos la nombre del tratamiento a un tipo Enum
+	            TratamientoEnum nuevoTratamienoEnum = null;
+	            nuevoTratamienoEnum = TratamientoEnum.valueOf(nombreTratamiento.toUpperCase());
+	            //Creamos un objeto Tratamiento con las dos variables anteriores y lo guardamos en una lista de tipo Tratamientos
+	            listaTratamientos.add(new Tratamiento(nuevoTratamienoEnum, costoTratamiento));
+	        }
+	        
+				
 		try {
 		Optional <Usuario> datosUsuario = repositorioUsuario.buscarPorEmailOptional(email);
 		Optional <Persona> datosPersona = repositorioPersona.buscarPorEmailOptional(email);
@@ -125,7 +186,10 @@ public class ServicioProfesional {
 			nuevo_profesional.setNombre(datosPersonalesPersona.getNombre());
 			nuevo_profesional.setApellido(datosPersonalesPersona.getApellido());
 			nuevo_profesional.setMatricula(matricula);
-			nuevo_profesional.setEspecialidad(especialidad);;
+			nuevo_profesional.setEspecialidad(listaEspecialidad);
+			nuevo_profesional.setDiasDeLaSemana(listaDiasDeLaSemana);
+			nuevo_profesional.setHorariosLaborales(horariosList);
+			nuevo_profesional.setTratamientos(listaTratamientos);
 			nuevo_profesional.setTelefono(telefono);
 			nuevo_profesional.setProvincia(Nuevaprovincia);
 			nuevo_profesional.setDomicilio(direccion);
@@ -138,6 +202,8 @@ public class ServicioProfesional {
 			throw new MiExcepcion("Error al conectar con el servidor " + e);
 		}
 	}
+	
+	
 	
 	@Transactional
 	public void modificarProfesional(String idAdmin, String email, String emailAnterior, String domicilio, String sexo, String telefono) throws MiExcepcion {
@@ -164,7 +230,9 @@ public class ServicioProfesional {
 		}
 	}
 	
-	 public void validarDatosProfesional(String matricula, String especialidad,  String sexo, String telefono, String provincia, String direccion) throws MiExcepcion {
+	 public void validarDatosProfesional(String matricula, String sexo, String telefono, String provincia,
+			 String direccion, String especialidadesSeleccionadas, String DiasDeLaSemanaSeleccionados,
+			 String horariosSeleccionados, String tratamientosSeleccionados) throws MiExcepcion {
 	
 		 // Expresión regular para validar un telefono
 		 String regex = "\\d{7,10}";
@@ -187,9 +255,6 @@ public class ServicioProfesional {
 		 if (matricula == null || matricula.isEmpty() || matricula.trim().isEmpty()) {
 			 throw new MiExcepcion("La matricula no puede estar vacia");
 		 }
-		 if (especialidad == null || especialidad.isEmpty() || especialidad.trim().isEmpty()) {
-			 throw new MiExcepcion("La especialidad no puede estar vacia");
-		 }
 		 
 		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
 			 throw new MiExcepcion("El sexo no puede estar vacio");
@@ -201,6 +266,24 @@ public class ServicioProfesional {
 		 if (direccion == null || direccion.isEmpty() || direccion.trim().isEmpty()) {
 			 throw new MiExcepcion("La dirección no puede estar vacia");
 		 }
+		 
+		 if (especialidadesSeleccionadas.isEmpty() || especialidadesSeleccionadas.trim().isEmpty() || especialidadesSeleccionadas == null) {
+			 throw new MiExcepcion("Debe seleccionar por lo menos una especialidad");
+		}
+		 
+		 if (tratamientosSeleccionados.isEmpty() || tratamientosSeleccionados.trim().isEmpty() || tratamientosSeleccionados == null) {
+			 throw new MiExcepcion("Debe indicar por lo menos un tratamiento");
+		}
+		 
+		 if (DiasDeLaSemanaSeleccionados.isEmpty() || DiasDeLaSemanaSeleccionados.trim().isEmpty() || DiasDeLaSemanaSeleccionados == null) {
+			 throw new MiExcepcion("Debe seleccionar por lo menos un día de la semana");
+		}
+		 
+		 if (horariosSeleccionados.isEmpty() || horariosSeleccionados.trim().isEmpty() || horariosSeleccionados == null) {
+			 throw new MiExcepcion("Debe indicar por lo menos un horario");
+		}
+		 
+		
 	 }
 
 	 
