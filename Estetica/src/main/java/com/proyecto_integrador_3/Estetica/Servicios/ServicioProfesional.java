@@ -230,6 +230,22 @@ public class ServicioProfesional {
 		}
 	}
 	
+	public List<Tratamiento> buscarTratamitosPorProfesional(String idProfesional) throws Exception{
+		
+		List<Tratamiento> tratamientosProfesional = null;
+		try {
+			Optional<Profesional> identificarProfesional = repositorioProfesional.findById(idProfesional);
+			if (identificarProfesional.isPresent()) {
+				Profesional datosProfesional = identificarProfesional.get(); // Atribuye el objeto presente a esta nueva variable
+				tratamientosProfesional = datosProfesional.getTratamientos();
+				return tratamientosProfesional;	
+			}
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor " + e);
+		}
+		return tratamientosProfesional;
+	}
+	
 	 public void validarDatosProfesional(String matricula, String sexo, String telefono, String provincia,
 			 String direccion, String especialidadesSeleccionadas, String DiasDeLaSemanaSeleccionados,
 			 String horariosSeleccionados, String tratamientosSeleccionados) throws MiExcepcion {

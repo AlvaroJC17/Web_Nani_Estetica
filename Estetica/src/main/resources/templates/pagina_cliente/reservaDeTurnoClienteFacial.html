@@ -30,6 +30,37 @@
             document.getElementById("formularioHorario").submit();
         }
         
+        //   <!--Scrip para la seleccion de tratamientos-->
+     
+        function agregarTratamiento() {
+    const tratamientoSelect = document.getElementById('tratamiento');
+    const tratamientoId = tratamientoSelect.value;
+    const tratamientoNombre = tratamientoSelect.options[tratamientoSelect.selectedIndex].text;
+    const lista = document.getElementById('listaTratamientos');
+
+    if (!Array.from(lista.options).some(option => option.value === tratamientoId)) {
+        const optionElement = document.createElement('option');
+        optionElement.value = tratamientoId;
+        optionElement.text = tratamientoNombre;
+        lista.add(optionElement);
+    }
+
+    actualizarCampoTratamientos();
+}
+
+function actualizarCampoTratamientos() {
+    const lista = document.getElementById('listaTratamientos');
+    const tratamientosSeleccionados = Array.from(lista.options).map(option => option.value);
+    document.getElementById('tratamientosSeleccionados').value = tratamientosSeleccionados.join(',');
+}
+
+function eliminarTratamiento() {
+    const lista = document.getElementById('listaTratamientos');
+    lista.remove(lista.selectedIndex);
+    actualizarCampoTratamientos();
+}
+
+        
     </script>
     
     
@@ -146,34 +177,14 @@
 			  
           
             
-          <form  th:action="@{/confimarTurnoCliente}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
+          <form id="formularioHorario" th:action="@{/seleccionDeHorario}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
               <label for="horario" class="form-label mb-0 mt-2 fs-4">Paso 4: Seleccione hora <span class="text-danger ">*</span></label>
-              <select th:attr="disabled=${isHorarioDisabled == null || !isHorarioDisabled ? 'disabled' : null}" name="horario" class="form-select" id="horario" aria-label="Default select example">
-                <option value="" selected>Hora</option>
+              <select onchange="autoSubmitHorario()" th:attr="disabled=${isHorarioDisabled == null || !isHorarioDisabled ? 'disabled' : null}"  name="horario" class="form-select" id="horario" aria-label="Default select example">
+                <option  th:selected="${horarioSeleccionado}" th:text="${horarioSeleccionado == null || #strings.isEmpty(horarioSeleccionado) ? 'Seleccione un horario' : horarioSeleccionado}">Horario</option>
                 <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->
                 <option th:each="horario : ${horarios}" th:value="${horario}" th:text="${horario}"></option>
               </select>
          
-            <p class="mt-4 mb-0 fs-4">Seleccionar tratamientos<span class="text-danger ">*</span></p>
-            <div class="input-seleccion-check ">
-              <div>
-                <div class="form-check mt-3">
-                  <input class="form-check-input" type="checkbox" value="Tratamiento facial" name="facial" id="facial">
-                  <label  class="form-check-label fs-6" for="facial">
-                    Tratamiento facial
-                  </label>
-                </div>
-              </div>                
-            </div>
-            <div class="boton-pag-turno">
-            <div class="boton-de-registro text-center">
-              <button type="submit" name="action" value="aceptar" class="bn632-hover bn26">Enviar</button>
-            </div>
-            <div class="boton-de-registro text-center">
-              <button type="submit" name="action" value="cancelar" class="bn632-hover bn26">Cancelar</button>
-            </div>
-          </div>
-          
           	<input type="hidden" class="form-control" name="fechaSeleccionada" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="">
             <input type="hidden" class="form-control" name="nombreDelProfesional" id="nombreDelProfesional" th:value="${nombreDelProfesional}" placeholder="">
             <input type="hidden" class="form-control" name="idProfesional" id="idProfesional" th:value="${idProfesional}" placeholder="">
@@ -182,6 +193,63 @@
             <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
 		  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
           
+		  </form>
+		  
+			
+		
+		  <form  th:action="@{/confimarTurnoCliente}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
+          
+         		 <label for="tratamiento" class="form-label mb-0 mt-2 fs-4">Paso 5: Seleccione tratamientos <span class="text-danger ">*</span></label>
+         		 <p class="fs-6 fw-light">Máximo dos tratamientos por turno</p>
+
+                <div  class="mb-5">
+                  <div class="row d-flex align-items-end justify-content-center">
+                    <div class="col-md-6">
+                      <select th:attr="disabled=${isHorarioDisabled == null || !isHorarioDisabled ? 'disabled' : null}" name="tratamiento" class="form-select" id="tratamiento" aria-label="Default select example">
+                        <option th:selected="${tratamientoSeleccionado}" th:text="${tratamientoSeleccionado == null || #strings.isEmpty(tratamientoSeleccionado) ? 'Seleccione tratamientos' : tratamientoSeleccionado}">Tratamientos</option>
+                        <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->
+                        <option th:each="tratamiento : ${tratamientos}" th:value="${tratamiento.id}" th:text="${tratamiento.NombreTratamientos.DisplayName + ' ' + '$'+tratamiento.CostoTratamiento}"></option>
+                        </select>
+
+                        <div class="d-flex justify-content-center mt-4">
+                          <div style="margin-right: 5px; margin-top: 10px;" class="">
+                            <button class="btn btn-primary" type="button" onclick="agregarTratamiento()">Agregar</button>
+                        </div>
+                        <div style="margin-left: 5px; margin-top: 10px;" class="">
+                          <button class="btn btn-danger" type="button" onclick="eliminarTratamiento()">Eliminar</button>
+                        </div>
+                      </div>
+                      </div>
+                          
+                    <div class="col-md-6 text-center">
+                      <label class="fs-5 form-label texto-label mb-0" for="listaTratamientos">Tratamientos seleccionados:</label>
+                      <select aria-label="Default select example" class="form-select" id="listaTratamientos" name="listaTratamientos" size="5" multiple>
+                      
+                    </select>
+                  </div>
+                </div>
+                     
+                <input type="hidden" id="tratamientosSeleccionados" name="tratamientosSeleccionados" />
+              </div>
+
+             	 <div class="boton-pag-turno">
+            <div class="boton-de-registro text-center">
+              <button type="submit" name="action" value="aceptar" class="bn632-hover bn26">Enviar</button>
+            </div>
+            <div class="boton-de-registro text-center">
+              <button type="submit" name="action" value="cancelar" class="bn632-hover bn26">Cancelar</button>
+            </div>
+          </div>
+              
+          	<input type="hidden" class="form-control" name="fechaSeleccionada" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="">
+            <input type="hidden" class="form-control" name="nombreDelProfesional" id="nombreDelProfesional" th:value="${nombreDelProfesional}" placeholder="">
+            <input type="hidden" class="form-control" name="idProfesional" id="idProfesional" th:value="${idProfesional}" placeholder="">
+            <input type="hidden" class="form-control" name="provinciaString" id="provinciaString" th:value="${provinciaString}" placeholder="">
+            <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
+            <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
+		  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
+		  	<input type="hidden" class="form-control" name="horarioSeleccionado" id="horarioSeleccionadoente" th:value="${horarioSeleccionado}" placeholder="">
+			  
 		  </form>
 		 
 			  

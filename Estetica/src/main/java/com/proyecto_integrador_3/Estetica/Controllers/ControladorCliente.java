@@ -4,11 +4,13 @@ import static java.lang.Boolean.TRUE;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -23,6 +25,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
+import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
@@ -30,6 +33,7 @@ import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
@@ -565,6 +569,92 @@ public class ControladorCliente {
 	}
 		
 		
+	@PostMapping("/seleccionDeHorario")
+	public String seleccionDeHorario(
+			@RequestParam(name ="idProfesional", required = false) String idProfesional,
+			@RequestParam(name ="idCliente", required = false) String idCliente,
+			@RequestParam(name ="emailCliente", required = false) String emailCliente,
+			@RequestParam(name ="identificador", required = false) String identificador,
+			@RequestParam(name ="provinciaString", required = false) String provinciaString,
+			@RequestParam(name ="fechaSeleccionada", required = false) String fechaSeleccionada,
+			@RequestParam(name ="nombreDelProfesional", required = false) String nombreDelProfesional,
+			@RequestParam(name ="horario", required = false) String horario,
+			ModelMap modelo) throws Exception {
+		
+		
+		//pasamos la provincia a enum provincia
+		Provincias nuevaProvincia = null;
+		nuevaProvincia = Provincias.valueOf(provinciaString);
+		
+		//Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia y el rol
+		List<Profesional> profesionalesDisponibles = null; // Variable general donde se va a guardar la lista de profesionales según corresponda a la especialidad seleccionada
+		
+		if (identificador.equals("tratamientoFacial")) {
+			List<Profesional> profesionalesConFaciales = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.FACIAL, true); //el true representa profesionales activos
+			profesionalesDisponibles = profesionalesConFaciales;
+		}else if(identificador.equals("tratamientoCorporal")) {
+			List<Profesional> profesionalesConCorporal = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.CORPORAL, true);
+			profesionalesDisponibles = profesionalesConCorporal;
+		}else if(identificador.equals("tratamientoEstetico")) {
+			List<Profesional> profesionalesConEstetico = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.ESTETICA, true);
+			profesionalesDisponibles = profesionalesConEstetico;
+		}
+		
+		//Buscamos los enum de tratamientos y lo filtramos por el tipo de especialidad seleccionado por el cliente
+		List<Tratamiento> tratamientosProfesional = servicioProfesional.buscarTratamitosPorProfesional(idProfesional);
+		
+		// Determinamos la palabra clave según el identificador
+        final String palabraClave = identificador.equals("tratamientoFacial") ? "FACIAL" :
+                                    identificador.equals("tratamientoCorporal") ? "CORPORAL" :
+                                    identificador.equals("tratamientoEstetico") ? "ESTETICO" :
+                                    null;
+		
+		  // Filtramos los tratamientos
+        
+            List<Tratamiento> tratamientosFiltrados = tratamientosProfesional.stream()
+                .filter(tratamiento -> tratamiento.getNombreTratamientos().toString().contains(palabraClave))
+                .collect(Collectors.toList());
+            
+//            List<Tratamiento> tratamientosConCostos = new ArrayList<>();
+//            for (Tratamiento tratamiento2 : tratamientosFiltrados) {
+//				System.out.println(tratamiento2.getNombreTratamientos().getDisplayName() + " " + "$"+ tratamiento2.getCostoTratamiento());
+//				
+//			}
+           
+		//Buscamos los datos del profesional
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+		
+		//Pasamos todos los datos necesarios a la vista
+		Boolean isDisabled = true;
+		Boolean isHorarioDisabled = true;
+		Boolean isProfesionalDisabled = true;
+		modelo.addAttribute("datosCliente", datosCliente);
+		modelo.addAttribute("identificador", identificador);
+		modelo.addAttribute("fechaSeleccionada", fechaSeleccionada);
+		modelo.addAttribute("nombreDelProfesional", nombreDelProfesional);
+		modelo.addAttribute("provinciaSeleccionada", nuevaProvincia.getDisplayName());
+		modelo.addAttribute("provinciaString", provinciaString);
+		modelo.addAttribute("Profesionales", profesionalesDisponibles);
+		modelo.addAttribute("idProfesional", idProfesional);
+		modelo.addAttribute("provincias", Provincias.values());
+		modelo.addAttribute("horarioSeleccionado", horario);
+		modelo.addAttribute("tratamientos", tratamientosFiltrados);
+		modelo.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
+		modelo.addAttribute("isDisabled",isDisabled);
+		modelo.addAttribute("isHorarioDisabled", isHorarioDisabled);
+	
+		
+		//Seleccionamos cual vista devolver en base al identificador que viene por parametro
+		if (identificador.equals("tratamientoFacial")) {
+			return "/pagina_cliente/reservaDeTurnoClienteFacial";
+		}else if(identificador.equals("tratamientoCorporal")) {
+			return "/pagina_cliente/reservaDeTurnoClienteCorporal";
+		}else if(identificador.equals("tratamientoEstetico")) {
+			return "/pagina_cliente/reservaDeTurnoClienteEstetico";
+		}else {
+			return "";
+		}
+	}
 		
 
 	

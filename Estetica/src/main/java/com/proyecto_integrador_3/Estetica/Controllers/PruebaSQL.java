@@ -13,6 +13,7 @@ import org.springframework.stereotype.Component;
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
+import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
@@ -111,6 +112,27 @@ public class PruebaSQL implements CommandLineRunner {
         } else {
             System.out.println("Ya existe un administrador en la base de datos.");
         }
+		
+		
+//		//Buscamos los enum de tratamientos y lo filtramos por el tipo de especialidad seleccionado por el cliente
+//				List<Tratamiento> tratamientosProfesional = servicioProfesional.buscarTratamitosPorProfesional("4d26d71f-3d6b-46ea-849a-66ada8338f25");
+//				
+//				String identificador = "tratamientoEstetico";
+//				// Determinamos la palabra clave según el identificador
+//		        final String palabraClave = identificador.equals("tratamientoFacial") ? "FACIAL" :
+//		                                    identificador.equals("tratamientoCorporal") ? "CORPORAL" :
+//		                                    identificador.equals("tratamientoEstetico") ? "ESTETICO" :
+//		                                    null;
+//				
+//				  // Filtramos los tratamientos
+//		        
+//		            List<Tratamiento> tratamientosFiltrados = tratamientosProfesional.stream()
+//		                .filter(tratamiento -> tratamiento.getNombreTratamientos().toString().contains(palabraClave))
+//		                .collect(Collectors.toList());
+//		            
+//		            for (Tratamiento tratamiento2 : tratamientosFiltrados) {
+//						System.out.println(tratamiento2.getNombreTratamientos().getDisplayName() + " " + "$"+ tratamiento2.getCostoTratamiento());
+//					}
 	
 		/*
 		TratamientoEnum[] tratamientos = TratamientoEnum.values();

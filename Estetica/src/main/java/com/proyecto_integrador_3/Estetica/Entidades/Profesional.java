@@ -54,7 +54,7 @@ public class Profesional extends Persona implements Serializable {
     @Column(name = "especialidad")
     private List<Especialidad> especialidad;
     
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "profesional_id")
     private List<Tratamiento> tratamientos = new ArrayList<>();
        
