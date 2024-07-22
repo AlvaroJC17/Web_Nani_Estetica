@@ -13,7 +13,26 @@
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 	<link rel="stylesheet" href="/css/styles.css">
 	<title>Portal Admin</title>
+	<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.css" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.css">
+    <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/plug-ins/2.1.0/i18n/es-ES.json"></script>
 </head>
+
+<script>
+    <!--Scrip para darle funcionalidad a la tabla y colocarla en español-->
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.1.0/i18n/es-ES.json'
+            },
+            columnDefs: [
+                { orderable: false, targets: 0 } // Desactiva la ordenación para la columna del checkbox
+            ]
+        });
+    });
+    </script>
 
 <body class="body-interno">
 
@@ -116,42 +135,44 @@
 				<form class="alinear-tabla" th:action="@{/modificarUsuario}" method="post">
 					<input hidden type="text" id="emailAdministrador" name="emailAdministrador"
 						th:value="${usuariosEmail}"></input> 					<!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
+						<input hidden type="text" id="dato" name="dato" th:value="${dato}"></input> <!--El valor de la variable viene de buscarDNIoNombre y va hacia modificarUsuario y a su vez va mensajeErrorNoId-->
 
-					<input hidden type="text" id="dato" name="dato" th:value="${dato}"></input> <!--El valor de la variable viene de buscarDNIoNombre y va hacia modificarUsuario y a su vez va mensajeErrorNoId-->
-					<table class="table ">
-						<thead>
-							<tr class="text-center fs-5 ">
-								<th scope="col"></th>
-								<th class="esconder-col" scope="col">ID</th>
-								<th scope="col">DNI</th>
-								<th scope="col">Nombre</th>
-								<th scope="col">Apellido</th>
-								<th scope="col">Rol</th>
-								<th scope="col">Activo</th>
-								<th scope="col">Email</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr class="text-center radius" th:each="usuarios : ${usuarios}">
-								<!--El valor de la variable para el each viene del metodo listarUsuariosVisibles-->
-								<th class=" ">
-									<div class="form-check">
-										<input class="form-check-input" type="radio" name="idUsuario"
-											th:value="${usuarios.id}" id="idUsuario">
-									</div>
-								</th>
-								<th class="esconder-col fw-semibold" th:text="${usuarios.id}"></th>
-								<th class="fw-semibold" th:text="${usuarios.dni}"></th>
-								<th class="fw-semibold" th:text="${#strings.toUpperCase(usuarios.nombre)}"></th>
-								<th class="fw-semibold" th:text="${#strings.toUpperCase(usuarios.apellido)}"></th>
-								<th class="fw-semibold" th:text="${usuarios.rol}"></th>
-								<th class="fw-semibold" th:text="${usuarios.activo}"></th>
-								<th class="fw-semibold" th:text="${#strings.toLowerCase(usuarios.email)}"></th>
-								<input hidden type="text" id="usuarioEmail" name="usuarioEmail"
-								th:value="${usuarios.email}"></input>
-							</tr>
-						</tbody>
-					</table>
+						<div class="container-fluid">
+							<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
+								<thead>
+									<tr class="">
+										<th class="text-center">Seleccionar</th>
+										<th class="text-center">DNI</th>
+										<th class="text-center">Nombre</th>
+										<th class="text-center">Apellido</th>
+										<th class="text-center">ID</th>
+										<th class="text-center">Email</th>
+										<th class="text-center">Rol</th>
+										<th class="text-center">Activo</th>
+									</tr>
+								</thead>
+								
+								<tbody>
+									<!--El valor de la variable para el each viene del metodo listarUsuariosVisibles-->
+									<tr class="" th:each="usuarios : ${usuarios}">
+										<td class="text-center">
+											<div class="">
+												<input class="form-check-input" type="radio" name="idUsuario" th:value="${usuarios.id}" id="idUsuario">
+											</div>
+										</td> 
+										<td class="text-center" th:text="${usuarios.dni}"></td>
+										<td class="text-center" th:text="${#strings.toUpperCase(usuarios.nombre)}"></td>
+										<td class="text-center" th:text="${#strings.toUpperCase(usuarios.apellido)}"></td>
+										<td class="text-center" th:text="${#strings.substring(usuarios.id, usuarios.id.length() - 12)}"></td>
+										<td class="text-center" th:text="${#strings.toLowerCase(usuarios.email)}"></td>
+										<td class="text-center" th:text="${usuarios.rol}"></td>
+										<td class="text-center" th:text="${usuarios.activo}"></td>
+										<input hidden type="text" id="usuarioEmail" name="usuarioEmail"
+										th:value="${usuarios.email}"></input>
+									</tr>    
+								</tbody>
+							</table>
+						</div>
 
 					<div class="d-flex justify-content-center align-items-center  ">
 						<div class="fila-tabla-select">
@@ -171,21 +192,21 @@
 						</div>
 					</div>
 
-					<div class="d-flex justify-content-center">
-						<div class="filas-tabla-baja">
+					<div class="d-flex container">
+						<div class="filas-tabla-baja mb-2">
 							<!--Estos botones solo hacen el llamado al modal-->
 							<button type="button" class="btn btn-primary" data-bs-toggle="modal"
 								data-bs-target="#staticBackdrop2">Alta</button>
 						</div>
 
 
-						<div class="filas-tabla-baja">
+						<div class="filas-tabla-baja mb-2">
 							<!--Estos botones solo hacen el llamado al modal-->
 							<button type="button" class="btn btn-warning" data-bs-toggle="modal"
 								data-bs-target="#staticBackdrop1">Baja</button>
 						</div>
 
-						<div class="filas-tabla-baja">
+						<div class="filas-tabla-baja mb-2">
 							<!--Estos botones solo hacen el llamado al modal-->
 							<button type="button" class="btn btn-danger" data-bs-toggle="modal"
 								data-bs-target="#staticBackdrop">Eliminar</button>
@@ -489,5 +510,6 @@ showModal y tambien se encarga de cerrar el modal cuando le damos al boton cerra
 		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
 		crossorigin="anonymous"></script>
 </body>
-
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.dataTables.js"></script>
 </html>

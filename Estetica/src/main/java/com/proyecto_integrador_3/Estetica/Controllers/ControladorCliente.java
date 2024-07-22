@@ -660,7 +660,7 @@ public class ControladorCliente {
 	
 	@PostMapping("/confimarTurnoCliente")
 	public String confimarTurnoCliente(
-			@ModelAttribute Turnos turnos, //Se recibe un objeto de tipo Turnos que viene con todo los valores de los campos del formulario
+			//@ModelAttribute Turnos turnos, //Se recibe un objeto de tipo Turnos que viene con todo los valores de los campos del formulario
 			@RequestParam(name = "emailCliente", required = false) String emailCliente,
 			@RequestParam(name = "action") String action, // variable para identificar si el usuario presiona el boton aceptar o cancelar
 			@RequestParam(name = "identificador", required = false) String identificador,
