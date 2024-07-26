@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
@@ -13,6 +14,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 
@@ -24,6 +26,8 @@ public class Tratamiento {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	public String id;
 	
+	@ManyToMany(mappedBy = "tratamientos")
+	private List<Turnos> turnos = new ArrayList<>();
 	
     @CollectionTable(name = "tratamiento_nombres", joinColumns = @JoinColumn(name = "tratamiento_id"))
     @Enumerated(EnumType.STRING)

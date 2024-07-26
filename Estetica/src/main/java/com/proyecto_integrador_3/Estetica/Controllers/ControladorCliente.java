@@ -1,10 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
-import static java.lang.Boolean.TRUE;
-
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +13,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -33,7 +28,6 @@ import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
-import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
@@ -84,8 +78,8 @@ public class ControladorCliente {
 	//Muestra las multas del cliente con todo sus datos
 	@GetMapping("/multas")
 	public String multas(
-			@RequestParam(name = "email", required = false) String email,
-			@RequestParam(name = "idCliente", required = false) String idCliente,
+			@RequestParam(required = false) String email,
+			@RequestParam(required = false) String idCliente,
 			ModelMap model) throws MiExcepcion {
 		    
 		
@@ -133,8 +127,8 @@ public class ControladorCliente {
 	/*Este metodo deriva a la pagina de tratamientos con los valores de mail y id del cliente*/
 	@GetMapping("/tratamientos")
 	public String tratamientos(
-			@RequestParam(name = "email", required = false) String email,
-			@RequestParam(name = "idCliente", required = false) String idCliente,
+			@RequestParam(required = false) String email,
+			@RequestParam(required = false) String idCliente,
 			ModelMap model) {
 		
 		//Antes de mostrar los tratamientos disponibles, verificamos que no hay turno antiguos
@@ -165,10 +159,10 @@ public class ControladorCliente {
 			
 	@GetMapping("/buscarProfesionalPorProvincias")
 	public String buscarProfesionalPorProvincias(
-			@RequestParam(name = "email", required = false) String email,
-			@RequestParam(name = "idCliente", required = false) String idCliente,
-			@RequestParam(name="identificador", required = false) String identificador,
-			@RequestParam(name="provincia") String provincia,
+			@RequestParam(required = false) String email,
+			@RequestParam(required = false) String idCliente,
+			@RequestParam(required = false) String identificador,
+			@RequestParam String provincia,
 			ModelMap model) throws MiExcepcion {
 		
 		//pasamos la provincia a enum provincia
@@ -177,27 +171,35 @@ public class ControladorCliente {
 	
 		//Buscamos todos los datos del cliente y lo pasamos al html, sirve para visualizar la pagina y pasar los datos del cliente entre controladores
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		Boolean isDisabled = false; //Booleano para habilitar o deshabilitar el input de fecha
 		Boolean isProfesionalDisabled = false; //Booleano para habilitar o deshabilitar el input de profesional
+		Boolean isFechaDisabled = false; //Booleano para habilitar o deshabilitar el input de fecha
+		Boolean isHorarioDisabled = false; //Booleano para habilitar o deshabilitar el input de horario
+		Boolean isTratamientoDisabled = false; //Booleano para habilitar o deshabilitar el input y los botones de tratamientos, asi como los botones de enviar y cancelar
 		model.addAttribute("datosCliente", datosCliente);
 		model.addAttribute("identificador", identificador);
 		model.addAttribute("provinciaString", provincia);
-		model.addAttribute("isDisabled ", isDisabled);
 		model.addAttribute("isProfesionalDisabled",isProfesionalDisabled);
+		model.addAttribute("isFechaDisabled ", isFechaDisabled);
+		model.addAttribute("isHorarioDisabled", isHorarioDisabled);
+		model.addAttribute("isTratamientoDisabled", isTratamientoDisabled);
 		model.addAttribute("provinciaSeleccionada", nuevoRolProvincia.getDisplayName()); //getDisplayName Muestra los nombre personalizados de los enum y no los nombres en Mayusculas
 		model.addAttribute("provincias", Provincias.values()); // pasamos el array de enums al formulario para desplegar la lista de select
 		
 		String error = null;
 		//validamos que se seleccione una provincia
 		if (!servicioProfesional.validarProvincia(provincia)) {
-			isDisabled = false;
 			isProfesionalDisabled = false;
+			isFechaDisabled = false;
+			isHorarioDisabled = false;
+			isTratamientoDisabled = false;
 			error ="<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"+
 			"<span class='fs-6'>Es necesario que seleccione la provincia donde vive para poder ver que"
 			+ " profesionales estan disponibles.</span>";
 			model.addAttribute("error", error);
-			model.addAttribute("isDisabled", isDisabled);
+			model.addAttribute("isFechaDisabled", isFechaDisabled);
 			model.addAttribute("isProfesionalDisabled",isProfesionalDisabled);
+			model.addAttribute("isHorarioDisabled" ,isHorarioDisabled);
+			model.addAttribute("isTratamientoDisabled" ,isTratamientoDisabled);
 			model.addAttribute("showModalError", true);
 			switch (identificador) {
 			case "tratamientoFacial":
@@ -228,11 +230,15 @@ public class ControladorCliente {
 		if (profesionalesDisponibles.isEmpty()) {
 			error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 					+"<span class='fs-6'>Lamentamos informarle que no hay profesionales disponibles para la provincia seleccionada.</span>";
-			isDisabled = false;
 			isProfesionalDisabled = false;
+			isFechaDisabled = false;
+			isHorarioDisabled = false;
+			isTratamientoDisabled = false;
 			model.addAttribute("error", error);
-			model.addAttribute("isDisabled", isDisabled);
 			model.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
+			model.addAttribute("isFechaDisabled", isFechaDisabled);
+			model.addAttribute("isHorarioDisabled", isHorarioDisabled);
+			model.addAttribute("isTratamientoDisabled", isTratamientoDisabled);
 			model.addAttribute("showModalError", true);
 			switch (identificador) {
 			case "tratamientoFacial":
@@ -246,7 +252,7 @@ public class ControladorCliente {
 		
 		//Si todo lo anterior sale bien pasamos la lista de profesionales encontrados a la vista
 		isProfesionalDisabled = true;
-		model.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
+		model.addAttribute("isProfesionalDisabled", isProfesionalDisabled); //habilitamos el select de profesional
 		model.addAttribute("Profesionales", profesionalesDisponibles); // pasamos el array de objetos tipo persona que tengan rol de profesional
 		
 		
@@ -266,11 +272,11 @@ public class ControladorCliente {
 		
 	@PostMapping("/buscarProfesional")
 	public String buscarProfesional(
-			@RequestParam(name ="idProfesional", required = false) String idProfesional,
-			@RequestParam(name ="idCliente", required = false) String idCliente,
-			@RequestParam(name ="emailCliente", required = false) String emailCliente,
-			@RequestParam(name ="identificador", required = false) String identificador,
-			@RequestParam(name ="provinciaString", required = false) String provinciaString,
+			@RequestParam(required = false) String idProfesional,
+			@RequestParam(required = false) String idCliente,
+			@RequestParam(required = false) String emailCliente,
+			@RequestParam(required = false) String identificador,
+			@RequestParam(required = false) String provinciaString,
 			Model modelo) throws MiExcepcion {	
 		
 		
@@ -283,10 +289,10 @@ public class ControladorCliente {
 		Optional<Persona> datosProfesional = servicioProfesional.buscarDatosProfesionalPorId(idProfesional);
 		if (datosProfesional.isPresent()) {
 			Persona nuevoProfesional = datosProfesional.get();
+			// Armamos el nombre completo del profesional concatenando el nombre y el apellido
 			nombreCompletoProfesional = nuevoProfesional.getApellido() + " " + nuevoProfesional.getNombre();
 		}
 		
-		// Armamos el nombre completo del profesional concatenando el nombre y el apellido
 		
 		//Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia y el rol
 				List<Profesional> profesionalesDisponibles = null; // Variable general donde se va a guardar la lista de profesionales según corresponda a la especialidad seleccionada
@@ -305,8 +311,10 @@ public class ControladorCliente {
 		//Buscamos los datos del profesional
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 		
-		Boolean isDisabled = true;
-		Boolean isProfesionalDisabled = true;
+		Boolean isProfesionalDisabled = true; //Mantenemos el input del profesional activo
+		Boolean isFechaDisabled = true; // habilitamos el input de la fecha
+		Boolean isHorarioDisabled = false; //Mantenemos deshabilitado
+		Boolean isTratamientoDisabled = false; //Mantenemos deshabilitado
 		modelo.addAttribute("identificador", identificador);
 		modelo.addAttribute("datosCliente", datosCliente);
 		modelo.addAttribute("Profesionales", profesionalesDisponibles);
@@ -315,8 +323,10 @@ public class ControladorCliente {
 		modelo.addAttribute("provinciaSeleccionada", nuevaProvincia.getDisplayName());
 		modelo.addAttribute("provinciaString", provinciaString);
 		modelo.addAttribute("idProfesional", idProfesional);
-		modelo.addAttribute("isDisabled", isDisabled);
 		modelo.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
+		modelo.addAttribute("isFechaDisabled", isFechaDisabled);
+		modelo.addAttribute("isHorarioDisabled", isHorarioDisabled);
+		modelo.addAttribute("isTratamientoDisabled", isTratamientoDisabled);
 		
 		if (identificador.equals("tratamientoFacial")) {
 			return "/pagina_cliente/reservaDeTurnoClienteFacial";
@@ -331,13 +341,13 @@ public class ControladorCliente {
 	
 	@PostMapping("/seleccionDeFecha")
 	public String seleccionDeFecha(
-			@RequestParam(name ="idProfesional", required = false) String idProfesional,
-			@RequestParam(name ="idCliente", required = false) String idCliente,
-			@RequestParam(name ="emailCliente", required = false) String emailCliente,
-			@RequestParam(name ="identificador", required = false) String identificador,
-			@RequestParam(name ="provinciaString", required = false) String provinciaString,
-			@RequestParam(name ="fechaSeleccionada", required = false) String fechaSeleccionada,
-			@RequestParam(name ="nombreDelProfesional", required = false) String nombreDelProfesional,
+			@RequestParam(required = false) String idProfesional,
+			@RequestParam(required = false) String idCliente,
+			@RequestParam(required = false) String emailCliente,
+			@RequestParam(required = false) String identificador,
+			@RequestParam(required = false) String provinciaString,
+			@RequestParam(required = false) String fechaSeleccionada,
+			@RequestParam(required = false) String nombreDelProfesional,
 			Model modelo) throws MiExcepcion{
 		 
 		
@@ -400,9 +410,10 @@ public class ControladorCliente {
 				List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 				
 				//Pasamos todos los datos necesarios a la vista
-				Boolean isDisabled = null;
-				Boolean isHorarioDisabled = null;
-				Boolean isProfesionalDisabled = null;
+				Boolean isProfesionalDisabled = true; //Mantenemos habilitado
+				Boolean isFechaDisabled = true; //mantenemos habilitado
+				Boolean isHorarioDisabled = false; //Mantenemos deshabilitado
+				Boolean isTratamientoDisabled = false; //Mantenemos deshabilitado
 				modelo.addAttribute("datosCliente", datosCliente);
 				modelo.addAttribute("identificador", identificador);
 				modelo.addAttribute("fechaSeleccionada", fechaSeleccionada);
@@ -418,10 +429,10 @@ public class ControladorCliente {
 					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 							+ "<span fs-6'>No se puede seleccionar una fecha pasada, por favor verifique la fecha"
 							+ " en la que desea seleccionar el turno.</span>";
-					isDisabled = true;
+					isFechaDisabled = true;
 					modelo.addAttribute("error", error);
 					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isDisabled", isDisabled);
+					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
 					if (identificador.equals("tratamientoFacial")) {
 						return "/pagina_cliente/reservaDeTurnoClienteFacial";
 					}else if(identificador.equals("tratamientoCorporal")) {
@@ -439,10 +450,10 @@ public class ControladorCliente {
 			                 "<span class='fs-6'>Queremos informarle que nuestro horario de atención es de lunes a viernes de 9:00 a 18:00 y los sábados de 9:00 a 15:00.<br><br>" +
 			                 "Agradecemos su comprensión y le pedimos disculpas por cualquier inconveniente que esto pueda causar."
 			                 + " Para más información puede comunicarse con nosotros por cualquiera de nuestros canales digitales.</span>";
-					isDisabled = true;
+					isFechaDisabled = true;
 					modelo.addAttribute("error", error);
 					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isDisabled", isDisabled);
+					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
 					if (identificador.equals("tratamientoFacial")) {
 						return "/pagina_cliente/reservaDeTurnoClienteFacial";
 					}else if(identificador.equals("tratamientoCorporal")) {
@@ -461,9 +472,9 @@ public class ControladorCliente {
 							+ " eficiente, asegurando un mejor servicio para todos nuestros clientes.<br><br>"
 							+ "Le agradecemos su comprensión y colaboración. Si tiene alguna duda o necesita asistencia, no dude en contactarnos.</span>";
 					modelo.addAttribute("error", error);
-					isDisabled = true;
+					isFechaDisabled = true;
 					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isDisabled", isDisabled);
+					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
 					if (identificador.equals("tratamientoFacial")) {
 						return "/pagina_cliente/reservaDeTurnoClienteFacial";
 					}else if(identificador.equals("tratamientoCorporal")) {
@@ -479,10 +490,10 @@ public class ControladorCliente {
 							+ "<span class='fs-6'>Lamentamos informarle que no hay turnos disponibles para la fecha que ha"
 							+ " seleccionado. Le sugerimos intentar en otro momento o seleccionar una fecha diferente para su turno.<br><br>"
 							+ "Agradecemos su comprensión y le pedimos disculpas por cualquier inconveniente que esto pueda ocasionar.</span>";
-					isDisabled = true;
+					isFechaDisabled = true;
 					modelo.addAttribute("error", error);
 					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isDisabled", isDisabled);
+					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
 					if (identificador.equals("tratamientoFacial")) {
 						return "/pagina_cliente/reservaDeTurnoClienteFacial";
 					}else if(identificador.equals("tratamientoCorporal")) {
@@ -513,10 +524,10 @@ public class ControladorCliente {
 									+ " servicios los días:</span><br><br>" + "<span class='fw-bold'>"+diasLaborales+"</span>" + "<br><br><span fs-6'> en los horarios:</span><br><br>" + "<span class='fw-bold'>"+horariosLaborales+"</span><br><br>" + ""
 											+ " Lamentamos las molestias ocasionadas. Si tiene alguna duda o necesita asistencia, no dude en contactarnos.";
 							;
-					isDisabled = true;
+					isFechaDisabled = true;
 					modelo.addAttribute("error", error);
 					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isDisabled", isDisabled);
+					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
 					if (identificador.equals("tratamientoFacial")) {
 						return "/pagina_cliente/reservaDeTurnoClienteFacial";
 					}else if(identificador.equals("tratamientoCorporal")) {
@@ -533,10 +544,10 @@ public class ControladorCliente {
 							+ "<span class='fs-6'>Solo se permite tener un máximo de tres turnos activos."
 							+ " Si necesita modificar un turno o seleccionar uno nuevo, puede"
 							+ " ir al apartado de \"Mis turnos\" y cancerlar alguno de los turnos activos.</span>";
-					isDisabled = true;
+					isFechaDisabled = true;
 					modelo.addAttribute("error", error);
 					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isDisabled", isDisabled);
+					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
 					if (identificador.equals("tratamientoFacial")) {
 						return "/pagina_cliente/reservaDeTurnoClienteFacial";
 					}else if(identificador.equals("tratamientoCorporal")) {
@@ -548,12 +559,14 @@ public class ControladorCliente {
 				
 				
 				//Solo si todo sale bien, pasamos los turnos disponibles a la vista
-				isDisabled = true;
-				isHorarioDisabled = true;
-				isProfesionalDisabled = true;
+				isProfesionalDisabled = true; //mantenemos habilitado
+				isFechaDisabled = true; // mantenemos habilitado
+				isHorarioDisabled = true; //habilitamos el input de horario
+				isTratamientoDisabled = false; //mantenemos deshabilitado
 				modelo.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
-				modelo.addAttribute("isDisabled",isDisabled);
+				modelo.addAttribute("isFechaDisabled",isFechaDisabled);
 				modelo.addAttribute("isHorarioDisabled", isHorarioDisabled);
+				modelo.addAttribute("isTratamientoDisabled", isTratamientoDisabled);
 				modelo.addAttribute("horarios", ObtenerHorariosDisponibles);
 				
 				//Seleccionamos cual vista devolver en base al identificador que viene por parametro
@@ -571,14 +584,14 @@ public class ControladorCliente {
 		
 	@PostMapping("/seleccionDeHorario")
 	public String seleccionDeHorario(
-			@RequestParam(name ="idProfesional", required = false) String idProfesional,
-			@RequestParam(name ="idCliente", required = false) String idCliente,
-			@RequestParam(name ="emailCliente", required = false) String emailCliente,
-			@RequestParam(name ="identificador", required = false) String identificador,
-			@RequestParam(name ="provinciaString", required = false) String provinciaString,
-			@RequestParam(name ="fechaSeleccionada", required = false) String fechaSeleccionada,
-			@RequestParam(name ="nombreDelProfesional", required = false) String nombreDelProfesional,
-			@RequestParam(name ="horario", required = false) String horario,
+			@RequestParam(required = false) String idProfesional,
+			@RequestParam(required = false) String idCliente,
+			@RequestParam(required = false) String emailCliente,
+			@RequestParam(required = false) String identificador,
+			@RequestParam(required = false) String provinciaString,
+			@RequestParam(required = false) String fechaSeleccionada,
+			@RequestParam(required = false) String nombreDelProfesional,
+			@RequestParam(required = false) String horario,
 			ModelMap modelo) throws Exception {
 		
 		
@@ -615,19 +628,15 @@ public class ControladorCliente {
                 .filter(tratamiento -> tratamiento.getNombreTratamientos().toString().contains(palabraClave))
                 .collect(Collectors.toList());
             
-//            List<Tratamiento> tratamientosConCostos = new ArrayList<>();
-//            for (Tratamiento tratamiento2 : tratamientosFiltrados) {
-//				System.out.println(tratamiento2.getNombreTratamientos().getDisplayName() + " " + "$"+ tratamiento2.getCostoTratamiento());
-//				
-//			}
            
 		//Buscamos los datos del profesional
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 		
 		//Pasamos todos los datos necesarios a la vista
-		Boolean isDisabled = true;
+		Boolean isFechaDisabled = true;
 		Boolean isHorarioDisabled = true;
 		Boolean isProfesionalDisabled = true;
+		Boolean isTratamientoDisabled = true; //habilitamos la seleccion de tratamientos
 		modelo.addAttribute("datosCliente", datosCliente);
 		modelo.addAttribute("identificador", identificador);
 		modelo.addAttribute("fechaSeleccionada", fechaSeleccionada);
@@ -640,8 +649,9 @@ public class ControladorCliente {
 		modelo.addAttribute("horarioSeleccionado", horario);
 		modelo.addAttribute("tratamientos", tratamientosFiltrados);
 		modelo.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
-		modelo.addAttribute("isDisabled",isDisabled);
+		modelo.addAttribute("isFechaDisabled",isFechaDisabled);
 		modelo.addAttribute("isHorarioDisabled", isHorarioDisabled);
+		modelo.addAttribute("isTratamientoDisabled", isTratamientoDisabled);
 	
 		
 		//Seleccionamos cual vista devolver en base al identificador que viene por parametro
@@ -661,25 +671,16 @@ public class ControladorCliente {
 	@PostMapping("/confimarTurnoCliente")
 	public String confimarTurnoCliente(
 			//@ModelAttribute Turnos turnos, //Se recibe un objeto de tipo Turnos que viene con todo los valores de los campos del formulario
-			@RequestParam(name = "emailCliente", required = false) String emailCliente,
-			@RequestParam(name = "action") String action, // variable para identificar si el usuario presiona el boton aceptar o cancelar
-			@RequestParam(name = "identificador", required = false) String identificador,
-			@RequestParam(name = "idCliente", required = false) String idCliente,
-			@RequestParam(name = "nombreDelProfesional", required = false) String nombreDelProfesional, // se recibe los valores de nombre y apellido del array de profesionales
-			@RequestParam(name = "idProfesional", required = false) String idProfesional,
-			@RequestParam(name = "fechaSeleccionada", required = false) String fechaSeleccionada,
-			@RequestParam(name = "horario", required = false) String horario,
-			@RequestParam(name = "provinciaString", required = false) String provinciaString,
-			@RequestParam(name = "facial", required = false) String facial,
-			@RequestParam(name = "espalda", required = false) String espalda,
-			@RequestParam(name = "pulido", required = false) String pulido,
-			@RequestParam(name = "dermaplaning", required = false) String dermaplaning,
-			@RequestParam(name = "exfoliacion", required = false) String exfoliacion,
-			@RequestParam(name = "lifting", required = false) String lifting,
-			@RequestParam(name = "perfilado", required = false) String perfilado,
-			@RequestParam(name = "laminado", required = false) String laminado,
-			@RequestParam(name = "hydralips", required = false) String hydralips,
-			@RequestParam(name = "microneedling", required = false) String microneedling,
+			@RequestParam(required = false) String emailCliente,
+			@RequestParam String action, // variable para identificar si el usuario presiona el boton aceptar o cancelar
+			@RequestParam(required = false) String identificador,
+			@RequestParam(required = false) String idCliente,
+			@RequestParam(required = false) String nombreDelProfesional, // se recibe los valores de nombre y apellido del array de profesionales
+			@RequestParam(required = false) String idProfesional,
+			@RequestParam(required = false) String fechaSeleccionada,
+			@RequestParam(name = "horarioSeleccionado", required = false) String horario,
+			@RequestParam(required = false) String tratamientosSeleccionados, // esta variable viene con un string de los id de los tratamientos seleccionados
+			@RequestParam(required = false) String provinciaString,
 			ModelMap model) throws MiExcepcion {
 		
 		//usamos un switch que depende si el usuario le da al boton de aceptar o cancelar del formulario
@@ -687,13 +688,15 @@ public class ControladorCliente {
 			
 		case "aceptar":
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
-			Boolean envioDeMailExitoso = false; //Si el servicio guardarTurno tira excepcion, se mantiene el false
+			Boolean envioDeMailExitoso = false; //Si el servicio de enviar el email funciona correctamente lo cambiamos a true
+			Boolean turnoGuaradoExitoso = false; // si el turno se guarda exitosamente lo cambiamos a true
 			try {
-				//Servicio para guardar el turno  en la base de datos
 				
+				//Servicio para guardar el turno  en la base de datos, el servicio devulve un objeto de tipo turno
 				Turnos turnoGuardado = servicioTurnos.guardarTurno(idCliente, nombreDelProfesional, fechaSeleccionada, provinciaString,
-						idProfesional, facial, espalda, pulido, dermaplaning, exfoliacion, lifting, perfilado, laminado,
-						hydralips, microneedling, horario, emailCliente);
+						idProfesional, tratamientosSeleccionados, horario, emailCliente);
+				turnoGuaradoExitoso = true; //Cambi a true si es exitoso el guardado del turno
+				
 				
 				//Despues de generar todo el proceso del turno se envia un mail de confirmacion
 				//al cliente, para esto debemos instancias un objeto EmailUsuario y pasarle toda
@@ -750,7 +753,7 @@ public class ControladorCliente {
 				// si hay algun error en alguna validacion, se dispara este catch y se pasan de vuelta todos estos
 				//valores para que recargue la misma pagina del formulario con un mensaje de error y con todos los
 				//array de provincia, profesional y horarios
-				if (!envioDeMailExitoso && horario != null) {
+				if (turnoGuaradoExitoso && !envioDeMailExitoso && horario != null) {
 					List <String> horariosDisponibles = servicioHorario.obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fechaSeleccionada);
 					horariosDisponibles.remove(horario);
 					servicioHorario.actualizarHorariosDisponibles(fechaSeleccionada, horariosDisponibles, idProfesional);
@@ -791,9 +794,9 @@ public class ControladorCliente {
 	/*Valida si el formulario de preguntas ya se lleno y le muestra al cliente la pagina correspondiente dependiendo de su seleccion*/
 	@PostMapping("/reservaDeTurnoClienteGeneral")
 	public String reservaDeTurnoClienteGeneral(
-			@RequestParam(name = "email", required = false) String email,
-			@RequestParam(name = "idCliente") String idCliente,
-			@RequestParam(name = "tratamiento") String tratamiento,
+			@RequestParam(required = false) String email,
+			@RequestParam String idCliente,
+			@RequestParam String tratamiento,
 			ModelMap model) {
 		
 		
@@ -855,7 +858,7 @@ public class ControladorCliente {
 			
 	@GetMapping("/misconsultas")
 	public String misconsultas(
-			@RequestParam(name="email") String email,
+			@RequestParam String email,
 			Model modelo) {
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
@@ -868,9 +871,9 @@ public class ControladorCliente {
 	
 	@GetMapping("/cambiarContrasenaCliente")
 	public String cambiarContrasenaCliente(
-			@RequestParam(name = "email") String email,
-			@RequestParam(name = "exito", required = false) String exito,
-			@RequestParam(name = "error", required = false) String error,
+			@RequestParam String email,
+			@RequestParam(required = false) String exito,
+			@RequestParam(required = false) String error,
 			ModelMap model) {
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
@@ -886,7 +889,7 @@ public class ControladorCliente {
 	@GetMapping("/completarDatosCliente")
 	public String completarDatos(
 			@RequestParam(name = "email") String emailUsuario,
-			@RequestParam(name = "error", required = false) String error,
+			@RequestParam(required = false) String error,
 			ModelMap modelo) {
 		
 		modelo.addAttribute("emailUsuario", emailUsuario);
@@ -899,7 +902,7 @@ public class ControladorCliente {
 	//Devuelve la pagina homeCLiente con los datos del usuario que le pasemos por mmail
 	@GetMapping("/homeCliente")
 	public String homeCliente(
-			@RequestParam(name = "email") String email, Model model) {
+			@RequestParam String email, Model model) {
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosCliente", datosCliente);
 		return "/pagina_cliente/homeCliente";	
@@ -911,7 +914,7 @@ public class ControladorCliente {
 	//Muestra todos los datos personales de la persona en la pagina misdatosCliente
 	@GetMapping("/misdatosCliente")
 	public String misdatosCliente(
-			@RequestParam(name="email", required = false) String email,
+			@RequestParam(required = false) String email,
 			Model model) { // el valor del parametro email viene del html homeCliente
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
@@ -923,14 +926,14 @@ public class ControladorCliente {
 	
 	@PostMapping("guardarDatosCliente")
 	public String guardarDatosCliente(
-			@RequestParam(name = "nombre", required = false) String nombre,
-			@RequestParam(name = "apellido", required = false) String apellido,
+			@RequestParam(required = false) String nombre,
+			@RequestParam(required = false) String apellido,
 			@RequestParam(name = "numeroDoc", required = false) String dni,
-			@RequestParam(name = "sexo", required = false) String sexo,
-			@RequestParam(name = "telefono", required = false) String telefono,
-			@RequestParam(name = "direccion", required = false) String direccion,
-			@RequestParam(name = "ocupacion", required = false) String ocupacion,
-			@RequestParam(name = "emailUsuario", required = false) String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
+			@RequestParam(required = false) String sexo,
+			@RequestParam(required = false) String telefono,
+			@RequestParam(required = false) String direccion,
+			@RequestParam(required = false) String ocupacion,
+			@RequestParam(required = false) String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
 			ModelMap model
 			) throws MiExcepcion {
 		
@@ -959,12 +962,12 @@ public class ControladorCliente {
 	
 	@PostMapping("/actualizarDatosCliente")
 	public String actualizarDatosCliente(
-			@RequestParam(name="idCliente") String idCliente, //este atributo es enviado en un input oculto de la pag misdatosCliente
-			@RequestParam(name="ocupacion", required = false) String ocupacion, // Este y los demas atributos los puse como no requeridos para poder personalizar las excepciones
-		    @RequestParam(name="email", required = false) String email,
-			@RequestParam(name="domicilio", required = false) String domicilio,
-			@RequestParam(name="sexo", required = false) String sexo,
-			@RequestParam(name="telefono", required = false) String telefono,
+			@RequestParam String idCliente, //este atributo es enviado en un input oculto de la pag misdatosCliente
+			@RequestParam(required = false) String ocupacion, // Este y los demas atributos los puse como no requeridos para poder personalizar las excepciones
+		    @RequestParam(required = false) String email,
+			@RequestParam(required = false) String domicilio,
+			@RequestParam(required = false) String sexo,
+			@RequestParam(required = false) String telefono,
 			ModelMap model) throws MiExcepcion {
 		
 		System.out.println("ID cliente: " + idCliente);
@@ -1037,11 +1040,11 @@ public class ControladorCliente {
 	
 	@PostMapping("actualizarContrasenaCliente")
 	public String actualizarContrasenaCliente(
-			@RequestParam(name = "emailCliente") String emailCliente, //Esta variable viene de un input oculto de la pag cambiarContrasenaCliente
-			@RequestParam(name = "idCliente") String idCliente, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
-			@RequestParam(name = "oldPass") String oldPass, //A partir de estas viene del formulario
-			@RequestParam(name = "newPass") String newPass,
-			@RequestParam(name = "repeatNewPass") String repeatNewPass,
+			@RequestParam String emailCliente, //Esta variable viene de un input oculto de la pag cambiarContrasenaCliente
+			@RequestParam String idCliente, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
+			@RequestParam String oldPass, //A partir de estas viene del formulario
+			@RequestParam String newPass,
+			@RequestParam String repeatNewPass,
 			ModelMap model) throws MiExcepcion {
 		
 		String error = null;

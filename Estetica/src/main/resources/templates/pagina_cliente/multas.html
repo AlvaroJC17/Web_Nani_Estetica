@@ -66,7 +66,7 @@
 		   
         <p class="fw-bold">Estimado cliente, <span class="fw-bold" th:text="${datosCliente.nombre}">[Nombre Cliente]</span></p>
 
-        <p class="">Nos dirigimos a usted para informarle que, según nuestros registros, no asistió al (los) turno 
+        <p class="">Nos dirigimos a usted para informarle que, según nuestros registros, no asistió al/los turno 
           programado. Lamentamos informarle que, de acuerdo con nuestra política de cancelación y asistencia, se ha aplicado una multa 
           por inasistencia. A continuación le mostramos el detalle de los turnos y las multas. </p>
           
@@ -76,7 +76,7 @@
             <li> <span class="fw-bold">Profesional:</span> <span th:text="${turnosConNombreProfesional[turnoConMulta.id]}"></span></li>
             <li> <span class="fw-bold">Fecha:</span> <span th:text="${turnoConMulta.fecha}"></span></li>
             <li> <span class="fw-bold">Hora:</span> <span th:text="${turnoConMulta.horario}"></span></li>
-            <li> <span class="fw-bold">Tratamiento:</span> <span th:text="${turnoConMulta.tratamiento}"></span></li>
+            <li th:each="tratamiento : ${turnoConMulta.tratamientos}"> <span class="fw-bold">Tratamiento:</span> <span th:text="${tratamiento.nombreTratamientos.DisplayName}"></span></li>
         	<li> <span class="fw-bold">Costo de la multa:</span> <span th:text="'$' + ${turnoConMulta.costoMulta}"></span></li>
         </ul>
 	   </div>

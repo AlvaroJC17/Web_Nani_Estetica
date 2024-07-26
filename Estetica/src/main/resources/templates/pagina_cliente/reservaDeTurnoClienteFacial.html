@@ -145,7 +145,7 @@ function eliminarTratamiento() {
             </form>
            
 			<!--Este formulario va al metodo que guarda el turno y elimina la fecha seleccionada por el usaurio-->           
-			<!--el campo th:object se relaciona con el onjeto turno creado en el controlador, a este objeto se le asigna todo los valores que puede tener el formulario y asi poder manejarlo en el controlador-->
+		
           <form id="formularioProfesional" th:action="@{/buscarProfesional}" method="post"  class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
             <div>
               <label for="profesional" class="form-label mb-0 mt-2 fs-4">Paso 2: Seleccione profesional <span class="text-danger ">*</span></label>
@@ -165,7 +165,7 @@ function eliminarTratamiento() {
           
           <form id="formularioFecha" th:action="@{/seleccionDeFecha}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
              <label  for="fechaSeleccionada" class="form-label mb-0 mt-2  fs-4">Paso 3: Seleccione fecha <span class="text-danger ">*</span></label>
-            <input th:attr="disabled=${isDisabled == null || !isDisabled ? 'disabled' : null}" onchange="autoSubmitFecha()" type="date" name="fechaSeleccionada" class="form-control" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="Fecha">
+            <input th:attr="disabled=${isFechaDisabled == null || !isFechaDisabled ? 'disabled' : null}" onchange="autoSubmitFecha()" type="date" name="fechaSeleccionada" class="form-control" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="Fecha">
             
             <input type="hidden" class="form-control" name="nombreDelProfesional" id="nombreDelProfesional" th:value="${nombreDelProfesional}" placeholder="">
             <input type="hidden" class="form-control" name="idProfesional" id="idProfesional" th:value="${idProfesional}" placeholder="">
@@ -205,7 +205,7 @@ function eliminarTratamiento() {
                 <div  class="mb-5">
                   <div class="row d-flex align-items-end justify-content-center">
                     <div class="col-md-6">
-                      <select th:attr="disabled=${isHorarioDisabled == null || !isHorarioDisabled ? 'disabled' : null}" name="tratamiento" class="form-select" id="tratamiento" aria-label="Default select example">
+                      <select th:attr="disabled=${isTratamientoDisabled == null || !isTratamientoDisabled ? 'disabled' : null}" name="tratamiento" class="form-select" id="tratamiento" aria-label="Default select example">
                         <option th:selected="${tratamientoSeleccionado}" th:text="${tratamientoSeleccionado == null || #strings.isEmpty(tratamientoSeleccionado) ? 'Seleccione tratamientos' : tratamientoSeleccionado}">Tratamientos</option>
                         <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->
                         <option th:each="tratamiento : ${tratamientos}" th:value="${tratamiento.id}" th:text="${tratamiento.NombreTratamientos.DisplayName + ' ' + '$'+tratamiento.CostoTratamiento}"></option>
@@ -213,17 +213,17 @@ function eliminarTratamiento() {
 
                         <div class="d-flex justify-content-center mt-4">
                           <div style="margin-right: 5px; margin-top: 10px;" class="">
-                            <button class="btn btn-primary" type="button" onclick="agregarTratamiento()">Agregar</button>
+                            <button th:attr="disabled=${isTratamientoDisabled == null || !isTratamientoDisabled ? 'disabled' : null}" class="btn btn-primary" type="button" onclick="agregarTratamiento()">Agregar</button>
                         </div>
                         <div style="margin-left: 5px; margin-top: 10px;" class="">
-                          <button class="btn btn-danger" type="button" onclick="eliminarTratamiento()">Eliminar</button>
+                          <button th:attr="disabled=${isTratamientoDisabled == null || !isTratamientoDisabled ? 'disabled' : null}" class="btn btn-danger" type="button" onclick="eliminarTratamiento()">Eliminar</button>
                         </div>
                       </div>
                       </div>
                           
                     <div class="col-md-6 text-center">
-                      <label class="fs-5 form-label texto-label mb-0" for="listaTratamientos">Tratamientos seleccionados:</label>
-                      <select aria-label="Default select example" class="form-select" id="listaTratamientos" name="listaTratamientos" size="5" multiple>
+                      <label  class="fs-5 form-label texto-label mb-0" for="listaTratamientos">Tratamientos seleccionados:</label>
+                      <select th:attr="disabled=${isTratamientoDisabled == null || !isTratamientoDisabled ? 'disabled' : null}" aria-label="Default select example" class="form-select" id="listaTratamientos" name="listaTratamientos" size="5" multiple>
                       
                     </select>
                   </div>
@@ -234,10 +234,10 @@ function eliminarTratamiento() {
 
              	 <div class="boton-pag-turno">
             <div class="boton-de-registro text-center">
-              <button type="submit" name="action" value="aceptar" class="bn632-hover bn26">Enviar</button>
+              <button th:attr="disabled=${isTratamientoDisabled == null || !isTratamientoDisabled ? 'disabled' : null}" type="submit" name="action" value="aceptar" class="bn632-hover bn26">Enviar</button>
             </div>
             <div class="boton-de-registro text-center">
-              <button type="submit" name="action" value="cancelar" class="bn632-hover bn26">Cancelar</button>
+              <button  type="submit" name="action" value="cancelar" class="bn632-hover bn26">Cancelar</button>
             </div>
           </div>
               

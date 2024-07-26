@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 
 import static java.lang.Boolean.FALSE;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +17,14 @@ import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
+import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioTratamiento;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
 
 import jakarta.transaction.Transactional;
@@ -40,6 +43,9 @@ public class ServicioTurnos {
 	
 	@Autowired
 	RepositorioPersona repositorioPersona;
+	
+	@Autowired
+	RepositorioTratamiento repositorioTratamiento;
 	
 	@Autowired
 	ServicioHorario servicioHorario;
@@ -329,38 +335,54 @@ public class ServicioTurnos {
 				
 	@Transactional
 	public Turnos guardarTurno(String idCliente, String nombreDelProfesional, String fechaSeleccionada,
-			String provinciaString, String idProfesional, String facial, String espalda, String pulido, String dermaplaning, String exfoliacion,
-			String lifting, String perfilado, String laminado, String hydralips, String microneedling,
+			String provinciaString, String idProfesional, String tratamientosSeleccionados,
 			String horario, String email) throws MiExcepcion {
 		
+		
+		
 		//Validamos que todos los valores vengan bien
-		validarGuardarTurno(provinciaString, nombreDelProfesional, fechaSeleccionada, facial, espalda, pulido, dermaplaning,
-				exfoliacion, lifting, perfilado, laminado, hydralips, microneedling, horario);
+		validarGuardarTurno(provinciaString, nombreDelProfesional, fechaSeleccionada, horario, tratamientosSeleccionados);
 		
-		//Creamos un array con los tratamientos y limpiamos los seleccionados  que vienen null
-		// A los que viene con un valos de string los va sumando en un contador y los que vienen null les asigna valor vacio
-		// esto para que en la base datos no me guanden la palabra null de los tratamientos no seleccionados
-		String [] tratamientos = {facial, espalda, pulido, dermaplaning, exfoliacion, lifting, perfilado, laminado, hydralips,
-				microneedling,};
-		int contador = 0;
-		String tratamientosSeleccionados ="";
+		//Separamos el string de tratamientos
+		String [] tratamientosSeparados = tratamientosSeleccionados.split(",");
 		
-		for (int i = 0; i < tratamientos.length; i++) {
-			if (tratamientos[i] != null && tratamientos[i] != "") {
-				contador++;
-				tratamientosSeleccionados += tratamientos[i] + " ";
-			}else if(tratamientos[i] == null || tratamientos[i] == " " || tratamientos[i] == "" ) {
-				tratamientos[i] = "";
-				tratamientosSeleccionados += tratamientos[i];
+		//Creamos una lista donde vamos a filtrar los tratamientos seleccionados, para evitar que el usuario seleccione la opcion "Seleccione tratamientos"
+		List <String> tratamientosFiltradosList = new ArrayList<>(); 
+	
+		
+		for (int i = 0; i < tratamientosSeparados.length; i++) {
+			//filtramos la palabra "Seleccione tratamientos" y guardamos en el nuevo array
+			if (!tratamientosSeparados[i].trim().equalsIgnoreCase("Seleccione tratamientos")) {
+				//guardamos los tratamientos filtrados en la lista creada
+				tratamientosFiltradosList.add(tratamientosSeparados[i].trim());
 			}
 		}
 		
-		//Usamos este contador para saber cuantos turnos se seleccionaron y si es mayor a dos, se lanza
-		// un mensaje de error al usuario.
-		if (contador > 2) {
-			throw new MiExcepcion("Solo se pueden seleccionar dos tratamientos por turno");
+		if (tratamientosFiltradosList.isEmpty()) {
+			throw new MiExcepcion("Debe seleccionar un tratamiento");
+		}
+	
+		//Validamos que el array despues del filtrado no sea mayor a 2, osea validamos que maximo se puedan seleccionar dos tratamientos por turno
+		if (tratamientosFiltradosList.size() > 2) {
+			throw new MiExcepcion("Solo se pueden seleccionar máximo dos tratamientos por turno");
 		}
 		
+		//Creamos la lista de tratamientos donde los vamos a guardar
+		List<Tratamiento> listaTratamientos = new ArrayList<>();
+		
+		//Recorremos el array de string de tratamientos, los cuales son puros id
+		for (String tratamientoId : tratamientosFiltradosList) {
+			//con los id buscamos los tratamientos
+			Optional <Tratamiento> trataminetosEncontrados = repositorioTratamiento.findById(tratamientoId);
+			if (trataminetosEncontrados.isPresent()) {
+				Tratamiento tratamientos = trataminetosEncontrados.get();
+				tratamientos.getNombreTratamientos();
+				tratamientos.getCostoTratamiento();
+				//agregamos los tratamientos encontrados a la lista de tratamientos
+				listaTratamientos.add(tratamientos);
+			}
+			
+		}
 	
 		//Funcion para pasar un fecha de tipo String a LocalDate
 		LocalDate fechaUsuario = servicioHorario.pasarFechaStringToLocalDate(fechaSeleccionada);
@@ -389,7 +411,7 @@ public class ServicioTurnos {
 		nuevoTurno.setFecha(fechaUsuario);
 		nuevoTurno.setHorario(horario);
 		nuevoTurno.setEmail(email);
-		nuevoTurno.setTratamiento(tratamientosSeleccionados);
+		nuevoTurno.setTratamientos(listaTratamientos);
 		nuevoTurno.setDniCliente(dniCliente);
 		nuevoTurno.setMulta(FALSE);
 		nuevoTurno.setActivo(TRUE);
@@ -418,9 +440,8 @@ public class ServicioTurnos {
 	}
 	
                         
-    public void validarGuardarTurno(String provinciaString, String nombreDelProfesional, String fechaSeleccionada, String facial,
-			String espalda, String pulido, String dermaplaning, String exfoliacion, String lifting,
-			String perfilado, String laminado, String hydralips, String microneedling, String horario) throws MiExcepcion {
+    public void validarGuardarTurno(String provinciaString, String nombreDelProfesional, String fechaSeleccionada, String tratamientosSeleccionados,
+			 String horario) throws MiExcepcion {
 		
 		if (provinciaString == null || provinciaString.isEmpty() || provinciaString == "") {
 			throw new MiExcepcion("Debe seleccionar una provincia");
@@ -438,9 +459,7 @@ public class ServicioTurnos {
 			throw new MiExcepcion("Debe seleccionar un horario");
 		}
 		
-		if (facial == null && espalda == null && pulido == null && dermaplaning == null
-				&& exfoliacion == null && lifting == null && perfilado == null && laminado == null
-				&& hydralips == null && microneedling == null ) {
+		if (tratamientosSeleccionados == null || tratamientosSeleccionados.isEmpty() || tratamientosSeleccionados == "" || tratamientosSeleccionados.equalsIgnoreCase("Seleccione tratamientos")) {
 			throw new MiExcepcion("Debe seleccionar almenos un tratamiento");
 		}
 	}

@@ -111,7 +111,7 @@ public class ServicioEmail {
 				context.setVariable("idTurno", datosDelTurno.getId());
 				context.setVariable("horario", datosDelTurno.getHorario());
 				context.setVariable("fecha", datosDelTurno.getFecha());
-				context.setVariable("tratamiento", datosDelTurno.getTratamiento());
+				context.setVariable("tratamiento", datosDelTurno.getTratamientos());
 				//Si viene un valor true en la variable quiere decir que el mensaje se envia con una multa
 				if (multa) {
 					context.setVariable("multa", datosDelTurno.getMulta());

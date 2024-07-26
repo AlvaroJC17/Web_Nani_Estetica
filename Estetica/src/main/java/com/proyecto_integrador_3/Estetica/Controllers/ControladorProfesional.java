@@ -57,9 +57,9 @@ public class ControladorProfesional {
 	
 	@PostMapping("/editarDatosPersonalesPaciente")
 	public String editarDatosPersonalesPaciente(
-			@RequestParam(name="emailCliente", required = false) String emailCliente,
-			@RequestParam(name="emailProfesional", required = false) String emailProfesional,
-			@RequestParam(name="idCliente", required = false) String idCliente,
+			@RequestParam(required = false) String emailCliente,
+			@RequestParam(required = false) String emailProfesional,
+			@RequestParam(required = false) String idCliente,
 			Model model) throws MiExcepcion {
 	
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
@@ -74,44 +74,44 @@ public class ControladorProfesional {
 	
 	@PostMapping("/guardarDatosPacienteEditado")
 	public String guardarDatosPacienteEditado(
-			@RequestParam(name="idCliente", required = false) String idCliente,
-			@RequestParam(name="emailCliente", required = false) String emailCliente,
-			@RequestParam(name="emailProfesional", required = false) String emailProfesional,
-			@RequestParam(name="fuma", required = false) String fuma,
-			@RequestParam(name="drogas", required = false) String drogas,
-			@RequestParam(name="alcohol", required = false) String alcohol,
-			@RequestParam(name="deportes", required = false) String deportes,
-			@RequestParam(name="ejercicios", required = false) String ejercicios,
-			@RequestParam(name="medicamentos", required = false) String medicamentos,
-			@RequestParam(name="nombreMedicamento", required = false) String nombreMedicamento,
-			@RequestParam(name="email", required = false) String email,
-			@RequestParam(name="embarazo", required = false) String embarazo,
-			@RequestParam(name="amamantando", required = false) String amamantando,
-			@RequestParam(name="ciclo_menstrual", required = false) String ciclo_menstrual,
-			@RequestParam(name="alteracion_hormonal", required = false) String alteracion_hormonal,
-			@RequestParam(name="vitaminas", required = false) String vitaminas,
-			@RequestParam(name="corticoides", required = false) String corticoides,
-			@RequestParam(name="hormonas", required = false) String hormonas,
-			@RequestParam(name="metodo_anticonceptivo", required = false) String metodo_anticonceptivo,
-			@RequestParam(name="sufre_enfermedad", required = false) String sufre_enfermedad,
-			@RequestParam(name="cual_enfermedad", required = false) String cual_enfermedad,
-			@RequestParam(name="tiroides", required = false) String tiroides,
-			@RequestParam(name="paciente_oncologica", required = false) String paciente_oncologica,
-			@RequestParam(name="fractura_facial", required = false) String fractura_facial,
-			@RequestParam(name="cirugia_estetica", required = false) String cirugia_estetica,
-			@RequestParam(name="indique_cirugia_estetica", required = false) String indique_cirugia_estetica,
-			@RequestParam(name="tiene_implantes", required = false) String tiene_implantes,
-			@RequestParam(name="marca_pasos", required = false) String marca_pasos,
-			@RequestParam(name="horas_sueno", required = false) String horas_sueno,
-			@RequestParam(name="exposicion_sol", required = false) String exposicion_sol,
-			@RequestParam(name="protector_solar", required = false) String protector_solar,
-			@RequestParam(name="reaplica_protector", required = false) String reaplica_protector,
-			@RequestParam(name="consumo_carbohidratos", required = false) String consumo_carbohidratos,
+			@RequestParam(required = false) String idCliente,
+			@RequestParam(required = false) String emailCliente,
+			@RequestParam(required = false) String emailProfesional,
+			@RequestParam(required = false) String fuma,
+			@RequestParam(required = false) String drogas,
+			@RequestParam(required = false) String alcohol,
+			@RequestParam(required = false) String deportes,
+			@RequestParam(required = false) String ejercicios,
+			@RequestParam(required = false) String medicamentos,
+			@RequestParam(required = false) String nombreMedicamento,
+			@RequestParam(required = false) String email,
+			@RequestParam(required = false) String embarazo,
+			@RequestParam(required = false) String amamantando,
+			@RequestParam(required = false) String ciclo_menstrual,
+			@RequestParam(required = false) String alteracion_hormonal,
+			@RequestParam(required = false) String vitaminas,
+			@RequestParam(required = false) String corticoides,
+			@RequestParam(required = false) String hormonas,
+			@RequestParam(required = false) String metodo_anticonceptivo,
+			@RequestParam(required = false) String sufre_enfermedad,
+			@RequestParam(required = false) String cual_enfermedad,
+			@RequestParam(required = false) String tiroides,
+			@RequestParam(required = false) String paciente_oncologica,
+			@RequestParam(required = false) String fractura_facial,
+			@RequestParam(required = false) String cirugia_estetica,
+			@RequestParam(required = false) String indique_cirugia_estetica,
+			@RequestParam(required = false) String tiene_implantes,
+			@RequestParam(required = false) String marca_pasos,
+			@RequestParam(required = false) String horas_sueno,
+			@RequestParam(required = false) String exposicion_sol,
+			@RequestParam(required = false) String protector_solar,
+			@RequestParam(required = false) String reaplica_protector,
+			@RequestParam(required = false) String consumo_carbohidratos,
 			@RequestParam(name="tratamientosFacialesAnteriores", required = false) String tratamientos_faciales_anteriores,
-			@RequestParam(name="resultados_tratamiento_anterior", required = false) String resultados_tratamiento_anterior,
-			@RequestParam(name="cuidado_de_piel", required = false) String cuidado_de_piel,
-			@RequestParam(name="motivo_consulta", required = false) String motivo_consulta,
-			@RequestParam(name="notas_profesional", required = false) String notas_profesional,
+			@RequestParam(required = false) String resultados_tratamiento_anterior,
+			@RequestParam(required = false) String cuidado_de_piel,
+			@RequestParam(required = false) String motivo_consulta,
+			@RequestParam(required = false) String notas_profesional,
 			Model modelo) throws MiExcepcion {
 
 							
@@ -144,9 +144,9 @@ public class ControladorProfesional {
 	
 	@PostMapping("/buscarDatosPersonalesPaciente")
 	public String buscarDatosPersonalesPaciente(
-			@RequestParam(name="email", required = false) String email,
-			@RequestParam(name="idCliente", required = false) String idCliente,
-			@RequestParam(name="dato", required = false) String dato,
+			@RequestParam(required = false) String email,
+			@RequestParam(required = false) String idCliente,
+			@RequestParam(required = false) String dato,
 			Model modelo) throws MiExcepcion {
 
 		
@@ -203,7 +203,7 @@ public class ControladorProfesional {
 	
 	@GetMapping("/listarPacientesOcultos")
     public String listarUsuarios(
-    		@RequestParam(name = "email") String email, //Esta variable proviene de homeAdmin
+    		@RequestParam String email, //Esta variable proviene de homeAdmin
     		Model model) throws MiExcepcion {
 
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
@@ -213,8 +213,8 @@ public class ControladorProfesional {
 	
 	@PostMapping("/buscadorPacientes")
 	public String buscadorPacientes(
-			@RequestParam(name = "dato", required = false) String dato,  //la variable dato puede ser un nombre, dni o mail
-			@RequestParam(name = "email") String email,
+			@RequestParam(required = false) String dato,  //la variable dato puede ser un nombre, dni o mail
+			@RequestParam String email,
 			Model model) {
 		
 							
@@ -276,7 +276,7 @@ public class ControladorProfesional {
 		
 		
 	@GetMapping("/homeProfesional")
-	public String homeProfesional(@RequestParam(name = "email") String email, Model model) {
+	public String homeProfesional(@RequestParam String email, Model model) {
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosProfesional", datosProfesional);
 		return "/pagina_profesional/homeProfesional";	
@@ -284,7 +284,7 @@ public class ControladorProfesional {
 
 	@GetMapping("/misdatosProfesional")
 	public String misdatosProfesional(
-			@RequestParam(name = "email") String email,
+			@RequestParam String email,
 			ModelMap model) {
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
@@ -294,16 +294,16 @@ public class ControladorProfesional {
 	
 	@PostMapping("/guardarDatosProfesional")
 	public String guardarDatosProfesional(
-			@RequestParam(name = "matricula") String matricula,
-			@RequestParam(name = "sexo") String sexo,
-			@RequestParam(name = "telefono") String telefono,
-			@RequestParam(name = "provincia") String provincia,
-			@RequestParam(name = "direccion") String direccion,
-			@RequestParam(name = "especialidadesSeleccionadas") String especialidadesSeleccionadas,
-			@RequestParam(name = "tratamientosSeleccionados") String tratamientosSeleccionados,
-			@RequestParam(name = "DiasDeLaSemanaSeleccionados") String DiasDeLaSemanaSeleccionados,
-			@RequestParam(name = "horariosSeleccionados") String horariosSeleccionados,
-			@RequestParam(name = "emailUsuario") String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
+			@RequestParam String matricula,
+			@RequestParam String sexo,
+			@RequestParam String telefono,
+			@RequestParam String provincia,
+			@RequestParam String direccion,
+			@RequestParam String especialidadesSeleccionadas,
+			@RequestParam String tratamientosSeleccionados,
+			@RequestParam String DiasDeLaSemanaSeleccionados,
+			@RequestParam String horariosSeleccionados,
+			@RequestParam String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
 			ModelMap model) throws MiExcepcion {
 		
 		try {
@@ -332,11 +332,11 @@ public class ControladorProfesional {
 	
 	@PostMapping("/actualizarDatosProfesional")
 	public String actualizarDatosProfesional(
-			@RequestParam(name="idProfesional") String idProfesional, //este atributo es enviado en un input oculto de la pag misdatosProfesional
-		    @RequestParam(name="email", required = false) String email, // Este y los demas atributos los puse como no requeridos para poder personalizar las excepciones
-			@RequestParam(name="domicilio", required = false) String domicilio,
-			@RequestParam(name="sexo", required = false) String sexo,
-			@RequestParam(name="telefono", required = false) String telefono,
+			@RequestParam String idProfesional, //este atributo es enviado en un input oculto de la pag misdatosProfesional
+		    @RequestParam(required = false) String email, // Este y los demas atributos los puse como no requeridos para poder personalizar las excepciones
+			@RequestParam(required = false) String domicilio,
+			@RequestParam(required = false) String sexo,
+			@RequestParam(required = false) String telefono,
 			ModelMap model) throws MiExcepcion {
 		
 		//Buscamos mediante el id el mail anterior del admin y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
@@ -392,9 +392,9 @@ public class ControladorProfesional {
 	//metodo relacionado con actualizarContrasenaProfesional
 	@GetMapping("/cambiarContrasenaProfesional")
 	public String cambiarContrasenaProfesional(
-			@RequestParam(name = "email") String email,
-			@RequestParam(name = "exito", required = false) String exito,
-			@RequestParam(name = "error", required = false) String error,
+			@RequestParam String email,
+			@RequestParam(required = false) String exito,
+			@RequestParam(required = false) String error,
 			ModelMap model) {
 		
 		
@@ -409,11 +409,11 @@ public class ControladorProfesional {
 	//Metodo relacionado con cambiarContrasenaProfesional
 	@PostMapping("actualizarContrasenaProfesional")
 	public String actualizarContrasenaProfesional(
-			@RequestParam(name = "emailProfesional") String emailProfesional, //Esta variable viene de un input oculto de la pag cambiarContrasenaProfesional
-			@RequestParam(name = "idProfesional") String idProfesional, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
-			@RequestParam(name = "oldPass") String oldPass, //A partir de estas viene del formulario
-			@RequestParam(name = "newPass") String newPass,
-			@RequestParam(name = "repeatNewPass") String repeatNewPass,
+			@RequestParam String emailProfesional, //Esta variable viene de un input oculto de la pag cambiarContrasenaProfesional
+			@RequestParam String idProfesional, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
+			@RequestParam String oldPass, //A partir de estas viene del formulario
+			@RequestParam String newPass,
+			@RequestParam String repeatNewPass,
 			ModelMap model) throws MiExcepcion {
 		
 		String error = null;

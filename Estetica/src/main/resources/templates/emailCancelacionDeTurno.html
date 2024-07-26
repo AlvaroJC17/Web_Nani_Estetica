@@ -91,7 +91,12 @@
                 <p><strong>Profesional:</strong> [[${profesional}]]</p>
                 <p><strong>Fecha:</strong> [[${fecha}]]</p>
                 <p><strong>Hora:</strong> [[${horario}]]</p>
-                <p><strong>Tratamiento:</strong> [[${tratamiento}]]</p>
+                <span><strong>Tratamiento:</strong></span>
+                <ul style="list-style-type: disc;">
+	            <li th:each="tratamientos : ${tratamiento}">
+	            	<span th:text="${tratamientos.nombreTratamientos.DisplayName}"></span>
+	            </li>
+	            </ul>
             </div>
             <div class="warnings">
                 <p><strong>Aviso:</strong></p>

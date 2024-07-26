@@ -8,12 +8,15 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -21,6 +24,8 @@ import jakarta.persistence.TemporalType;
 import jakarta.persistence.Transient;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 
@@ -59,8 +64,9 @@ public class Turnos {
 	@Column(name = "horario")
 	String horario;
 	
-	@Column(name = "tratamiento")
-	String tratamiento;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable( name = "turno_tratamiento",  joinColumns = @JoinColumn(name = "turno_id"), inverseJoinColumns = @JoinColumn(name = "tratamiento_id"))
+	private List<Tratamiento> tratamientos = new ArrayList<>();
 	
 	@Column(name = "activo")
 	Boolean activo;
@@ -95,7 +101,7 @@ public class Turnos {
 		
 	}
 		
-	public Turnos(String provincia, Profesional profesional, LocalDate fecha, String horario, String tratamiento, String dni,
+	public Turnos(String provincia, Profesional profesional, LocalDate fecha, String horario, List<Tratamiento> tratamiento, String dni,
 			String email, Boolean activo, Boolean multa, String costoMulta, EstadoDelTurno estado, Rol canceladoPor) {
 		this.dni = dni;
 		this.email = email;
@@ -103,7 +109,7 @@ public class Turnos {
 		this.profesional = profesional;
 		this.fecha = fecha;
 		this.horario = horario;
-		this.tratamiento = tratamiento;
+		this.tratamientos = tratamiento;
 		this.activo = activo;
 		this.multa = multa;
 		this.costoMulta = costoMulta;
@@ -244,18 +250,21 @@ public class Turnos {
 		this.horario = horario;
 	}
 
-	public String getTratamiento() {
-		return tratamiento;
+
+	public List<Tratamiento> getTratamientos() {
+		return tratamientos;
 	}
 
-	public void setTratamiento(String tratamiento) {
-		this.tratamiento = tratamiento;
+
+	public void setTratamientos(List<Tratamiento> tratamientos) {
+		this.tratamientos = tratamientos;
 	}
+
 
 	@Override
 	public String toString() {
 		return "Turnos [provincias=" + provincias + ", profesional=" + profesional + ", fecha=" + fecha + ", horario="
-				+ horario + ", tratamiento=" + tratamiento + "]";
+				+ horario + ", tratamiento=" + tratamientos + "]";
 	}
     
     

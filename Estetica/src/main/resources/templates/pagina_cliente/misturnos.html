@@ -78,8 +78,15 @@ tener el mismo ID-->
             <li class="list-unstyled d-flex"><strong>Profesional:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.profesional.nombre + ' ' + turnos.profesional.apellido}"></p> </li>
             <li class="list-unstyled d-flex"><strong>Fecha:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.fecha}"></p> </li>
             <li class="list-unstyled d-flex"><strong>Hora:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.horario}"></p> </li>
-            <li class="list-unstyled d-flex"><strong>Tratamiento:</strong>&nbsp <p class="m-0 p-0" th:text="${turnos.tratamiento}"></p> </li>
+            <span><strong>Tratamientos:</strong></span>
+            <ul style="list-style-type: disc;">
+            <li th:each="tratamiento : ${turnos.tratamientos}">
+            	<span th:text="${tratamiento.nombreTratamientos.DisplayName}"></span>
+            </li>
             </ul>
+            </ul>
+
+            
             
         
 		<!--Estos botones solo hacen el llamado al modal-->
