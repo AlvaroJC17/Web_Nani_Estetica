@@ -11,12 +11,16 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="../css/styles.css">
-  <title>Reserva de turno</title>
+  <title>Reserva de turno corporales</title>
   
    <script>
         function autoSubmitProvincia() {
             document.getElementById("formularioProvincia").submit();
         }
+		
+		function autoSubmitEspecialidad() {
+		           document.getElementById("formularioEspecialidad").submit();
+		       }
         
         function autoSubmitProfesional() {
             document.getElementById("formularioProfesional").submit();
@@ -29,7 +33,7 @@
          function autoSubmitHorario() {
             document.getElementById("formularioHorario").submit();
         }
-        
+         
     </script>
     
     
@@ -74,7 +78,7 @@
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
             </li> 
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesión</a>
             </li>
           </ul>
         </div>
@@ -86,19 +90,19 @@
 
 <main class="">
   <div class="main-interno">
-    <h3>Reserva de turnos</h3>
+    <h3>Reserva de turnos corporales</h3>
   <div class=" container">
       <div class="  ft-reserva-turno">
-        <div class="texto-solicitar-turno ">
+        <div class="texto-solicitar-turno">
           <div>
-          <p class="fs-4">Siga los pasos a continuacion para seleccionar un turno.</p>
+          <p class="fs-4">Siga los pasos a continuación para solicitar un turno.</p>
         </div>
         </div>
         <div class="container">
 
 			<!--Este formulario es para llevar al metodo que busca crea y busca las fechas disponibles
 			se usa, cuando el usuario selecciona buscar en el input de fecha-->
-            <form id="formularioProvincia" th:action="@{/buscarProfesionalPorProvincias}" method="get" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pb-0">
+            <form id="formularioProvincia" th:action="@{/buscarPorEspecialidadAndProvincia}" method="get" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pb-0">
              <label for="provincia" class="form-label mb-0 fs-4">Paso 1: Seleccione provincia <span class="text-danger ">*</span> </label>
             <select onchange="autoSubmitProvincia()" name="provincia" class="form-select" id="provincia" aria-label="Default select example">
             <option value=""  th:selected="${provinciaSeleccionada}" th:text="${provinciaSeleccionada == null ? 'Seleccione una provincia' : provinciaSeleccionada}"></option>
@@ -108,17 +112,34 @@
             
             <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
             <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
-		  	<input type="hidden" class="form-control" name="email" id="email" th:value="${datosCliente.email}" placeholder="">
+		  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
        
             </form>
+			
+			<form id="formularioEspecialidad" th:action="@{/buscarProfesionalesPorEspecialidadAndProvincia}" method="post"  class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
+			            <div>
+			              <label for="tipoEspecialidad" class="form-label mb-0 mt-2 fs-4">Paso 2: Seleccione una especialidad <span class="text-danger ">*</span></label>
+			              <select th:attr="disabled=${isEspecialidadDisabled == null || !isEspecialidadDisabled ? 'disabled' : null}" onchange="autoSubmitEspecialidad()" class="form-select" id="tipoEspecialidad" name="tipoEspecialidad" aria-label="Default select example">
+			                <option th:selected="${tipoDeEspecialidadSeleccionada}" th:text="${tipoDeEspecialidadSeleccionada == null || #strings.isEmpty(tipoDeEspecialidadSeleccionada) ? 'Seleccione una especialidad' : tipoDeEspecialidadSeleccionada}"></option>
+			                <option th:each="tipoEspecialidades : ${tipoEspecialidad}" th:text="${tipoEspecialidades.DisplayName}" th:value="${tipoEspecialidades}"></option>
+			              </select>
+			            </div>
+			            <div>
+			            
+			            <input type="hidden" class="form-control" name="provinciaString" id="provinciaString" th:value="${provinciaString}" placeholder="">
+			            <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
+			            <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
+					  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
+			            </div>
+			          </form>
            
 			<!--Este formulario va al metodo que guarda el turno y elimina la fecha seleccionada por el usaurio-->           
-			<!--el campo th:object se relaciona con el onjeto turno creado en el controlador, a este objeto se le asigna todo los valores que puede tener el formulario y asi poder manejarlo en el controlador-->
+		
           <form id="formularioProfesional" th:action="@{/buscarProfesional}" method="post"  class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
             <div>
               <label for="profesional" class="form-label mb-0 mt-2 fs-4">Paso 2: Seleccione profesional <span class="text-danger ">*</span></label>
               <select th:attr="disabled=${isProfesionalDisabled == null || !isProfesionalDisabled ? 'disabled' : null}" onchange="autoSubmitProfesional()" class="form-select" id="profesional" name="idProfesional" aria-label="Default select example">
-                <option th:selected="${nombreDelProfesional}" th:text="${nombreDelProfesional == null ? 'Seleccione un profesional' : nombreDelProfesional}">Profesional</option>
+                <option th:selected="${profesionalSeleccionado}" th:text="${profesionalSeleccionado == null || #strings.isEmpty(profesionalSeleccionado) ? 'Seleccione un profesional' : profesionalSeleccionado}">Profesional</option>
                 <option th:each="nombreProfesional : ${Profesionales}" th:text="${nombreProfesional.nombre + ' '  + nombreProfesional.apellido}" th:value="${nombreProfesional.id}"></option>
               </select>
             </div>
@@ -128,12 +149,13 @@
             <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
             <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
 		  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
+			<input type="hidden" class="form-control" name="especialidad" id="especialidad" th:value="${especialidad}" placeholder="">
             </div>
           </form>
           
           <form id="formularioFecha" th:action="@{/seleccionDeFecha}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
-             <label  for="fechaSeleccionada" class="form-label mb-0 mt-2  fs-4">Paso 3: Seleccionar fecha <span class="text-danger ">*</span></label>
-            <input th:attr="disabled=${isDisabled == null || !isDisabled ? 'disabled' : null}" onchange="autoSubmitFecha()" type="date" name="fechaSeleccionada" class="form-control" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="Fecha">
+             <label  for="fechaSeleccionada" class="form-label mb-0 mt-2  fs-4">Paso 3: Seleccione fecha <span class="text-danger ">*</span></label>
+            <input th:attr="disabled=${isFechaDisabled == null || !isFechaDisabled ? 'disabled' : null}" onchange="autoSubmitFecha()" type="date" name="fechaSeleccionada" class="form-control" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="Fecha">
             
             <input type="hidden" class="form-control" name="nombreDelProfesional" id="nombreDelProfesional" th:value="${nombreDelProfesional}" placeholder="">
             <input type="hidden" class="form-control" name="idProfesional" id="idProfesional" th:value="${idProfesional}" placeholder="">
@@ -141,64 +163,19 @@
             <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
             <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
 		  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
+			<input type="hidden" class="form-control" name="especialidad" id="especialidad" th:value="${especialidad}" placeholder="">
 		  </form>
 			  
           
             
-          <form  th:action="@{/confimarTurnoCliente}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
-              <label for="horario" class="form-label mb-0 mt-2 fs-4">Paso 4: Seleccionar hora <span class="text-danger ">*</span></label>
-              <select th:attr="disabled=${isHorarioDisabled == null || !isHorarioDisabled ? 'disabled' : null}" name="horario" class="form-select" id="horario" aria-label="Default select example">
-                <option value="" selected>Hora</option>
+          <form id="formularioHorario" th:action="@{/seleccionDeHorario}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
+              <label for="horario" class="form-label mb-0 mt-2 fs-4">Paso 4: Seleccione hora <span class="text-danger ">*</span></label>
+              <select onchange="autoSubmitHorario()" th:attr="disabled=${isHorarioDisabled == null || !isHorarioDisabled ? 'disabled' : null}"  name="horario" class="form-select" id="horario" aria-label="Default select example">
+                <option  th:selected="${horarioSeleccionado}" th:text="${horarioSeleccionado == null || #strings.isEmpty(horarioSeleccionado) ? 'Seleccione un horario' : horarioSeleccionado}">Horario</option>
                 <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->
                 <option th:each="horario : ${horarios}" th:value="${horario}" th:text="${horario}"></option>
               </select>
          
-            <p class="mt-4 mb-0 fs-4">Seleccionar tratamientos<span class="text-danger ">*</span></p>
-            <p class="fs-6">Max. Dos servicios por turno</p>
-            
-            <div class="input-seleccion-check ">
-                <div>
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="espalda" value="Limpieza corporal" id="espalda">
-                    <label class="form-check-label fs-6" for="espalda">
-                      Limpieza corporal espalda y gluteos
-                    </label>
-                  </div>
-                  
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="pulido" value="Pulido corporal de espalda y gluteos" id="pulido">
-                    <label class="form-check-label fs-6" for="microneedling">
-                      Pulido corporal de espalda y gluteos
-                    </label>
-                  </div>
-  
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="dermaplaning" value="Dermaplaning corporal de espalda y gluteos" id="dermaplaning">
-                    <label class="form-check-label fs-6" for="microneedling">
-                      Dermaplaning corporal de espaldas y gluteos
-                    </label>
-                  </div>
-  
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" name="exfoliacion" value="Exfoliacion y mascarilla en manos y pies" id="exfoliacion">
-                    <label class="form-check-label fs-6" for="microneedling">
-                      Exfoliacion y mascarilla en manos y pies
-                    </label>
-                  </div>
-                  </div>
-                  </div>
-            
-            
-            
-            <div class="boton-pag-turno">
-            <div class="boton-de-registro text-center">
-              <button type="submit" name="action" value="aceptar" class="bn632-hover bn26">Enviar</button>
-            </div>
-            <div class="boton-de-registro text-center">
-              <button type="submit" name="action" value="cancelar" class="bn632-hover bn26">Cancelar</button>
-            </div>
-          </div>
-          
           	<input type="hidden" class="form-control" name="fechaSeleccionada" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="">
             <input type="hidden" class="form-control" name="nombreDelProfesional" id="nombreDelProfesional" th:value="${nombreDelProfesional}" placeholder="">
             <input type="hidden" class="form-control" name="idProfesional" id="idProfesional" th:value="${idProfesional}" placeholder="">
@@ -206,7 +183,43 @@
             <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
             <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
 		  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
+			<input type="hidden" class="form-control" name="especialidad" id="especialidad" th:value="${especialidad}" placeholder="">
           
+		  </form>
+		  
+			
+		
+		  <form  th:action="@{/confimarTurnoCliente}" method="post" class="form-misdatos fomularioCambiarContrasena fomularioSacarTurno pt-2 pb-0">
+          
+         		 <label for="tratamiento" class="form-label mb-0 mt-2 fs-4">Paso 5: Seleccione tratamiento <span class="text-danger ">*</span></label>
+              
+                  <div class="row d-flex align-items-end justify-content-center">
+                      <select th:attr="disabled=${isTratamientoDisabled == null || !isTratamientoDisabled ? 'disabled' : null}" name="tratamientosSeleccionados" class="form-select" id="tratamiento" aria-label="Default select example">
+                        <option th:selected="${tratamientoSeleccionado}" th:text="${tratamientoSeleccionado == null || #strings.isEmpty(tratamientoSeleccionado) ? 'Seleccione tratamientos' : tratamientoSeleccionado}">Tratamientos</option>
+                        <!--el th:value="${horario.hora}" viene de hacer un constructor y un metodo get llamano hora en el enum horario, este devuelve el strinf al lado del enum-->
+                        <option th:each="tratamiento : ${tratamientos}" th:value="${tratamiento.id}" th:text="${tratamiento.NombreTratamientos.DisplayName + ' ' + '$'+tratamiento.CostoTratamiento}"></option>
+                        </select>
+              </div>
+            
+             	 <div class="boton-pag-turno">
+            <div class="boton-de-registro text-center">
+              <button th:attr="disabled=${isTratamientoDisabled == null || !isTratamientoDisabled ? 'disabled' : null}" type="submit" name="action" value="aceptar" th:class="${isTratamientoDisabled == null || !isTratamientoDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}">Enviar</button>
+            </div>
+            <div class="boton-de-registro text-center">
+              <button  type="submit" name="action" value="cancelar" class="bn632-hover bn26">Cancelar</button>
+            </div>
+          </div>
+              
+          	<input type="hidden" class="form-control" name="fechaSeleccionada" id="fechaSeleccionada" th:value="${fechaSeleccionada}" placeholder="">
+            <input type="hidden" class="form-control" name="nombreDelProfesional" id="nombreDelProfesional" th:value="${nombreDelProfesional}" placeholder="">
+            <input type="hidden" class="form-control" name="idProfesional" id="idProfesional" th:value="${idProfesional}" placeholder="">
+            <input type="hidden" class="form-control" name="provinciaString" id="provinciaString" th:value="${provinciaString}" placeholder="">
+            <input type="hidden" class="form-control" name="identificador" id="identificador" th:value="${identificador}" placeholder="">
+            <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosCliente.id}" placeholder="">
+		  	<input type="hidden" class="form-control" name="emailCliente" id="emailCliente" th:value="${datosCliente.email}" placeholder="">
+		  	<input type="hidden" class="form-control" name="horarioSeleccionado" id="horarioSeleccionadoente" th:value="${horarioSeleccionado}" placeholder="">
+			<input type="hidden" class="form-control" name="especialidad" id="especialidad" th:value="${especialidad}" placeholder="">
+			  
 		  </form>
 		 
 			  
@@ -226,7 +239,7 @@
 			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
             </div>
             <div class="modal-body text-black lh-sm">
-                <p class="text-center" th:utext="${error}"></p>
+                <p class="text-center" th:utext="${error}"></p> <!--utext permite recibir texto en string con etiquetas html-->
             </div>
             <div class="modal-footer border border-0">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>

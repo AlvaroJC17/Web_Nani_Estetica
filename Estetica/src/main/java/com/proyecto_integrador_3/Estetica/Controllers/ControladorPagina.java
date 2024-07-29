@@ -17,6 +17,7 @@ import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
 import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
+import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCodigoDeVerificacion;
@@ -67,12 +68,12 @@ public class ControladorPagina {
 	//Validar el codigo y  guardar a los usuarios en la tabla
 	@PostMapping("/validarCodigoYRegistrar")
 	public String validarCodigoYRegistrar(
-			@RequestParam(name="idUsuarioNoValidado") String idUsuarioNoValidado,
+			@RequestParam String idUsuarioNoValidado,
 			@RequestParam(name="codigoUsuario") String CodigoUsuario,
-			@RequestParam(name="email") String email,
+			@RequestParam String email,
 			@RequestParam(name="contrasena") String password,
 			@RequestParam(name="contrasena2") String password2,
-			@RequestParam(name="fechaNacimiento") String fechaNacimiento,
+			@RequestParam String fechaNacimiento,
 			Model model) throws MiExcepcion {
 		
 		//evitamos que el usuario deje espacios en blanco al inicio o final del string
@@ -135,8 +136,8 @@ public class ControladorPagina {
 	//Valida los datos del usuario al registrarse, genera un codigo y lo envia por email
 	@PostMapping("/validarEmail")
 	public String validarEmail(
-			@RequestParam(name="email")String email,
-			@RequestParam(name="fechaNacimiento")String fechaNacimiento,
+			@RequestParam String email,
+			@RequestParam String fechaNacimiento,
 			@RequestParam(name="contrasena")String password,
 			@RequestParam(name="contrasena2")String password2,
 			@RequestParam(required = false)String accion,
@@ -187,7 +188,7 @@ public class ControladorPagina {
 	 	// por primera vez lo redirecciona a una formulario para completar los datos
 		@PostMapping("/loginUsuario")
 		 public String loginUsuario(
-		         @RequestParam(name = "email") String email, //El valor de estas variables proviene del form login
+		         @RequestParam String email, //El valor de estas variables proviene del form login
 		         @RequestParam(name = "password") String contrasena,
 		         ModelMap model, Model modelo) throws MiExcepcion {
 			
@@ -274,6 +275,7 @@ public class ControladorPagina {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario);
 				            		 modelo.addAttribute("provincias", Provincias.values());
 				            		 modelo.addAttribute("especialidad", Especialidad.values());
+				            		 modelo.addAttribute("tipoEspecialidad", TipoDeEspecialidad.values());
 				            		 modelo.addAttribute("tratamiento", TratamientoEnum.values());
 				            		 modelo.addAttribute("DiasDeLaSemana", DiasDeLaSemana.values());
 				            		 return "pagina_profesional/completarDatosProfesional";

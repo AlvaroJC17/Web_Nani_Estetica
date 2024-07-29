@@ -14,6 +14,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 
 import jakarta.transaction.Transactional;
 
@@ -46,11 +47,13 @@ public interface RepositorioTurnos extends JpaRepository<Turnos, String> {
 //    @Query("UPDATE Turno t SET t.multa = :multa")
 //    void updateAllMultas(String multa);
 	
+	List<Turnos> findByEstadoAndActivoAndMultaAndEmailOrderByFechaAsc(EstadoDelTurno estado, Boolean activo, Boolean multa, String email);
+	
 	List<Turnos> findByActivoAndEmail(Boolean activo, String email);
 	
 	List<Turnos> findByEmailOrderByFechaAsc(String email);
 	
-	List<Turnos> findByEmailAndActivoOrderByFechaAsc(String email, boolean activo);
+	List<Turnos> findByEmailAndActivoOrderByFechaAsc(String email, Boolean activo);
 	
 	List<Turnos> findByProfesionalAndFecha(Profesional profesional, LocalDate fecha);
 }

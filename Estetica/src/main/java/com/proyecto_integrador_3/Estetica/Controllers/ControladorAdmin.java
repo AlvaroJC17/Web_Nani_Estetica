@@ -59,9 +59,9 @@ public class ControladorAdmin {
 	
 	@GetMapping("/misdatosAdmin")
 	public String misdatosAdmin(
-			@RequestParam(name = "email") String email,
-			@RequestParam(name = "exito", required = false) String exito,
-			@RequestParam(name = "error", required = false) String error,
+			@RequestParam String email,
+			@RequestParam(required = false) String exito,
+			@RequestParam(required = false) String error,
 			ModelMap model) {
 		
 		List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(email);
@@ -73,7 +73,7 @@ public class ControladorAdmin {
 	
 	
 	@GetMapping("/homeAdmin")
-	public String homeAdmin(@RequestParam(name = "email") String email, ModelMap model) { //El valor de esta variable viene del metodo login en controladorPagina
+	public String homeAdmin(@RequestParam String email, ModelMap model) { //El valor de esta variable viene del metodo login en controladorPagina
 		List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosAdmin", datosAdmin);
 		return "/pagina_admin/homeAdmin";	
@@ -82,11 +82,11 @@ public class ControladorAdmin {
 	
 	@PostMapping("/guardarDatosAdmin")
 	public String guardarDatosAdmin(
-			@RequestParam(name = "sexo") String sexo,
-			@RequestParam(name = "telefono") String telefono,
-			@RequestParam(name = "direccion") String direccion,
-			@RequestParam(name = "ocupacion") String ocupacion,
-			@RequestParam(name = "emailUsuario") String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
+			@RequestParam String sexo,
+			@RequestParam String telefono,
+			@RequestParam String direccion,
+			@RequestParam String ocupacion,
+			@RequestParam String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
 			ModelMap model) throws MiExcepcion {
 		
 		try {
@@ -111,7 +111,7 @@ public class ControladorAdmin {
 	//A este metodo le paso la variable mail y la lista por dos model diferentes para que cuando cargue
 	//la pagina se pueda visualizar el nav y la lista de usuarios, sino le paso el mail el nav no se ve
 	@GetMapping("/listarUsuariosVisibles")
-    public String listarUsuariosVisibles(@RequestParam(name = "email") String email, ModelMap model) throws MiExcepcion {
+    public String listarUsuariosVisibles(@RequestParam String email, ModelMap model) throws MiExcepcion {
 		List<Usuario> usuarios = repositorioUsuario.joinUsuarioPersona();
 		
 		//Excluye del resultado al usuario que este usando el listado
@@ -130,7 +130,7 @@ public class ControladorAdmin {
 	//busque los usuarios por nombre, dni o email y no que los busque en una lista
 	@GetMapping("/listarUsuariosOcultos")
     public String listarUsuarios(
-    		@RequestParam(name = "email") String email, //Esta variable proviene de homeAdmin
+    		@RequestParam String email, //Esta variable proviene de homeAdmin
     		Model model) throws MiExcepcion {
 
 		model.addAttribute("usuariosEmail", email); //Con este mail mostramos el nav en este metodo
@@ -141,10 +141,10 @@ public class ControladorAdmin {
 	//Buscamos usuario por dni, nombre o email, la variable emailAdmin es para pasar el mail de admin y poder visualizar el nav
 	@PostMapping("/buscarDNIoNombre")
 	public String buscarDniNombreEmail(
-			@RequestParam(name = "dato") String dato,  //la variable dato puede ser un nombre, dni o mail
-			@RequestParam(name = "emailAdmin") String emailAdmin,
-			@RequestParam(name ="dato2", required = false) String dato2, //proviene del metodo modificarUsuario
-			@RequestParam(name ="usuarioModificado", required = false) String usuarioModificado, //proviene del metodo modificarUsuario
+			@RequestParam String dato,  //la variable dato puede ser un nombre, dni o mail
+			@RequestParam String emailAdmin,
+			@RequestParam(required = false) String dato2, //proviene del metodo modificarUsuario
+			@RequestParam(required = false) String usuarioModificado, //proviene del metodo modificarUsuario
 			//@RequestParam(name = "activarMensaje", required = false) Boolean activarMensaje,
 			Model model) {
 		
@@ -248,7 +248,7 @@ public class ControladorAdmin {
 	@GetMapping("/mensajeErrorNoID")
 	public String mensajeErrorNoID(
 			@RequestParam(name = "emailAdmin", required = false) String emailAdministrador,
-			@RequestParam(name = "datoIngresadoUsuario") String datoIngresadoUsuario,
+			@RequestParam String datoIngresadoUsuario,
 			Model model){
 		
 		List<Usuario> usuarioDni = servicioUsuario.buscarDni(datoIngresadoUsuario);
@@ -281,10 +281,10 @@ public class ControladorAdmin {
 	public String modificarUsuario(
 			@RequestParam(name = "idUsuario", required = false) String id, // esta variable recibe el id del usuario seleccionado, no se pone requerido para poder manejar la excepcion
 			@RequestParam(name = "nuevoRol") String nuevoRolNombre,
-            @RequestParam(name = "emailAdministrador") String emailAdministrador,
-            @RequestParam(name = "action") String action,
-            @RequestParam(name = "usuarioEmail", required = false) String usuarioEmail,
-            @RequestParam(name = "dato", required = false) String dato, //viene del formulario modificarUsuario y esta su vez viene del metodo buscarDNIoNombre
+            @RequestParam String emailAdministrador,
+            @RequestParam String action,
+            @RequestParam(required = false) String usuarioEmail,
+            @RequestParam(required = false) String dato, //viene del formulario modificarUsuario y esta su vez viene del metodo buscarDNIoNombre
             Model model) throws MiExcepcion {
 		
 		String exito;
@@ -430,12 +430,12 @@ public class ControladorAdmin {
 	//Metodo para que el admin puede modificar los datos permitidos
 	@PostMapping("/actualizarDatosAdmin")
 	public String actualizarDatosAdmin(
-			@RequestParam(name="idAdmin") String idAdmin, //este atributo es enviado en un input oculto de la pag misdatosCliente
-			@RequestParam(name="ocupacion", required = false) String ocupacion, // Este y los demas atributos los puse como no requeridos para poder personalizar las excepciones
-		    @RequestParam(name="email", required = false) String email,
-			@RequestParam(name="domicilio", required = false) String domicilio,
-			@RequestParam(name="sexo", required = false) String sexo,
-			@RequestParam(name="telefono", required = false) String telefono,
+			@RequestParam String idAdmin, //este atributo es enviado en un input oculto de la pag misdatosCliente
+			@RequestParam(required = false) String ocupacion, // Este y los demas atributos los puse como no requeridos para poder personalizar las excepciones
+		    @RequestParam(required = false) String email,
+			@RequestParam(required = false) String domicilio,
+			@RequestParam(required = false) String sexo,
+			@RequestParam(required = false) String telefono,
 			ModelMap model) throws MiExcepcion {
 		
 		//Buscamos mediante el id el mail anterior del admin y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
@@ -492,9 +492,9 @@ public class ControladorAdmin {
 	//metodo relacionado con actualizarContrasenaProfesional
 		@GetMapping("/cambiarContrasenaAdmin")
 		public String cambiarContrasenaAdmin(
-				@RequestParam(name = "email") String email,
-				@RequestParam(name = "exito", required = false) String exito,
-				@RequestParam(name = "error", required = false) String error,
+				@RequestParam String email,
+				@RequestParam(required = false) String exito,
+				@RequestParam(required = false) String error,
 				ModelMap model) {
 			
 			List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
@@ -509,11 +509,11 @@ public class ControladorAdmin {
 		//Metodo relacionado con cambiarContrasenaProfesional
 		@PostMapping("actualizarContrasenaAdmin")
 		public String actualizarContrasenaAdmin(
-				@RequestParam(name = "emailAdmin") String emailAdmin, //Esta variable viene de un input oculto de la pag cambiarContrasenaProfesional
-				@RequestParam(name = "idAdmin") String idAdmin, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
-				@RequestParam(name = "oldPass") String oldPass, //A partir de estas viene del formulario
-				@RequestParam(name = "newPass") String newPass,
-				@RequestParam(name = "repeatNewPass") String repeatNewPass,
+				@RequestParam String emailAdmin, //Esta variable viene de un input oculto de la pag cambiarContrasenaProfesional
+				@RequestParam String idAdmin, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
+				@RequestParam String oldPass, //A partir de estas viene del formulario
+				@RequestParam String newPass,
+				@RequestParam String repeatNewPass,
 				ModelMap model) throws MiExcepcion {
 			
 			String error = null;

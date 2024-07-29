@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
+import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
@@ -48,7 +49,7 @@ public class ControladorTurnos {
 	//Controlador para visualizar turnos del cliente
 	@GetMapping("/misturnos")
 	public String misturnos(
-			@RequestParam(name = "email") String email,
+			@RequestParam String email,
 			Model model) throws MiExcepcion {
 		
 		try {
@@ -57,18 +58,27 @@ public class ControladorTurnos {
 		servicioTurnos.actualizarTurnosAntiguos(email);
 		
 		//Elimina los turnos mas antiguo cuando la lista es mayor a 3 y no tienen multas
-		servicioTurnos.eliminarTurnoMasAntiguoNoActivo(email);
+		//servicioTurnos.eliminarTurnoMasAntiguoNoActivo(email);
 		
 		//datos del cliente y los pasa a la vista, sirve para renderizar la vista
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		
 		//busca todos los turnos disponinbles del usuario y los pasa a la vista
-		List<Turnos> turnosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
+		//List<Turnos> turnosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
+		
+		List<Turnos> turnosAsistidos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.ASISTIDO, false, false, email);
+		List<Turnos> turnosActivos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.PENDIENTE, true, false, email);
+		List<Turnos> turnosCancelados = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, false, email);
+		List<Turnos> turnosConMulta = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, true, email);
 		
 		model.addAttribute("email", email);
 		model.addAttribute("datosCliente", datosCliente);
-		model.addAttribute("datosTurno", turnosDisponibles);
-		return "/pagina_cliente/misturnos";	
+		 model.addAttribute("turnosActivos", turnosActivos);
+         model.addAttribute("turnosAsistidos", turnosAsistidos);
+         model.addAttribute("turnosConMulta", turnosConMulta);
+         model.addAttribute("turnosCancelados", turnosCancelados);
+         return "/pagina_cliente/misturnos";	
+		
 			
 		} catch (Exception e) {
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
@@ -87,12 +97,12 @@ public class ControladorTurnos {
 
 	@PostMapping("/cancelarTurno")
 	public String cancelarTurnos(
-			@RequestParam(name="emailCliente") String emailCliente,
-			@RequestParam(name="idTurno") String idTurno,
-			@RequestParam(name="fecha") String fecha,
-			@RequestParam(name="horario") String horario,
-			@RequestParam(name="idProfesional") String idProfesional,
-			@RequestParam(name="idCliente") String idCliente,
+			@RequestParam String emailCliente,
+			@RequestParam String idTurno,
+			@RequestParam String fecha,
+			@RequestParam String horario,
+			@RequestParam String idProfesional,
+			@RequestParam String idCliente,
 			Model model
 			) throws MiExcepcion {
 		
@@ -116,6 +126,7 @@ public class ControladorTurnos {
 		servicioHorario.agregarHorarioDisponible(fecha, horario, idProfesional);
 		
 		return "redirect:/misturnos?email=" + emailCliente;
+		
 		} catch (Exception e) {
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 			List<Turnos> turnosDisponibles = servicioTurnos.obtenerTurnosPorEmail(emailCliente);
@@ -142,8 +153,8 @@ public class ControladorTurnos {
 	 
 	 @GetMapping("/formularioTurnos")
 		public String formularioTurnos(
-				@RequestParam(name = "email") String email,
-				@RequestParam(name = "error", required = false) String error,
+				@RequestParam String email,
+				@RequestParam(required = false) String error,
 				ModelMap modelo) {
 				
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);		
@@ -160,43 +171,43 @@ public class ControladorTurnos {
 		 * con los datos previamente ingresado, para que el usuario no los tenga que volver a cargar*/
 		@PostMapping("/guardarFormularioTurnos")
 		public String guardarFormularioTurnos(
-				@RequestParam(name="fuma", required = false) String fuma,
-				@RequestParam(name="drogas", required = false) String drogas,
-				@RequestParam(name="alcohol", required = false) String alcohol,
-				@RequestParam(name="deportes", required = false) String deportes,
-				@RequestParam(name="ejercicios", required = false) String ejercicios,
-				@RequestParam(name="medicamentos", required = false) String medicamentos,
-				@RequestParam(name="nombreMedicamento", required = false) String nombreMedicamento,
-				@RequestParam(name="tratamiento") String tratamiento,
-				@RequestParam(name="idCliente", required = false) String idCliente,
-				@RequestParam(name="email", required = false) String email,
-				@RequestParam(name="embarazo", required = false) String embarazo,
-				@RequestParam(name="amamantando", required = false) String amamantando,
-				@RequestParam(name="ciclo_menstrual", required = false) String ciclo_menstrual,
-				@RequestParam(name="alteracion_hormonal", required = false) String alteracion_hormonal,
-				@RequestParam(name="vitaminas", required = false) String vitaminas,
-				@RequestParam(name="corticoides", required = false) String corticoides,
-				@RequestParam(name="hormonas", required = false) String hormonas,
-				@RequestParam(name="metodo_anticonceptivo", required = false) String metodo_anticonceptivo,
-				@RequestParam(name="sufre_enfermedad", required = false) String sufre_enfermedad,
-				@RequestParam(name="cual_enfermedad", required = false) String cual_enfermedad,
-				@RequestParam(name="tiroides", required = false) String tiroides,
-				@RequestParam(name="paciente_oncologica", required = false) String paciente_oncologica,
-				@RequestParam(name="fractura_facial", required = false) String fractura_facial,
-				@RequestParam(name="cirugia_estetica", required = false) String cirugia_estetica,
-				@RequestParam(name="indique_cirugia_estetica", required = false) String indique_cirugia_estetica,
-				@RequestParam(name="tiene_implantes", required = false) String tiene_implantes,
-				@RequestParam(name="marca_pasos", required = false) String marca_pasos,
-				@RequestParam(name="horas_sueno", required = false) String horas_sueno,
-				@RequestParam(name="exposicion_sol", required = false) String exposicion_sol,
-				@RequestParam(name="protector_solar", required = false) String protector_solar,
-				@RequestParam(name="reaplica_protector", required = false) String reaplica_protector,
-				@RequestParam(name="consumo_carbohidratos", required = false) String consumo_carbohidratos,
+				@RequestParam(required = false) String fuma,
+				@RequestParam(required = false) String drogas,
+				@RequestParam(required = false) String alcohol,
+				@RequestParam(required = false) String deportes,
+				@RequestParam(required = false) String ejercicios,
+				@RequestParam(required = false) String medicamentos,
+				@RequestParam(required = false) String nombreMedicamento,
+				@RequestParam String tratamiento,
+				@RequestParam(required = false) String idCliente,
+				@RequestParam(required = false) String email,
+				@RequestParam(required = false) String embarazo,
+				@RequestParam(required = false) String amamantando,
+				@RequestParam(required = false) String ciclo_menstrual,
+				@RequestParam(required = false) String alteracion_hormonal,
+				@RequestParam(required = false) String vitaminas,
+				@RequestParam(required = false) String corticoides,
+				@RequestParam(required = false) String hormonas,
+				@RequestParam(required = false) String metodo_anticonceptivo,
+				@RequestParam(required = false) String sufre_enfermedad,
+				@RequestParam(required = false) String cual_enfermedad,
+				@RequestParam(required = false) String tiroides,
+				@RequestParam(required = false) String paciente_oncologica,
+				@RequestParam(required = false) String fractura_facial,
+				@RequestParam(required = false) String cirugia_estetica,
+				@RequestParam(required = false) String indique_cirugia_estetica,
+				@RequestParam(required = false) String tiene_implantes,
+				@RequestParam(required = false) String marca_pasos,
+				@RequestParam(required = false) String horas_sueno,
+				@RequestParam(required = false) String exposicion_sol,
+				@RequestParam(required = false) String protector_solar,
+				@RequestParam(required = false) String reaplica_protector,
+				@RequestParam(required = false) String consumo_carbohidratos,
 				@RequestParam(name="tratamientosFacialesAnteriores", required = false) String tratamientos_faciales_anteriores,
-				@RequestParam(name="resultados_tratamiento_anterior", required = false) String resultados_tratamiento_anterior,
-				@RequestParam(name="cuidado_de_piel", required = false) String cuidado_de_piel,
-				@RequestParam(name="motivo_consulta", required = false) String motivo_consulta,
-				@RequestParam(name="notas_profesional", required = false) String notas_profesional,
+				@RequestParam(required = false) String resultados_tratamiento_anterior,
+				@RequestParam(required = false) String cuidado_de_piel,
+				@RequestParam(required = false) String motivo_consulta,
+				@RequestParam(required = false) String notas_profesional,
 				Model model) throws MiExcepcion{
 		
 			

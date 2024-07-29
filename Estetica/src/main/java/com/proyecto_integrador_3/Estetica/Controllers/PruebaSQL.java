@@ -14,11 +14,14 @@ import com.proyecto_integrador_3.Estetica.Entidades.Admin;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
+import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
+import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioAdmin;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
@@ -113,6 +116,39 @@ public class PruebaSQL implements CommandLineRunner {
             System.out.println("Ya existe un administrador en la base de datos.");
         }
 		
+		
+		
+//		List<Turnos> turnosPendientes = repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaAsc(EstadoDelTurno.PENDIENTE, true, false, "cliente1@cliente1.com");
+//				
+//		
+//		for (Turnos turnos2 : turnosPendientes) {
+//			System.out.println("Turnos disponibles activos: " + turnos2.getFecha());
+//		}
+//		
+//		List<Turnos> turnosCancelados = repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaAsc(EstadoDelTurno.CANCELADO, false, false, "cliente1@cliente1.com");
+//				
+//		
+//		for (Turnos turnos3 : turnosCancelados) {
+//			System.out.println("Turnos inactivos sin multas : " + turnos3.getFecha() );
+//		}
+//		
+//		List<Turnos> turnosConMulta = repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaAsc(EstadoDelTurno.CANCELADO, false, true, "cliente1@cliente1.com");
+//		
+//		for (Turnos turnos4 : turnosConMulta) {
+//			System.out.println("Turnos con  multa: " + turnos4.getFecha());
+//		}
+//		
+//		List<Turnos> turnosAsistidos = repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaAsc(EstadoDelTurno.ASISTIDO, false, false, "cliente1@cliente1.com");
+//		
+//		for (Turnos turnos5 : turnosAsistidos) {
+//			System.out.println("Turnos asistidos: " + turnos5.getFecha());
+//		}
+//		
+//		List<Profesional> buscarPro = repositorioProfesional.findByRolAndProvinciaAndTipoEspecialidadAndActivo(Rol.PROFESIONAL, Provincias.BUENOS_AIRES, TipoDeEspecialidad.ESTETICO_LASHISTA, true);
+//		
+//		for (Profesional profesional : buscarPro) {
+//			System.out.println("nombre del profesional: " + profesional.getNombre());
+//		}
 		
 //		//Buscamos los enum de tratamientos y lo filtramos por el tipo de especialidad seleccionado por el cliente
 //				List<Tratamiento> tratamientosProfesional = servicioProfesional.buscarTratamitosPorProfesional("4d26d71f-3d6b-46ea-849a-66ada8338f25");

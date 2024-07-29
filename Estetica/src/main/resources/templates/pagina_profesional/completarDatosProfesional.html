@@ -237,9 +237,42 @@
                   </div>
                 </div>
                     <input type="hidden" id="opcionesSeleccionadas1" name="especialidadesSeleccionadas" value="">
+                </div>
+				
+				
+				
+				<div style="border-top: 1px solid white;" class="mb-5">
+				                  <p class="ps-3 fs-5 mb-4 mt-3">Seleccione el/los tipos de especialidades (pueden ser más de una):</p>
+				                  <div class="row d-flex align-items-center justify-content-center">
+				                    <div class="col-md-6">
+				                      <label for="opciones2" class="form-label texto-label mb-0">Selecciona una opción:</label>
+				                        <select aria-label="Default select example" class="form-select" id="opciones2" name="especialidad" onchange="agregarOpcion()">
+				                        <option th:each="tipoEspecialidades : ${tipoEspecialidad}" th:value="${tipoEspecialidades}" th:text="${tipoEspecialidades}">Opción 2</option>
+				                        </select>
+				                      </div>
+				         
+				                    <div class="col-md-6 text-center">
+				                      <label class="fs-5 form-label texto-label mb-0" for="listaSeleccionadas2">Opciones seleccionadas:</label>
+				                      <select aria-label="Default select example" class="form-select" id="listaSeleccionadas2" name="listaSeleccionadas2" size="5" multiple>
+				                      </select>
+				                    </div>
+				                  </div>
+
+				                  
+				                  <div class="d-flex justify-content-center mt-4">
+				                    <div style="margin-right: 5px; margin-top: 10px;" class="">
+				                      <button class="btn btn-primary" type="button" onclick="agregarOpcion('opciones2', 'listaSeleccionadas2', 'opcionesSeleccionadas2')">Agregar especialidad</button>
+				                    
+				                  </div>
+				                  <div style="margin-left: 5px; margin-top: 10px;" class="">
+				                    <button class="btn btn-danger" type="button" onclick="eliminarOpcion('listaSeleccionadas2', 'opcionesSeleccionadas2')">Eliminar especialidad</button>
+				                  </div>
+				                </div>
+				                    <input type="hidden" id="opcionesSeleccionadas2" name="tipoEspecialidadesSeleccionadas" value="">
+				                </div>
+				                    
                     
 
-                </div>
                     
 
                 <div style="border-top: 1px solid white;" class="mb-5">
@@ -277,9 +310,10 @@
                   </div>
                 </div>
                     <input type="hidden" id="tratamientosSeleccionados" name="tratamientosSeleccionados" />
-
                 </div>
 
+
+				
                 <div style="border-top: 1px solid white;" class="mb-5">
                   <p class="ps-3 fs-5 mb-4 mt-3">Seleccione los días de la semana que ofrecerá servicios (puede ser más de uno):</p>
                   <div class="row d-flex align-items-center justify-content-center">

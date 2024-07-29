@@ -1,6 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -25,9 +26,11 @@ import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
 import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
+import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
@@ -110,11 +113,9 @@ public class ControladorCliente {
 			 if (nombreCompletoProfesional != null) {
 		            // Agregamos el nombre del profesional al mapa junto al id del turno iterado
 		            turnosConNombreProfesional.put(turnos.getId(), nombreCompletoProfesional);
-		          
-		        }
-			
+			 }
 		}
-		
+		//Buscamos los datos del usuario
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("turnosConMulta", turnosConMulta);
 		model.addAttribute("totalCostoMultas", totalCostoMultas);
@@ -157,27 +158,41 @@ public class ControladorCliente {
 		}
 	}
 			
-	@GetMapping("/buscarProfesionalPorProvincias")
-	public String buscarProfesionalPorProvincias(
-			@RequestParam(required = false) String email,
+	@GetMapping("/buscarPorEspecialidadAndProvincia")
+	public String buscarPorEspecialidadAndProvincia(
+			@RequestParam(required = false) String emailCliente,
 			@RequestParam(required = false) String idCliente,
 			@RequestParam(required = false) String identificador,
 			@RequestParam String provincia,
-			ModelMap model) throws MiExcepcion {
+			Model model) throws MiExcepcion {
+		
+		Boolean isEspecialidadDisabled = false; // Booleano para habilitar o deshabilitar el input de especialidades
+		Boolean isProfesionalDisabled = false; //Booleano para habilitar o deshabilitar el input de profesional
+		Boolean isFechaDisabled = false; //Booleano para habilitar o deshabilitar el input de fecha
+		Boolean isHorarioDisabled = false; //Booleano para habilitar o deshabilitar el input de horario
+		Boolean isTratamientoDisabled = false; //Booleano para habilitar o deshabilitar el input y los botones de tratamientos, asi como los botones de enviar y cancelar
+		
+		//validamos que se seleccione una provincia
+		if (!servicioProfesional.validarProvincia(provincia)) {
+			String error ="<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"+
+					"<span class='fs-6'>Es necesario que seleccione la provincia donde vive para poder ver que"
+					+ " profesionales estan disponibles.</span>";
+			return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, model);
+		}
+				
 		
 		//pasamos la provincia a enum provincia
 		Provincias nuevoRolProvincia = null;
 		nuevoRolProvincia = Provincias.valueOf(provincia);
 	
 		//Buscamos todos los datos del cliente y lo pasamos al html, sirve para visualizar la pagina y pasar los datos del cliente entre controladores
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		Boolean isProfesionalDisabled = false; //Booleano para habilitar o deshabilitar el input de profesional
-		Boolean isFechaDisabled = false; //Booleano para habilitar o deshabilitar el input de fecha
-		Boolean isHorarioDisabled = false; //Booleano para habilitar o deshabilitar el input de horario
-		Boolean isTratamientoDisabled = false; //Booleano para habilitar o deshabilitar el input y los botones de tratamientos, asi como los botones de enviar y cancelar
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+
+		//Pasamos los datos a la vista
 		model.addAttribute("datosCliente", datosCliente);
 		model.addAttribute("identificador", identificador);
 		model.addAttribute("provinciaString", provincia);
+		model.addAttribute("isEspecialidadDisabled",isEspecialidadDisabled);
 		model.addAttribute("isProfesionalDisabled",isProfesionalDisabled);
 		model.addAttribute("isFechaDisabled ", isFechaDisabled);
 		model.addAttribute("isHorarioDisabled", isHorarioDisabled);
@@ -185,77 +200,32 @@ public class ControladorCliente {
 		model.addAttribute("provinciaSeleccionada", nuevoRolProvincia.getDisplayName()); //getDisplayName Muestra los nombre personalizados de los enum y no los nombres en Mayusculas
 		model.addAttribute("provincias", Provincias.values()); // pasamos el array de enums al formulario para desplegar la lista de select
 		
-		String error = null;
-		//validamos que se seleccione una provincia
-		if (!servicioProfesional.validarProvincia(provincia)) {
-			isProfesionalDisabled = false;
-			isFechaDisabled = false;
-			isHorarioDisabled = false;
-			isTratamientoDisabled = false;
-			error ="<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"+
-			"<span class='fs-6'>Es necesario que seleccione la provincia donde vive para poder ver que"
-			+ " profesionales estan disponibles.</span>";
-			model.addAttribute("error", error);
-			model.addAttribute("isFechaDisabled", isFechaDisabled);
-			model.addAttribute("isProfesionalDisabled",isProfesionalDisabled);
-			model.addAttribute("isHorarioDisabled" ,isHorarioDisabled);
-			model.addAttribute("isTratamientoDisabled" ,isTratamientoDisabled);
-			model.addAttribute("showModalError", true);
-			switch (identificador) {
-			case "tratamientoFacial":
-				return "/pagina_cliente/reservaDeTurnoClienteFacial";
-			case "tratamientoCorporal":
-				return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-			case "tratamientoEstetico":	
-				return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-			}			
-		}
+		//Buscamos los profesionales disponibles en esa provincia
+		List<Profesional> profesionalesDisponiblesEnLaProvincia = repositorioProfesional.findByProvincia(nuevoRolProvincia);
 		
-		//Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia y el rol
-		List<Profesional> profesionalesDisponibles = null; // Variable general donde se va a guardar la lista de profesionales según corresponda a la especialidad seleccionada
-		
-		if (identificador.equals("tratamientoFacial")) {
-			List<Profesional> profesionalesConFaciales = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevoRolProvincia, Especialidad.FACIAL, true); //el true representa profesionales activos
-			profesionalesDisponibles = profesionalesConFaciales;
-		}else if(identificador.equals("tratamientoCorporal")) {
-			List<Profesional> profesionalesConCorporal = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevoRolProvincia, Especialidad.CORPORAL, true);
-			profesionalesDisponibles = profesionalesConCorporal;
-		}else if(identificador.equals("tratamientoEstetico")) {
-			List<Profesional> profesionalesConEstetico = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevoRolProvincia, Especialidad.ESTETICA, true);
-			profesionalesDisponibles = profesionalesConEstetico;
+		//Validamos que existan profesionales disponibles en la provincia seleccionada, sino tiramos un error
+		if (profesionalesDisponiblesEnLaProvincia.isEmpty()) {
+			String error ="<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"+
+			"<span class='fs-6'>No hay profesionales disponibles para la provincia seleccionada.</span>";
+			return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, model);
 		}
+
+		//Usamos el servicio de listarEspecialidadesDisponibles para crear una lista de especialidades segun el identificador seleccionado
+		List<TipoDeEspecialidad> especialidadDisponibles = servicioProfesional.listarEspecialidadesDisponibles(identificador);
+		
 			
 		//Validamos que si la lista de profesionales esta vacia para esa provincia, especialidad y rol
 		//error con un mensaje
-		if (profesionalesDisponibles.isEmpty()) {
-			error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+		if (especialidadDisponibles.isEmpty()) {
+			String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 					+"<span class='fs-6'>Lamentamos informarle que no hay profesionales disponibles para la provincia seleccionada.</span>";
-			isProfesionalDisabled = false;
-			isFechaDisabled = false;
-			isHorarioDisabled = false;
-			isTratamientoDisabled = false;
-			model.addAttribute("error", error);
-			model.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
-			model.addAttribute("isFechaDisabled", isFechaDisabled);
-			model.addAttribute("isHorarioDisabled", isHorarioDisabled);
-			model.addAttribute("isTratamientoDisabled", isTratamientoDisabled);
-			model.addAttribute("showModalError", true);
-			switch (identificador) {
-			case "tratamientoFacial":
-				return "/pagina_cliente/reservaDeTurnoClienteFacial";
-			case "tratamientoCorporal":
-				return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-			case "tratamientoEstetico":	
-				return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-			}			
+			return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, model);
 		}
 		
 		//Si todo lo anterior sale bien pasamos la lista de profesionales encontrados a la vista
-		isProfesionalDisabled = true;
-		model.addAttribute("isProfesionalDisabled", isProfesionalDisabled); //habilitamos el select de profesional
-		model.addAttribute("Profesionales", profesionalesDisponibles); // pasamos el array de objetos tipo persona que tengan rol de profesional
-		
-		
+		isEspecialidadDisabled = true;
+		model.addAttribute("isEspecialidadDisabled", isEspecialidadDisabled); //habilitamos el select de especialidades
+		model.addAttribute("tipoEspecialidad", especialidadDisponibles); // pasamos la lista de enum tipoDeEspecialidades a la vista
 		
 		//Si todo va bien entonces mandamos todas la info anterior a estas vistas
 		if (identificador.equals("tratamientoFacial")) {
@@ -268,21 +238,94 @@ public class ControladorCliente {
 			return "tratamientos";
 		}
 	}
+	
+	@PostMapping("/buscarProfesionalesPorEspecialidadAndProvincia")
+	public String buscarProfesionalesPorEspecialidadAndProvincia(
+			@RequestParam String emailCliente,
+			@RequestParam String idCliente,
+			@RequestParam String identificador,
+			@RequestParam String provinciaString,
+			@RequestParam String tipoEspecialidad,
+			Model model) throws MiExcepcion {
 		
-		
+			    //pasamos la provincia a enum provincia
+				Provincias nuevoRolProvincia = null;
+				nuevoRolProvincia = Provincias.valueOf(provinciaString);
+				
+				//pasamos la tipoEspecialidad a enum TipoDeEspecialidad
+		        TipoDeEspecialidad nuevoRolTipoDeEspecialidad = null;
+		        nuevoRolTipoDeEspecialidad = TipoDeEspecialidad.valueOf(tipoEspecialidad);
+		        
+		      //Buscamos todos los datos del cliente y lo pasamos al html, sirve para visualizar la pagina y pasar los datos del cliente entre controladores
+				List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+				Boolean isEspecialidadDisabled = false; // Booleano para habilitar o deshabilitar el input de especialidades
+				Boolean isProfesionalDisabled = false; //Booleano para habilitar o deshabilitar el input de profesional
+				Boolean isFechaDisabled = false; //Booleano para habilitar o deshabilitar el input de fecha
+				Boolean isHorarioDisabled = false; //Booleano para habilitar o deshabilitar el input de horario
+				Boolean isTratamientoDisabled = false; //Booleano para habilitar o deshabilitar el input y los botones de tratamientos, asi como los botones de enviar y cancelar
+				model.addAttribute("datosCliente", datosCliente);
+				model.addAttribute("identificador", identificador);
+				model.addAttribute("provinciaString", provinciaString);
+				model.addAttribute("especialidad", tipoEspecialidad);
+				model.addAttribute("isEspecialidadDisabled",isEspecialidadDisabled);
+				model.addAttribute("isProfesionalDisabled",isProfesionalDisabled);
+				model.addAttribute("isFechaDisabled ", isFechaDisabled);
+				model.addAttribute("isHorarioDisabled", isHorarioDisabled);
+				model.addAttribute("isTratamientoDisabled", isTratamientoDisabled);
+				model.addAttribute("provincias", Provincias.values()); // pasamos el array de enums al formulario para desplegar la lista de select
+		        
+				
+				//Creamos una lista de TipoDeEspecialidades vacia para guardar el resultado del filtrado
+				List<TipoDeEspecialidad> especialidadDisponibles = servicioProfesional.listarEspecialidadesDisponibles(identificador);
+		        
+		     
+				//Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia, el rol y que este activo
+		        List<Profesional> profesionalesPorTipoDeEspecialidad = repositorioProfesional.findByRolAndProvinciaAndTipoEspecialidadAndActivo(Rol.PROFESIONAL, nuevoRolProvincia, nuevoRolTipoDeEspecialidad, true);
+		        
+		        if (profesionalesPorTipoDeEspecialidad.isEmpty()) {
+		        	String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+							+"<span class='fs-6'>Lamentamos informarle que no hay profesionales disponibles con la especialidad seleccionada.</span>";
+					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, model);
+				}
+					
+				//Si todo lo anterior sale bien pasamos la lista de profesionales encontrados a la vista
+				isEspecialidadDisabled = true;
+				isProfesionalDisabled = true;
+				model.addAttribute("isEspecialidadDisabled", isEspecialidadDisabled); //habilitamos el select de especialidades
+				model.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
+				model.addAttribute("tipoEspecialidad", especialidadDisponibles); // pasamos la lista de enum tipoDeEspecialidades a la vista
+				model.addAttribute("Profesionales", profesionalesPorTipoDeEspecialidad); // pasamos la lista de enum tipoDeEspecialidades a la vista
+				model.addAttribute("provinciaSeleccionada", nuevoRolProvincia.getDisplayName()); //getDisplayName Muestra los nombre personalizados de los enum y no los nombres en Mayusculas
+				model.addAttribute("tipoDeEspecialidadSeleccionada", nuevoRolTipoDeEspecialidad.getDisplayName());
+		   
+		        if (identificador.equals("tratamientoFacial")) {
+					return "/pagina_cliente/reservaDeTurnoClienteFacial";
+				}else if(identificador.equals("tratamientoCorporal")) {
+					return "/pagina_cliente/reservaDeTurnoClienteCorporal";
+				}else if(identificador.equals("tratamientoEstetico")) {
+					return "/pagina_cliente/reservaDeTurnoClienteEstetico";
+				}
+				return"";
+	}
+				
 	@PostMapping("/buscarProfesional")
 	public String buscarProfesional(
-			@RequestParam(required = false) String idProfesional,
-			@RequestParam(required = false) String idCliente,
-			@RequestParam(required = false) String emailCliente,
-			@RequestParam(required = false) String identificador,
-			@RequestParam(required = false) String provinciaString,
+			@RequestParam String idProfesional,
+			@RequestParam String idCliente,
+			@RequestParam String emailCliente,
+			@RequestParam String identificador,
+			@RequestParam String provinciaString,
+			@RequestParam (name ="especialidad") String tipoEspecialidad,
 			Model modelo) throws MiExcepcion {	
 		
 		
 		//pasamos la provincia a enum provincia
-		Provincias nuevaProvincia = null;
-		nuevaProvincia = Provincias.valueOf(provinciaString);
+		Provincias nuevoRolProvincia = null;
+		nuevoRolProvincia = Provincias.valueOf(provinciaString);
+		
+		//pasamos la tipoEspecialidad a enum TipoDeEspecialidad
+        TipoDeEspecialidad nuevoRolTipoDeEspecialidad = null;
+        nuevoRolTipoDeEspecialidad = TipoDeEspecialidad.valueOf(tipoEspecialidad);
 		
 		//Buscamos el nombre y el apellido del profesional mediante el id
 		String nombreCompletoProfesional = null;
@@ -293,36 +336,33 @@ public class ControladorCliente {
 			nombreCompletoProfesional = nuevoProfesional.getApellido() + " " + nuevoProfesional.getNombre();
 		}
 		
+		//Creamos una lista de TipoDeEspecialidades vacia para guardar el resultado del filtrado
+		List<TipoDeEspecialidad> especialidadDisponibles = servicioProfesional.listarEspecialidadesDisponibles(identificador);
 		
-		//Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia y el rol
-				List<Profesional> profesionalesDisponibles = null; // Variable general donde se va a guardar la lista de profesionales según corresponda a la especialidad seleccionada
-				
-				if (identificador.equals("tratamientoFacial")) {
-					List<Profesional> profesionalesConFaciales = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.FACIAL, true); //el true representa profesionales activos
-					profesionalesDisponibles = profesionalesConFaciales;
-				}else if(identificador.equals("tratamientoCorporal")) {
-					List<Profesional> profesionalesConCorporal = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.CORPORAL, true);
-					profesionalesDisponibles = profesionalesConCorporal;
-				}else if(identificador.equals("tratamientoEstetico")) {
-					List<Profesional> profesionalesConEstetico = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.ESTETICA, true);
-					profesionalesDisponibles = profesionalesConEstetico;
-				}
+		//Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia, el rol y que este activo
+		List<Profesional> profesionalesPorTipoDeEspecialidad = repositorioProfesional.findByRolAndProvinciaAndTipoEspecialidadAndActivo(Rol.PROFESIONAL, nuevoRolProvincia, nuevoRolTipoDeEspecialidad, true);
 
-		//Buscamos los datos del profesional
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 		
+		//Buscamos los datos del cliente
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+		Boolean isEspecialidadDisabled = true;
 		Boolean isProfesionalDisabled = true; //Mantenemos el input del profesional activo
 		Boolean isFechaDisabled = true; // habilitamos el input de la fecha
 		Boolean isHorarioDisabled = false; //Mantenemos deshabilitado
 		Boolean isTratamientoDisabled = false; //Mantenemos deshabilitado
 		modelo.addAttribute("identificador", identificador);
 		modelo.addAttribute("datosCliente", datosCliente);
-		modelo.addAttribute("Profesionales", profesionalesDisponibles);
+		modelo.addAttribute("Profesionales", profesionalesPorTipoDeEspecialidad);
+		modelo.addAttribute("tipoEspecialidad", especialidadDisponibles); // pasamos la lista de enum tipoDeEspecialidades a la vista
+		modelo.addAttribute("profesionalSeleccionado", nombreCompletoProfesional);
 		modelo.addAttribute("nombreDelProfesional", nombreCompletoProfesional);
 		modelo.addAttribute("provincias", Provincias.values());
-		modelo.addAttribute("provinciaSeleccionada", nuevaProvincia.getDisplayName());
+		modelo.addAttribute("provinciaSeleccionada", nuevoRolProvincia.getDisplayName());
+		modelo.addAttribute("tipoDeEspecialidadSeleccionada", nuevoRolTipoDeEspecialidad.getDisplayName());
 		modelo.addAttribute("provinciaString", provinciaString);
 		modelo.addAttribute("idProfesional", idProfesional);
+		modelo.addAttribute("especialidad", tipoEspecialidad);
+		modelo.addAttribute("isEspecialidadDisabled", isEspecialidadDisabled); //habilitamos el select de especialidades
 		modelo.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
 		modelo.addAttribute("isFechaDisabled", isFechaDisabled);
 		modelo.addAttribute("isHorarioDisabled", isHorarioDisabled);
@@ -341,13 +381,14 @@ public class ControladorCliente {
 	
 	@PostMapping("/seleccionDeFecha")
 	public String seleccionDeFecha(
-			@RequestParam(required = false) String idProfesional,
-			@RequestParam(required = false) String idCliente,
-			@RequestParam(required = false) String emailCliente,
-			@RequestParam(required = false) String identificador,
-			@RequestParam(required = false) String provinciaString,
-			@RequestParam(required = false) String fechaSeleccionada,
-			@RequestParam(required = false) String nombreDelProfesional,
+			@RequestParam String idProfesional,
+			@RequestParam String idCliente,
+			@RequestParam String emailCliente,
+			@RequestParam String identificador,
+			@RequestParam String provinciaString,
+			@RequestParam String fechaSeleccionada,
+			@RequestParam String nombreDelProfesional,
+			@RequestParam (name ="especialidad") String tipoEspecialidad,
 			Model modelo) throws MiExcepcion{
 		 
 		
@@ -385,63 +426,43 @@ public class ControladorCliente {
 				//Obetenemos los horarios del profesional por fecha y id del profesional, puede devolver una lista con horarios disponibles
 				//o puede devolver una lista vacia si ya al profesional le solicitaron todos los horarios de esa fecha
 				List <String> ObtenerHorariosDisponibles = servicioHorario.obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fechaSeleccionada);
-				//Despues de obtener los horarios, los ordenamos por fecha, para que siempre se muestren los horarios en orden de menor a mayor
-				Collections.sort(ObtenerHorariosDisponibles);
+				Collections.sort(ObtenerHorariosDisponibles); //ordenamos la lista por horas de menor a mayor
 		
 				//pasamos la provincia a enum provincia
 				Provincias nuevaProvincia = null;
 				nuevaProvincia = Provincias.valueOf(provinciaString);
 				
-				//Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia y el rol
-				List<Profesional> profesionalesDisponibles = null; // Variable general donde se va a guardar la lista de profesionales según corresponda a la especialidad seleccionada
+				//pasamos la tipoEspecialidad a enum TipoDeEspecialidad
+		        TipoDeEspecialidad nuevoRolTipoDeEspecialidad = null;
+		        nuevoRolTipoDeEspecialidad = TipoDeEspecialidad.valueOf(tipoEspecialidad);
 				
-				if (identificador.equals("tratamientoFacial")) {
-					List<Profesional> profesionalesConFaciales = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.FACIAL, true); //el true representa profesionales activos
-					profesionalesDisponibles = profesionalesConFaciales;
-				}else if(identificador.equals("tratamientoCorporal")) {
-					List<Profesional> profesionalesConCorporal = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.CORPORAL, true);
-					profesionalesDisponibles = profesionalesConCorporal;
-				}else if(identificador.equals("tratamientoEstetico")) {
-					List<Profesional> profesionalesConEstetico = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.ESTETICA, true);
-					profesionalesDisponibles = profesionalesConEstetico;
-				}
-		
-				//Buscamos los datos del profesional
-				List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+		        //Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia, el rol y que este activo
+				List<Profesional> profesionalesPorTipoDeEspecialidad = repositorioProfesional.findByRolAndProvinciaAndTipoEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, nuevoRolTipoDeEspecialidad, true);
 				
-				//Pasamos todos los datos necesarios a la vista
+				//Variables para habilitar o deshabilitar los select y los input de la pagina
+				Boolean isEspecialidadDisabled = true; //habilitamos el select de especialidades
 				Boolean isProfesionalDisabled = true; //Mantenemos habilitado
 				Boolean isFechaDisabled = true; //mantenemos habilitado
 				Boolean isHorarioDisabled = false; //Mantenemos deshabilitado
 				Boolean isTratamientoDisabled = false; //Mantenemos deshabilitado
+				
+				
+				//Buscamos los datos del usuario
+				List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 				modelo.addAttribute("datosCliente", datosCliente);
 				modelo.addAttribute("identificador", identificador);
-				modelo.addAttribute("fechaSeleccionada", fechaSeleccionada);
-				modelo.addAttribute("nombreDelProfesional", nombreDelProfesional);
-				modelo.addAttribute("provinciaSeleccionada", nuevaProvincia.getDisplayName());
-				modelo.addAttribute("provinciaString", provinciaString);
-				modelo.addAttribute("Profesionales", profesionalesDisponibles);
-				modelo.addAttribute("idProfesional", idProfesional);
 				modelo.addAttribute("provincias", Provincias.values());
+				modelo.addAttribute("Profesionales", profesionalesPorTipoDeEspecialidad);
+				
 			
-	    //Metodo que recibe una fecha tipo LocalDate y devuelve true si la fecha es anterior a la actual
+				//Metodo que recibe una fecha tipo LocalDate y devuelve true si la fecha es anterior a la actual
 				if (servicioHorario.fechaYaPaso(fechaSeleccionadaLocalDate)) {
 					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 							+ "<span fs-6'>No se puede seleccionar una fecha pasada, por favor verifique la fecha"
 							+ " en la que desea seleccionar el turno.</span>";
-					isFechaDisabled = true;
-					modelo.addAttribute("error", error);
-					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
-					if (identificador.equals("tratamientoFacial")) {
-						return "/pagina_cliente/reservaDeTurnoClienteFacial";
-					}else if(identificador.equals("tratamientoCorporal")) {
-						return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-					}else if(identificador.equals("tratamientoEstetico")) {
-						return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-					}
-						
+					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
 				}
+						
 				
 				//Metodo que recibe una fecha tipo LocalDate y devuelve true si es fin de semana
 				if (servicioHorario.esFinDeSemana(fechaSeleccionadaLocalDate)) {
@@ -450,17 +471,7 @@ public class ControladorCliente {
 			                 "<span class='fs-6'>Queremos informarle que nuestro horario de atención es de lunes a viernes de 9:00 a 18:00 y los sábados de 9:00 a 15:00.<br><br>" +
 			                 "Agradecemos su comprensión y le pedimos disculpas por cualquier inconveniente que esto pueda causar."
 			                 + " Para más información puede comunicarse con nosotros por cualquiera de nuestros canales digitales.</span>";
-					isFechaDisabled = true;
-					modelo.addAttribute("error", error);
-					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
-					if (identificador.equals("tratamientoFacial")) {
-						return "/pagina_cliente/reservaDeTurnoClienteFacial";
-					}else if(identificador.equals("tratamientoCorporal")) {
-						return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-					}else if(identificador.equals("tratamientoEstetico")) {
-						return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-					}
+					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
 				}
 				
 				//Definimos una fecha maxima de dos meses a partir de la fecha actual
@@ -471,17 +482,7 @@ public class ControladorCliente {
 							+ " de la fecha actual. Esta política nos permite gestionar y organizar nuestros recursos de manera"
 							+ " eficiente, asegurando un mejor servicio para todos nuestros clientes.<br><br>"
 							+ "Le agradecemos su comprensión y colaboración. Si tiene alguna duda o necesita asistencia, no dude en contactarnos.</span>";
-					modelo.addAttribute("error", error);
-					isFechaDisabled = true;
-					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
-					if (identificador.equals("tratamientoFacial")) {
-						return "/pagina_cliente/reservaDeTurnoClienteFacial";
-					}else if(identificador.equals("tratamientoCorporal")) {
-						return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-					}else if(identificador.equals("tratamientoEstetico")) {
-						return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-					}
+					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
 				}
 				
 				//Si la lista de horariosDisponibles esta vacia, devuelve el mensaje de error.
@@ -490,23 +491,13 @@ public class ControladorCliente {
 							+ "<span class='fs-6'>Lamentamos informarle que no hay turnos disponibles para la fecha que ha"
 							+ " seleccionado. Le sugerimos intentar en otro momento o seleccionar una fecha diferente para su turno.<br><br>"
 							+ "Agradecemos su comprensión y le pedimos disculpas por cualquier inconveniente que esto pueda ocasionar.</span>";
-					isFechaDisabled = true;
-					modelo.addAttribute("error", error);
-					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
-					if (identificador.equals("tratamientoFacial")) {
-						return "/pagina_cliente/reservaDeTurnoClienteFacial";
-					}else if(identificador.equals("tratamientoCorporal")) {
-						return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-					}else if(identificador.equals("tratamientoEstetico")) {
-						return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-					}
+					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
 				}
+					
 				
 				//Metodo para validar que la fecha seleccionada por el usuario corresponda a la
 				//fecha laboral del profesional
 				if (servicioHorario.diasLaborales(fechaSeleccionada, idProfesional)) {
-					
 					List<DiasDeLaSemana> diasLaborales = null;
 					String nombreCompletoProfesional = null;
 					List<String> horariosLaborales = null;
@@ -523,46 +514,43 @@ public class ControladorCliente {
 							+ "<span fs-6'>Lo sentimos, pero el profesional </span> " + "<span class='fw-bold'>"+nombreCompletoProfesional.toUpperCase()+"</span>" + " <span fs-6'>solo presta"
 									+ " servicios los días:</span><br><br>" + "<span class='fw-bold'>"+diasLaborales+"</span>" + "<br><br><span fs-6'> en los horarios:</span><br><br>" + "<span class='fw-bold'>"+horariosLaborales+"</span><br><br>" + ""
 											+ " Lamentamos las molestias ocasionadas. Si tiene alguna duda o necesita asistencia, no dude en contactarnos.";
-							;
-					isFechaDisabled = true;
-					modelo.addAttribute("error", error);
-					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
-					if (identificador.equals("tratamientoFacial")) {
-						return "/pagina_cliente/reservaDeTurnoClienteFacial";
-					}else if(identificador.equals("tratamientoCorporal")) {
-						return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-					}else if(identificador.equals("tratamientoEstetico")) {
-						return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-					}
+					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
 				}
-			
-				
+							
+					
 				//Limitamos a que el usuario solo pueda tener un maximi de tres activos
 				if (servicioTurnos.checkActiveTurnos(emailCliente)) {
 					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 							+ "<span class='fs-6'>Solo se permite tener un máximo de tres turnos activos."
 							+ " Si necesita modificar un turno o seleccionar uno nuevo, puede"
 							+ " ir al apartado de \"Mis turnos\" y cancerlar alguno de los turnos activos.</span>";
-					isFechaDisabled = true;
-					modelo.addAttribute("error", error);
-					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("isFechaDisabled", isFechaDisabled);
-					if (identificador.equals("tratamientoFacial")) {
-						return "/pagina_cliente/reservaDeTurnoClienteFacial";
-					}else if(identificador.equals("tratamientoCorporal")) {
-						return "/pagina_cliente/reservaDeTurnoClienteCorporal";
-					}else if(identificador.equals("tratamientoEstetico")) {
-						return "/pagina_cliente/reservaDeTurnoClienteEstetico";
-					}
+					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
 				}
 				
 				
+				//Filtramos la lista de especialidades según el identificador seleccionado
+				List<TipoDeEspecialidad> especialidadDisponibles = servicioProfesional.listarEspecialidadesDisponibles(identificador);
+		
+				
+				//Pasamos todos los datos necesarios a la vista
+				modelo.addAttribute("fechaSeleccionada", fechaSeleccionada);
+				modelo.addAttribute("tipoEspecialidad", especialidadDisponibles); // pasamos la lista de enum tipoDeEspecialidades a la vista
+				modelo.addAttribute("especialidad", tipoEspecialidad);
+				modelo.addAttribute("nombreDelProfesional", nombreDelProfesional);
+				modelo.addAttribute("profesionalSeleccionado", nombreDelProfesional);
+				modelo.addAttribute("provinciaSeleccionada", nuevaProvincia.getDisplayName());
+				modelo.addAttribute("tipoDeEspecialidadSeleccionada", nuevoRolTipoDeEspecialidad.getDisplayName());
+				modelo.addAttribute("provinciaString", provinciaString);
+				modelo.addAttribute("idProfesional", idProfesional);
+				
+				
 				//Solo si todo sale bien, pasamos los turnos disponibles a la vista
+				isEspecialidadDisabled = true;
 				isProfesionalDisabled = true; //mantenemos habilitado
 				isFechaDisabled = true; // mantenemos habilitado
 				isHorarioDisabled = true; //habilitamos el input de horario
 				isTratamientoDisabled = false; //mantenemos deshabilitado
+				modelo.addAttribute("isEspecialidadDisabled", isEspecialidadDisabled); //habilitamos el select de especialidades
 				modelo.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
 				modelo.addAttribute("isFechaDisabled",isFechaDisabled);
 				modelo.addAttribute("isHorarioDisabled", isHorarioDisabled);
@@ -591,6 +579,7 @@ public class ControladorCliente {
 			@RequestParam(required = false) String provinciaString,
 			@RequestParam(required = false) String fechaSeleccionada,
 			@RequestParam(required = false) String nombreDelProfesional,
+			@RequestParam (name ="especialidad") String tipoEspecialidad,
 			@RequestParam(required = false) String horario,
 			ModelMap modelo) throws Exception {
 		
@@ -599,19 +588,16 @@ public class ControladorCliente {
 		Provincias nuevaProvincia = null;
 		nuevaProvincia = Provincias.valueOf(provinciaString);
 		
-		//Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia y el rol
-		List<Profesional> profesionalesDisponibles = null; // Variable general donde se va a guardar la lista de profesionales según corresponda a la especialidad seleccionada
+		//pasamos la tipoEspecialidad a enum TipoDeEspecialidad
+        TipoDeEspecialidad nuevoRolTipoDeEspecialidad = null;
+        nuevoRolTipoDeEspecialidad = TipoDeEspecialidad.valueOf(tipoEspecialidad);
 		
-		if (identificador.equals("tratamientoFacial")) {
-			List<Profesional> profesionalesConFaciales = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.FACIAL, true); //el true representa profesionales activos
-			profesionalesDisponibles = profesionalesConFaciales;
-		}else if(identificador.equals("tratamientoCorporal")) {
-			List<Profesional> profesionalesConCorporal = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.CORPORAL, true);
-			profesionalesDisponibles = profesionalesConCorporal;
-		}else if(identificador.equals("tratamientoEstetico")) {
-			List<Profesional> profesionalesConEstetico = repositorioProfesional.findByRolAndProvinciaAndEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, Especialidad.ESTETICA, true);
-			profesionalesDisponibles = profesionalesConEstetico;
-		}
+    	List<Profesional> profesionalesPorTipoDeEspecialidad = null;
+        //Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia, el rol y que este activo
+		profesionalesPorTipoDeEspecialidad = repositorioProfesional.findByRolAndProvinciaAndTipoEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, nuevoRolTipoDeEspecialidad, true);
+		
+		//Creamos una lista de TipoDeEspecialidades vacia para guardar el resultado del filtrado
+		List<TipoDeEspecialidad> especialidadDisponibles = servicioProfesional.listarEspecialidadesDisponibles(identificador);
 		
 		//Buscamos los enum de tratamientos y lo filtramos por el tipo de especialidad seleccionado por el cliente
 		List<Tratamiento> tratamientosProfesional = servicioProfesional.buscarTratamitosPorProfesional(idProfesional);
@@ -622,8 +608,8 @@ public class ControladorCliente {
                                     identificador.equals("tratamientoEstetico") ? "ESTETICO" :
                                     null;
 		
-		  // Filtramos los tratamientos
         
+        // Filtramos los tratamientos
             List<Tratamiento> tratamientosFiltrados = tratamientosProfesional.stream()
                 .filter(tratamiento -> tratamiento.getNombreTratamientos().toString().contains(palabraClave))
                 .collect(Collectors.toList());
@@ -633,21 +619,27 @@ public class ControladorCliente {
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 		
 		//Pasamos todos los datos necesarios a la vista
+		Boolean isEspecialidadDisabled = true;
+		Boolean isProfesionalDisabled = true;
 		Boolean isFechaDisabled = true;
 		Boolean isHorarioDisabled = true;
-		Boolean isProfesionalDisabled = true;
 		Boolean isTratamientoDisabled = true; //habilitamos la seleccion de tratamientos
 		modelo.addAttribute("datosCliente", datosCliente);
 		modelo.addAttribute("identificador", identificador);
 		modelo.addAttribute("fechaSeleccionada", fechaSeleccionada);
 		modelo.addAttribute("nombreDelProfesional", nombreDelProfesional);
+		modelo.addAttribute("profesionalSeleccionado", nombreDelProfesional);
+		modelo.addAttribute("especialidad", tipoEspecialidad);
+		modelo.addAttribute("tipoEspecialidad", especialidadDisponibles); // pasamos la lista de enum tipoDeEspecialidades a la vista
 		modelo.addAttribute("provinciaSeleccionada", nuevaProvincia.getDisplayName());
+		modelo.addAttribute("tipoDeEspecialidadSeleccionada", nuevoRolTipoDeEspecialidad.getDisplayName());
 		modelo.addAttribute("provinciaString", provinciaString);
-		modelo.addAttribute("Profesionales", profesionalesDisponibles);
+		modelo.addAttribute("Profesionales", profesionalesPorTipoDeEspecialidad);
 		modelo.addAttribute("idProfesional", idProfesional);
 		modelo.addAttribute("provincias", Provincias.values());
 		modelo.addAttribute("horarioSeleccionado", horario);
 		modelo.addAttribute("tratamientos", tratamientosFiltrados);
+		modelo.addAttribute("isEspecialidadDisabled", isEspecialidadDisabled); //habilitamos el select de especialidades
 		modelo.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
 		modelo.addAttribute("isFechaDisabled",isFechaDisabled);
 		modelo.addAttribute("isHorarioDisabled", isHorarioDisabled);
@@ -681,12 +673,30 @@ public class ControladorCliente {
 			@RequestParam(name = "horarioSeleccionado", required = false) String horario,
 			@RequestParam(required = false) String tratamientosSeleccionados, // esta variable viene con un string de los id de los tratamientos seleccionados
 			@RequestParam(required = false) String provinciaString,
+			@RequestParam (name ="especialidad") String tipoEspecialidad,
 			ModelMap model) throws MiExcepcion {
+		
 		
 		//usamos un switch que depende si el usuario le da al boton de aceptar o cancelar del formulario
 		switch (action) {
 			
 		case "aceptar":
+			
+			//pasamos la tipoEspecialidad a enum TipoDeEspecialidad
+			TipoDeEspecialidad nuevoRolTipoDeEspecialidad = null;
+			nuevoRolTipoDeEspecialidad = TipoDeEspecialidad.valueOf(tipoEspecialidad);
+			
+			//pasamos la provincia a enum provincia
+			Provincias nuevaProvincia = null;
+			nuevaProvincia = Provincias.valueOf(provinciaString);
+
+			//Buscamos los profesionales según el tipo de especialidad que se selecciono, la provincia, el rol y que este activo
+	        List<Profesional> profesionalesPorTipoDeEspecialidad = repositorioProfesional.findByRolAndProvinciaAndTipoEspecialidadAndActivo(Rol.PROFESIONAL, nuevaProvincia, nuevoRolTipoDeEspecialidad, true);
+			
+	        //Creamos una lista de TipoDeEspecialidades vacia para guardar el resultado del filtrado
+	        List<TipoDeEspecialidad> especialidadDisponibles = servicioProfesional.listarEspecialidadesDisponibles(identificador);
+			
+			
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 			Boolean envioDeMailExitoso = false; //Si el servicio de enviar el email funciona correctamente lo cambiamos a true
 			Boolean turnoGuaradoExitoso = false; // si el turno se guarda exitosamente lo cambiamos a true
@@ -726,10 +736,15 @@ public class ControladorCliente {
                 
                 //cuando el usuario selecciona un nuevo turno, eliminar el turno mas antiguo
                 //que tenga estado inactivo y no tenga multas
-                servicioTurnos.eliminarTurnoMasAntiguoNoActivo(emailCliente);
+               // servicioTurnos.eliminarTurnoMasAntiguoNoActivo(emailCliente);
                 
                 //Obtenemos una lista de turnos del usuario a traves de su id
-                List<Turnos> tunosDisponibles = servicioTurnos.buscarTurnoPorClienteId(idCliente);
+               //List<Turnos> tunosDisponibles = servicioTurnos.buscarTurnoPorClienteId(idCliente);
+				
+				List<Turnos> turnosAsistidos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.ASISTIDO, false, false, emailCliente);
+				List<Turnos> turnosActivos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.PENDIENTE, true, false, emailCliente);
+				List<Turnos> turnosCancelados = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, false, emailCliente);
+				List<Turnos> turnosConMulta = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, true, emailCliente);
                 
                 
                 //Se dispara el modal de exito y se redirecciona a la pagina de mis turnos
@@ -741,7 +756,10 @@ public class ControladorCliente {
                 		+ "Atentamente,<br><br>"
                 		+ "Nani Estetica</span>";
                 model.addAttribute("exito", exito);
-                model.addAttribute("datosTurno", tunosDisponibles);
+                model.addAttribute("turnosActivos", turnosActivos);
+                model.addAttribute("turnosAsistidos", turnosAsistidos);
+                model.addAttribute("turnosConMulta", turnosConMulta);
+                model.addAttribute("turnosCancelados", turnosCancelados);
                 model.addAttribute("emailCliente", emailCliente);
                 model.addAttribute("idProfesional", idProfesional);
                 model.addAttribute("idCliente", idCliente);
@@ -763,6 +781,8 @@ public class ControladorCliente {
 				model.addAttribute("datosCliente", datosCliente);
 				model.addAttribute("identificador", identificador);
 				model.addAttribute("provincias", Provincias.values());
+				model.addAttribute("tipoEspecialidad", especialidadDisponibles); // pasamos la lista de enum tipoDeEspecialidades a la vista
+				model.addAttribute("Profesionales", profesionalesPorTipoDeEspecialidad);
 				model.addAttribute("emailCliente", emailCliente);
 				model.addAttribute("idCliente", idCliente);
 				model.addAttribute("idProfesional", idProfesional);

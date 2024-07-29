@@ -24,6 +24,7 @@ import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
@@ -300,6 +301,7 @@ public class ControladorProfesional {
 			@RequestParam String provincia,
 			@RequestParam String direccion,
 			@RequestParam String especialidadesSeleccionadas,
+			@RequestParam String tipoEspecialidadesSeleccionadas,
 			@RequestParam String tratamientosSeleccionados,
 			@RequestParam String DiasDeLaSemanaSeleccionados,
 			@RequestParam String horariosSeleccionados,
@@ -310,13 +312,14 @@ public class ControladorProfesional {
 			
 			//Guardamos los datos del formulario que lleno el nuevo cliente
 			servicioProfesional.registrarProfesional(emailUsuario, matricula, provincia, direccion, telefono, sexo,
-					especialidadesSeleccionadas, DiasDeLaSemanaSeleccionados, horariosSeleccionados, tratamientosSeleccionados);				
+					especialidadesSeleccionadas, tipoEspecialidadesSeleccionadas, DiasDeLaSemanaSeleccionados, horariosSeleccionados, tratamientosSeleccionados);				
 		} catch (MiExcepcion e) {
 			System.out.println(e.getMessage());
 			model.put("error", e.getMessage());
 			//Pasamos todo a la vista si hay error, para que el usuario no tenga que volver a ingresar todos los datos de nuevo si hay errores
 			model.addAttribute("provincias", Provincias.values());
 			model.addAttribute("especialidad", Especialidad.values());
+			model.addAttribute("tipoEspecialidad", TipoDeEspecialidad.values());
    		 	model.addAttribute("tratamiento", TratamientoEnum.values());
    		 	model.addAttribute("DiasDeLaSemana", DiasDeLaSemana.values());
 			model.addAttribute("matricula", matricula);

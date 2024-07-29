@@ -14,14 +14,19 @@ import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
+import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 
 
 @Repository
 public interface RepositorioProfesional extends JpaRepository<Profesional, String> {
 
-    Optional <Profesional> findById(String id);
+   Optional <Profesional> findById(String id);
+   
+   List<Profesional>findByProvincia(Provincias provincia);
     
    List<Profesional> findByRolAndProvinciaAndEspecialidadAndActivo(Rol rol, Provincias provincia, Especialidad especialidad, Boolean activo);
+   
+   List<Profesional> findByRolAndProvinciaAndTipoEspecialidadAndActivo(Rol rol, Provincias provincia, TipoDeEspecialidad tipoEspecialidad, Boolean activo);
    
    
 }

@@ -75,6 +75,10 @@ public class ServicioTurnos {
 		return repositorioTurnos.findByEmail(email);
 	}
 	
+	public List<Turnos> obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno estado, Boolean activo, Boolean multa, String emailCliente){
+		return repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaAsc(estado, activo, multa, emailCliente);
+	}
+	
 	 public boolean checkActiveTurnos(String email) throws MiExcepcion {
 		 try {
 			 List<Turnos> activeTurnos = repositorioTurnos.findByActivoAndEmail(true, email);
@@ -147,6 +151,8 @@ public class ServicioTurnos {
 			throw new MiExcepcion("Error al conectar con el servidor " + e);
 		}
 	}
+	
+	
     
     public List<Turnos> getTurnosNoActivosByEmail(String email) throws MiExcepcion {
     	try {
@@ -440,8 +446,8 @@ public class ServicioTurnos {
 	}
 	
                         
-    public void validarGuardarTurno(String provinciaString, String nombreDelProfesional, String fechaSeleccionada, String tratamientosSeleccionados,
-			 String horario) throws MiExcepcion {
+    public void validarGuardarTurno(String provinciaString, String nombreDelProfesional, String fechaSeleccionada,
+			 String horario, String tratamientosSeleccionados) throws MiExcepcion {
 		
 		if (provinciaString == null || provinciaString.isEmpty() || provinciaString == "") {
 			throw new MiExcepcion("Debe seleccionar una provincia");
@@ -455,7 +461,7 @@ public class ServicioTurnos {
 			throw new MiExcepcion("Debe seleccionar una fecha");
 		}
 		
-		if(horario == null || horario.isEmpty() || horario == "") {
+		if(horario == null || horario.trim().isEmpty() || horario == " ") {
 			throw new MiExcepcion("Debe seleccionar un horario");
 		}
 		

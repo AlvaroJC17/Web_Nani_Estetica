@@ -1,8 +1,10 @@
 package com.proyecto_integrador_3.Estetica.Enums;
 
-public enum TipoProfesional {
+public enum TipoDeEspecialidad {
 
 	FACIAL_COSMETOLOGA("Cosmetologa"),
+	FACIAL_PRUEBA1("prueba1"),
+	FACIAL_PRUEBA2("prueba2"),
 	ESTETICO_LASHISTA("Lashista"),
 	ESTETICO_PEDICURA("Pedicura"),
 	ESTETICO_MANICURA("Manicura"),
@@ -10,7 +12,7 @@ public enum TipoProfesional {
 	
 private String displayName;
 	
-	TipoProfesional(String displayName) {
+	TipoDeEspecialidad(String displayName) {
         this.displayName = displayName;
     }
 	

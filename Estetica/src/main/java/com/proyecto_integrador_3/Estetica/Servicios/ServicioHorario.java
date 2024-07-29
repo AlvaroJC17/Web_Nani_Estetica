@@ -36,8 +36,8 @@ public class ServicioHorario {
 	 //busca la lista de horarios guardados en la base de datos pertenecientes a la fecha y el profesional que le pasamos por parametro
 	 //si la fecha no existe en la base de datos, entonces crea una lista de horarios para esa fecha y para ese profesional
 	 //Si existe, entonces devuelve la lista de horarios pertenecientes a esa fecha y profesional
+	@Transactional
 	 public List<String> crearyObtenerHorariosDisponibles(String fecha, String idProfesional) throws MiExcepcion {
-		 
 		 //Buscamos los horarios que le profesional registro y lo guardamos en la variable horariosDisponibles
 		 Optional<Profesional> obtenerHorariosLaborales = repositorioProfesional.findById(idProfesional);
 		 List<String> horariosDisponinbles = new ArrayList<>();
@@ -68,7 +68,6 @@ public class ServicioHorario {
 	 // Sino existe crea una nueva lista de horarios para la fecha y profesional que le pasamos y los guarda en la base
 	 @Transactional
 		public void guardarHorariosDisponibles(String fecha, List<String> horarios, String idProfesional) throws MiExcepcion {
-			
 		 try {
 			 // Buscar si ya existe un registro de HorariosDisponibles para la fecha y profesional dado
 		    Optional<HorariosDisponibles> optionalHorarios = repositorioHorariosDisponibles.findOptionalHorariosByProfesionalIdAndFecha(idProfesional, fecha);
@@ -98,6 +97,7 @@ public class ServicioHorario {
 		// Obtener horarios disponibles para un profesional en una fecha específica.
 		//Si encuentra una lista de horarios por idprofesional y fecha pero esta vacia, devuelve una lista vacia
 		//SI la lista no esta vacia, devuelve los horarios disponibles de esa lista
+	 @Transactional
 		public List<String> obtenerHorariosDisponiblesPorProfesionalYFecha(String idProfesional, String fecha) throws MiExcepcion {
 	        
 			try {
@@ -146,11 +146,9 @@ public class ServicioHorario {
 	    //Metodo para eliminar los horarios que se van quedadon viejos al pasar de las horas
 	    //Este metodo solo va eliminando horarios viejos si el dia para seleccionar el turno
 	    //es igual al dia actual,
+		@Transactional
 	    public void EliminarHorarioViejos(String idProfesional, String fecha) throws MiExcepcion {
-	    	
-	    	try {
-				
-			
+	    	try {			
 	    	List<String> horariosDisponibles = obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fecha);
 	        if (horariosDisponibles.isEmpty()) {
 	            System.out.println("la lista de horarios a actualizar esta vacia");
@@ -246,6 +244,7 @@ public class ServicioHorario {
 				return fechaUsuario;
 	    }
 	    
+	    @Transactional
 	    public Boolean diasLaborales(String fecha, String idProfesional) throws MiExcepcion {
 	    	try {
 	    		LocalDate fechaLocalDate = pasarFechaStringToLocalDate(fecha);
@@ -261,10 +260,6 @@ public class ServicioHorario {
 	    		
 	    		for (DiasDeLaSemana diasDeLaSemana : diasLaborales) {
 					int numeroDelaSemana= Integer.parseInt(diasDeLaSemana.getDisplayName());
-					System.out.println("numero de la semana en int: " + numeroDelaSemana);
-					System.out.println("dia de semana en numero string: " + diasDeLaSemana.getDisplayName());
-					System.out.println("Dia de la semana seleccionado: " + diaDeLaSemanaSeleccionado);
-					System.out.println("dia de la semana del profesional: " + DayOfWeek.of(numeroDelaSemana));
 					if (diaDeLaSemanaSeleccionado == DayOfWeek.of(numeroDelaSemana)) {
 						return false;
 					}

@@ -12,6 +12,7 @@ import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 
 import jakarta.persistence.CascadeType;
@@ -54,6 +55,12 @@ public class Profesional extends Persona implements Serializable {
     @Column(name = "especialidad")
     private List<Especialidad> especialidad;
     
+    @ElementCollection(targetClass = TipoDeEspecialidad.class)
+    @CollectionTable(name = "tipo_especialidad", joinColumns = @JoinColumn(name = "profesional_id"))
+    @Enumerated(EnumType.STRING)
+    @Column(name = "tipo_especialidad")
+    private List<TipoDeEspecialidad> tipoEspecialidad;
+    
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "profesional_id")
     private List<Tratamiento> tratamientos = new ArrayList<>();
@@ -81,10 +88,11 @@ public class Profesional extends Persona implements Serializable {
 
 	public Profesional(String matricula, Provincias provincia, Double calificacion,
 			Double precioConsulta, List<Turnos> turnos, List<String> horariosLaborales, List<DiasDeLaSemana> DiasDeLaSemana,
-			List<Tratamiento> tratamientos, List<Especialidad> especialidad) {
+			List<Tratamiento> tratamientos, List<Especialidad> especialidad, List<TipoDeEspecialidad> tipoEspecialidad) {
 		this.turnos = turnos;
 		this.matricula = matricula;
 		this.especialidad = especialidad;
+		this.tipoEspecialidad = tipoEspecialidad;
 		this.tratamientos = tratamientos;
 		this.provincia = provincia;
 		this.calificacion = calificacion;
@@ -100,6 +108,14 @@ public class Profesional extends Persona implements Serializable {
 	}
 	
 	
+
+	public List<TipoDeEspecialidad> getTipoEspecialidad() {
+		return tipoEspecialidad;
+	}
+
+	public void setTipoEspecialidad(List<TipoDeEspecialidad> tipoEspecialidad) {
+		this.tipoEspecialidad = tipoEspecialidad;
+	}
 
 	public List<Especialidad> getEspecialidad() {
 		return especialidad;

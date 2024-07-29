@@ -604,6 +604,17 @@ footer {
     );
     box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
   }
+  
+  .bn632-hover.bn26.enviar {
+     background-image: linear-gradient(
+       to right,
+       #6a90a1,
+       #606671,
+       #859ea7,
+       #828ea1
+     );
+     box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+   }
 
   .bn632-hover.bn26.apagado {
     background-image: linear-gradient(to right, grey, grey, grey, grey);

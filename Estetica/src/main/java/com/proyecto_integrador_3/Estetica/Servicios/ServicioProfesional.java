@@ -4,13 +4,16 @@ import static java.lang.Boolean.TRUE;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
@@ -22,6 +25,7 @@ import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
+import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
@@ -95,17 +99,95 @@ public class ServicioProfesional {
 	        return repositorioProfesional.findById(id).orElse(null);
 	    }
 		
+	    public String manejoDeErroresControladorProfesional(String identificador, String error, Model model) {
+	    	Boolean isEspecialidadDisabled = false;
+			Boolean isProfesionalDisabled = false;
+			Boolean isFechaDisabled = false;
+			Boolean isHorarioDisabled = false;
+			Boolean isTratamientoDisabled = false;
+			
+			model.addAttribute("error", error);
+			model.addAttribute("isFechaDisabled", isFechaDisabled);
+			model.addAttribute("isEspecialidadDisabled",isEspecialidadDisabled);
+			model.addAttribute("isProfesionalDisabled",isProfesionalDisabled);
+			model.addAttribute("isHorarioDisabled" ,isHorarioDisabled);
+			model.addAttribute("isTratamientoDisabled" ,isTratamientoDisabled);
+			model.addAttribute("showModalError", true);
+			switch (identificador) {
+			case "tratamientoFacial":
+				return "/pagina_cliente/reservaDeTurnoClienteFacial";
+			case "tratamientoCorporal":
+				return "/pagina_cliente/reservaDeTurnoClienteCorporal";
+			case "tratamientoEstetico":	
+				return "/pagina_cliente/reservaDeTurnoClienteEstetico";
+			}			
+	    	return"";
+	    }
+	
+	    public String manejoDeErroresSeleccionDeFecha(
+	    		String identificador,
+	    		String error,
+	    		Model modelo) {
+	    	
+	    	Boolean isProfesionalDisabled = false;
+			Boolean isEspecialidadDisabled = false;
+			Boolean isFechaDisabled = false;
+	    	
+	    	modelo.addAttribute("error", error);
+			modelo.addAttribute("showModalError", true);
+			modelo.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
+			modelo.addAttribute("isEspecialidadDisabled", isEspecialidadDisabled);
+			modelo.addAttribute("isFechaDisabled", isFechaDisabled);
+			if (identificador.equals("tratamientoFacial")) {
+				return "/pagina_cliente/reservaDeTurnoClienteFacial";
+			}else if(identificador.equals("tratamientoCorporal")) {
+				return "/pagina_cliente/reservaDeTurnoClienteCorporal";
+			}else if(identificador.equals("tratamientoEstetico")) {
+				return "/pagina_cliente/reservaDeTurnoClienteEstetico";
+			}else {
+				return "";
+			}
+	    	
+	    }
 		
+		
+	    public List<TipoDeEspecialidad> listarEspecialidadesDisponibles(String identificador){
+		List<TipoDeEspecialidad> especialidadDisponibles = null;
+		// Se filtra la lista de enum de tipo especialidades segun el identificador seleccionado y se guarda en la lista vacía
+				if (identificador.equals("tratamientoFacial")) {
+					 List<TipoDeEspecialidad> especialidadesConFacial = Arrays.stream(TipoDeEspecialidad.values())
+					            .filter(especialidad -> especialidad.name().contains("FACIAL"))
+					            .collect(Collectors.toList());
+					 especialidadDisponibles = especialidadesConFacial;
+					 
+				}else if(identificador.equals("tratamientoCorporal")) {
+					List<TipoDeEspecialidad> especialidadesCorporal = Arrays.stream(TipoDeEspecialidad.values())
+				            .filter(especialidad -> especialidad.name().contains("CORPORAL"))
+				            .collect(Collectors.toList());
+				 especialidadDisponibles = especialidadesCorporal;
+				 
+				}else if(identificador.equals("tratamientoEstetico")) {
+					List<TipoDeEspecialidad> especialidadesEstetico = Arrays.stream(TipoDeEspecialidad.values())
+				            .filter(especialidad -> especialidad.name().contains("ESTETICO"))
+				            .collect(Collectors.toList());
+				 especialidadDisponibles = especialidadesEstetico;
+				}else {
+					//Si por alguna razon el identificador esta vacio o es diferente a las opciones indicadas, devuelve una lista vacía
+					especialidadDisponibles = Collections.emptyList();
+				}
+				
+		return especialidadDisponibles;
+	}	
 	    
 
 	@Transactional
 	public void registrarProfesional(String email, String matricula, String provincia,
-			String direccion, String telefono, String sexo, String especialidadesSeleccionadas,
+			String direccion, String telefono, String sexo, String especialidadesSeleccionadas, String tipoEspecialidadesSeleccionadas,
 			String DiasDeLaSemanaSeleccionados, String horariosSeleccionados, String tratamientosSeleccionados ) throws MiExcepcion {
 		
 		   //Validamos todos los datos ingresados por el usuario antes de crear al profesional
 				validarDatosProfesional(matricula, sexo, telefono, provincia, direccion,
-						especialidadesSeleccionadas, DiasDeLaSemanaSeleccionados, horariosSeleccionados, tratamientosSeleccionados);
+						especialidadesSeleccionadas, tipoEspecialidadesSeleccionadas, DiasDeLaSemanaSeleccionados, horariosSeleccionados, tratamientosSeleccionados);
 		
 		//Obtenemos el string de especialidades, lo dividimos y lo pasamos a una lista de enum Especialidades
 		List<Especialidad> listaEspecialidad = new ArrayList<>();
@@ -114,6 +196,14 @@ public class ServicioProfesional {
 			 Especialidad nuevoEspecialidad = null;
 			 nuevoEspecialidad = Especialidad.valueOf(especialidades.toUpperCase());
 			 listaEspecialidad.add(nuevoEspecialidad);
+		}
+		
+		List<TipoDeEspecialidad> listaTipoDeEspecialidad = new ArrayList<>();
+		List<String> tipoDeEspecialidadList = Arrays.asList(tipoEspecialidadesSeleccionadas.split(","));
+		for (String especialidades : tipoDeEspecialidadList) {
+			 TipoDeEspecialidad nuevoTipoDeEspecialidad = null;
+			 nuevoTipoDeEspecialidad = TipoDeEspecialidad.valueOf(especialidades.toUpperCase());
+			 listaTipoDeEspecialidad.add(nuevoTipoDeEspecialidad);
 		}
 		
 		//Obtenemos el string de diasDeLaSemana, lo dividimos y lo pasamos a una lista de enum DiasDeLaSemana
@@ -187,6 +277,7 @@ public class ServicioProfesional {
 			nuevo_profesional.setApellido(datosPersonalesPersona.getApellido());
 			nuevo_profesional.setMatricula(matricula);
 			nuevo_profesional.setEspecialidad(listaEspecialidad);
+			nuevo_profesional.setTipoEspecialidad(listaTipoDeEspecialidad);
 			nuevo_profesional.setDiasDeLaSemana(listaDiasDeLaSemana);
 			nuevo_profesional.setHorariosLaborales(horariosList);
 			nuevo_profesional.setTratamientos(listaTratamientos);
@@ -247,7 +338,7 @@ public class ServicioProfesional {
 	}
 	
 	 public void validarDatosProfesional(String matricula, String sexo, String telefono, String provincia,
-			 String direccion, String especialidadesSeleccionadas, String DiasDeLaSemanaSeleccionados,
+			 String direccion, String especialidadesSeleccionadas, String tipoEspecialidadesSeleccionadas, String DiasDeLaSemanaSeleccionados,
 			 String horariosSeleccionados, String tratamientosSeleccionados) throws MiExcepcion {
 	
 		 // Expresión regular para validar un telefono
@@ -282,6 +373,10 @@ public class ServicioProfesional {
 		 if (direccion == null || direccion.isEmpty() || direccion.trim().isEmpty()) {
 			 throw new MiExcepcion("La dirección no puede estar vacia");
 		 }
+		 
+		 if (tipoEspecialidadesSeleccionadas.isEmpty() || tipoEspecialidadesSeleccionadas.trim().isEmpty() || tipoEspecialidadesSeleccionadas == null) {
+			 throw new MiExcepcion("Debe seleccionar por lo menos un tipo de especialidad");
+		}
 		 
 		 if (especialidadesSeleccionadas.isEmpty() || especialidadesSeleccionadas.trim().isEmpty() || especialidadesSeleccionadas == null) {
 			 throw new MiExcepcion("Debe seleccionar por lo menos una especialidad");
