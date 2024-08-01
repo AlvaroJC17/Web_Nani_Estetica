@@ -118,11 +118,11 @@ public class PruebaSQL implements CommandLineRunner {
 		
 		
 		
-//		List<Turnos> turnosPendientes = repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaAsc(EstadoDelTurno.PENDIENTE, true, false, "cliente1@cliente1.com");
+//		List<Turnos> turnosPendientes = repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaCreacion(EstadoDelTurno.PENDIENTE, true, false, "cliente4@cliente4.com");
 //				
 //		
 //		for (Turnos turnos2 : turnosPendientes) {
-//			System.out.println("Turnos disponibles activos: " + turnos2.getFecha());
+//			System.out.println("Turnos disponibles activos: " + turnos2.getFecha() + " " + turnos2.getFechaCreacion());
 //		}
 //		
 //		List<Turnos> turnosCancelados = repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaAsc(EstadoDelTurno.CANCELADO, false, false, "cliente1@cliente1.com");

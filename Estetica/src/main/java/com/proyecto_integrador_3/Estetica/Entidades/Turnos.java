@@ -24,6 +24,7 @@ import jakarta.persistence.TemporalType;
 import jakarta.persistence.Transient;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,6 +61,9 @@ public class Turnos {
 	@Column(name = "fecha")
 	@Temporal(TemporalType.DATE)
 	protected LocalDate fecha;
+	
+	@Column(name = "fecha_creacion")
+	protected LocalDateTime fechaCreacion;
 	
 	@Column(name = "horario")
 	String horario;
@@ -101,13 +105,14 @@ public class Turnos {
 		
 	}
 		
-	public Turnos(String provincia, Profesional profesional, LocalDate fecha, String horario, List<Tratamiento> tratamiento, String dni,
+	public Turnos(String provincia, Profesional profesional, LocalDate fecha, LocalDateTime fechaCracion, String horario, List<Tratamiento> tratamiento, String dni,
 			String email, Boolean activo, Boolean multa, String costoMulta, EstadoDelTurno estado, Rol canceladoPor) {
 		this.dni = dni;
 		this.email = email;
 		this.provincia = provincia;
 		this.profesional = profesional;
 		this.fecha = fecha;
+		this.fechaCreacion = fechaCracion;
 		this.horario = horario;
 		this.tratamientos = tratamiento;
 		this.activo = activo;
@@ -118,7 +123,14 @@ public class Turnos {
 	}
 	
 
+	public LocalDateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
 
+
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
 
 
 	public Rol getCanceladoPor() {

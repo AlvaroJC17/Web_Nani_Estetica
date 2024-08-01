@@ -67,7 +67,7 @@ public class ServicioCodigoDeVerificacion {
         try {
 			servicioEmail.enviarEmailUsuario(datosDelEmail);
 		} catch (Exception e) {
-			throw new MiExcepcion("Error al enviar email con codigo de verificación " + e);
+			throw new MiExcepcion("Error al enviar codigo de verificación.");
 		}
 	  }
 			

@@ -143,7 +143,6 @@ public class ControladorPagina {
 			@RequestParam(required = false)String accion,
 			Model modelo) throws MiExcepcion {	
 		
-		System.out.println("valor de accion: " + accion);
 		try {
 			//Validamos que los datos ingresados sean correctos, sino tiramos una excepcion que sale por el catch
 			servicioUsuario.validarDatosDelUsuario(email, password, password2, fechaNacimiento);

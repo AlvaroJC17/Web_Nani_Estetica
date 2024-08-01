@@ -38,14 +38,6 @@ public class ControladorTurnos {
 	ServicioProfesional servicioProfesional;
 	
 	
-	  
-//	 //Sirve para actualizar el precio de la multa en toda la base de datos  
-//	@PutMapping("/actualizarPrecioMulta")
-//	public void actualizarMultas(@RequestParam String nuevaMulta) {
-//		servicioTurnos.actualizarMultas(nuevaMulta);
-//	}
-	   
-	
 	//Controlador para visualizar turnos del cliente
 	@GetMapping("/misturnos")
 	public String misturnos(
@@ -66,17 +58,26 @@ public class ControladorTurnos {
 		//busca todos los turnos disponinbles del usuario y los pasa a la vista
 		//List<Turnos> turnosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
 		
+		//Obtenemos los tunos asistidos, turnos activos, turnos cancelados y turnos con multa.
 		List<Turnos> turnosAsistidos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.ASISTIDO, false, false, email);
 		List<Turnos> turnosActivos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.PENDIENTE, true, false, email);
 		List<Turnos> turnosCancelados = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, false, email);
 		List<Turnos> turnosConMulta = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, true, email);
 		
-		model.addAttribute("email", email);
-		model.addAttribute("datosCliente", datosCliente);
-		 model.addAttribute("turnosActivos", turnosActivos);
-         model.addAttribute("turnosAsistidos", turnosAsistidos);
-         model.addAttribute("turnosConMulta", turnosConMulta);
-         model.addAttribute("turnosCancelados", turnosCancelados);
+		
+		//Filtramos las listas anteriores para que solo muestren los ultimos tres registros guardados
+		List<Turnos> obtenerUltimosTresRegistrosActivos = servicioTurnos.obtenerUltimosTresRegistros(turnosActivos);
+		List<Turnos> obtenerUltimosTresRegistrosAsistidos = servicioTurnos.obtenerUltimosTresRegistros(turnosAsistidos);
+		List<Turnos> obtenerUltimosTresRegistrosConMulta = servicioTurnos.obtenerUltimosTresRegistros(turnosConMulta);
+		List<Turnos> obtenerUltimosTresRegistrosCancelados = servicioTurnos.obtenerUltimosTresRegistros(turnosCancelados);
+		
+		
+		 model.addAttribute("email", email);
+		 model.addAttribute("datosCliente", datosCliente);
+		 model.addAttribute("turnosActivos", obtenerUltimosTresRegistrosActivos);
+         model.addAttribute("turnosAsistidos", obtenerUltimosTresRegistrosAsistidos);
+         model.addAttribute("turnosConMulta", obtenerUltimosTresRegistrosConMulta);
+         model.addAttribute("turnosCancelados", obtenerUltimosTresRegistrosCancelados);
          return "/pagina_cliente/misturnos";	
 		
 			

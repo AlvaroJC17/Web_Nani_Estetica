@@ -413,7 +413,8 @@ public class ControladorCliente {
 				List<String> crearyObtenerHorariosDisponibles = servicioHorario.crearyObtenerHorariosDisponibles(fechaSeleccionada, idProfesional);
 				
 				
-				//Guarda en la base de datos la lista de horarios disponibles pertenecientes a la fecha y el id del profesional que le pasamos
+				//Guarda en la base de datos la lista de horarios disponibles pertenecientes a la fecha y el id del profesional que le pasamos, si la
+				//lista ya existe, entonces la actualiza en la base de datos
 				servicioHorario.guardarHorariosDisponibles(fechaSeleccionada, crearyObtenerHorariosDisponibles, idProfesional);
 				
 				//Solo si la fecha seleccionada es igual a la fecha actual, entonces se entra en este metodo
@@ -602,6 +603,11 @@ public class ControladorCliente {
 		//Buscamos los enum de tratamientos y lo filtramos por el tipo de especialidad seleccionado por el cliente
 		List<Tratamiento> tratamientosProfesional = servicioProfesional.buscarTratamitosPorProfesional(idProfesional);
 		
+		//Obetenemos los horarios del profesional por fecha y id del profesional, puede devolver una lista con horarios disponibles
+		//o puede devolver una lista vacia si ya al profesional le solicitaron todos los horarios de esa fecha
+		List <String> ObtenerHorariosDisponibles = servicioHorario.obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fechaSeleccionada);
+		Collections.sort(ObtenerHorariosDisponibles); //ordenamos la lista por horas de menor a mayor
+		
 		// Determinamos la palabra clave según el identificador
         final String palabraClave = identificador.equals("tratamientoFacial") ? "FACIAL" :
                                     identificador.equals("tratamientoCorporal") ? "CORPORAL" :
@@ -638,6 +644,7 @@ public class ControladorCliente {
 		modelo.addAttribute("idProfesional", idProfesional);
 		modelo.addAttribute("provincias", Provincias.values());
 		modelo.addAttribute("horarioSeleccionado", horario);
+		modelo.addAttribute("horarios", ObtenerHorariosDisponibles);
 		modelo.addAttribute("tratamientos", tratamientosFiltrados);
 		modelo.addAttribute("isEspecialidadDisabled", isEspecialidadDisabled); //habilitamos el select de especialidades
 		modelo.addAttribute("isProfesionalDisabled", isProfesionalDisabled);
@@ -741,10 +748,18 @@ public class ControladorCliente {
                 //Obtenemos una lista de turnos del usuario a traves de su id
                //List<Turnos> tunosDisponibles = servicioTurnos.buscarTurnoPorClienteId(idCliente);
 				
-				List<Turnos> turnosAsistidos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.ASISTIDO, false, false, emailCliente);
+				//Obtenemos los tunos asistidos, turnos activos, turnos cancelados y turnos con multa.
 				List<Turnos> turnosActivos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.PENDIENTE, true, false, emailCliente);
-				List<Turnos> turnosCancelados = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, false, emailCliente);
+				List<Turnos> turnosAsistidos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.ASISTIDO, false, false, emailCliente);
 				List<Turnos> turnosConMulta = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, true, emailCliente);
+				List<Turnos> turnosCancelados = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, false, emailCliente);
+				
+				//Filtramos las listas anteriores para que solo muestren los ultimos tres registros guardados
+				List<Turnos> obtenerUltimosTresRegistrosAsistidos = servicioTurnos.obtenerUltimosTresRegistros(turnosAsistidos);
+				List<Turnos> obtenerUltimosTresRegistrosActivos = servicioTurnos.obtenerUltimosTresRegistros(turnosActivos);
+				List<Turnos> obtenerUltimosTresRegistrosConMulta = servicioTurnos.obtenerUltimosTresRegistros(turnosConMulta);
+				List<Turnos> obtenerUltimosTresRegistrosCancelados = servicioTurnos.obtenerUltimosTresRegistros(turnosCancelados);
+				
                 
                 
                 //Se dispara el modal de exito y se redirecciona a la pagina de mis turnos
@@ -756,10 +771,10 @@ public class ControladorCliente {
                 		+ "Atentamente,<br><br>"
                 		+ "Nani Estetica</span>";
                 model.addAttribute("exito", exito);
-                model.addAttribute("turnosActivos", turnosActivos);
-                model.addAttribute("turnosAsistidos", turnosAsistidos);
-                model.addAttribute("turnosConMulta", turnosConMulta);
-                model.addAttribute("turnosCancelados", turnosCancelados);
+                model.addAttribute("turnosAsistidos", obtenerUltimosTresRegistrosAsistidos);
+                model.addAttribute("turnosActivos", obtenerUltimosTresRegistrosActivos);
+                model.addAttribute("turnosConMulta", obtenerUltimosTresRegistrosConMulta);
+                model.addAttribute("turnosCancelados", obtenerUltimosTresRegistrosCancelados);
                 model.addAttribute("emailCliente", emailCliente);
                 model.addAttribute("idProfesional", idProfesional);
                 model.addAttribute("idCliente", idCliente);
@@ -990,7 +1005,6 @@ public class ControladorCliente {
 			@RequestParam(required = false) String telefono,
 			ModelMap model) throws MiExcepcion {
 		
-		System.out.println("ID cliente: " + idCliente);
 		//Buscamos mediante el id el mail anterior del cliente y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
 		// entonces usamos este mail anterior para poder pasarlo al controlador de misdatosClientes y poder visualizar los datos del cliente
 		// Tambien buscamos los valores previamente guardados en la base de datos para poder compararlos con los nuevos

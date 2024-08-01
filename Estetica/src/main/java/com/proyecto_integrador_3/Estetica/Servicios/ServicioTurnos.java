@@ -76,8 +76,17 @@ public class ServicioTurnos {
 	}
 	
 	public List<Turnos> obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno estado, Boolean activo, Boolean multa, String emailCliente){
-		return repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaAsc(estado, activo, multa, emailCliente);
+		return repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaCreacion(estado, activo, multa, emailCliente);
 	}
+	
+	 public List<Turnos> obtenerUltimosTresRegistros(List<Turnos> turnos) {
+	        int size = turnos.size();
+	        if (size > 3) {
+	            return turnos.subList(size - 3, size);
+	        } else {
+	            return turnos;
+	        }
+	    }
 	
 	 public boolean checkActiveTurnos(String email) throws MiExcepcion {
 		 try {
@@ -389,6 +398,13 @@ public class ServicioTurnos {
 			}
 			
 		}
+		
+		LocalDateTime fechaDeCreacionTurno = null;
+		try {
+			fechaDeCreacionTurno = LocalDateTime.now();
+		} catch (Exception e) {
+			System.out.println("No se puede obtener la fecha de creacion del turno");
+		}
 	
 		//Funcion para pasar un fecha de tipo String a LocalDate
 		LocalDate fechaUsuario = servicioHorario.pasarFechaStringToLocalDate(fechaSeleccionada);
@@ -415,6 +431,7 @@ public class ServicioTurnos {
 		nuevoTurno.setProfesional(new Profesional(idProfesional));
 		nuevoTurno.setCliente(datosDelCliente);
 		nuevoTurno.setFecha(fechaUsuario);
+		nuevoTurno.setFechaCreacion(fechaDeCreacionTurno);
 		nuevoTurno.setHorario(horario);
 		nuevoTurno.setEmail(email);
 		nuevoTurno.setTratamientos(listaTratamientos);

@@ -369,10 +369,7 @@ footer {
     height: auto;
     width: 355px;
     margin: 21px;
-    border-radius: 5px;
-    font-size: 20px;
-    background-color: #c0dfda;
-    border: 2px solid white;
+    background-color: #E0E0E0;
     box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);
 }
 
