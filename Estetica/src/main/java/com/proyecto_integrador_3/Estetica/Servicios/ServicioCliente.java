@@ -153,16 +153,24 @@ public class ServicioCliente {
 		 
 		 // Expresión regular para validar un telefono
 		 String regex = "\\d{7,10}";
-		 
 		 // Compilar la expresión regular
 		 Pattern pattern = Pattern.compile(regex);
-		 
 		 // Crear un objeto Matcher
 		 Matcher matcher = pattern.matcher(telefono);
+		 
+		//Expresion regular para validar el numero de dni		 
+		 String regexDni = "\\d{7,8}";
+		 Pattern patternDni = Pattern.compile(regexDni);
+		 Matcher matcherDni = patternDni.matcher(dni);
 		 
 		 if (!matcher.matches()) {
 			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+		 } 
+		 
+		 if (!matcherDni.matches()) {
+			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+					 + "<span class='fs-6'>El dni no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
 		 } 
 		 
 		 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
@@ -202,7 +210,7 @@ public class ServicioCliente {
 		 
 		 // Crear un objeto Matcher
 		 Matcher matcher = pattern.matcher(telefono);
-		 
+		  
 		 if (!matcher.matches()) {
 			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");

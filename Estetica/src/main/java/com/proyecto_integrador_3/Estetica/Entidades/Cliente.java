@@ -148,14 +148,14 @@ public class Cliente extends Persona implements Serializable {
 	}
 
 
-	public Cliente(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, Date fechaNacimiento) {
-		super(id, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
+	public Cliente(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, Date fechaNacimiento) {
+		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
 		
 	}
 
-	public Cliente(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, String dni, String nombre, String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento,
+	public Cliente(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, String dni, String nombre, String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento,
 			String domicilio, Integer telefono ) {
-		super(id, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
+		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
 	}
 		
 	

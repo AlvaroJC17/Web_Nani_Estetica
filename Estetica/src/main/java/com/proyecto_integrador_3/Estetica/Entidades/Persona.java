@@ -2,6 +2,7 @@ package com.proyecto_integrador_3.Estetica.Entidades;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
@@ -61,9 +62,9 @@ public class Persona extends Usuario implements Serializable{
 		this.id = id;
 	}
 
-	public Persona(String id, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm, String nombre, String apellido,
+	public Persona(String id, List<TokenUsuario> tokens, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm, String nombre, String apellido,
 			String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, String telefono) {
-		super(id, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
+		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -85,14 +86,14 @@ public class Persona extends Usuario implements Serializable{
 		this.telefono = telefono;
 	}
 
-	public Persona(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, Date fechaNacimiento) {
-		super(id, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
+	public Persona(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, Date fechaNacimiento) {
+		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
 	}
 		
-	public Persona(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean validacionForm,
+	public Persona(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean validacionForm,
 			String dni, String nombre, String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento,
 			String domicilio, String telefono) {
-		super(id, email, contrasena, rol, activo, validacionForm, fechaNacimiento);
+		super(id, tokens, email, contrasena, rol, activo, validacionForm, fechaNacimiento);
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -117,6 +118,8 @@ public class Persona extends Usuario implements Serializable{
 		
 	}
 
+	
+	
 	public String getId() {
 		return id;
 	}

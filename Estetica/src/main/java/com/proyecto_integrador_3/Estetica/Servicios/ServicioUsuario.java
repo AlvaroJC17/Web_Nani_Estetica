@@ -150,16 +150,21 @@ public class ServicioUsuario {
 		return nombreUsuario;
 		}
 		
-		
+		@Transactional
 		public List<Usuario> buscarPorEmail(String email) {
 			List<Usuario> emailUsuario = repositorioUsuario.obtenerDatosPersonaUsuarioPorEmail(email);
 		return emailUsuario;
 		}
 		
 		
-		public Optional<Usuario> buscarPorEmailOptional(String email) {
-			Optional<Usuario> emailUsuario = repositorioUsuario.buscarPorEmailOptional(email);
-		return emailUsuario;
+		@Transactional
+		public Optional<Usuario> buscarPorEmailOptional(String email) throws MiExcepcion {
+			try {
+				Optional<Usuario> emailUsuario = repositorioUsuario.buscarPorEmailOptional(email);
+				return emailUsuario;
+			} catch (Exception e) {
+				throw new MiExcepcion("Error al conectar con la base de datos");
+			}
 		}
 		
 		
@@ -369,19 +374,19 @@ public class ServicioUsuario {
 			}
 	    	
 	    	if (contrasenaAnterior.isEmpty()) {
-	    		throw new MiExcepcion("La contrasena anterior no puede estar vacia");
+	    		throw new MiExcepcion("La contrasena anterior no puede estar vacio");
 			}
 	    	if (contrasenaNueva.isEmpty()) {
-	    		throw new MiExcepcion("La nueva contrasena no puede estar vacia");
+	    		throw new MiExcepcion("La nueva contrasena no puede estar vacio");
 			}
 	    	if (repetirNuevaContrasena.isEmpty()) {
-	    		throw new MiExcepcion("Repetir la contrasena no puede estar vacia");	
+	    		throw new MiExcepcion("Repetir la contrasena no puede estar vacio");	
 			}
 	    	if (!contrasenaRegistrada.equals(oldPassword)) {
 				throw new MiExcepcion("La contrasena anterior es incorrecta");
 			}
 	    	 if (!matcher.matches()) {
-	        	 throw new MiExcepcion("La contrasena debe tener al menos 8 digitos, una mayuscula, una minuscula y un numero.");
+	        	 throw new MiExcepcion("La nueva contrasena debe tener al menos 8 dígitos, una mayúscula, una minúscula y un numeró.");
 	         }  
 	    	if (contrasenaRegistrada.equals(contrasenaNueva)) {
 	    		throw new MiExcepcion("La nueva contrasena no puede ser igual a la enterior");

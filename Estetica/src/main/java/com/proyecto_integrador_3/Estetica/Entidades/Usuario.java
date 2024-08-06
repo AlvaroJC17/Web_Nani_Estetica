@@ -3,7 +3,9 @@ package com.proyecto_integrador_3.Estetica.Entidades;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 
@@ -35,6 +37,9 @@ public class Usuario implements Serializable {
 	@GeneratedValue(strategy = GenerationType.UUID) // genera valores alfanumericos como id
 	@Column(name = "id") //Identifica este campo como id en la tabla
 	protected String id;
+	
+	@OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
+	protected List<TokenUsuario> tokens = new ArrayList<>();
 	
 	@Column(name = "email")
 	protected String email;
@@ -69,8 +74,13 @@ public class Usuario implements Serializable {
 	
 	public Usuario() {};
 	
-	public Usuario(String id, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, Date fechaNacimiento) {
+	public Usuario(String id) {
 		this.id = id;
+	}
+	
+	public Usuario(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, Date fechaNacimiento) {
+		this.id = id;
+		this.tokens = tokens;
 		this.email = email;
 		this.contrasena = contrasena;
 		this.rol = rol;
@@ -83,6 +93,14 @@ public class Usuario implements Serializable {
 	}
 	
 	
+
+	public List<TokenUsuario> getTokens() {
+		return tokens;
+	}
+
+	public void setTokens(List<TokenUsuario> tokens) {
+		this.tokens = tokens;
+	}
 
 	public LocalDateTime getFechaCreacion() {
 		return fechaCreacion;
@@ -168,10 +186,14 @@ public class Usuario implements Serializable {
 
 	@Override
 	public String toString() {
-		return "Usuario [id=" + id + ", email=" + email + ", contrasena=" + contrasena + ", rol=" + rol + ", activo="
-				+ activo + ", ValidacionForm=" + ValidacionForm + ", fechaNacimiento=" + fechaNacimiento + ", persona="
-				+ persona + "]";
+		return "Usuario [id=" + id + ", tokens=" + tokens + ", email=" + email + ", contrasena=" + contrasena + ", rol="
+				+ rol + ", activo=" + activo + ", ValidacionForm=" + ValidacionForm + ", fechaNacimiento="
+				+ fechaNacimiento + ", emailValidado=" + emailValidado + ", fechaCreacion=" + fechaCreacion
+				+ ", persona=" + persona + "]";
 	}
+
+
+	
 
 
 

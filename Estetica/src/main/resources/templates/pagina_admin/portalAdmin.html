@@ -143,9 +143,9 @@
 									<tr class="">
 										<th class="text-center">Seleccionar</th>
 										<th class="text-center">DNI</th>
+										<th class="text-center">ID</th>
 										<th class="text-center">Nombre</th>
 										<th class="text-center">Apellido</th>
-										<th class="text-center">ID</th>
 										<th class="text-center">Email</th>
 										<th class="text-center">Rol</th>
 										<th class="text-center">Activo</th>
@@ -161,9 +161,9 @@
 											</div>
 										</td> 
 										<td class="text-center" th:text="${usuarios.dni}"></td>
+										<td class="text-center" th:text="${#strings.substring(usuarios.id, usuarios.id.length() - 12)}"></td>
 										<td class="text-center" th:text="${#strings.toUpperCase(usuarios.nombre)}"></td>
 										<td class="text-center" th:text="${#strings.toUpperCase(usuarios.apellido)}"></td>
-										<td class="text-center" th:text="${#strings.substring(usuarios.id, usuarios.id.length() - 12)}"></td>
 										<td class="text-center" th:text="${#strings.toLowerCase(usuarios.email)}"></td>
 										<td class="text-center" th:text="${usuarios.rol}"></td>
 										<td class="text-center" th:text="${usuarios.activo}"></td>

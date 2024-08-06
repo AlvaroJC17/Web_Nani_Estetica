@@ -16,6 +16,8 @@ import com.proyecto_integrador_3.Estetica.Enums.Rol;
 @Repository
 public interface RepositorioUsuario extends JpaRepository<Usuario, String>  {
 
+	Optional<Usuario> findByEmail(String email);
+	
 	//Metodo para buscar por DNI
 	@Query("SELECT u FROM Usuario u WHERE u.dni = :dni")
 	List<Usuario> buscarPorDni(@Param("dni") String dni);

@@ -247,7 +247,7 @@
 				                    <div class="col-md-6">
 				                      <label for="opciones2" class="form-label texto-label mb-0">Selecciona una opción:</label>
 				                        <select aria-label="Default select example" class="form-select" id="opciones2" name="especialidad" onchange="agregarOpcion()">
-				                        <option th:each="tipoEspecialidades : ${tipoEspecialidad}" th:value="${tipoEspecialidades}" th:text="${tipoEspecialidades}">Opción 2</option>
+				                        <option th:each="tipoEspecialidades : ${tipoEspecialidad}" th:value="${tipoEspecialidades}" th:text="${tipoEspecialidades.DisplayName}">Opción 2</option>
 				                        </select>
 				                      </div>
 				         

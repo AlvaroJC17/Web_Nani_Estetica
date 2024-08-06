@@ -19,6 +19,20 @@ public class ServicioPersona {
 	@Autowired
 	public RepositorioPersona repositorioPersona;
 	
+	@Transactional
+	public Optional<Persona> buscarPersonaPorEmailOptional(String emailUsuario) throws MiExcepcion{
+		
+		try {
+			Optional<Persona> buscarPersona = repositorioPersona.buscarPorEmailOptional(emailUsuario);
+			return buscarPersona;
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con la base de datos");
+		}
+	}
+			
+	
+		
+	
 	//Borra una persona de la base de datos
 	@Transactional
 	public void borrarPersona(String id) throws MiExcepcion {

@@ -3,8 +3,6 @@ package com.proyecto_integrador_3.Estetica.Enums;
 public enum TipoDeEspecialidad {
 
 	FACIAL_COSMETOLOGA("Cosmetologa"),
-	FACIAL_PRUEBA1("prueba1"),
-	FACIAL_PRUEBA2("prueba2"),
 	ESTETICO_LASHISTA("Lashista"),
 	ESTETICO_PEDICURA("Pedicura"),
 	ESTETICO_MANICURA("Manicura"),

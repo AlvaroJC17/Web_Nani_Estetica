@@ -146,7 +146,7 @@ public class ControladorAdmin {
 			@RequestParam(required = false) String dato2, //proviene del metodo modificarUsuario
 			@RequestParam(required = false) String usuarioModificado, //proviene del metodo modificarUsuario
 			//@RequestParam(name = "activarMensaje", required = false) Boolean activarMensaje,
-			Model model) {
+			Model model) throws MiExcepcion {
 		
 		/*Dato2 lo usamos como una variable para recibir la informacion del modal de exito de portalAdmin
 		 * no puedo usar le mismo nobre de dato porque me da error por lo que tuve que crear dato2, una vez

@@ -216,7 +216,7 @@ public class ControladorProfesional {
 	public String buscadorPacientes(
 			@RequestParam(required = false) String dato,  //la variable dato puede ser un nombre, dni o mail
 			@RequestParam String email,
-			Model model) {
+			Model model) throws MiExcepcion {
 		
 							
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);

@@ -28,6 +28,12 @@ public class ServicioEmail {
 
 	@Autowired
 	RepositorioPersona repositorioPersona;
+	
+	@Autowired
+	ServicioPersona servicioPersona;
+	
+	@Autowired
+	ServicioToken servicioToken;
 
 	 private  JavaMailSender emailSender;
 
@@ -39,6 +45,66 @@ public class ServicioEmail {
 		 this.templateEngine = templateEngine;
 	 }
 
+	//Esta es el metodo que se encarga de enviar los mial, recibe como parametro una
+		 //entidad EmailUsuario y un String con el nombre del archivo html que quiero usar para el mensaje
+		    public void enviarEmailUsuarioOlvidoContrasena(EmailUsuarios emailUsuarios, String emailDelUsuario) throws MiExcepcion {
+				
+		    	//Generamos un token alfanumerico aleatorio
+		    	String token = servicioToken.generarToken();
+		    	
+		    	//Guardamos el token en la base y lo asociamos al usuario
+		    	servicioToken.almacenarToken(token, emailDelUsuario);
+		    
+		    	//Buscamos el nombre del cliente asociado a ese turno para pasarlo al emial de confimación
+				Optional <Persona> datosCliente = servicioPersona.buscarPersonaPorEmailOptional(emailDelUsuario);
+				
+		        String nombreDelCliente = null;
+				if (datosCliente.isPresent()) {
+					Persona nombreCliente = datosCliente.get();
+					nombreDelCliente = nombreCliente.getNombre();
+				}
+		    	
+				String dominio = "http://localhost:8080"; // Cambia el puerto si estás usando otro
+				String rutaRestablecer = "/cambiarContrasena?token=" + token;
+				String linkCambioContrasena = dominio + rutaRestablecer;
+			
+				
+		    	try {
+		        	MimeMessage mensaje = emailSender.createMimeMessage();
+		        	MimeMessageHelper helper = new MimeMessageHelper(mensaje, true, "UTF-8");
+					helper.setTo(emailUsuarios.getDestinatario());
+					helper.setSubject(emailUsuarios.getAsunto());
+					Context context = new Context();
+					context.setVariable("mensaje", linkCambioContrasena); // se pueden crear varias setVariables para enviar varias variables al documento HTML
+					context.setVariable("cliente", nombreDelCliente);
+					context.setVariable("token", token);
+					String contenidoHTML = templateEngine.process("emailLinkRestablecerContrasena", context);
+					helper.setText(contenidoHTML, true); // el true es para que no envie texto plano sino que reconozca todo el formato HTML de la plantilla
+					emailSender.send(mensaje);
+					
+				}catch (MessagingException e) {
+					System.err.println("MessagingException class: " + e.getClass().getName());
+		            System.err.println("MessagingException message: " + e.getMessage());
+		            e.printStackTrace();
+
+		            // Verificar si la causa de la excepción es una SocketException
+		            Throwable cause = e.getCause();
+		            while (cause != null) {
+		                if (cause instanceof SocketException) {
+		                    throw new MiExcepcion("No se pudo enviar el email debido a un problema de conexión: ");
+		                }
+		                cause = cause.getCause();
+		            }
+		            // Si no es una SocketException, lanzar una excepción genérica
+		            throw new MiExcepcion("No se pudo enviar el email con el link necesario para el cambio de contraseña");
+		        } catch (Exception e) {
+		            System.err.println("Exception class: " + e.getClass().getName());
+		            System.err.println("Exception message: " + e.getMessage());
+		            e.printStackTrace();
+		            throw new MiExcepcion("No se pudo enviar el email con el link necesario para el cambio de contraseña");
+		        }
+		    }
+	 
 	 //Esta es el metodo que se encarga de enviar los mial, recibe como parametro una
 	 //entidad EmailUsuario y un String con el nombre del archivo html que quiero usar para el mensaje
 	    public void enviarEmailUsuario(EmailUsuarios emailUsuarios) throws MiExcepcion {

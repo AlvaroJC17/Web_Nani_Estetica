@@ -903,24 +903,6 @@ public class ControladorCliente {
 	}
 	
 	
-	
-	@GetMapping("/cambiarContrasenaCliente")
-	public String cambiarContrasenaCliente(
-			@RequestParam String email,
-			@RequestParam(required = false) String exito,
-			@RequestParam(required = false) String error,
-			ModelMap model) {
-		
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		
-		model.addAttribute("datosCliente", datosCliente);
-		model.addAttribute("exito", exito);
-		model.addAttribute("error", error);
-		return "/pagina_cliente/cambiarContrasenaCliente";
-	}
-		
-	
-	
 	@GetMapping("/completarDatosCliente")
 	public String completarDatos(
 			@RequestParam(name = "email") String emailUsuario,
@@ -1081,13 +1063,23 @@ public class ControladorCliente {
 			@RequestParam String repeatNewPass,
 			ModelMap model) throws MiExcepcion {
 		
+		System.out.println("EMAIL ACTUALIZAR: " + emailCliente);
+		System.out.println("ID ACTUALIZAR: " + idCliente);
+		System.out.println("OLDPASS ACTUALIZAR: " + oldPass);
+		System.out.println("NEWPASS ACTUALIZAR: " + newPass);
+		System.out.println("REPEATPASS ACTUALIZAR: " + repeatNewPass);
+		
 		String error = null;
 		try {
 			servicioUsuario.modificarContrasena(idCliente,oldPass, newPass, repeatNewPass);
 			return "/index";
 		} catch (Exception e) {
 			error = e.getMessage();
-			return "redirect:/cambiarContrasenaCliente?email=" + emailCliente + "&error=" + error;
+			 List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+	        model.addAttribute("datosCliente", datosCliente);
+			model.addAttribute("showModalError", true);
+			model.addAttribute("error", error);
+			return "cambiarContrasena";
 		}
 		
 	}

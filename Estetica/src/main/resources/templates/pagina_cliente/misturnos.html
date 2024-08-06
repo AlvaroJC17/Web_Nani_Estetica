@@ -69,9 +69,9 @@
 que se genere en iteracion, esto evita que al tener varios turnos, se cruce la info entre ellos al
 tener el mismo ID-->
 
-<div class="d-block">
+<div class="d-block mb-4">
 		<p style="border-bottom: solid 5px;" class="fs-1 border-warning">Turnos activos:</p>
-	<div class="d-flex flex-wrap ">	
+	<div class="d-flex flex-wrap justify-content-center">	
 		
 		<div class="text-center" th:if="${#lists.isEmpty(turnosActivos)}">
 		<p class="fs-3 fw-light">En este momento no posee turnos en esta categoria</p>
@@ -119,7 +119,7 @@ tener el mismo ID-->
 		  										del turno, <span class="fw-bold">serás multado y bloqueado</span> para seleccionar nuevos turnos hasta que hayas 
 		  										pagado la multa. En cambio si el turno es cancelado con <span class="fw-bold">más de 24 horas</span> de anticipación
 		  										<span class="fw-bold">no se aplicará ninguna sanción.</span> <br><br>
-S
+												
 		  										Si a pesar de esta advertencia deseas proceder con la cancelación, deberás dirigirte
 		  										nuevamente al portal de selección de turnos para generar uno nuevo.<br><br>
 		  										<span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
@@ -150,7 +150,7 @@ S
 			  </div>  
 			
 			  <p style="border-bottom: 5px solid;" class="fs-1 border-success">Turnos asistidos:</p>
-			  <div class="d-flex flex-wrap ">
+			  <div class="d-flex flex-wrap justify-content-center">
 			  
 			  <div class="text-center" th:if="${#lists.isEmpty(turnosAsistidos)}">
 				<p class="fs-3 fw-light">En este momento no posee turnos en esta categoria</p>
@@ -179,7 +179,7 @@ S
 			   
 			
 			<p style="border-bottom: 5px solid;" class="fs-1 border-danger">Turnos con multa:</p>
-			 <div class="d-flex flex-wrap ">		  
+			 <div class="d-flex flex-wrap justify-content-center">		  
 			
 			<div class="text-center" th:if="${#lists.isEmpty(turnosConMulta)}">
 			<p class="fs-3 fw-light">En este momento no posee turnos en esta categoria</p>
@@ -211,7 +211,7 @@ S
 			
 			
 			<p style="border-bottom: 5px solid;" class="fs-1 border-dark">Turnos cancelados:</p>
-			<div style="display: flex; flex-wrap: wrap-reverse;" class="">
+			<div class="d-flex flex-wrap justify-content-center">
 			
 			<div class="text-center" th:if="${#lists.isEmpty(turnosCancelados)}">
 			<p class="fs-3 fw-light">En este momento no posee turnos en esta categoria</p>

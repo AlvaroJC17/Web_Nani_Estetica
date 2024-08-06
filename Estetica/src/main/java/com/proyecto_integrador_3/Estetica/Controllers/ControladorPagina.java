@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
+import com.proyecto_integrador_3.Estetica.Entidades.TokenUsuario;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
 import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
@@ -20,18 +22,33 @@ import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioToken;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCodigoDeVerificacion;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioEmail;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioToken;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
-import com.proyecto_integrador_3.Estetica.Utilidad.Dias;
 
 @Controller
 public class ControladorPagina {
+	
+	@Autowired
+	public RepositorioUsuario repositorioUsuario;
+	
+	@Autowired
+	public RepositorioToken repositorioToken;
 	
 	@Autowired
 	public ServicioUsuario servicioUsuario;
 	
 	@Autowired
 	public ServicioCodigoDeVerificacion servicioCodigoDeVerificacion;
+	
+	@Autowired
+	public ServicioEmail servicioEmail;
+	
+	@Autowired
+	ServicioToken servicioToken;
 	
 	
 	@GetMapping("/login")
@@ -54,14 +71,81 @@ public class ControladorPagina {
 	return "olvidocontrasena";	
 	}
 	
-	@GetMapping("/cambiarContrasena")
-	public String cambiarContrasena() {
-	return "cambiarContrasena";	
-	}
-	
 	@GetMapping("/validadorDeCodigo")
 	public String validadorDeCodigo() {
 		return "validadorDeCodigo";
+	}
+	
+	@PostMapping("/enviarLinkCambioContrasena")
+	public String enviarLinkCambioContrasena(
+			@RequestParam String emailUsuario,
+			Model model) throws MiExcepcion {
+		
+		Optional<Usuario> buscarUsuario;
+		try {
+			buscarUsuario = servicioUsuario.buscarPorEmailOptional(emailUsuario);
+			if (buscarUsuario.isPresent()) {
+			
+				EmailUsuarios linkRestablecerContrasena = new EmailUsuarios();
+				linkRestablecerContrasena.setAsunto("Nani estética - RESTABLECER CONTRASEÑA");
+				linkRestablecerContrasena.setDestinatario("alvarocortesia@gmail.com");
+				
+				servicioEmail.enviarEmailUsuarioOlvidoContrasena(linkRestablecerContrasena, emailUsuario);
+				
+				String exito = "Se ha enviado un mensaje a su correo eléctronico para poder restablecer su contraseña";
+				model.addAttribute("exito", exito);
+				model.addAttribute("showModalExito", true);
+				return "olvidocontrasena";
+			}else {
+				String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+						 +"<span class='fs-6'>El correo eléctronico no se encuentra registrado."
+						 + " Por favor verifique e intente nuevamente.</span>";
+				model.addAttribute("error", error);
+				model.addAttribute("showModalError", true);
+				return "olvidocontrasena";
+			}
+		} catch (MiExcepcion e) {
+			
+			String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+					 +"<span class='fs-6'>Hubo un error al enviar el correo eléctronico, por favor intente más tarde";
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+			return "olvidocontrasena";
+		}
+	}
+	
+	@GetMapping("/cambiarContrasena")
+	public String cambiarContrasena(
+			@RequestParam(required = false) String token,
+			@RequestParam(required = false) String exito,
+			@RequestParam(required = false) String error,
+			ModelMap model) {
+		
+		
+		 if (servicioToken.validarToken(token)) {
+			 
+			 Optional <TokenUsuario> obetnerValoresDelToken = repositorioToken.findByToken(token);
+			 String emailAsociadoAlToken = null;
+			 if (obetnerValoresDelToken.isPresent()) {
+				TokenUsuario datosDelToken = obetnerValoresDelToken.get();
+				emailAsociadoAlToken = datosDelToken.getEmailUsuario();
+			}
+	            // Token válido, mostrar formulario de restablecimiento
+			 List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailAsociadoAlToken);
+	            model.addAttribute("datosCliente", datosCliente);
+	    		model.addAttribute("exito", exito);
+	    		return "cambiarContrasena";
+	            
+	        } else {
+	            error = "El enlace ha expirado, por favor generar otro";
+	            model.addAttribute("error", error);
+	            model.addAttribute("showModalError", true);
+	            return "olvidocontrasena";
+	        }
+		
+	
+		
+		
 	}
 	
 	

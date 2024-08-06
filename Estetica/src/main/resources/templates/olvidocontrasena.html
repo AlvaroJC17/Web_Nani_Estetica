@@ -6,6 +6,8 @@
         <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+		<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+		<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
         <link rel="stylesheet" href="./css/styles.css">
         <title>Restablecer contraseña</title>
@@ -93,18 +95,21 @@
             </div>
             <h4 class="fs-1 h4-datospersonales text-center ">¿Olvido su contraseña?</h4>
             <p class="text-center px-1 mb-0 fs-5 mt-4">Recuperar su contraseña es muy facil, solo ingrese el correo electronico que uso para registrarse.</p>
-            <form action="action" class=" my-4 ">
+            <form th:action="@{/enviarLinkCambioContrasena}" method="post" class=" my-4 ">
                   <div class="text-center">
                   <label for="email" class="form-label mb-0 fw-semibold"></label>
-                  <input type="email" class="d-inline w-75 form-control form-control-datos" id="email" placeholder="Correo electronico">
+                  <input type="email" class="d-inline w-75 form-control form-control-datos" id="email" name="emailUsuario" placeholder="Correo eléctronico">
                 </div>
+				
+				<div class="boton-de-registro text-center ">
+				   <button type="submit" class="bn632-hover bn26">Enviar</button>
+				 </div>
+				
             </form>
           
-  <div class="boton-de-registro text-center ">
-    <a href="#"><button class="bn632-hover bn26">Enviar</button></a>
-  </div>
+ 
   <div class="text-center fs-6 ">
-    <a class="m-2 texto-subrayado-formularios fs-5" href="./login.html">¿Ya esta registrado?</a>
+    <a class="m-2 texto-subrayado-formularios fs-5" th:href="@{/login}">¿Ya esta registrado?</a>
   </div>
     
    
@@ -112,7 +117,82 @@
         </div>
       </section>
           
-    </div>   
+    </div>  
+	
+	 <!--Modal mensaje de exito al registrarse	-->
+	    					
+	    <div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
+		tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
+		th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
+			<div class="modal-dialog">
+				<div style="background-color: #ebdf9d;" class="modal-content">
+					<div class="modal-header border border-0 d-flex justify-content-center">
+						<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
+					</div>
+					<div class="modal-body text-black lh-sm">
+						<p style="text-align: justify;" class="text-center" th:utext="${exito}"></p>
+					</div>
+					<div class="modal-footer border border-0">
+						<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		
+
+	<!--Modal mensajes de error-->
+			
+			<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
+	     th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
+	    <div class="modal-dialog">
+	        <div style="background-color: #ebdf9d;" class="modal-content">
+	            <div class="modal-header border border-0 d-flex justify-content-center ">
+				<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+	            </div>
+	            <div class="modal-body text-black lh-sm">
+	                <p class="text-center" th:utext="${error}"></p>
+	            </div>
+	            <div class="modal-footer border border-0">
+	                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+	<!--Scrip para el modal de mensaje de exito-->
+				
+	<script th:inline="javascript">
+	    /*<![CDATA[*/
+	    $(document).ready(function() {
+	        var showModalExito = /*[[${showModalExito}]]*/ false;
+	        if (showModalExito) {
+	            $('#exitoModal').modal('show');
+	        }
+
+	        $('#exitoModal').on('hidden.bs.modal', function () {
+	            $(this).remove();
+	        });
+	    });
+	    /*]]>*/
+	</script>
+
+					<!--Script para modal de error-->
+					
+	<script th:inline="javascript">
+	    /*<![CDATA[*/
+	    $(document).ready(function() {
+	        var showModalError = /*[[${showModalError}]]*/ false;
+	        if (showModalError) {
+	            $('#errorModal').modal('show');
+	        }
+
+	        $('#errorModal').on('hidden.bs.modal', function () {
+	            $(this).remove();
+	        });
+	    });
+	    /*]]>*/
+	</script> 
   
       </main>
       
