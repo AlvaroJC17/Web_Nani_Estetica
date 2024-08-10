@@ -76,6 +76,38 @@ public class ControladorPagina {
 		return "validadorDeCodigo";
 	}
 	
+	//actualiza la contraseña del usuario
+	@PostMapping("actualizarContrasenaUsuario")
+	public String actualizarContrasenaCliente(
+			@RequestParam String emailCliente, //Esta variable viene de un input oculto de la pag cambiarContrasenaCliente
+			@RequestParam String idCliente, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
+			@RequestParam String oldPass, //A partir de estas viene del formulario
+			@RequestParam String newPass,
+			@RequestParam String repeatNewPass,
+			ModelMap model) throws MiExcepcion {
+		
+		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+		
+		try {
+			servicioUsuario.modificarContrasena(idCliente,oldPass, newPass, repeatNewPass);
+			String exito = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+					 +"<span class='fs-6'>Hemos actualizado correctamente tu contraseña. Ahora serás redireccionado a la página principal para que inicies"
+					 + " sesión con tus nuevas credenciales.</span>";;
+			model.addAttribute("datosCliente", datosCliente);
+			model.addAttribute("showModalExito", true);
+			model.addAttribute("exito", exito);
+			return "cambiarContrasena";
+		} catch (Exception e) {
+			String error = e.getMessage();
+	        model.addAttribute("datosCliente", datosCliente);
+			model.addAttribute("showModalError", true);
+			model.addAttribute("error", error);
+			return "cambiarContrasena";
+		}
+		
+	}
+	
+	//enviar el link para el cambio de contraseña al email del usuario
 	@PostMapping("/enviarLinkCambioContrasena")
 	public String enviarLinkCambioContrasena(
 			@RequestParam String emailUsuario,
@@ -114,6 +146,7 @@ public class ControladorPagina {
 		}
 	}
 	
+	//Cuando ingresa al link de cambio de contraseña, valida si el token esta activo y redirecciona a la pagina para poder cambiar la contrasena
 	@GetMapping("/cambiarContrasena")
 	public String cambiarContrasena(
 			@RequestParam(required = false) String token,
@@ -121,7 +154,7 @@ public class ControladorPagina {
 			@RequestParam(required = false) String error,
 			ModelMap model) {
 		
-		
+		//valida que el token este activo
 		 if (servicioToken.validarToken(token)) {
 			 
 			 Optional <TokenUsuario> obetnerValoresDelToken = repositorioToken.findByToken(token);
@@ -142,13 +175,8 @@ public class ControladorPagina {
 	            model.addAttribute("showModalError", true);
 	            return "olvidocontrasena";
 	        }
-		
-	
-		
-		
 	}
-	
-	
+			
 	//Validar el codigo y  guardar a los usuarios en la tabla
 	@PostMapping("/validarCodigoYRegistrar")
 	public String validarCodigoYRegistrar(

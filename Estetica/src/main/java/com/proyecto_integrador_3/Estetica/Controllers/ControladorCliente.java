@@ -1054,35 +1054,29 @@ public class ControladorCliente {
 	}
 			
 	
-	@PostMapping("actualizarContrasenaCliente")
-	public String actualizarContrasenaCliente(
-			@RequestParam String emailCliente, //Esta variable viene de un input oculto de la pag cambiarContrasenaCliente
-			@RequestParam String idCliente, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
-			@RequestParam String oldPass, //A partir de estas viene del formulario
-			@RequestParam String newPass,
-			@RequestParam String repeatNewPass,
-			ModelMap model) throws MiExcepcion {
-		
-		System.out.println("EMAIL ACTUALIZAR: " + emailCliente);
-		System.out.println("ID ACTUALIZAR: " + idCliente);
-		System.out.println("OLDPASS ACTUALIZAR: " + oldPass);
-		System.out.println("NEWPASS ACTUALIZAR: " + newPass);
-		System.out.println("REPEATPASS ACTUALIZAR: " + repeatNewPass);
-		
-		String error = null;
-		try {
-			servicioUsuario.modificarContrasena(idCliente,oldPass, newPass, repeatNewPass);
-			return "/index";
-		} catch (Exception e) {
-			error = e.getMessage();
-			 List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
-	        model.addAttribute("datosCliente", datosCliente);
-			model.addAttribute("showModalError", true);
-			model.addAttribute("error", error);
-			return "cambiarContrasena";
-		}
-		
-	}
+//	@PostMapping("actualizarContrasenaCliente")
+//	public String actualizarContrasenaCliente(
+//			@RequestParam String emailCliente, //Esta variable viene de un input oculto de la pag cambiarContrasenaCliente
+//			@RequestParam String idCliente, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
+//			@RequestParam String oldPass, //A partir de estas viene del formulario
+//			@RequestParam String newPass,
+//			@RequestParam String repeatNewPass,
+//			ModelMap model) throws MiExcepcion {
+//		
+//		String error = null;
+//		try {
+//			servicioUsuario.modificarContrasena(idCliente,oldPass, newPass, repeatNewPass);
+//			return "/index";
+//		} catch (Exception e) {
+//			error = e.getMessage();
+//			 List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+//	        model.addAttribute("datosCliente", datosCliente);
+//			model.addAttribute("showModalError", true);
+//			model.addAttribute("error", error);
+//			return "cambiarContrasena";
+//		}
+//		
+//	}
 			
 			
 			

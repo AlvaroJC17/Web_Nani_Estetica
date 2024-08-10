@@ -13,9 +13,12 @@
 
 
 <body class="body-interno" th:each="datosCliente : ${datosCliente}">
-  <a href="#" target="_blank" class="boton-flotante">
-    <i class="fa-brands fa-whatsapp"></i>
-  </a>
+	
+	<!--Boton flotante de ws-->
+	 <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
+	   <i class="fa-brands fa-whatsapp"></i>
+	 </a>
+  
   <nav>
     <div class="navbar navbar1 navbar-expand-md">
       <div class="container-fluid navbar2">
@@ -45,9 +48,6 @@
             <li class="nav-item">
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis consultas</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/cambiarContrasenaCliente(email=${datosCliente.email})}">Cambiar contraseña</a>
-            </li> 
             <li class="nav-item">
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
             </li>
@@ -91,63 +91,46 @@
 
 
   <footer class="d-flex row p-0">
-    <div class="divfooter col-lg-4">
-      <p class="mb-3 text-center titulos-footer-general">CONTACTOS</p>
-      <div class="mb-4">
-        <p class="mb-0 text-center"><img class="iconos" src="../imagenes/icons8-gps-50.png" alt="">Pablo Podesta 451,
-          B1625 Belén de Escobar</p>
-        <p class="text-center mt-0">Provincia de Buenos Aires</p>
-      </div>
-      <div class="mb-4 text-center">
-        <p><img class="iconos" src="../imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)1111-1111</p>
-      </div>
-      <div class="mb-4 text-center">
-        <p><img class="iconos" src="../imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)1111-1111</p>
-      </div>
-      <div class="mb-4 text-center">
-        <p class=""><img class="iconos pe-1" src="../imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
-      </div>
-      <div class="text-center iconos3  pb-2">
-        <div class="">
-          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-instagram-50 black.png" alt=""></a>
+      <div class="divfooter col-lg-6 mb-3">
+        <p class="mb-3 text-center titulos-footer">CONTACTOS</p>
+        <div class="mb-4">
+          <p class="mb-0 text-center"><img class="iconos" src="/imagenes/icons8-gps-50.png" alt="">Rivadavia 730,
+            B1625 Belén de Escobar</p>
+          <p class="text-center mt-0">Provincia de Buenos Aires</p>
         </div>
-        <div>
-          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+        <div class="mb-4 text-center">
+          <p><img class="iconos" src="/imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)5744-2608</p>
         </div>
-        <div>
-          <a class="link" href="#"> <img class=" iconos2" src="../imagenes/icons8-facebook-50 black.png" alt=""></a>
+        <div class="mb-4 text-center">
+          <p><img class="iconos" src="/imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)5744-2608</p>
         </div>
-        <div>
-          <a class="link" href="#"><img class=" iconos2" src="../imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+        <div class="mb-4 text-center">
+          <p class=""><img class="iconos pe-1" src="/imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+        </div>
+        <div class="text-center iconos3 mt-5 pb-4">
+          <div class="">
+            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
+          </div>
+          <div>
+            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+          </div>
+          <div>
+            <a class="link" href="#"> <img class=" iconos2" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
+          </div>
+          <div>
+            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="divfooter col-lg-4">
-      <p class="text-center titulos-footer-general">COMENTARIOS</p>
-      <div class="mb-3">
-        <label for="exampleFormControlInput21" class="form-label texto-label">NOMBRE</label>
-        <input type="text" class="form-control footer-interno" id="exampleFormControlInput21" placeholder="Nombre completo">
-      </div>
-      <div class="mb-3">
-        <label for="exampleFormControlInput22" class="form-label texto-label">TELEFONO</label>
-        <input type="text" class="form-control footer-interno" id="exampleFormControlInput22" placeholder="11 - 1111 - 1111">
-      </div>
-      <div class="mb-3">
-        <label for="exampleFormControlInput23" class="form-label texto-label">EMAIL</label>
-        <input type="email" class="form-control footer-interno" id="exampleFormControlInput23" placeholder="name@example.com">
-      </div>
-      <div class="mb-2">
-        <label for="exampleFormControlTextarea24" class="form-label texto-label">COMENTARIO</label>
-        <textarea class="form-control areatexto" id="exampleFormControlTextarea24" rows="3"></textarea>
-      </div>
-    </div>
-    <div class="divfooter col-lg-4">
+	
+    
+	
+    <div class="divfooter col-lg-6">
       <p class=" text-center mb-4 titulos-footer-general">UBICACIÓN</p>
-      <iframe class="w-100 rounded rounded-2"
-        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d4400.61749400772!2d-58.79359358225364!3d-34.353920874961496!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61b6066f6bc1%3A0xdc195365f6a5a98d!2sPablo%20Podesta%20451%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses-419!2sar!4v1697767903353!5m2!1ses-419!2sar"
-        width="600" height="303" style="border:0;" allowfullscreen="" loading="lazy"
-        referrerpolicy="no-referrer-when-downgrade">
-      </iframe>
+	  <iframe class="w-100 rounded rounded-2" 
+	     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
+	     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+	   </iframe>
     </div>
   </footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"

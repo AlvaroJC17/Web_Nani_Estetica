@@ -490,21 +490,21 @@ public class ControladorAdmin {
 			
 	
 	//metodo relacionado con actualizarContrasenaProfesional
-		@GetMapping("/cambiarContrasenaAdmin")
-		public String cambiarContrasenaAdmin(
-				@RequestParam String email,
-				@RequestParam(required = false) String exito,
-				@RequestParam(required = false) String error,
-				ModelMap model) {
-			
-			List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
-			
-			model.addAttribute("datosAdmin", datosAdmin);
-			model.addAttribute("exito", exito);
-			model.addAttribute("error", error);
-			return "/pagina_admin/cambiarContrasenaAdmin";
-		}
-		
+//		@GetMapping("/cambiarContrasenaAdmin")
+//		public String cambiarContrasenaAdmin(
+//				@RequestParam String email,
+//				@RequestParam(required = false) String exito,
+//				@RequestParam(required = false) String error,
+//				ModelMap model) {
+//			
+//			List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
+//			
+//			model.addAttribute("datosAdmin", datosAdmin);
+//			model.addAttribute("exito", exito);
+//			model.addAttribute("error", error);
+//			return "/pagina_admin/cambiarContrasenaAdmin";
+//		}
+//		
 		
 		//Metodo relacionado con cambiarContrasenaProfesional
 		@PostMapping("actualizarContrasenaAdmin")
