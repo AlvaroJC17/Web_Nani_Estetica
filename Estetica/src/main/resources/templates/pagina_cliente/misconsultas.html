@@ -62,29 +62,14 @@
     <div class="main-interno">
       <h3>Mis consultas</h3>
 
-       <div class="container-fluid row">
+       <div th:each="datosTurno : ${datosDelTurno}" class="container-fluid row">
 		   
-        <div class="col-sm-6">
-          <div class="bg-success text-white fs-5 ps-2">Profesiona: Nani / Fecha: 19.04.2024 / Tratamiento: Facial</div>
-        <p style=" text-align: justify;" class=" p-2">
-          Lorem ipsum dolor, sit amet consectetur adipisicing elit. Eaque sed deserunt repellat possimus distinctio temporibus odit incidunt fugit! Temporibus numquam fuga sunt ut laboriosam magnam vitae eum ad totam maxime?
-        Cumque exercitationem ab, recusandae dicta sed ratione, blanditiis adipisci possimus officiis minima ipsa accusamus suscipit. Laudantium soluta facere aspernatur obcaecati dicta modi itaque ullam saepe. Blanditiis facere cum quo officia?
-      Nisi vero minus expedita quae laboriosam tempore consequatur, nemo perferendis provident laborum odio optio magni quas ab modi veritatis. Et praesentium minus harum repellendus corrupti deleniti in sunt accusantium beatae!
-    Blanditiis totam repellendus quas sequi odio. Quod, dicta voluptates. Fugit totam nesciunt quisquam veniam quidem soluta tenetur exercitationem aliquam sit molestiae? Ullam, error architecto molestiae numquam deserunt nam aperiam non.
-  Corrupti reprehenderit itaque aliquam reiciendis ipsum sapiente vero at.
-</p>
-</div>
+        <div class="col-sm-12">
+          <div class="bg-success bg-gradient text-white fs-5 ps-2">Profesional: <span th:text="${datosTurno.profesional.nombre + ' ' + datosTurno.profesional.apellido}"></span>
+			 / Fecha: <span th:text="${datosTurno.fecha}"></span> / Tratamiento:  <span th:each="tratamientosTurno : ${datosTurno.tratamientos}" th:text="${tratamientosTurno.nombreTratamientos.DisplayName}"></span></div>
+        <p th:text="${detallesDeConsulta}" style=" text-align: justify;" class=" p-2"></p>
+       </div>
 
-<div class="col-sm-6" >
-  <div class="bg-success text-white fs-5 ps-2">Tratamiento para el turno de fecha: 10.04.2024</div>
-  <ul>
-    <li>Prueba de lista</li>
-    <li>Prueba de lista</li>
-    <li>Prueba de lista</li>
-    <li>Prueba de lista</li>
-    <li>Prueba de lista</li>
-  </ul>
-</div>
 </div>
     </div>
   </main>
@@ -126,7 +111,7 @@
     
 	
     <div class="divfooter col-lg-6">
-      <p class=" text-center mb-4 titulos-footer-general">UBICACIÓN</p>
+      <p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
 	  <iframe class="w-100 rounded rounded-2" 
 	     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
 	     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">

@@ -91,24 +91,29 @@
               <input type="number" th:value="${#strings.toUpperCase(datosCliente.dni)}" class="form-control" id="dni"
                 placeholder="" disabled>
             </div>
+			<div class="mb-3 col-lg-4 ">
+			<label for="fechaAltaFormateada" class="form-label texto-label">Fecha de alta</label>
+			<input type="text" name="fechaAltaFormateada" th:value="${fechaAltaFormateada}"
+			 class="form-control" id="fechaAltaFormateada" placeholder="" disabled>
+			</div>
             <div class="mb-3 col-lg-4 ">
               <label for="nacimiento" class="form-label texto-label">Fecha Nacimiento</label>
               <input type="date" th:value="${#strings.toUpperCase(datosCliente.fechaNacimiento)}" class="form-control"
                 id="nacimiento" placeholder="" disabled>
             </div>
-            <div class="mb-3 col-lg-4 ">
-              <label for="ocupacion" class="form-label texto-label">Ocupación</label>
-              <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosCliente.ocupacion)}"
-                class="form-control" id="ocupacion" placeholder="" disabled>
-            </div>
           </div>
           <div class="row">
-            <div class="mb-3 col-lg-6">
+            <div class="mb-3 col-lg-4">
               <label for="email" class="form-label texto-label">Email</label>
               <input type="email" name="email" th:value="${#strings.toUpperCase(datosCliente.email)}"
                 class="form-control" id="email" placeholder="" disabled>
             </div>
-            <div class="mb-3 col-lg-6">
+			<div class="mb-3 col-lg-4 ">
+			<label for="ocupacion" class="form-label texto-label">Ocupación</label>
+			<input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosCliente.ocupacion)}"
+			 class="form-control" id="ocupacion" placeholder="" disabled>
+			</div>
+            <div class="mb-3 col-lg-4">
               <label for="domicilio" class="form-label texto-label">Direccion</label>
               <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosCliente.domicilio)}"
                 class="form-control" id="domicilio" placeholder="" disabled>
@@ -126,24 +131,35 @@
                 class="form-control" id="telefono" placeholder="" disabled>
             </div>
           </div>
+		
 		 <div class="row ">
-		 <div class="mb-3 col-lg-12">
+		<div class="mb-3 col-lg-6">
+	    <label for="multa" class="form-label texto-label">Estado</label>
+	    <input  th:if="${datosCliente.activo}" type="text" name="multa" value="ACTIVO" class="form-control bg-success bg-gradient text-center text-white" id="multa1" placeholder="" disabled>
+		<input th:unless="${datosCliente.activo}"  type="text" name="multa" value="INACTIVO" class="form-control bg-danger bg-gradient text-center text-white" id="multa2" placeholder="" disabled>
+		</div>	
+		
+		 <div class="mb-3 col-lg-6">
 		 <label for="multa" class="form-label texto-label">Multas</label>
-		 <input  th:if="${datosCliente.multa}" type="text" name="multa" value="EL CLIENTE TIENE MULTAS" class="form-control bg-danger text-center text-white" id="multa1" placeholder="" disabled>
-		 <input th:unless="${datosCliente.multa}"  type="text" name="multa" value="EL CLIENTE NO TIENE MULTAS" class="form-control bg-success text-center text-white" id="multa2" placeholder="" disabled>
+		 <input  th:if="${datosCliente.multa}" type="text" name="multa" value="EL CLIENTE TIENE MULTAS" class="form-control bg-danger bg-gradient text-center text-white" id="multa1" placeholder="" disabled>
+		 <input th:unless="${datosCliente.multa}"  type="text" name="multa" value="EL CLIENTE NO TIENE MULTAS" class="form-control bg-success bg-gradient text-center text-white" id="multa2" placeholder="" disabled>
 		 </div>
-		            
         </form>
       </div>
     </section>
+		 
+		
+		            
 
-    <h3 class="mb-0">Formulario</h3>
+    <h3 class="mb-1">Formulario de preguntas</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
         <form th:action="@{/editarDatosPersonalesPaciente}" method="post" th:each="datosPaciente : ${datosPaciente}">
+			
+			<p th:if="${!isEditarDisabled}" style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="bg-danger bg-gradient text-white fs-5 text-center">El cliente todavía no ha llenado el formulario de preguntas, por lo que no es posible habilitar la edición de estos campos.</p>
 
           <div class="boton-de-registro mt-4 text-star">
-            <a href="#"><button class="bn632-hover bn26 ms-2 rounded rounded-0">Habilitar edicion</button></a>
+            <button th:class="${isEditarDisabled == null || !isEditarDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}" th:attr="disabled=${isEditarDisabled == null || !isEditarDisabled ? 'disabled' : null}" class="bn632-hover bn26 ms-2 rounded rounded-0">Habilitar edicion</button>
           </div>
 
           <div class="mb-3 row">
@@ -168,13 +184,15 @@
             <div class="col-md-6">
               <label for="alcohol" class="form-label texto-label">¿Consumo aproximado de alcohol?</label>
               <select id="alcohol" name="alcohol" class="form-select rounded-0 " aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.alcohol}" th:text="${datosPaciente.alcohol}" th:selected="${datosPaciente.alcohol}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.alcohol)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.alcohol)}" th:value="${datosPaciente.alcohol}" th:text="${datosPaciente.alcohol}" th:selected="${datosPaciente.alcohol}"></option>
               </select>
             </div>
             <div class="col-md-6">
               <label for="deportes" class="form-label texto-label">¿Realiza algun deporte?</label>
               <select id="deportes" name="deportes" class="form-select rounded-0 " aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.deportes}" th:text="${datosPaciente.deportes}" th:selected="${datosPaciente.deportes}">
+				<option th:if="${#strings.isEmpty(datosPaciente.deportes)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.deportes)}" th:value="${datosPaciente.deportes}" th:text="${datosPaciente.deportes}" th:selected="${datosPaciente.deportes}">
                 </option>
                
               </select>
@@ -186,16 +204,16 @@
               <label for="ejercicios" class="form-label texto-label">¿Realiza algun ejercicio?</label>
               <select id="ejercicios" name="ejercicios" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.ejercicio}" th:text="${datosPaciente.ejercicio}"
-                  th:selected="${datosPaciente.ejercicio}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.ejercicio)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.ejercicio)}"  th:value="${datosPaciente.ejercicio}" th:text="${datosPaciente.ejercicio}" th:selected="${datosPaciente.ejercicio}"></option>
               </select>
             </div>
             <div class="col-md-6">
               <label for="ciclo_menstrual" class="form-label texto-label">Ciclo menstrual</label>
               <select id="ciclo_menstrual" name="ciclo_menstrual" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.ciclo_menstrual}" th:text="${datosPaciente.ciclo_menstrual}"
-                  th:selected="${datosPaciente.ciclo_menstrual}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.ciclo_menstrual)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.ciclo_menstrual)}"  th:value="${datosPaciente.ciclo_menstrual}" th:text="${datosPaciente.ciclo_menstrual}" th:selected="${datosPaciente.ciclo_menstrual}"></option>
               </select>
             </div>
           </div>
@@ -205,8 +223,8 @@
               <label for="medicamentos" class="form-label texto-label">¿Toma algun medicamento?</label>
               <select id="medicamentos" name="medicamentos" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.medicamentos}" th:text="${datosPaciente.medicamentos}"
-                  th:selected="${datosPaciente.medicamentos}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.medicamentos)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.medicamentos)}"  th:value="${datosPaciente.medicamentos}" th:text="${datosPaciente.medicamentos}" th:selected="${datosPaciente.medicamentos}"></option>
               </select>
             </div>
             <div class="col-md-6">
@@ -220,7 +238,8 @@
             <div class="col-md-6">
               <label for="embarazo" class="form-label texto-label">¿Estas embarazada?</label>
               <select id="embarazo" name="embarazo" class="form-select rounded-0 " aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.embarazo}" th:text="${datosPaciente.embarazo}" th:selected="${datosPaciente.embarazo}">
+				<option th:if="${#strings.isEmpty(datosPaciente.embarazo)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.embarazo)}"  th:value="${datosPaciente.embarazo}" th:text="${datosPaciente.embarazo}" th:selected="${datosPaciente.embarazo}">
                 </option>
                
               </select>
@@ -229,8 +248,8 @@
               <label for="amamantando" class="form-label texto-label">¿Estas amamantando?</label>
               <select id="amamantando" name="amamantando" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.amamantando}" th:text="${datosPaciente.amamantando}"
-                  th:selected="${datosPaciente.amamantando}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.amamantando)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.amamantando)}" th:value="${datosPaciente.amamantando}" th:text="${datosPaciente.amamantando}" th:selected="${datosPaciente.amamantando}"></option>
              
               </select>
             </div>
@@ -242,16 +261,16 @@
                 hormonal?</label>
               <select id="alteracion_hormonal" name="alteracion_hormonal" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.alteracion_hormonal}" th:text="${datosPaciente.alteracion_hormonal}"
-                  th:selected="${datosPaciente.alteracion_hormonal}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.alteracion_hormonal)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.alteracion_hormonal)}" th:value="${datosPaciente.alteracion_hormonal}" th:text="${datosPaciente.alteracion_hormonal}" th:selected="${datosPaciente.alteracion_hormonal}"></option>
               </select>
             </div>
             <div class="col-md-6">
               <label for="vitaminas" class="form-label texto-label">¿Tomas alguna vitamina?</label>
               <select id="vitaminas" name="vitaminas" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.vitaminas}" th:text="${datosPaciente.vitaminas}"
-                  th:selected="${datosPaciente.vitaminas}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.vitaminas)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.vitaminas)}" th:value="${datosPaciente.vitaminas}" th:text="${datosPaciente.vitaminas}" th:selected="${datosPaciente.vitaminas}"></option>
                 
               </select>
             </div>
@@ -261,8 +280,8 @@
               <label for="corticoides" class="form-label texto-label">¿Tomas algun corticoide?</label>
               <select id="corticoides" name="corticoides" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.corticoides}" th:text="${datosPaciente.corticoides}"
-                  th:selected="${datosPaciente.corticoides}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.corticoides)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.corticoides)}" th:value="${datosPaciente.corticoides}" th:text="${datosPaciente.corticoides}" th:selected="${datosPaciente.corticoides}"></option>
                 
               </select>
             </div>
@@ -270,7 +289,8 @@
             <div class="col-md-6">
               <label for="hormonas" class="form-label texto-label">¿Tomas hormonas?</label>
               <select id="hormonas" name="hormonas" class="form-select rounded-0 " aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.hormonas}" th:text="${datosPaciente.hormonas}" th:selected="${datosPaciente.hormonas}">
+				<option th:if="${#strings.isEmpty(datosPaciente.hormonas)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.hormonas)}" th:value="${datosPaciente.hormonas}" th:text="${datosPaciente.hormonas}" th:selected="${datosPaciente.hormonas}">
                 </option>
                
               </select>
@@ -284,7 +304,8 @@
             <div class="col-md-6">
               <label for="tiroides" class="form-label texto-label">¿Paciente con tiroides?</label>
               <select id="tiroides" name="tiroides" class="form-select rounded-0 " aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.tiroides}" th:text="${datosPaciente.tiroides}" th:selected="${datosPaciente.tiroides}">
+				<option th:if="${#strings.isEmpty(datosPaciente.tiroides)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.tiroides)}" th:value="${datosPaciente.tiroides}" th:text="${datosPaciente.tiroides}" th:selected="${datosPaciente.tiroides}">
                 </option>
                
               </select>
@@ -293,8 +314,8 @@
               <label for="metodo_anticonceptivo" class="form-label texto-label">¿Tomas algun anticonceptivo?</label>
               <select id="metodo_anticonceptivo" name="metodo_anticonceptivo" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.metodo_anticonceptivo}" th:text="${datosPaciente.metodo_anticonceptivo}"
-                  th:selected="${datosPaciente.metodo_anticonceptivo}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.metodo_anticonceptivo)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.metodo_anticonceptivo)}" th:value="${datosPaciente.metodo_anticonceptivo}" th:text="${datosPaciente.metodo_anticonceptivo}" th:selected="${datosPaciente.metodo_anticonceptivo}"></option>
               </select>
             </div>
           </div>
@@ -304,14 +325,13 @@
               <label for="sufre_enfermedad" class="form-label texto-label">¿Tienes algun tipo de enfermedad?</label>
               <select id="sufre_enfermedad" name="sufre_enfermedad" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.sufre_enfermedad}" th:text="${datosPaciente.sufre_enfermedad}"
-                  th:selected="${datosPaciente.sufre_enfermedad}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.sufre_enfermedad)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.sufre_enfermedad)}" th:value="${datosPaciente.sufre_enfermedad}" th:text="${datosPaciente.sufre_enfermedad}" th:selected="${datosPaciente.sufre_enfermedad}"></option>
               </select>
             </div>
             <div class="col-md-6">
               <label for="cual_enfermedad" class="form-label texto-label">Mencione cual enfermedad</label>
-              <input type="text" th:value="${datosPaciente.cual_enfermedad}" name="cual_enfermedad" class="form-control"
-                id="cual_enfermedad" placeholder="" disabled>
+              <input type="text" th:value="${datosPaciente.cual_enfermedad}" name="cual_enfermedad" class="form-control" id="cual_enfermedad" placeholder="Nombre enfermedad" disabled>
             </div>
           </div>
 
@@ -321,8 +341,8 @@
               <label for="paciente_oncologica" class="form-label texto-label">¿Paciente oncologico?</label>
               <select id="paciente_oncologica" name="paciente_oncologica" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.paciente_oncologica}" th:text="${datosPaciente.paciente_oncologica}"
-                  th:selected="${datosPaciente.paciente_oncologica}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.paciente_oncologica)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.paciente_oncologica)}" th:value="${datosPaciente.paciente_oncologica}" th:text="${datosPaciente.paciente_oncologica}" th:selected="${datosPaciente.paciente_oncologica}"></option>
                
               </select>
             </div>
@@ -331,8 +351,8 @@
                 carbohidratos?</label>
               <select id="consumo_carbohidratos" name="consumo_carbohidratos" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.consumo_carbohidratos}" th:text="${datosPaciente.consumo_carbohidratos}"
-                  th:selected="${datosPaciente.consumo_carbohidratos}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.consumo_carbohidratos)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.consumo_carbohidratos)}" th:value="${datosPaciente.consumo_carbohidratos}" th:text="${datosPaciente.consumo_carbohidratos}" th:selected="${datosPaciente.consumo_carbohidratos}"></option>
               </select>
             </div>
           </div>
@@ -340,10 +360,9 @@
           <div class="mb-3 row">
             <div class="col-md-6">
               <label for="fractura_facial" class="form-label texto-label">¿Tienes una fractura facial?</label>
-              <select id="fractura_facial" name="fractura_facial" class="form-select rounded-0 "
-                aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.fractura_facial}" th:text="${datosPaciente.fractura_facial}"
-                  th:selected="${datosPaciente.fractura_facial}"></option>
+              <select id="fractura_facial" name="fractura_facial" class="form-select rounded-0 " aria-label="Default select example" disabled>
+				<option th:if="${#strings.isEmpty(datosPaciente.fractura_facial)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.fractura_facial)}" th:value="${datosPaciente.fractura_facial}" th:text="${datosPaciente.fractura_facial}" th:selected="${datosPaciente.fractura_facial}"></option>
                
               </select>
             </div>
@@ -351,8 +370,8 @@
               <label for="tiene_implantes" class="form-label texto-label">¿Tiene implantes?</label>
               <select id="tiene_implantes" name="tiene_implantes" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.tiene_implantes}" th:text="${datosPaciente.tiene_implantes}"
-                  th:selected="${datosPaciente.tiene_implantes}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.tiene_implantes)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.tiene_implantes)}" th:value="${datosPaciente.tiene_implantes}" th:text="${datosPaciente.tiene_implantes}" th:selected="${datosPaciente.tiene_implantes}"></option>
                 
               </select>
             </div>
@@ -363,15 +382,14 @@
               <label for="cirugia_estetica" class="form-label texto-label">¿Tienes alguna cirugia estetica?</label>
               <select id="cirugia_estetica" name="cirugia_estetica" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.cirugia_estetica}" th:text="${datosPaciente.cirugia_estetica}"
-                  th:selected="${datosPaciente.cirugia_estetica}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.cirugia_estetica)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.cirugia_estetica)}" th:value="${datosPaciente.cirugia_estetica}" th:text="${datosPaciente.cirugia_estetica}" th:selected="${datosPaciente.cirugia_estetica}"></option>
                
               </select>
             </div>
             <div class="col-md-6">
               <label for="indique_cirugia_estetica" class="form-label texto-label">Indique cirugia estetica</label>
-              <input type="text" th:value="${datosPaciente.indique_cirugia_estetica}" name="indique_cirugia_estetica"
-                class="form-control" id="indique_cirugia_estetica" placeholder="" disabled>
+              <input type="text" th:value="${datosPaciente.indique_cirugia_estetica}" name="indique_cirugia_estetica" class="form-control" id="indique_cirugia_estetica" placeholder="Nombre cirugia estética" disabled>
             </div>
           </div>
 
@@ -380,8 +398,8 @@
               <label for="marca_pasos" class="form-label texto-label">¿Tienes marca pasos?</label>
               <select id="marca_pasos" name="marca_pasos" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.marca_pasos}" th:text="${datosPaciente.marca_pasos}"
-                  th:selected="${datosPaciente.marca_pasos}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.marca_pasos)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.marca_pasos)}" th:value="${datosPaciente.marca_pasos}" th:text="${datosPaciente.marca_pasos}" th:selected="${datosPaciente.marca_pasos}"></option>
                 
               </select>
             </div>
@@ -389,8 +407,8 @@
               <label for="horas_sueno" class="form-label texto-label">¿Cuantas horas de sueño al dia?</label>
               <select id="horas_sueno" name="horas_sueno" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.horas_sueno}" th:text="${datosPaciente.horas_sueno}"
-                  th:selected="${datosPaciente.horas_sueno}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.horas_sueno)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.horas_sueno)}" th:value="${datosPaciente.horas_sueno}" th:text="${datosPaciente.horas_sueno}" th:selected="${datosPaciente.horas_sueno}"></option>
                
               </select>
             </div>
@@ -407,8 +425,8 @@
               <label for="protector_solar" class="form-label texto-label">¿Usas protector solar?</label>
               <select id="protector_solar" name="protector_solar" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.protector_solar}" th:text="${datosPaciente.protector_solar}"
-                  th:selected="${datosPaciente.protector_solar}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.protector_solar)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.protector_solar)}" th:value="${datosPaciente.protector_solar}" th:text="${datosPaciente.protector_solar}" th:selected="${datosPaciente.protector_solar}"></option>
              
               </select>
             </div>
@@ -420,15 +438,15 @@
                 dia?</label>
               <select id="reaplica_protector" name="reaplica_protector" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.reaplica_protector}" th:text="${datosPaciente.reaplica_protector}"
-                  th:selected="${datosPaciente.reaplica_protector}"></option>
+				<option th:if="${#strings.isEmpty(datosPaciente.reaplica_protector)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.reaplica_protector)}" th:value="${datosPaciente.reaplica_protector}" th:text="${datosPaciente.reaplica_protector}" th:selected="${datosPaciente.reaplica_protector}"></option>
                
               </select>
             </div>
             <div class="col-md-6">
               <label for="motivo_consulta" class="form-label texto-label">¿Motivo de la consulta?</label>
               <input type="text" th:value="${datosPaciente.motivo_consulta}" name="motivo_consulta" class="form-control"
-                id="motivo_consulta" placeholder="" disabled>
+                id="motivo_consulta" placeholder="Indique motivo de la consulta" disabled>
             </div>
 
           </div>
@@ -439,8 +457,8 @@
                 anteriores?</label>
               <select id="tratamientosFacialesAnteriores" name="tratamientosFacialesAnteriores"
                 class="form-select rounded-0 " aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.tratamientos_faciales_anteriores}" th:text="${datosPaciente.tratamientos_faciales_anteriores}"
-                  th:selected="${datosPaciente.tratamientos_faciales_anteriores}">
+				<option th:if="${#strings.isEmpty(datosPaciente.tratamientos_faciales_anteriores)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.tratamientos_faciales_anteriores)}" th:value="${datosPaciente.tratamientos_faciales_anteriores}" th:text="${datosPaciente.tratamientos_faciales_anteriores}" th:selected="${datosPaciente.tratamientos_faciales_anteriores}">
                 </option>
               
 
@@ -451,8 +469,8 @@
                 aterior?</label>
               <select id="resultados_tratamiento_anterior" name="resultados_tratamiento_anterior"
                 class="form-select rounded-0 " aria-label="Default select example" disabled>
-                <option th:value="${datosPaciente.resultados_tratamiento_anterior}" th:text="${datosPaciente.resultados_tratamiento_anterior}"
-                  th:selected="${datosPaciente.resultados_tratamiento_anterior}">
+				<option th:if="${#strings.isEmpty(datosPaciente.resultados_tratamiento_anterior)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:unless="${#strings.isEmpty(datosPaciente.resultados_tratamiento_anterior)}" th:value="${datosPaciente.resultados_tratamiento_anterior}" th:text="${datosPaciente.resultados_tratamiento_anterior}" th:selected="${datosPaciente.resultados_tratamiento_anterior}">
                 </option>
               </select>
             </div>
@@ -482,9 +500,11 @@
        <section class="section-misdatos">
         <div class="container-fluid form-misdatos ">
           <form th:action="@{/editarDatosPersonalesPaciente}" method="post" th:each="datosPaciente : ${datosPaciente}">
+			
+		<p th:if="${!isEditarDisabled}" style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="bg-danger bg-gradient text-white fs-5 text-center">El cliente todavía no ha llenado el formulario de preguntas, por lo que no es posible habilitar la edición de estos campos.</p>
 
             <div class="boton-de-registro mt-4 text-star">
-              <a href="#"><button class="bn632-hover bn26 ms-2 rounded rounded-0">Habilitar edicion</button></a>
+              <button th:class="${isEditarDisabled == null || !isEditarDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}" th:attr="disabled=${isEditarDisabled == null || !isEditarDisabled ? 'disabled' : null}" type="submit" class="bn632-hover bn26 ms-2 rounded rounded-0">Habilitar edicion</button>
             </div>
 
          <div class="mb-3 row">
@@ -502,6 +522,7 @@
 	              placeholder="">
 	              <input type="hidden" class="form-control" name="emailProfesional" id="emailProfesional" th:value="${datosProfesional.email}"
 	     		placeholder="">
+				
 	      </form>
       </div>
        </section>
@@ -621,7 +642,7 @@
     
 
     <div class="divfooter col-lg-6">
-      <p class=" text-center mb-4 titulos-footer-general">UBICACIÓN</p>
+      <p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
 	  <iframe class="w-100 rounded rounded-2" 
 	     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
 	     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">

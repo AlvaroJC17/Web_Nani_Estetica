@@ -897,7 +897,18 @@ public class ControladorCliente {
 			Model modelo) {
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		Optional <Cliente> obtenerDatosCliente = repositorioCliente.findByEmail(email);
+		String detallesDeConsulta = null;
+		if (obtenerDatosCliente.isPresent()) {
+			Cliente consultaCliente = obtenerDatosCliente.get();
+			detallesDeConsulta = consultaCliente.getNotas_profesional();
+			
+		}
+		
+		List<Turnos> datosDelTurno = servicioTurnos.obtenerTurnosPorEmail(email);
 		modelo.addAttribute("email", email);
+		modelo.addAttribute("datosDelTurno", datosDelTurno);
+		modelo.addAttribute("detallesDeConsulta", detallesDeConsulta);
 		modelo.addAttribute("datosCliente", datosCliente);
 	return "/pagina_cliente/misconsultas";	
 	}

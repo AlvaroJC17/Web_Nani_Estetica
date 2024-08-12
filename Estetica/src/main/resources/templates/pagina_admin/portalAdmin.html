@@ -76,25 +76,25 @@
 	</nav>
 
 	<main class="">
-		<div class="main-interno">
+		<div class="">
 			<section class=" section-misdatos">
 				<div class="container-fluid form-misdatos d-block  justify-content-center align-items-center ">
 					<div>
 						<h3 class="text-center mb-5 ">Buscador de usuarios</h3>
 					</div>
 
-					<div class="">
-						<div class="mb-3">
-							<form class="d-flex justify-content-center " th:action="@{/buscarDNIoNombre}" method="post">
-								<div class="w-50">
-									<input type="text" class="form-control mb-3" id="dato" name="dato"
-										placeholder="Buscar por nombre o DNI">
-									<input hidden type="text" id="emailAdmin" name="emailAdmin"
-										th:value="${usuariosEmail}"></input>
+					<div class=" d-flex justify-content-center">
+						<div class="mb-3 w-75">
+							<form th:action="@{/buscarDNIoNombre}" method="post">
+								
+								<div class="">
+									<input type="text" class="form-control mb-3" id="dato" name="dato" placeholder="Buscar por nombre o DNI">
+									<input hidden type="text" id="emailAdmin" name="emailAdmin" th:value="${usuariosEmail}"></input>
 									<!--Obtenemos el valor de la variable usuariosEmail del metodo listarUsuariosOcultos que a su vez la obtenemos de la pagina homeAdmin y darle al boton buscar la pasa al metod buscarPorDni-->
 								</div>
-								<div class="">
+								<div class="d-flex justify-content-center">
 									<button type="submit" class="btn btn-primary ms-3">Buscar</button>
+								</div>
 								</div>
 								
 							
@@ -190,7 +190,7 @@
 						</div>
 					</div>
 
-					<div class="d-flex container">
+					<div class="d-flex container mb-5">
 						<div class="filas-tabla-baja mb-2">
 							<!--Estos botones solo hacen el llamado al modal-->
 							<button type="button" class="btn btn-primary" data-bs-toggle="modal"
@@ -470,7 +470,7 @@ showModal y tambien se encarga de cerrar el modal cuando le damos al boton cerra
 		
 		
 		<div class="divfooter col-lg-6">
-			<p class=" text-center mb-4 titulos-footer-general">UBICACIÓN</p>
+			<p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
 			<iframe class="w-100 rounded rounded-2" 
 			   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
 			   width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">

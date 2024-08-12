@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,6 +28,7 @@ import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
@@ -54,6 +56,9 @@ public class ControladorProfesional {
 	
 	@Autowired
 	public RepositorioUsuario repositorioUsuario;
+	
+	@Autowired
+	public RepositorioCliente repositorioCliente;
 
 	
 	@PostMapping("/editarDatosPersonalesPaciente")
@@ -62,6 +67,14 @@ public class ControladorProfesional {
 			@RequestParam(required = false) String emailProfesional,
 			@RequestParam(required = false) String idCliente,
 			Model model) throws MiExcepcion {
+		
+		String fechaAltaFormateada = null;
+		Optional <Usuario> buscarEmailCliente = repositorioUsuario.buscarPorIdOptional(idCliente);
+		if (buscarEmailCliente.isPresent()) {
+			Usuario emailUsuario = buscarEmailCliente.get();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			fechaAltaFormateada = emailUsuario.getFechaCreacion().format(formatter);
+		}
 	
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
@@ -70,6 +83,7 @@ public class ControladorProfesional {
 		model.addAttribute("datosProfesional", datosProfesional);
 		model.addAttribute("datosCliente", datosCliente);
 		model.addAttribute("datosPaciente",datosPaciente);
+		model.addAttribute("fechaAltaFormateada", fechaAltaFormateada);
 		return "/pagina_profesional/datosPersonalesPacienteEditar";
 	}
 	
@@ -115,8 +129,9 @@ public class ControladorProfesional {
 			@RequestParam(required = false) String notas_profesional,
 			Model modelo) throws MiExcepcion {
 
-							
+			Boolean isEditarDisabled = false;			
 		try {
+			
 					servicioTurnos.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes,
 					ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual,
 					alteracion_hormonal, vitaminas, corticoides, hormonas, metodo_anticonceptivo,
@@ -126,12 +141,15 @@ public class ControladorProfesional {
 					tratamientos_faciales_anteriores, resultados_tratamiento_anterior, cuidado_de_piel,
 					motivo_consulta, notas_profesional);
 			
+					isEditarDisabled = true;
+			
 			List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 			List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idCliente);
 			modelo.addAttribute("datosProfesional", datosProfesional); //datos para el menu de la pagina
 			modelo.addAttribute("datosCliente", datosCliente); // datos para la seccion de datos personales
 			modelo.addAttribute("datosPaciente", datosPaciente); // datos para la seccion del formulario y nota del paciente
+			modelo.addAttribute("isEditarDisabled", isEditarDisabled);
 			return "/pagina_profesional/datosPersonalesPaciente";
 			
 			
@@ -146,7 +164,7 @@ public class ControladorProfesional {
 	@PostMapping("/buscarDatosPersonalesPaciente")
 	public String buscarDatosPersonalesPaciente(
 			@RequestParam(required = false) String email,
-			@RequestParam(required = false) String idCliente,
+			@RequestParam(required = false) String idUsuario,
 			@RequestParam(required = false) String dato,
 			Model modelo) throws MiExcepcion {
 
@@ -157,7 +175,7 @@ public class ControladorProfesional {
 		//si el profesional le da al boton ver perfil sin seleccionar un paciente, entra en este codigo
 		//para enviarle un mensaje de error pero siempre mostrandole el resultado de la busqueda previa que
 		//realizo. La variable dato es la misma del metodo /buscadorPaciente
-		if (idCliente == null || idCliente.isEmpty()) {
+		if (idUsuario == null || idUsuario.isEmpty()) {
 			String datoSinEspacios = dato.trim();
 			List<Persona> pacienteDni = servicioProfesional.buscarPacienteByRolAndDni(datoSinEspacios, Rol.CLIENTE);
 			List<Persona> pacienteNombre = servicioProfesional.buscarPacienteByRolAndNombre(datoSinEspacios, Rol.CLIENTE);
@@ -180,28 +198,46 @@ public class ControladorProfesional {
 			return "/pagina_profesional/buscadorPaciente";
 		}
 			
-		//Buscamos el email del cliente con el id
+		//Buscamos el email del cliente/usuario con el id
 		String emailCliente = null;
-		Optional <Usuario> buscarEmailCliente = repositorioUsuario.buscarPorIdOptional(idCliente);
+		String fechaAltaFormateada = null;
+		Optional <Usuario> buscarEmailCliente = repositorioUsuario.buscarPorIdOptional(idUsuario);
 		if (buscarEmailCliente.isPresent()) {
 			Usuario emailUsuario = buscarEmailCliente.get();
 			emailCliente = emailUsuario.getEmail();
+			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			fechaAltaFormateada = emailUsuario.getFechaCreacion().format(formatter);
 		}
+		
+		//Buscamos los si el fomrulario de datos fue completado por el cliente
+		Boolean isEditarDisabled = null;
+		Optional <Cliente> buscarDatosCliente = repositorioCliente.findById(idUsuario);
+		if (buscarDatosCliente.isPresent()) {
+			Cliente datosCliente = buscarDatosCliente.get();
+			isEditarDisabled = datosCliente.getFomularioDatos();
+		}
+		
+		//Si el valor del formulario es null entonces que le coloque un valor de false
+		if (isEditarDisabled == null) {
+			isEditarDisabled = false;
+		}
+		
 	
 		//Datos del cliente para los datos personales
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 		
 		//datos del cliente/paciente para las respuestas del formulario
-		List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idCliente);
+		List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idUsuario);
 		modelo.addAttribute("datosProfesional", datosProfesional); //datos para el menu de la pagina
 		modelo.addAttribute("datosCliente", datosCliente); // datos para la seccion de datos personales
 		modelo.addAttribute("datosPaciente", datosPaciente); // datos para la seccion del formulario y nota del paciente
+		modelo.addAttribute("isEditarDisabled", isEditarDisabled);
+		modelo.addAttribute("fechaAltaFormateada", fechaAltaFormateada);
 		return "/pagina_profesional/datosPersonalesPaciente";
 		
 	}
 	
 
-	
 	@GetMapping("/listarPacientesOcultos")
     public String listarUsuarios(
     		@RequestParam String email, //Esta variable proviene de homeAdmin
