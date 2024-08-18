@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
+import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioHorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
@@ -192,7 +193,7 @@ public class ServicioHorario {
 	    //Le pasamos un fecha y un horario, busca la fecha en la base de datos y verifica si el horario
 	    //esta guardado en la lista de esa fecha, sino esta guardado lo agrega nuevamnete a la lista
 	    @Transactional
-	    public void agregarHorarioDisponible(String fecha, String horario, String idProfesional) throws MiExcepcion {
+	    public void agregarHorarioDisponible(String fecha, String horario, String idProfesional, Rol rol) throws MiExcepcion {
 	    				
 	    	try {
 	    	 // Obtener los horarios disponibles para el profesional y la fecha dada
@@ -208,8 +209,10 @@ public class ServicioHorario {
 	            List<String> horarios = horarioDisponible.getHorarios();
 	            
 	            // Si el horario no está ya en la lista, agregarlo
-	            if (!horarios.contains(horario)) {
+	            if (!horarios.contains(horario) && rol == Rol.CLIENTE) {
 	                horarios.add(horario);
+	            }else if(rol == Rol.PROFESIONAL) {
+	            	horarios.remove(horario);
 	            }
 	            
 	            horarioDisponible.setHorarios(horarios);
@@ -298,6 +301,25 @@ public class ServicioHorario {
 		 public boolean fechaYaPaso(LocalDate fecha) {
 		        return fecha.isBefore(LocalDate.now());
 		    }
+		 
+		 public String pasarFechasDeLocalDateTimeToString(LocalDateTime fechaDateTime) {
+			 LocalDate fecha = fechaDateTime.toLocalDate();
+			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			 String fechaFormateada = fecha.format(formatter);
+			 return fechaFormateada;
+		 }
+		 
+		 public String pasarFechasLocalDateToString(LocalDate fechaDate) {
+			 
+			 // Definir un formato para la fecha
+			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			 // Convertir LocalDate a String
+			 String fechaString = fechaDate.format(formatter);
+			 return fechaString;
+		 }
+		        
+		        
+		        
 			
 			
 		

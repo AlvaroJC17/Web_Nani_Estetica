@@ -59,6 +59,10 @@ public class ServicioTurnos {
 //		repositorioTurnos.updateAllMultas(nuevoValorMulta);
 //    }
 	
+	public List <Turnos> buscarTurnosPorProfesionalId(String idProfesional){
+		return repositorioTurnos.findByProfesionalId(idProfesional);
+	}
+	
 	public List <Turnos> buscarTurnoPorClienteId(String idCliente){
 		return repositorioTurnos.findTurnosByClienteId(idCliente);
 	}
@@ -77,6 +81,10 @@ public class ServicioTurnos {
 	
 	public List<Turnos> obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno estado, Boolean activo, Boolean multa, String emailCliente){
 		return repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaCreacion(estado, activo, multa, emailCliente);
+	}
+	
+	public List<Turnos> ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno estado, Boolean activo, Boolean multa, String idProfesional){
+		return repositorioTurnos.findByEstadoAndActivoAndMultaAndProfesionalIdOrderByFechaCreacion(estado, activo, multa, idProfesional);
 	}
 	
 	 public List<Turnos> obtenerUltimosTresRegistros(List<Turnos> turnos) {
@@ -99,14 +107,27 @@ public class ServicioTurnos {
 			
 	
 	 @Transactional
-	public void actualizarEstadoDelTurno(String id) throws MiExcepcion {
+	public void actualizarEstadoDelTurno(String id, Rol rol, EstadoDelTurno estadoTurno) throws MiExcepcion {
 		 try {
 			 Optional<Turnos> turnoPorId = buscarTurnoPorId(id);
 			 if (turnoPorId.isPresent()) {
 				 Turnos actualizarTurnoActivo = turnoPorId.get();
 				 actualizarTurnoActivo.setActivo(FALSE);
-				 actualizarTurnoActivo.setEstado(EstadoDelTurno.CANCELADO);
-				 actualizarTurnoActivo.setCanceladoPor(Rol.CLIENTE);
+				 
+				 if (estadoTurno == EstadoDelTurno.CANCELADO) {
+					 actualizarTurnoActivo.setEstado(EstadoDelTurno.CANCELADO);
+				 }else if(estadoTurno == EstadoDelTurno.ASISTIDO) {
+					 actualizarTurnoActivo.setEstado(EstadoDelTurno.ASISTIDO);
+				 }
+					
+				 if (rol == Rol.CLIENTE ) {
+					 actualizarTurnoActivo.setCanceladoPor(Rol.CLIENTE);
+				 }else if(rol == Rol.PROFESIONAL) {
+					 actualizarTurnoActivo.setCanceladoPor(Rol.PROFESIONAL);
+				 }else if(rol == Rol.ADMIN) {
+					 actualizarTurnoActivo.setCanceladoPor(Rol.ADMIN);
+				 }
+					
 				 Turnos turnoCancelado;
 				 turnoCancelado = repositorioTurnos.save(actualizarTurnoActivo);
 				 

@@ -48,7 +48,7 @@
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Pacientes</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" href="./solicitartuno.html">Turnos</a>
+             <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link  py-1 ajuste-texto-menu" href="./misturnos.html">Consultas</a>

@@ -1,7 +1,9 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +18,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
+import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
@@ -37,6 +40,134 @@ public class ControladorTurnos {
 	@Autowired
 	ServicioProfesional servicioProfesional;
 	
+	//Controlador para visualizar el historico de turnos de un profesional
+	@GetMapping("/historicoDeTurnos")
+	public String historicoDeTurnos(
+			@RequestParam String idProfesional,
+			@RequestParam String emailProfesional,
+			Model model) {
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+		List<Turnos> turnosDelProfesional = servicioTurnos.buscarTurnosPorProfesionalId(idProfesional);
+		
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("turnosDelProfesional", turnosDelProfesional);
+		return"/pagina_profesional/historicoDeTurnos";
+	}
+	
+	//Controlador para cancelar o confirmar asistencia a los turnos por parte de un profesional
+	@PostMapping("/cancelarOrConfimarTurnoProfesional")
+	public String cancelarOrConfimarTurnoProfesional(
+			@RequestParam String emailProfesional,
+			@RequestParam String fecha,
+			@RequestParam String horario,
+			@RequestParam String idTurno,
+			@RequestParam String idProfesional,
+			@RequestParam String accionDelBoton,
+			Model model) throws MiExcepcion {
+			
+		switch (accionDelBoton) {
+		case "confirmarTurno":
+			
+			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
+			servicioTurnos.actualizarEstadoDelTurno(idTurno, Rol.PROFESIONAL, EstadoDelTurno.ASISTIDO);
+			
+			return "redirect:/misturnosProfesional?email=" + emailProfesional + "&idProfesional=" + idProfesional;
+			
+		case "cancelarTurno":
+			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
+			servicioTurnos.actualizarEstadoDelTurno(idTurno, Rol.PROFESIONAL, EstadoDelTurno.CANCELADO);
+			
+			//Como el turno es cancelado por un profesional, no regresamos el horario a la lista
+			servicioHorario.agregarHorarioDisponible(fecha, horario, idProfesional, Rol.PROFESIONAL);
+			
+			return "redirect:/misturnosProfesional?email=" + emailProfesional + "&idProfesional=" + idProfesional;
+			
+		}
+		
+		return"/pagina_profesional/misturnosProfesional";
+		
+	}
+		
+	
+	//Controlador para visualizar los turnos de un profesional filtrados por fecha
+	@GetMapping("/misturnosProfesional")
+		public String misturnosProfesional(
+				@RequestParam String email,
+				@RequestParam String idProfesional,
+				Model model) {
+		
+			
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
+		
+		//Obtenemos los turnos pedientes filtrados por fecha
+		
+		List<Turnos> turnosActivos = servicioTurnos.ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno.PENDIENTE, true, false, idProfesional);
+		// Obtener la fecha actual y la fecha límite (7 días después)
+		LocalDate fechaActual = LocalDate.now();
+		LocalDate fechaLimite = fechaActual.plusDays(7);
+		// Filtrar la lista para incluir solo los turnos dentro del rango de fechas
+		List<Turnos> turnosFiltradosPorFechaPendientes = turnosActivos.stream()
+		    .filter(turno -> !turno.getFecha().isBefore(fechaActual) && !turno.getFecha().isAfter(fechaLimite))
+		    .collect(Collectors.toList());
+		
+		//Obetenemos los turnos asistidos filtrados por fecha
+		
+		List<Turnos> turnosAsistidos = servicioTurnos.ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno.ASISTIDO, false, false, idProfesional);
+		// Obtener la fecha actual y la fecha límite (7 días antes)
+		LocalDate fechaActualAsistidos = LocalDate.now();
+		LocalDate fechaInicioAsistidos = fechaActualAsistidos.minusDays(7);
+		// Filtrar la lista para incluir solo los turnos dentro del rango de fechas
+		List<Turnos> turnosFiltradosPorFechaAsistidos = turnosAsistidos.stream()
+		    .filter(turno -> !turno.getFecha().isBefore(fechaInicioAsistidos) && !turno.getFecha().isAfter(fechaActualAsistidos))
+		    .collect(Collectors.toList());
+		
+		//Obtenemos los turnos cancelados sin multa por fecha
+		
+		List<Turnos> turnosCancelados = servicioTurnos.ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno.CANCELADO, false, false, idProfesional);
+		// Obtener la fecha actual y la fecha límite (7 días antes)
+				LocalDate fechaActualCancelados = LocalDate.now();
+				LocalDate fechaInicioCancelados = fechaActualCancelados.minusDays(7);
+				// Filtrar la lista para incluir solo los turnos dentro del rango de fechas
+				List<Turnos> turnosFiltradosPorFechaCancelados = turnosCancelados.stream()
+				    .filter(turno -> !turno.getFecha().isBefore(fechaInicioCancelados) && !turno.getFecha().isAfter(fechaActualCancelados))
+				    .collect(Collectors.toList());
+		
+		//Obtenemos los turnos cancelados con multas y filtrados por fecha
+				
+		List<Turnos> turnosConMulta = servicioTurnos.ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno.CANCELADO, false, true, idProfesional);
+		// Obtener la fecha actual y la fecha límite (7 días antes)
+		LocalDate fechaActualMultas = LocalDate.now();
+		LocalDate fechaInicioMultas = fechaActualMultas.minusDays(7);
+		// Filtrar la lista para incluir solo los turnos dentro del rango de fechas
+		List<Turnos> turnosFiltradosPorFechaMultas = turnosConMulta.stream()
+		    .filter(turno -> !turno.getFecha().isBefore(fechaInicioMultas) && !turno.getFecha().isAfter(fechaActualMultas))
+		    .collect(Collectors.toList());
+		
+		
+		//Pasamos a string las fechas de inicio y final de los turnos proximos a atender
+		String fechaActualProximosTurnos = servicioHorario.pasarFechasLocalDateToString(fechaActual);
+		String fechaLimiteProximosTurnos = servicioHorario.pasarFechasLocalDateToString(fechaLimite);
+		
+		//Pasamos a string las fechas de inicio y final de los turnos anteriores a 7 dias
+		String fechaActualTurnosAnteriores = servicioHorario.pasarFechasLocalDateToString(fechaActualAsistidos);
+		String fechaLimiteTurnosAnteriores = servicioHorario.pasarFechasLocalDateToString(fechaInicioAsistidos);
+		
+		//Pasamos a string las fechas de inicio y final de los turnos cancelados
+		
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("turnosActivos", turnosFiltradosPorFechaPendientes);
+        model.addAttribute("turnosAsistidos", turnosFiltradosPorFechaAsistidos);
+        model.addAttribute("turnosConMulta", turnosFiltradosPorFechaMultas);
+        model.addAttribute("turnosCancelados", turnosFiltradosPorFechaCancelados);
+        model.addAttribute("fechaActualProximosTurnos", fechaActualProximosTurnos);
+		model.addAttribute("fechaLimiteProximosTurnos", fechaLimiteProximosTurnos);
+		model.addAttribute("fechaActualTurnosAnteriores", fechaActualTurnosAnteriores);
+		model.addAttribute("fechaLimiteTurnosAnteriores", fechaLimiteTurnosAnteriores);
+		return"/pagina_profesional/misturnosProfesional";
+		}
+	
+		
 	
 	//Controlador para visualizar turnos del cliente
 	@GetMapping("/misturnos")
@@ -120,11 +251,11 @@ public class ControladorTurnos {
 			
 		}else {
 			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
-			servicioTurnos.actualizarEstadoDelTurno(idTurno);
+			servicioTurnos.actualizarEstadoDelTurno(idTurno, Rol.CLIENTE, EstadoDelTurno.CANCELADO);
 		}
 		
 		//Regresa a la lista de horarios la hora seleccionada en el turno cancelado
-		servicioHorario.agregarHorarioDisponible(fecha, horario, idProfesional);
+		servicioHorario.agregarHorarioDisponible(fecha, horario, idProfesional, Rol.CLIENTE);
 		
 		return "redirect:/misturnos?email=" + emailCliente;
 		

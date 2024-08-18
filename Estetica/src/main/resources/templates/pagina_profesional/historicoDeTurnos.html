@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+  <title>Historico de turnos</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+   <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.css" />
+   <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.css">
+   <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
+   <script src="https://cdn.datatables.net/plug-ins/2.1.0/i18n/es-ES.json"></script>
+</head>
+
+<script>
+    <!--Scrip para darle funcionalidad a la tabla y colocarla en español-->
+    $(document).ready(function() {
+        $('#myTable').DataTable({
+            language: {
+                url: 'https://cdn.datatables.net/plug-ins/2.1.0/i18n/es-ES.json'
+            },
+            columnDefs: [
+                { orderable: false, targets: 0 } // Desactiva la ordenación para la columna del checkbox
+            ]
+        });
+    });
+    </script>
+
+<body class="body-interno"  th:each="datosProfesional : ${datosProfesional}">
+
+	<!--Boton flotante de ws-->
+	 <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
+	   <i class="fa-brands fa-whatsapp"></i>
+	 </a>
+  
+<nav>
+  <div class="navbar navbar1 navbar-expand-md">
+    <div class="container-fluid navbar2">
+      <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+        aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      
+      <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+        <a th:href="@{/homeProfesional(email=${datosProfesional.email})}">
+          <div class="imagen-logo ajuste-texto-menu">
+            <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
+          </div>
+        </a>
+        <ul class="navbar-nav navbar4 container-fluid p-0">
+			<li class="nav-item">
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis Datos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
+          </li>
+          <li class="nav-item">
+         <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Consultas</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
+          </li>
+        </ul>
+      </div>
+      
+      
+    </div>
+  </div>
+</nav>
+
+
+
+  
+  <main>
+     <div class="">
+      <h3>Historico de turnos</h3>
+
+      <div class="container-fluid my-5">
+
+		<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
+															<thead>
+																<tr class="">
+																	<th class="text-center">ID del turno</th>
+																	<th class="text-center">ID del cliente</th>
+																	<th class="text-center">ID del profesional</th>
+																	<th class="text-center">Nombre cliente</th>
+																	<th class="text-center">Apellido cliente</th>
+																	<th class="text-center">DNI cliente</th>
+																	<th class="text-center">Email cliente</th>
+																	<th class="text-center">Nombre del profesional</th>
+																	<th class="text-center">Apellido del profesional</th>
+																	<th class="text-center">Activo</th>
+																	<th class="text-center">Estado del tuno</th>
+																	<th class="text-center">Fecha de creación</th>
+																	<th class="text-center">Fecha del turno</th>
+																	<th class="text-center">Horario del turno</th>
+																	
+																</tr>
+															</thead>
+															
+															<tbody>
+																<!--El valor de la variable para el each viene del metodo listarUsuariosVisibles-->
+																<tr class="" th:each="turnosDelProfesional : ${turnosDelProfesional}">
+																	<td class="text-center" th:text="${#strings.substring(turnosDelProfesional.id, turnosDelProfesional.id.length() - 12)}"></td>
+																	<td class="text-center" th:text="${#strings.substring(turnosDelProfesional.cliente.id, turnosDelProfesional.cliente.id.length() - 12)}"></td>
+																	<td class="text-center" th:text="${#strings.substring(turnosDelProfesional.profesional.id, turnosDelProfesional.profesional.id.length() - 12)}"></td>
+																	<td class="text-center" th:text="${turnosDelProfesional.cliente.nombre}"></td>
+																	<td class="text-center" th:text="${#strings.toUpperCase(turnosDelProfesional.cliente.apellido)}"></td>
+																	<td class="text-center" th:text="${#strings.toUpperCase(turnosDelProfesional.dni)}"></td>
+																	<td class="text-center" th:text="${#strings.toLowerCase(turnosDelProfesional.email)}"></td>
+																	<td class="text-center" th:text="${#strings.toLowerCase(turnosDelProfesional.profesional.nombre)}"></td>
+																	<td class="text-center" th:text="${#strings.toLowerCase(turnosDelProfesional.profesional.apellido)}"></td>
+																	<td class="text-center" th:text="${turnosDelProfesional.activo}"></td>
+																	<td class="text-center" th:text="${turnosDelProfesional.estado}"></td>
+																	<td class="text-center" th:text="${turnosDelProfesional.fechaCreacion}"></td>
+																	<td class="text-center" th:text="${turnosDelProfesional.fecha}"></td>
+																	<td class="text-center" th:text="${turnosDelProfesional.horario}"></td>
+																	
+																</tr>    
+															</tbody>
+														</table>
+		
+          
+		
+            </div>
+            </div>
+   
+        
+
+    
+    					<!--Modal mensaje de exito al registrarse	-->
+    					
+    <div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
+	tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
+	th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
+		<div class="modal-dialog">
+			<div style="background-color: #ebdf9d;" class="modal-content">
+				<div class="modal-header border border-0 d-flex justify-content-center">
+					<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
+				</div>
+				<div class="modal-body text-black lh-sm">
+					<p style="text-align: justify;" class="text-center" th:utext="${exito}"></p>
+				</div>
+				<div class="modal-footer border border-0">
+					<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--Modal mensajes de error-->
+		
+		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
+     th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
+    <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+            <div class="modal-header border border-0 d-flex justify-content-center ">
+			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+            </div>
+            <div class="modal-body text-black lh-sm">
+                <p class="text-center" th:utext="${error}"></p> <!--utext permite recibir texto en string con etiquetas html-->
+            </div>
+            <div class="modal-footer border border-0">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+				<!--Script para modal de error-->
+				
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalError = /*[[${showModalError}]]*/ false;
+        if (showModalError) {
+            $('#errorModal').modal('show');
+        }
+
+        $('#errorModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
+	
+	
+	
+	
+	<!--Scrip para el modal de mensaje de exito-->
+			
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalExito = /*[[${showModalExito}]]*/ false;
+        if (showModalExito) {
+            $('#exitoModal').modal('show');
+        }
+
+        $('#exitoModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
+  </main>
+
+
+
+  <footer class="d-flex row p-0">
+      <div class="divfooter col-lg-6 mb-3">
+        <p class="mb-3 text-center titulos-footer">CONTACTOS</p>
+        <div class="mb-4">
+          <p class="mb-0 text-center"><img class="iconos" src="/imagenes/icons8-gps-50.png" alt="">Rivadavia 730,
+            B1625 Belén de Escobar</p>
+          <p class="text-center mt-0">Provincia de Buenos Aires</p>
+        </div>
+        <div class="mb-4 text-center">
+          <p><img class="iconos" src="/imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)5744-2608</p>
+        </div>
+        <div class="mb-4 text-center">
+          <p><img class="iconos" src="/imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)5744-2608</p>
+        </div>
+        <div class="mb-4 text-center">
+          <p class=""><img class="iconos pe-1" src="/imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+        </div>
+        <div class="text-center iconos3 mt-5 pb-4">
+          <div class="">
+            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
+          </div>
+          <div>
+            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+          </div>
+          <div>
+            <a class="link" href="#"> <img class=" iconos2" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
+          </div>
+          <div>
+            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+          </div>
+        </div>
+      </div>
+	
+    
+	
+    <div class="divfooter col-lg-6">
+      <p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
+	  <iframe class="w-100 rounded rounded-2" 
+	     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
+	     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+	   </iframe>
+    </div>
+  </footer>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+    crossorigin="anonymous"></script>
+	
+</body>
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.dataTables.js"></script>
+</html>

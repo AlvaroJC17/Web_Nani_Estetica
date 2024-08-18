@@ -78,6 +78,9 @@ public class Turnos {
 	@Column(name = "multa")
 	Boolean multa;
 	
+	@Column(name = "consulta")
+	String consulta;
+	
 	@Column(name = "costo_multa")
 	String costoMulta = "5000";
 	
@@ -106,7 +109,7 @@ public class Turnos {
 	}
 		
 	public Turnos(String provincia, Profesional profesional, LocalDate fecha, LocalDateTime fechaCracion, String horario, List<Tratamiento> tratamiento, String dni,
-			String email, Boolean activo, Boolean multa, String costoMulta, EstadoDelTurno estado, Rol canceladoPor) {
+			String email, Boolean activo, Boolean multa, String consulta, String costoMulta, EstadoDelTurno estado, Rol canceladoPor) {
 		this.dni = dni;
 		this.email = email;
 		this.provincia = provincia;
@@ -117,11 +120,23 @@ public class Turnos {
 		this.tratamientos = tratamiento;
 		this.activo = activo;
 		this.multa = multa;
+		this.consulta = consulta;
 		this.costoMulta = costoMulta;
 		this.estado = estado;
 		this.canceladoPor = canceladoPor;
 	}
 	
+	
+
+	public String getConsulta() {
+		return consulta;
+	}
+
+
+	public void setConsulta(String consulta) {
+		this.consulta = consulta;
+	}
+
 
 	public LocalDateTime getFechaCreacion() {
 		return fechaCreacion;
