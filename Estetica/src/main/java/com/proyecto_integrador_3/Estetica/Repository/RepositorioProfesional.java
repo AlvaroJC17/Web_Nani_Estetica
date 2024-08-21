@@ -28,5 +28,7 @@ public interface RepositorioProfesional extends JpaRepository<Profesional, Strin
    
    List<Profesional> findByRolAndProvinciaAndTipoEspecialidadAndActivo(Rol rol, Provincias provincia, TipoDeEspecialidad tipoEspecialidad, Boolean activo);
    
+ 
+   
    
 }

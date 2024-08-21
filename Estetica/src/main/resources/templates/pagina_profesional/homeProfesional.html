@@ -38,8 +38,11 @@
             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis Datos</a>
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Datos personales</a>
           </li>
+		  <li class="nav-item">
+		     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
+		   </li>
           <li class="nav-item">
             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
           </li>
@@ -70,16 +73,25 @@
         <a th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
-            <p class="texto-tarjetas-main-home ms-1 hover">Mis datos</p>
+            <p class="texto-tarjetas-main-home ms-1 hover">Datos personales</p>
           </div>
         </a>
       </div>
+	  
+	  <div class="  ft">
+	         <a th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">
+	           <div class="d-flex justify-content-center align-items-center">
+	             <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
+	             <p class="texto-tarjetas-main-home ms-1 hover">Datos profesionales</p>
+	           </div>
+	         </a>
+	       </div>
 
        <div class="  ft">
         <a th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
-            <p class="texto-tarjetas-main-home ms-1 hover">Pacientes</p>
+            <p class="texto-tarjetas-main-home ms-1 hover">Clientes</p>
           </div>
         </a>
       </div>

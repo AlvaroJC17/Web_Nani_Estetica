@@ -6,6 +6,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
+import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
@@ -60,6 +62,40 @@ public class ControladorProfesional {
 	@Autowired
 	public RepositorioCliente repositorioCliente;
 
+	@GetMapping("/datosProfesional")
+	public String datosProfesional(
+			@RequestParam String email,
+			@RequestParam String idProfesional,
+			Model model) {
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
+		
+		List<DiasDeLaSemana> diasLaborales = null;
+		Especialidad especialidad = null;
+		List<HorariosDisponibles> horariosDisponibles = null;
+		List<String> horariosLaborales = null;
+		TipoDeEspecialidad tipoDeEspecialidad = null;
+		List<Tratamiento> tratamientos = null;
+		Optional<Profesional> buscarProfesional = repositorioProfesional.findById(idProfesional);
+		if (buscarProfesional.isPresent()) {
+			Profesional datosDelProfesional = buscarProfesional.get();
+			diasLaborales = datosDelProfesional.getDiasDeLaSemana();
+			especialidad = datosDelProfesional.getEspecialidad();
+			horariosDisponibles = datosDelProfesional.getHorariosDisponibles();
+			horariosLaborales = datosDelProfesional.getHorariosLaborales();
+			tipoDeEspecialidad = datosDelProfesional.getTipoEspecialidad();
+			tratamientos = datosDelProfesional.getTratamientos();
+		}
+		
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("diasLaborales", diasLaborales);
+		model.addAttribute("especialidad", especialidad);
+		model.addAttribute("horariosDisponibles", horariosDisponibles);
+		model.addAttribute("horariosLaborales", horariosLaborales);
+		model.addAttribute("tipoDeEspecialidad", tipoDeEspecialidad);
+		model.addAttribute("tratamientos", tratamientos);
+		return "/pagina_profesional/datosProfesional";
+	}
 	
 	@PostMapping("/editarDatosPersonalesPaciente")
 	public String editarDatosPersonalesPaciente(
@@ -329,26 +365,247 @@ public class ControladorProfesional {
 		return "/pagina_profesional/misdatosProfesional";	
 	}
 	
-	@PostMapping("/guardarDatosProfesional")
-	public String guardarDatosProfesional(
+	
+	@GetMapping("/datosBasicosProfesional")
+	public String datosBasicosProfesional(
 			@RequestParam String matricula,
+			@RequestParam String direccion,
 			@RequestParam String sexo,
 			@RequestParam String telefono,
 			@RequestParam String provincia,
+			@RequestParam String emailUsuario,
+			Model model) throws MiExcepcion {
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailUsuario);
+		model.addAttribute("matricula", matricula);
+		model.addAttribute("sexo", sexo);
+		model.addAttribute("telefono", telefono);
+		model.addAttribute("provincia", provincia);
+		model.addAttribute("direccion", direccion);
+		model.addAttribute("emailUsuario", emailUsuario);
+		model.addAttribute("especialidad", Especialidad.values());
+		model.addAttribute("DiasDeLaSemana", DiasDeLaSemana.values());
+		model.addAttribute("datosProfesional", datosProfesional);
+			
+		try {
+			servicioProfesional.validarDatosProfesional(matricula, sexo, telefono, provincia, direccion);
+		} catch (MiExcepcion e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+			model.addAttribute("provincias", Provincias.values());
+			return "pagina_profesional/completarDatosProfesional";
+		}
+		
+		return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+	}
+		
+	
+	@GetMapping("/mostrarTipoEspecialidad")
+	public String mostrarTipoEspecialidad(
+			@RequestParam String especialidad,
+			@RequestParam String matricula,
 			@RequestParam String direccion,
-			@RequestParam String especialidadesSeleccionadas,
-			@RequestParam String tipoEspecialidadesSeleccionadas,
-			@RequestParam String tratamientosSeleccionados,
-			@RequestParam String DiasDeLaSemanaSeleccionados,
-			@RequestParam String horariosSeleccionados,
-			@RequestParam String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
+			@RequestParam String sexo,
+			@RequestParam String telefono,
+			@RequestParam String provincia,
+			@RequestParam String emailUsuario,
+			Model model) throws MiExcepcion{
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailUsuario);
+		model.addAttribute("matricula", matricula);
+		model.addAttribute("sexo", sexo);
+		model.addAttribute("telefono", telefono);
+		model.addAttribute("provincia", provincia);
+		model.addAttribute("direccion", direccion);
+		model.addAttribute("emailUsuario", emailUsuario);
+		model.addAttribute("especialidad", Especialidad.values());
+		model.addAttribute("DiasDeLaSemana", DiasDeLaSemana.values());
+		model.addAttribute("datosProfesional", datosProfesional);
+		
+		Especialidad especialidadSeleccionada = Especialidad.valueOf(especialidad);
+		
+		try {
+			switch (especialidad) {
+			
+			case "FACIAL":
+				
+				  // Filtrar las especialidades que contienen "FACIAL" en su nombre y guardarlas en una lista
+		        List<TipoDeEspecialidad> especialidadesFaciales = Arrays.stream(TipoDeEspecialidad.values())
+		                .filter(especialidadList -> especialidadList.name().contains("FACIAL"))
+		                .collect(Collectors.toList());
+
+		        model.addAttribute("tipoEspecialidad", especialidadesFaciales);
+		        model.addAttribute("especialidadSeleccionada", especialidadSeleccionada.getDisplayName());
+		        model.addAttribute("especialidadModoEnum", especialidadSeleccionada);
+		        return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+		        
+			case "CORPORAL":
+				
+				  // Filtrar las especialidades que contienen "CORPORAL" en su nombre y guardarlas en una lista
+		        List<TipoDeEspecialidad> especialidadesCorporales = Arrays.stream(TipoDeEspecialidad.values())
+		                .filter(especialidadList -> especialidadList.name().contains("CORPORAL"))
+		                .collect(Collectors.toList());
+
+		        model.addAttribute("tipoEspecialidad", especialidadesCorporales);
+		        model.addAttribute("especialidadSeleccionada", especialidadSeleccionada.getDisplayName());
+		        model.addAttribute("especialidadModoEnum", especialidadSeleccionada);
+		        return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+		        
+			case "ESTETICO":
+				
+				 // Filtrar las especialidades que contienen "FACIAL" en su nombre y guardarlas en una lista
+		        List<TipoDeEspecialidad> especialidadesEstetica = Arrays.stream(TipoDeEspecialidad.values())
+		                .filter(especialidadList -> especialidadList.name().contains("ESTETICO"))
+		                .collect(Collectors.toList());
+
+		        model.addAttribute("tipoEspecialidad", especialidadesEstetica);
+		        model.addAttribute("especialidadSeleccionada", especialidadSeleccionada.getDisplayName());
+		        model.addAttribute("especialidadModoEnum", especialidadSeleccionada);
+		        return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+			}
+		        
+		} catch (Exception e) {
+			String error = "Error al seleccionar una especialidad";
+			model.addAttribute("showModalError", true);
+			model.addAttribute("error", error);
+			return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+		}
+		
+		
+		return "";	
+	}
+	
+	@GetMapping("/mostrarTratamientos")
+	public String mostrarTratamientos(
+			@RequestParam String tipoEspecialidad,
+			@RequestParam String especialidadModoEnum,
+			@RequestParam String matricula,
+			@RequestParam String direccion,
+			@RequestParam String sexo,
+			@RequestParam String telefono,
+			@RequestParam String provincia,
+			@RequestParam String emailUsuario,
+			Model model) throws MiExcepcion {
+		
+		Especialidad nuevaSeleccionEspecialidad = Especialidad.valueOf(especialidadModoEnum);
+		TipoDeEspecialidad tipoEspecialidadSeleccionada = TipoDeEspecialidad.valueOf(tipoEspecialidad);  
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailUsuario);
+		model.addAttribute("matricula", matricula);
+		model.addAttribute("sexo", sexo);
+		model.addAttribute("telefono", telefono);
+		model.addAttribute("provincia", provincia);
+		model.addAttribute("direccion", direccion);
+		model.addAttribute("emailUsuario", emailUsuario);
+		model.addAttribute("especialidad", Especialidad.values());
+		model.addAttribute("DiasDeLaSemana", DiasDeLaSemana.values());
+		model.addAttribute("especialidadModoEnum", especialidadModoEnum);
+		model.addAttribute("datosProfesional", datosProfesional);
+		
+		if (tipoEspecialidadSeleccionada.getDisplayName().equals("Cosmetologa")) {
+			
+			// Filtrar los tratamientos que contienen "FACIALES" en su nombre y guardarlas en una lista
+		    List<TratamientoEnum> tratamientosFaciales = Arrays.stream(TratamientoEnum.values())
+		            .filter(especialidadList -> especialidadList.name().contains("FACIAL"))
+		            .collect(Collectors.toList());
+		    
+		    // Filtrar las especialidades que contienen "FACIAL" en su nombre y guardarlas en una lista
+	        List<TipoDeEspecialidad> especialidadesFaciales = Arrays.stream(TipoDeEspecialidad.values())
+	                .filter(especialidadList -> especialidadList.name().contains("FACIAL"))
+	                .collect(Collectors.toList());
+
+	        //Pasamos las dos listas a la vista
+	        model.addAttribute("tipoEspecialidad", especialidadesFaciales);
+		    model.addAttribute("tratamiento", tratamientosFaciales);
+		    model.addAttribute("especialidadSeleccionada", nuevaSeleccionEspecialidad.getDisplayName());
+		    model.addAttribute("tipoEspecialidadSeleccionada", tipoEspecialidadSeleccionada.getDisplayName());
+		    model.addAttribute("tipoEspecialidadModoEnum", tipoEspecialidadSeleccionada);
+		    return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+			
+		}else if(tipoEspecialidadSeleccionada.getDisplayName().equals("Lashista") || tipoEspecialidadSeleccionada.getDisplayName().equals("Pedicura") || tipoEspecialidadSeleccionada.getDisplayName().equals("Manicura")) {
+			
+			// Filtrar los tratamientos que contienen "ESTETICO" en su nombre y guardarlas en una lista
+		    List<TratamientoEnum> tratamientosEsteticos = Arrays.stream(TratamientoEnum.values())
+		            .filter(especialidadList -> especialidadList.name().contains("ESTETICO"))
+		            .collect(Collectors.toList());
+		    
+		    // Filtrar las especialidades que contienen "ESTETICO" en su nombre y guardarlas en una lista
+	        List<TipoDeEspecialidad> especialidadesEstetica = Arrays.stream(TipoDeEspecialidad.values())
+	                .filter(especialidadList -> especialidadList.name().contains("ESTETICO"))
+	                .collect(Collectors.toList());
+
+	        //pasamos ambas lista a la vista
+		    model.addAttribute("tratamiento", tratamientosEsteticos);
+		    model.addAttribute("tipoEspecialidad", especialidadesEstetica);
+		    model.addAttribute("especialidadSeleccionada", nuevaSeleccionEspecialidad.getDisplayName());
+		    model.addAttribute("tipoEspecialidadSeleccionada", tipoEspecialidadSeleccionada.getDisplayName());
+		    model.addAttribute("tipoEspecialidadModoEnum", tipoEspecialidadSeleccionada);
+		    return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+			
+			
+		}else if(tipoEspecialidadSeleccionada.getDisplayName().equals("Masajista")) {
+			
+			// Filtrar los tratamientos que contienen "CORPORAL" en su nombre y guardarlas en una lista
+		    List<TratamientoEnum> tratamientosCorporales = Arrays.stream(TratamientoEnum.values())
+		            .filter(especialidadList -> especialidadList.name().contains("CORPORAL"))
+		            .collect(Collectors.toList());
+		    
+		    // Filtrar las especialidades que contienen "CORPORAL" en su nombre y guardarlas en una lista
+	        List<TipoDeEspecialidad> especialidadesCorporales = Arrays.stream(TipoDeEspecialidad.values())
+	                .filter(especialidadList -> especialidadList.name().contains("CORPORAL"))
+	                .collect(Collectors.toList());
+
+	        //pasamos ambas listas a la vista
+		    model.addAttribute("tratamiento", tratamientosCorporales);
+		    model.addAttribute("tipoEspecialidad", especialidadesCorporales);
+		    model.addAttribute("especialidadSeleccionada", nuevaSeleccionEspecialidad.getDisplayName());
+		    model.addAttribute("tipoEspecialidadSeleccionada", tipoEspecialidadSeleccionada.getDisplayName());
+		    model.addAttribute("tipoEspecialidadModoEnum", tipoEspecialidadSeleccionada);
+		    return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+		    
+		}else {
+			String error = "Error al seleccionar una especialidad";
+			model.addAttribute("showModalError", true);
+			model.addAttribute("error", error);
+			return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+		}
+		
+	}
+		
+	
+	@PostMapping("/guardarDatosProfesional")
+	public String guardarDatosProfesional(
+			@RequestParam (required = false) String matricula,
+			@RequestParam (required = false) String sexo,
+			@RequestParam (required = false) String telefono,
+			@RequestParam (required = false) String provincia,
+			@RequestParam (required = false) String direccion,
+			@RequestParam (required = false) String especialidadModoEnum,
+			@RequestParam (required = false) String tipoEspecialidadModoEnum,
+			@RequestParam (required = false) String tratamientosSeleccionados,
+			@RequestParam (required = false) String DiasDeLaSemanaSeleccionados,
+			@RequestParam (required = false) String horariosSeleccionados,
+			@RequestParam (required = false) String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
 			ModelMap model) throws MiExcepcion {
+		
+		System.out.println("matricula: " + matricula);
+		System.out.println("sexo: " + sexo);
+		System.out.println("telefono: " + telefono);
+		System.out.println("provincia: " + provincia);
+		System.out.println("direccion: " +  direccion);
+		System.out.println("especialidadesSeleccionadas: " + especialidadModoEnum);
+		System.out.println("tipoEspecialidadesSeleccionadas: " + tipoEspecialidadModoEnum);
+		System.out.println("tratamientosSeleccionados: " + tratamientosSeleccionados);
+		System.out.println("DiasDeLaSemanaSeleccionados: " + DiasDeLaSemanaSeleccionados);
+		System.out.println("horariosSeleccionados: " + horariosSeleccionados);
+		System.out.println("emailUsuario: " + emailUsuario);
 		
 		try {
 			
 			//Guardamos los datos del formulario que lleno el nuevo cliente
 			servicioProfesional.registrarProfesional(emailUsuario, matricula, provincia, direccion, telefono, sexo,
-					especialidadesSeleccionadas, tipoEspecialidadesSeleccionadas, DiasDeLaSemanaSeleccionados, horariosSeleccionados, tratamientosSeleccionados);				
+					especialidadModoEnum, tipoEspecialidadModoEnum, DiasDeLaSemanaSeleccionados, horariosSeleccionados, tratamientosSeleccionados);				
 		} catch (MiExcepcion e) {
 			System.out.println(e.getMessage());
 			model.put("error", e.getMessage());

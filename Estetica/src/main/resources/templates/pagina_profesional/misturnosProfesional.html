@@ -37,9 +37,12 @@
 			<li class="nav-item">
             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis Datos</a>
-          </li>
+		  <li class="nav-item">
+		     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Datos personales</a>
+		  </li>
+		  <li class="nav-item">
+		  	 <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
+		  </li>
           <li class="nav-item">
             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
           </li>
@@ -73,17 +76,25 @@ que se genere en iteracion, esto evita que al tener varios turnos, se cruce la i
 tener el mismo ID-->
 
 <div class="d-block mb-4">
-		<p class="fs-3 text-center">En este apartado podrás ver un resumen de los turnos en un lapso de sietes días.
+		<p class="fs-5">En este apartado podrás ver un resumen de los turnos en un lapso de sietes días.
 			En caso de querer visualizar un historico de todos los turnos, pulsa en el siguiente botón.
 		</p>
 
-		<form class="text-center mb-4" th:action="@{/historicoDeTurnos}" method="get">
-			<button class="btn btn-primary fs-4">Visualizar todos mis turnos</button>
+		<div class="d-flex justify-content-center">
+		<form style="margin-bottom: 50px; margin-top:50px;" class="text-center me-2" th:action="@{/historicoDeTurnos}" method="get">
+			<button class="btn btn-primary fs-5">Histórico de turnos</button>
 			<input hidden type="text" id="idProfesional" name="idProfesional" th:value="${datosProfesional.id}"></input>
 			<input hidden type="text" id="emailProfesional" name="emailProfesional" th:value="${datosProfesional.email}"></input>
 		</form>
+		
+		<form style="margin-bottom: 50px; margin-top:50px;" class="text-center ms-2" th:action="@{/turnosPorFecha}" method="get">
+			<button class="btn btn-primary fs-5">Turnos por fecha</button>
+			<input hidden type="text" id="idProfesional" name="idProfesional" th:value="${datosProfesional.id}"></input>
+			<input hidden type="text" id="emailProfesional" name="emailProfesional" th:value="${datosProfesional.email}"></input>
+		</form>
+		</div>
 			
-		<p style="border-bottom: solid 5px;" class="fs-1 border-warning">Turnos activos desde el <span th:text="${fechaActualProximosTurnos}"></span>
+		<p style="border-bottom: solid 5px;" class="fs-4 border-warning">Turnos activos desde el <span th:text="${fechaActualProximosTurnos}"></span>
 			 hasta el <span th:text="${fechaLimiteProximosTurnos}"></span></p>
 		
 		
@@ -200,7 +211,7 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			  </div>
 			  </div>  
 			
-			  <p style="border-bottom: 5px solid;" class="fs-1 border-success">Turnos asistidos desde el <span th:text="${fechaLimiteTurnosAnteriores}"></span>
+			  <p style="border-bottom: 5px solid;" class="fs-4 border-success">Turnos asistidos desde el <span th:text="${fechaLimiteTurnosAnteriores}"></span>
 			   hasta el <span th:text="${fechaActualTurnosAnteriores}"></span></p>
 			  <div class="d-flex flex-wrap justify-content-center">
 				
@@ -232,7 +243,7 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 						  
 			   
 			
-			<p style="border-bottom: 5px solid;" class="fs-1 border-danger">Turnos con multa desde el <span th:text="${fechaLimiteTurnosAnteriores}"></span>
+			<p style="border-bottom: 5px solid;" class="fs-4 border-danger">Turnos con multa desde el <span th:text="${fechaLimiteTurnosAnteriores}"></span>
 				 hasta el <span th:text="${fechaActualTurnosAnteriores}"></span></p>
 			 <div class="d-flex flex-wrap justify-content-center">		  
 				
@@ -268,7 +279,7 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			
 			
 			
-			<p style="border-bottom: 5px solid;" class="fs-1 border-dark">Turnos cancelados desde el <span th:text="${fechaLimiteTurnosAnteriores}"></span>
+			<p style="border-bottom: 5px solid;" class="fs-4 border-dark">Turnos cancelados desde el <span th:text="${fechaLimiteTurnosAnteriores}"></span>
 				 hasta el <span th:text="${fechaActualTurnosAnteriores}"></span></p>
 			<div class="d-flex flex-wrap justify-content-center">
 				

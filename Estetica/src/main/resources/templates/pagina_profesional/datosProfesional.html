@@ -61,71 +61,80 @@
 </nav>
 
 <main class="main-misdatos">
-  <h3 class="">Datos personales</h3>
+  <h3 class="">Datos profesionales</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
         <form th:action="@{/actualizarDatosProfesional}" method="post">
-          <div class="row">
+         
+			<div class="row">
+				
+          <div class="mb-3 col-lg-12">
+            <label for="id" class="form-label texto-label" disabled >ID profesional</label>
+            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.id)}" class="form-control"  placeholder="Nombre" disabled >
+          </div>
+		  
+		  <div class="mb-3 col-lg-12">
+		   <label for="id" class="form-label texto-label" disabled >Nombre</label>
+		   <input type="text" th:value="${#strings.toUpperCase(datosProfesional.nombre + ' ' + datosProfesional.apellido)}" class="form-control"  placeholder="Nombre" disabled >
+		  </div>
+		  
+		  <div class="mb-3 col-lg-12">
+		  <label for="id" class="form-label texto-label" disabled >Especialidad</label>
+		  <input type="text" th:value="${#strings.toUpperCase(datosProfesional.tipoEspecialidad.displayName)}" class="form-control" placeholder="Nombre" disabled >
+		  </div>
+		  
+		  </div>
+		  
+		  <div class="row mt-5">
+			
           <div class="mb-3 col-lg-4">
-            <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.nombre)}" class="form-control" id="nombre" placeholder="Nombre" disabled >
-          </div>
-          <div class="mb-3 col-lg-4">
-            <label for="apellido" class="form-label texto-label">Apellido</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.apellido)}" class="form-control" id="apellido" placeholder="Apellido" disabled >
-          </div>
-          <div class="mb-3 col-lg-4">
-            <label for="dni" class="form-label texto-label">DNI</label>
-            <input type="number" th:value="${#strings.toUpperCase(datosProfesional.dni)}" class="form-control" id="dni" placeholder="123456789" disabled >
-          </div>
-        </div>
-        <div class="row">
-          <div class="mb-3 col-lg-4 ">
-            <label for="matricula" class="form-label texto-label">Matricula</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.matricula)}" class="form-control" id="matricula" placeholder="" disabled>
-          </div>
-			  
+			<p class="fw-bold text-center">Días laborales</p>
+            <ul class="">
+				<li th:each="diasLaborales : ${diasLaborales}" th:text="${diasLaborales}"></li>
+			</ul>
+		 </div>
+			
 		  <div class="mb-3 col-lg-4">
-		             <label for="email" class="form-label texto-label">Email</label>
-		             <input type="email" name="email" th:value="${#strings.toUpperCase(datosProfesional.email)}" class="form-control" id="email" placeholder="" disabled>
-		           </div>
-          
-          <div class="mb-3 col-lg-4 ">
-            <label for="fechaNacimiento" class="form-label texto-label">Fecha Nacimiento</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.fechaNacimiento)}" class="form-control" id="fechaNacimiento" placeholder="" disabled>
-          </div>
-        </div>
-        <div class="row">
-         
-			<div class="mb-3 col-lg-6">
-			             <label for="telefono" class="form-label texto-label">Telefono</label>
-			           <input type="text" name="telefono" th:value="${#strings.toUpperCase(datosProfesional.telefono)}" class="form-control" id="telefono" placeholder="">
-			         </div>
+			<p class="fw-bold text-center">Horario laboral</p>
+			<ul>
+			 <li th:each="horariosLaborales : ${horariosLaborales}" th:text="${horariosLaborales}"></li>
+			</ul>
+		  </div>
 			
 			
-          <div class="mb-3 col-lg-6">
-            <label for="sexo" class="form-label texto-label">Sexo</label>
-            <input type="text" name="sexo" th:value="${#strings.toUpperCase(datosProfesional.sexo)}" class="form-control" id="direccion" placeholder="">
-          </div>
-        </div>
-          
-        <div class="row ">
-          <div class="mb-3 col-lg-6">
-           <label for="domicilio" class="form-label texto-label">Direccion</label>
-            <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosProfesional.domicilio)}" class="form-control" id="domicilio" placeholder="">
-          </div>
+		  <div class="mb-3 col-lg-4">
+		  <p class="fw-bold text-center">Tratamientos ofrecidos</p>
+		  <ul>
+		  <li th:each="tratamientos : ${tratamientos}" th:text="${tratamientos.nombreTratamientos.displayName}"></li>
+		  </ul>
+		  </div>
+       
+	   </div>
+       
          
-        </div>
+	
+	   
+	   <div class="row">
+		
+		   <div class="mb-3 col-lg-12">
+		   <p class="fw-bold">Fechas y horarios disponibles</p>
+		   <ul>
+		   <li th:each="horariosDisponibles : ${horariosDisponibles}" th:text="${horariosDisponibles.fecha} + ' ' + ${horariosDisponibles.horarios}"></li>
+		   </ul>
+		   </div>
+		   
+	   </div>
+			
+      
+     
        
        <input type="hidden" th:value="${datosProfesional.id}" class="form-control" name="idProfesional" id="idProfesional"> <!--input oculto para enviar el id del profesional al controlador actualizarDatosProfesional-->
        <input type="hidden" th:value="${datosProfesional.email}" class="form-control" name="email" id="email">
        
-        <div class="boton-de-registro text-center">
-          <a href="#"><button class="bn632-hover bn26">Guardar</button></a>
-        </div>
         </form>
       </div>
     </section>
+        </div>
     
     <!--Modal mensaje de exito misDatosProfesional	-->
 	

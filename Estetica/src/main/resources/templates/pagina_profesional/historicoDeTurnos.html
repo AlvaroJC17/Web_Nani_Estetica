@@ -56,9 +56,12 @@
 			<li class="nav-item">
             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis Datos</a>
-          </li>
+		  <li class="nav-item">
+		             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Datos personales</a>
+		           </li>
+		  	  <li class="nav-item">
+		  	     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
+		  	   </li>
           <li class="nav-item">
             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
           </li>
@@ -84,7 +87,7 @@
   
   <main>
      <div class="">
-      <h3>Historico de turnos</h3>
+      <h3>Histórico de turnos</h3>
 
       <div class="container-fluid my-5">
 
@@ -102,6 +105,7 @@
 																	<th class="text-center">Apellido del profesional</th>
 																	<th class="text-center">Activo</th>
 																	<th class="text-center">Estado del tuno</th>
+																	<th class="text-center">Multa</th>
 																	<th class="text-center">Fecha de creación</th>
 																	<th class="text-center">Fecha del turno</th>
 																	<th class="text-center">Horario del turno</th>
@@ -123,6 +127,7 @@
 																	<td class="text-center" th:text="${#strings.toLowerCase(turnosDelProfesional.profesional.apellido)}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.activo}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.estado}"></td>
+																	<td class="text-center" th:text="${turnosDelProfesional.multa}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.fechaCreacion}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.fecha}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.horario}"></td>

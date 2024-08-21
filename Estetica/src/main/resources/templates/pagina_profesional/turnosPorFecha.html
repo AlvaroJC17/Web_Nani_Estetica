@@ -1,18 +1,18 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-   		<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-        <link rel="stylesheet" href="../css/styles.css">
-        <title>Datos Profesional</title>
-      </head>
-<body class="body-misdatos" th:each="datosProfesional : ${datosProfesional}">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="./css/styles.css">
+  <title>Turnos por fecha</title>
+</head>
+
+<body class="body-interno"  th:each="datosProfesional : ${datosProfesional}">
 
 	<!--Boton flotante de ws-->
 	 <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
@@ -26,6 +26,7 @@
         aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
       </button>
+      
       <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
         <a th:href="@{/homeProfesional(email=${datosProfesional.email})}">
           <div class="imagen-logo ajuste-texto-menu">
@@ -37,99 +38,101 @@
             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
           </li>
 		  <li class="nav-item">
-		             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Datos personales</a>
-		           </li>
-		  	  <li class="nav-item">
-		  	     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
-		  	   </li>
+		     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Datos personales</a>
+		  </li>
+		  <li class="nav-item">
+		  	 <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
+		  </li>
           <li class="nav-item">
             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
           </li>
           <li class="nav-item">
-             <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
+         <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./misturnos.html">Consultas</a>
+            <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Consultas</a>
           </li>
           <li class="nav-item">
             <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
           </li>
         </ul>
       </div>
+      
+      
     </div>
   </div>
 </nav>
 
-<main class="main-misdatos">
-  <h3 class="">Datos personales</h3>
-    <section class=" section-misdatos">
-      <div class="container-fluid form-misdatos ">
-        <form th:action="@{/actualizarDatosProfesional}" method="post">
-          <div class="row">
-          <div class="mb-3 col-lg-4">
-            <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.nombre)}" class="form-control" id="nombre" placeholder="Nombre" disabled >
-          </div>
-          <div class="mb-3 col-lg-4">
-            <label for="apellido" class="form-label texto-label">Apellido</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.apellido)}" class="form-control" id="apellido" placeholder="Apellido" disabled >
-          </div>
-          <div class="mb-3 col-lg-4">
-            <label for="dni" class="form-label texto-label">DNI</label>
-            <input type="number" th:value="${#strings.toUpperCase(datosProfesional.dni)}" class="form-control" id="dni" placeholder="123456789" disabled >
-          </div>
-        </div>
-        <div class="row">
-          <div class="mb-3 col-lg-4 ">
-            <label for="matricula" class="form-label texto-label">Matricula</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.matricula)}" class="form-control" id="matricula" placeholder="" disabled>
-          </div>
-			  
-		  <div class="mb-3 col-lg-4">
-		             <label for="email" class="form-label texto-label">Email</label>
-		             <input type="email" name="email" th:value="${#strings.toUpperCase(datosProfesional.email)}" class="form-control" id="email" placeholder="" disabled>
-		           </div>
-          
-          <div class="mb-3 col-lg-4 ">
-            <label for="fechaNacimiento" class="form-label texto-label">Fecha Nacimiento</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.fechaNacimiento)}" class="form-control" id="fechaNacimiento" placeholder="" disabled>
-          </div>
-        </div>
-        <div class="row">
-         
-			<div class="mb-3 col-lg-6">
-			             <label for="telefono" class="form-label texto-label">Telefono</label>
-			           <input type="text" name="telefono" th:value="${#strings.toUpperCase(datosProfesional.telefono)}" class="form-control" id="telefono" placeholder="">
-			         </div>
-			
-			
-          <div class="mb-3 col-lg-6">
-            <label for="sexo" class="form-label texto-label">Sexo</label>
-            <input type="text" name="sexo" th:value="${#strings.toUpperCase(datosProfesional.sexo)}" class="form-control" id="direccion" placeholder="">
-          </div>
-        </div>
-          
-        <div class="row ">
-          <div class="mb-3 col-lg-6">
-           <label for="domicilio" class="form-label texto-label">Direccion</label>
-            <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosProfesional.domicilio)}" class="form-control" id="domicilio" placeholder="">
-          </div>
-         
-        </div>
-       
-       <input type="hidden" th:value="${datosProfesional.id}" class="form-control" name="idProfesional" id="idProfesional"> <!--input oculto para enviar el id del profesional al controlador actualizarDatosProfesional-->
-       <input type="hidden" th:value="${datosProfesional.email}" class="form-control" name="email" id="email">
-       
-        <div class="boton-de-registro text-center">
-          <a href="#"><button class="bn632-hover bn26">Guardar</button></a>
-        </div>
-        </form>
-      </div>
-    </section>
-    
-    <!--Modal mensaje de exito misDatosProfesional	-->
+
+
+  
+  <main>
+     <div class="">
+      <h3>Mis turnos</h3>
+      <div class="container-fluid">
+
+<!--El iterStat es otro ietrador que agregamos en cada iteracion para darle un id unico a cada modal
+que se genere en iteracion, esto evita que al tener varios turnos, se cruce la info entre ellos al
+tener el mismo ID-->
+
+<div class="d-block mb-4">
+		<p class="fs-5">Selecciona una fecha para ver los turnos disponibles por horario, asi como tambien podra deshabilitar fechas o horarios.
+		</p>
 	
-	<div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
+		<p class="mt-5 mb-2 text-center fs-5">Seleccione la fecha del turno</p>
+		<form th:action="@{/turnosPorFecha}" class="mb-5 mt-0 d-flex justify-content-center">
+		<div class="d-flex">
+		<div class="me-2">
+			<input type="date" class="form-control" name="fechaTurno"  placeholder="Fecha de turno">
+		</div>
+		<div class="ms-2">
+			<button class="btn btn-primary">Buscar</button>
+		</div>
+		<input hidden type="text" id="idProfesional" name="idProfesional" th:value="${datosProfesional.id}"></input>
+		<input hidden type="text" id="emailProfesional" name="emailProfesional" th:value="${datosProfesional.email}"></input>
+		</div>
+		</form>
+			
+		<p class="fs-4 fw-bold ms-4 mb-0" th:text="${'Fecha seleccionada: ' + fechaSeleccionada}"></p>
+		
+		<ul>
+			<li th:each="hora, turnos : ${turnosPorHora}">
+				
+			</li>
+		</ul>
+		
+		<ul>
+		    <li th:each="horario, iterStatus : ${turnosPorHorarioLaboral}">
+		        <strong th:text="${horario}">Horario</strong>
+		        <ul>
+		            <!-- Verificar si la lista de turnos está vacía fuera del th:each -->
+		            <li th:if="${turnosPorHorarioLaboral[horario].isEmpty()}">
+		                No hay turnos disponibles en este horario.
+		            </li>
+		            <!-- Si la lista no está vacía, iterar sobre los turnos -->
+		            <li th:each="turno : ${turnosPorHorarioLaboral[horario]}" th:unless="${turnosPorHorarioLaboral[horario].isEmpty()}">
+		                <span th:text="${turno.cliente.nombre}">Paciente</span> -
+		                <span th:text="${turno.profesional.nombre}">Servicio</span>
+		            </li>
+		        </ul>
+		    </li>
+		</ul>
+
+
+			
+			  
+          
+		
+	        </div>			
+            </div>
+            </div>
+   
+        
+
+    
+    					<!--Modal mensaje de exito al registrarse	-->
+    					
+    <div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
 	tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
 	th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
 		<div class="modal-dialog">
@@ -138,7 +141,7 @@
 					<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
 				</div>
 				<div class="modal-body text-black lh-sm">
-					<p class="text-center" th:utext="${exito}"></p>
+					<p style="text-align: justify;" class="text-center" th:utext="${exito}"></p>
 				</div>
 				<div class="modal-footer border border-0">
 					<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
@@ -147,7 +150,7 @@
 		</div>
 	</div>
 	
-	<!--Modal mensajes de error misDatosProfesional-->
+	<!--Modal mensajes de error-->
 		
 		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
      th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
@@ -157,7 +160,7 @@
 			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
             </div>
             <div class="modal-body text-black lh-sm">
-                <p class="text-center" th:utext="${error}"></p>
+                <p class="text-center" th:utext="${error}"></p> <!--utext permite recibir texto en string con etiquetas html-->
             </div>
             <div class="modal-footer border border-0">
                 <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
@@ -166,22 +169,6 @@
     </div>
 </div>
 
-				<!--Script para modal de exito-->
-	
-	<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var showModalExito = /*[[${showModalExito}]]*/ false;
-        if (showModalExito) {
-            $('#exitoModal').modal('show');
-        }
-
-        $('#exitoModal').on('hidden.bs.modal', function () {
-            $(this).remove();
-        });
-    });
-    /*]]>*/
-</script>
 
 				<!--Script para modal de error-->
 				
@@ -199,9 +186,30 @@
     });
     /*]]>*/
 </script>
+	
+	
+	
+	
+	<!--Scrip para el modal de mensaje de exito-->
+			
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalExito = /*[[${showModalExito}]]*/ false;
+        if (showModalExito) {
+            $('#exitoModal').modal('show');
+        }
+
+        $('#exitoModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
   </main>
 
-    
+
+
   <footer class="d-flex row p-0">
       <div class="divfooter col-lg-6 mb-3">
         <p class="mb-3 text-center titulos-footer">CONTACTOS</p>
@@ -234,9 +242,9 @@
           </div>
         </div>
       </div>
-  
+	
     
-  
+	
     <div class="divfooter col-lg-6">
       <p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
 	  <iframe class="w-100 rounded rounded-2" 
@@ -245,6 +253,7 @@
 	   </iframe>
     </div>
   </footer>
+
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"

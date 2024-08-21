@@ -39,12 +39,13 @@
 								th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
 						</li>
 						<li class="nav-item">
-							<a class="nav-link py-1 ajuste-texto-menu"
-								th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis Datos</a>
-							<!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
-						</li>
+						           <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Datos personales</a>
+						         </li>
+							  <li class="nav-item">
+							     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
+							   </li>
 						<li class="nav-item">
-            			<a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Pacientes</a>
+            			<a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
           				</li>
 						<li class="nav-item">
 							<a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos}">Turnos</a>

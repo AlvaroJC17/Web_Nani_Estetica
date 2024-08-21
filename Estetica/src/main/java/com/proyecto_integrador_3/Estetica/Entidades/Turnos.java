@@ -82,7 +82,7 @@ public class Turnos {
 	String consulta;
 	
 	@Column(name = "costo_multa")
-	String costoMulta = "5000";
+	String costoMulta;
 	
 	@Transient
 	private Provincias provincias;

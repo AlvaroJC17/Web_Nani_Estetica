@@ -54,10 +54,13 @@ public class ServicioTurnos {
 	ServicioEmail servicioEmail;
 	
 	
-//	@Transactional
-//    public void actualizarMultas(String nuevoValorMulta) {
-//		repositorioTurnos.updateAllMultas(nuevoValorMulta);
-//    }
+	public List<Turnos> buscarTurnosPorProfesionalIdAndFecha(String idProfesional, LocalDate fecha) throws MiExcepcion{
+		try {
+			return repositorioTurnos.findByProfesionalIdAndFecha(idProfesional, fecha);
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor");
+		}
+	}
 	
 	public List <Turnos> buscarTurnosPorProfesionalId(String idProfesional){
 		return repositorioTurnos.findByProfesionalId(idProfesional);
@@ -226,12 +229,16 @@ public class ServicioTurnos {
     			String fechaTurno = turno.getFecha().toString();
     			String horarioTurno = turno.getHorario().toString();
     			String fechaAndHorario = fechaTurno + " " + horarioTurno;
+    			String valorMulta = turno.getProfesional().getValorMulta();
+    			
     			LocalDateTime fechaTurnoLocalDateTime = null;
     			fechaTurnoLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTime(fechaAndHorario);
+    			
     			if (fechaTurnoLocalDateTime.isBefore(fechaActual.plusMinutes(15)) && turno.getActivo()) { //comparamos la fecha del tunos con la fecha actual mas 15 min
     				turno.setMulta(TRUE); //Le colocamos una multa al turno que tiene fecha pasada
     				turno.setActivo(false); // Lo pasamos a inactivo
     				turno.setEstado(EstadoDelTurno.CANCELADO);
+    				turno.setCostoMulta(valorMulta);
     				repositorioTurnos.save(turno);
     				
     				Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(email);
@@ -255,6 +262,7 @@ public class ServicioTurnos {
     	Optional<Turnos> turnoOptional = repositorioTurnos.findById(idTurno);
         if (turnoOptional.isPresent()) {
             Turnos turno = turnoOptional.get();
+            String valorMulta = turno.getProfesional().getValorMulta();
             
             //Buscamos el turno y le actualizamos sus valores a cancelado
             if (turno.getActivo()) {
@@ -262,6 +270,7 @@ public class ServicioTurnos {
             	turno.setActivo(false); // Lo pasamos a inactivo
             	turno.setEstado(EstadoDelTurno.CANCELADO);
             	turno.setCanceladoPor(Rol.CLIENTE);
+            	turno.setCostoMulta(valorMulta);
             	Turnos turnoCancelado24h;
             		turnoCancelado24h = repositorioTurnos.save(turno);
             	

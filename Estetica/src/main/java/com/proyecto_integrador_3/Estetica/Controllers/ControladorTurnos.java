@@ -3,6 +3,8 @@ package com.proyecto_integrador_3.Estetica.Controllers;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +41,54 @@ public class ControladorTurnos {
 	
 	@Autowired
 	ServicioProfesional servicioProfesional;
+	
+	//Controlador para visualizar turnos por fecha, asi como deshabilitar fechas y horarios por profesional
+	@GetMapping("/turnosPorFecha")
+	public String turnosPorFecha(
+			@RequestParam String idProfesional,
+			@RequestParam String emailProfesional,
+			@RequestParam (required = false) String fechaTurno,
+			Model model) throws MiExcepcion {
+		
+		System.out.println("Fecha: " + fechaTurno);
+		LocalDate fechaDelTurno = null;
+		
+		  if (fechaTurno != null && !fechaTurno.trim().isEmpty()) {
+		        LocalDate fechaTurnoLocalDate = servicioHorario.pasarFechaStringToLocalDate(fechaTurno);
+		        fechaDelTurno = fechaTurnoLocalDate;
+		    } else {
+		        fechaDelTurno = LocalDate.now();
+		    }
+		
+		//Buscamos los horarios del profesional
+		List<String> horariosLaboralesProfesional = null;
+		Optional <Profesional> buscarHorariosProfesional = servicioProfesional.buscarProfesional(idProfesional);
+		if (buscarHorariosProfesional.isPresent()) {
+			Profesional horariosLaborales = buscarHorariosProfesional.get();
+			horariosLaboralesProfesional = horariosLaborales.getHorariosLaborales();
+		}
+		
+		//Buscamos los turnos por id profesional y fecha
+		List <Turnos> turnosPorFecha = servicioTurnos.buscarTurnosPorProfesionalIdAndFecha(idProfesional, fechaDelTurno);
+		
+	    // Mapear los horarios laborales con los turnos correspondientes
+	    Map<String, List<Turnos>> turnosPorHorarioLaboral = horariosLaboralesProfesional.stream()
+	        .collect(Collectors.toMap(
+	            horario -> horario,
+	            horario -> turnosPorFecha.stream()
+	                .filter(turno -> turno.getHorario().equals(horario))
+	                .collect(Collectors.toList())
+	        ));
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+		model.addAttribute("fechaSeleccionada", fechaDelTurno);
+		model.addAttribute("turnosDisponiblesPorFecha", turnosPorFecha);
+		model.addAttribute("turnosPorHorarioLaboral", turnosPorHorarioLaboral);
+		model.addAttribute("horariosLaborales", horariosLaboralesProfesional);
+		model.addAttribute("datosProfesional", datosProfesional);
+		return"/pagina_profesional/turnosPorFecha";
+		
+	}
 	
 	//Controlador para visualizar el historico de turnos de un profesional
 	@GetMapping("/historicoDeTurnos")
@@ -82,14 +132,10 @@ public class ControladorTurnos {
 			servicioHorario.agregarHorarioDisponible(fecha, horario, idProfesional, Rol.PROFESIONAL);
 			
 			return "redirect:/misturnosProfesional?email=" + emailProfesional + "&idProfesional=" + idProfesional;
-			
 		}
-		
 		return"/pagina_profesional/misturnosProfesional";
-		
 	}
-		
-	
+				
 	//Controlador para visualizar los turnos de un profesional filtrados por fecha
 	@GetMapping("/misturnosProfesional")
 		public String misturnosProfesional(
@@ -177,7 +223,7 @@ public class ControladorTurnos {
 		
 		try {
 		//cuando el usuario ingrese a turnos se verifica si algun turno tiene fecha anterior
-		//a la actual y si eso es afirmativo, entonces pasa el tuno a inactivo.
+		//a la actual y si eso es afirmativo, entonces pasa el turno a cencelado.
 		servicioTurnos.actualizarTurnosAntiguos(email);
 		
 		//Elimina los turnos mas antiguo cuando la lista es mayor a 3 y no tienen multas

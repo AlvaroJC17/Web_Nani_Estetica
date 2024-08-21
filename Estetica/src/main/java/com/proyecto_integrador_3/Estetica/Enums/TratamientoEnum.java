@@ -2,14 +2,14 @@ package com.proyecto_integrador_3.Estetica.Enums;
 
 public enum TratamientoEnum {
 
-	FACIALES_ANTIAGE("Tratamiento antiage"),
-	FACIALES_DESPIGMENTANTES("Tratamiento despigmentante"),
-	FACIALES_HIDRATANTES("Tratamiento hidratante"),
-	FACIALES_ROSACEAS("Tratamiento rosaceas"),
-	FACIALES_ANTIACNE("Tratamiento antiacne"),
-	CORPORAL_PULIDO("Pulido corporal"),
-	CORPORAL_GLUTEOS("Pulido de gluteos"),
-	CORPORAL_LIMPIEZA_ESPALDA("Limpieza de espalda"),
+	FACIAL_ANTIAGE("Tratamiento antiage"),
+	FACIAL_DESPIGMENTANTES("Tratamiento despigmentante"),
+	FACIAL_HIDRATANTES("Tratamiento hidratante"),
+	FACIAL_ROSACEAS("Tratamiento rosaceas"),
+	FACIAL_ANTIACNE("Tratamiento antiacne"),
+	FACIAL_PULIDO("Pulido corporal"),
+	FACIAL_GLUTEOS("Pulido de gluteos"),
+	FACIAL_LIMPIEZA_ESPALDA("Limpieza de espalda"),
 	CORPORAL_MASAJE_SEDATIVO("Masaje integral sedativo"),
 	CORPORAL_MASAJE_DECONTRACTURANTE("Masaje integral descontracturante"),
 	CORPORAL_MASAJE_DEPORTIVO("Masaje integral deportivo"),

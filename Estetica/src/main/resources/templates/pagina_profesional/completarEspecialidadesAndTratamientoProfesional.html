@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+		integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
+	<link rel="stylesheet" href="../css/styles.css">
+	<title>completarDatosProfesional</title>
+
+  <script>
+	
+	function autoSubmitEspecialidad() {
+	           document.getElementById("formularioEspecialidad").submit();
+	       }
+		   
+	function autoSubmitTipoEspecialidad() {
+		   	   document.getElementById("formularioTipoEspecialidad").submit();
+		   }
+
+ //   <!--Script para la seleccion de especialidad, tratamientos y dias de la semana-->
+
+    function agregarOpcion(selectId, listaId, campoOpcionesId) {
+        const select = document.getElementById(selectId);
+        const selectedOption = select.options[select.selectedIndex].text;
+        const lista = document.getElementById(listaId);
+
+        if (!Array.from(lista.options).some(option => option.value === selectedOption)) {
+            const optionElement = document.createElement('option');
+            optionElement.value = selectedOption;
+            optionElement.text = selectedOption;
+            lista.add(optionElement);
+        }
+
+        actualizarCampoOpciones(listaId, campoOpcionesId);
+    }
+
+    function actualizarCampoOpciones(listaId, campoOpcionesId) {
+        const lista = document.getElementById(listaId);
+        const opcionesSeleccionadas = Array.from(lista.options).map(option => option.value);
+        document.getElementById(campoOpcionesId).value = opcionesSeleccionadas.join(',');
+    }
+
+    function eliminarOpcion(listaId, campoOpcionesId) {
+        const lista = document.getElementById(listaId);
+        lista.remove(lista.selectedIndex);
+        actualizarCampoOpciones(listaId, campoOpcionesId);
+    }
+
+
+   // <!--Scrip para la seleccion de horarios-->
+
+    function agregarHorario() {
+            const horas = document.getElementById('horas').value;
+            const minutos = document.getElementById('minutos').value;
+            const horario = horas + ':' + minutos;
+            const lista = document.getElementById('listaHorarios');
+
+            if (!Array.from(lista.options).some(option => option.value === horario)) {
+                const optionElement = document.createElement('option');
+                optionElement.value = horario;
+                optionElement.text = horario;
+                lista.add(optionElement);
+            }
+
+            actualizarCampoHorarios();
+        }
+
+        function actualizarCampoHorarios() {
+            const lista = document.getElementById('listaHorarios');
+            const horariosSeleccionados = Array.from(lista.options).map(option => option.value);
+            document.getElementById('horariosSeleccionados').value = horariosSeleccionados.join(',');
+        }
+
+        function eliminarHorario() {
+            const lista = document.getElementById('listaHorarios');
+            lista.remove(lista.selectedIndex);
+            actualizarCampoHorarios();
+        }
+
+     //   <!--Scrip para la seleccion de tratamientos-->
+     
+        function agregarTratamiento() {
+            const tratamiento = document.getElementById('tratamiento').value;
+            const costo = document.getElementById('costo').value;
+            const tratamientoCosto = tratamiento + ' - $' + costo;
+            const lista = document.getElementById('listaTratamientos');
+
+            if (!Array.from(lista.options).some(option => option.value === tratamientoCosto)) {
+                const optionElement = document.createElement('option');
+                optionElement.value = tratamientoCosto;
+                optionElement.text = tratamientoCosto;
+                lista.add(optionElement);
+            }
+
+            actualizarCampoTratamientos();
+        }
+
+        function actualizarCampoTratamientos() {
+            const lista = document.getElementById('listaTratamientos');
+            const tratamientosSeleccionados = Array.from(lista.options).map(option => option.value);
+            document.getElementById('tratamientosSeleccionados').value = tratamientosSeleccionados.join(',');
+        }
+
+        function eliminarTratamiento() {
+            const lista = document.getElementById('listaTratamientos');
+            lista.remove(lista.selectedIndex);
+            actualizarCampoTratamientos();
+        }
+</script>
+</head>
+
+<body class="">
+
+	<!--Boton flotante de ws-->
+	 <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
+	   <i class="fa-brands fa-whatsapp"></i>
+	 </a>
+	
+	<nav>
+		<div class=" d-flex justify-content-end">
+			<p class="tituloredes">SIGUENOS EN NUESTRAS REDES: &nbsp</p>
+			<div class="iconos3">
+				<div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-instagram-50 black.png"
+							alt=""></a>
+				</div>
+				<div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-tik-tok-50 black.png"
+							alt=""></a></div>
+				<div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-facebook-50 black.png"
+							alt=""></a>
+				</div>
+				<div class="ms-2"><a href="#"><img class="iconos" src="./imagenes/icons8-youtube-play-50 black.png"
+							alt=""></a>
+				</div>
+			</div>
+		</div>
+		<div class="row">
+			<nav class="navbar navbar1 navbar-expand-md">
+				<div class="container-fluid navbar2">
+					<button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse"
+						data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
+						aria-label="Toggle navigation">
+						<span class="navbar-toggler-icon"></span>
+					</button>
+					<div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+						<a th:href="@{/index}">
+							<div class="imagen-logo ajuste-texto-menu">
+								<img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
+							</div>
+						</a>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</nav>
+
+
+	<main class="">
+		<div class="">
+			<section class=" section-completar-datos">
+				<div class="row  ">
+					<div class="img-registrarse col-md-4 d-flex justify-content-center align-items-center"> </div>
+
+					<div class="texto-registrarse col-md-8 p-4">
+						<div class="logo-registrarse text-center  ">
+							<img class="img-logo-final-home" src="./imagenes/Nani-removebg-preview.png" alt="">
+						</div>
+					
+				<p class="ps-3 fs-1 mb-0 ">Tratamientos y especialidades del profesional</p>
+				<p class="ps-3 fs-5">Complete todos los datos para poder acceder a su sesión</p>
+								
+
+                <div style="border-top: 1px solid white;" class="mb-5">
+                  <p class="ps-3 fs-5 mb-4 mt-3">Seleccione los tratamientos que ofrecerá (puede ser más de uno):</p>
+					
+                  <div class="row d-flex align-items-end justify-content-star">
+					
+					<div class="col-md-6">
+					
+					<form id="formularioEspecialidad" th:action="@{/mostrarTipoEspecialidad}" method="get">						
+					<div>
+					<label for="selectEspecialidad" class="form-label texto-label mb-0">Selecciona una opción:</label>
+					<select onchange="autoSubmitEspecialidad()" aria-label="Default select example" class="form-select" id="selectEspecialidad" name="especialidad">
+					<option value="" th:selected="${especialidadSeleccionada}" th:text="${especialidadSeleccionada == null ? 'Seleccione una especialidad' : especialidadSeleccionada}"></option>
+					<option th:each="especialidades : ${especialidad}" th:value="${especialidades}" th:text="${especialidades.displayName}"></option>
+					</select>
+					</div>	
+					
+					<input type="hidden" th:value="${emailUsuario}" class="form-control" name="emailUsuario">
+					<input type="hidden" th:value="${matricula}" class="form-control" name="matricula">
+					<input type="hidden" th:value="${direccion}" class="form-control" name="direccion">
+					<input type="hidden" th:value="${sexo}" class="form-control" name="sexo">
+					<input type="hidden" th:value="${telefono}" class="form-control" name="telefono">
+					<input type="hidden" th:value="${provincia}" class="form-control" name="provincia">
+					</form>		
+					
+					
+					<form id="formularioTipoEspecialidad" th:action="@{/mostrarTratamientos}" method="get">
+					<div>
+					<label for="selectTipoEspecialidad" class="form-label texto-label mb-0">Especialidad:</label>
+					<select onchange="autoSubmitTipoEspecialidad()" aria-label="Default select example" class="form-select" id="selectTipoEspecialidad" name="tipoEspecialidad">
+					<option value="" th:selected="${tipoEspecialidadSeleccionada}" th:text="${tipoEspecialidadSeleccionada == null ? 'Seleccione una especialidad' : tipoEspecialidadSeleccionada}"></option>
+					<option th:each="tipoEspecialidades : ${tipoEspecialidad}" th:value="${tipoEspecialidades}" th:text="${tipoEspecialidades.displayName}">Opción 2</option>
+					</select>
+					</div>
+					
+					<input type="hidden" th:value="${emailUsuario}" class="form-control" name="emailUsuario">
+					<input type="hidden" th:value="${matricula}" class="form-control" name="matricula">
+					<input type="hidden" th:value="${direccion}" class="form-control" name="direccion">
+					<input type="hidden" th:value="${sexo}" class="form-control" name="sexo">
+					<input type="hidden" th:value="${telefono}" class="form-control" name="telefono">
+					<input type="hidden" th:value="${especialidadSeleccionada}" class="form-control" name="SeleccionEspecialidad">
+					<input type="hidden" th:value="${especialidadModoEnum}" class="form-control" name="especialidadModoEnum">
+					<input type="hidden" th:value="${provincia}" class="form-control" name="provincia">
+					
+					</form>
+					
+					<form th:action="@{/guardarDatosProfesional}" method="post">
+					
+                    <div class="mt-2">
+                      <label class="form-label texto-label mb-0" for="tratamiento">Tratamiento:</label>
+                      <select aria-label="Default select example" class="form-select" id="tratamiento" name="tratamientos">
+					  <option value="" th:selected="${trataientoSeleccionado}" th:text="${tratamientoSeleccionado == null ? 'Seleccione una tratamiento' : tratamientoSeleccionado}"></option>
+                      <option th:each="tratamientos : ${tratamiento}" th:value="${tratamientos}" th:text="${tratamientos.displayName}">Opción 2</option>
+                      </select>
+                          
+                      
+                      <div class="mt-2">
+                        <label class="form-label texto-label mb-0" for="costo">Costo:</label>
+                        <input  aria-label="Default select example" class="form-control" type="number" id="costo" name="costo" placeholder="ingrese costo del tratamiento" />
+                      </div>
+                    </div>
+					</div>
+
+					
+                    <div class="mt-4">
+                      <label class="fs-5 form-label texto-label mb-0" for="listaTratamientos">Tratamientos seleccionados:</label>
+                      <select aria-label="Default select example" class="form-select" id="listaTratamientos" name="listaTratamientos" size="5" multiple>
+                    </select>
+                  </div>
+                      
+                </div>
+                     
+
+                  
+                  <div class="d-flex justify-content-center mt-4">
+                    <div style="margin-right: 5px; margin-top: 10px;" class="">
+                      <button class="btn btn-primary" type="button" onclick="agregarTratamiento()">Agregar Tratamiento</button>
+                  </div>
+                  <div style="margin-left: 5px; margin-top: 10px;" class="">
+                    <button class="btn btn-danger" type="button" onclick="eliminarTratamiento()">Eliminar Tratamiento</button>
+                  </div>
+                </div>
+                    <input type="hidden" id="tratamientosSeleccionados" name="tratamientosSeleccionados" />
+                </div>
+
+
+				
+                <div style="border-top: 1px solid white;" class="mb-5">
+                  <p class="ps-3 fs-5 mb-4 mt-3">Seleccione los días de la semana que ofrecerá servicios (puede ser más de uno):</p>
+                  <div class="row d-flex align-items-center justify-content-center">
+                    <div class="col-md-6">
+                      <label for="opciones3" class="form-label texto-label mb-0">Selecciona una opción:</label>
+                        <select aria-label="Default select example" class="form-select" id="opciones3" name="opciones3" onchange="agregarOpcion()">
+                        <option th:each="DiasDeLaSemanas : ${DiasDeLaSemana}" th:value="${DiasDeLaSemanas}" th:text="${DiasDeLaSemanas}">Opción 2</option>
+                        </select>
+                      </div>
+
+                    <div class="col-md-6 text-center">
+                      <label class="fs-5 form-label texto-label mb-0" for="listaSeleccionadas3">Opciones seleccionadas:</label>
+                      <select aria-label="Default select example" class="form-select" id="listaSeleccionadas3" name="listaSeleccionadas3" size="5" multiple>
+						 
+                      </select>
+                    </div>
+                  </div>
+
+                  
+                  <div class="d-flex justify-content-center mt-4">
+                    <div style="margin-right: 5px; margin-top: 10px;" class="">
+                      <button class="btn btn-primary" type="button" onclick="agregarOpcion('opciones3', 'listaSeleccionadas3', 'opcionesSeleccionadas3')">Agregar día</button>
+                    
+                  </div>
+                  <div style="margin-left: 5px; margin-top: 10px;" class="">
+                    <button class="btn btn-danger" type="button" onclick="eliminarOpcion('listaSeleccionadas3', 'opcionesSeleccionadas3')">Eliminar día</button>
+                  </div>
+                </div>
+                    <input type="hidden" id="opcionesSeleccionadas3" name="DiasDeLaSemanaSeleccionados" value="">
+                
+              </div>
+
+
+                <div style="border-top: 1px solid white;" class="mb-5">
+                  <p class="ps-3 mb-0 fs-5 mb-4 mt-3">Indique los horarios en los que prestara servicio (puede agregar máximo 10 horarios):</p>
+                  <p class="ps-3 fs-5">Seleccione la hora y los minutos y presione agregar para ir armando la lista de horarios.</p>
+                  <p class="ps-3 fs-5 mb-4"> <span class="fw-bold">Nota:</span>  La selección de horarios que haga se aplicara para todos los días laborales seleccionados por igual.</p>
+                  <div class="row d-flex align-items-end justify-content-center">
+
+                    <div class="col-md-6">
+                     <div>
+                      <label class="form-label texto-label mb-0" for="horas">Selecciona la hora:</label>
+        <select aria-label="Default select example" class="form-select" id="horas" name="horas">
+            <!-- Opciones de horas (puedes agregar más) -->
+            <option value="08">08</option>
+            <option value="09">09</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="13">13</option>
+            <option value="14">14</option>
+            <option value="15">15</option>
+            <option value="16">16</option>
+            <option value="17">17</option>
+            <option value="18">18</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="form-label texto-label mb-0" for="minutos">Selecciona los minutos:</label>
+        <select aria-label="Default select example" class="form-select" id="minutos" name="minutos">
+            <!-- Opciones de minutos -->
+            <option value="00">00</option>
+            <option value="15">15</option>
+            <option value="30">30</option>
+            <option value="45">45</option>
+        </select>
+      </div>
+                    </div>
+
+                    <div class="col-md-6 text-center">
+                      <label class="form-label texto-label mb-0" for="listaHorarios">Horarios seleccionados:</label>
+                   <select aria-label="Default select example" class="form-select" id="listaHorarios" name="listaHorarios" size="5" multiple>
+					   
+                 </select>
+                    </div>
+                  </div>
+
+                  <div class="d-flex justify-content-center mt-4">
+                    <div style="margin-right: 5px; margin-top: 10px;">
+                      <button class="btn btn-primary" type="button" onclick="agregarHorario()">Agregar horario</button>
+                    </div>
+
+                    <div style="margin-left: 5px; margin-top: 10px;">
+                      <button class="btn btn-danger" type="button" onclick="eliminarHorario()">Eliminar horario</button>
+                    </div>
+                  </div>
+                    <input type="hidden" id="horariosSeleccionados" name="horariosSeleccionados">
+
+
+                </div>
+
+								 <div  class="fs-5 mt-2 text-center"> <!--La variable emailUsuario viene del formulario login y del controlador loginUsuario-->
+	          					<input type="hidden" th:value="${emailUsuario}" class="form-control" name="emailUsuario" id="emailUsuario" placeholder=""> </div>
+								<input type="hidden" th:value="${matricula}" class="form-control" name="matricula">
+								<input type="hidden" th:value="${direccion}" class="form-control" name="direccion">
+								<input type="hidden" th:value="${sexo}" class="form-control" name="sexo">
+								<input type="hidden" th:value="${telefono}" class="form-control" name="telefono">
+								<input type="hidden" th:value="${especialidadModoEnum}" class="form-control" name="especialidadModoEnum">
+								<input type="hidden" th:value="${tipoEspecialidadModoEnum}" class="form-control" name="tipoEspecialidadModoEnum">
+								<input type="hidden" th:value="${provincia}" class="form-control" name="provincia">
+	    	  
+								<div class="boton-de-registro text-center ">
+									<button type="submit" class="bn632-hover bn26">Guardar</button>
+								</div>
+					</div>
+				</div>
+								
+				</form>
+
+			</section>
+		</div>
+		
+		<!--Modal mensajes de error-->
+		
+		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
+     th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
+    <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+            <div class="modal-header border border-0 d-flex justify-content-center ">
+			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+            </div>
+            <div class="modal-body text-black lh-sm">
+                <p class="text-center" th:utext="${error}"></p>
+            </div>
+            <div class="modal-footer border border-0">
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var showModalError = /*[[${showModalError}]]*/ false;
+        if (showModalError) {
+            $('#errorModal').modal('show');
+        }
+
+        $('#errorModal').on('hidden.bs.modal', function () {
+            $(this).remove();
+        });
+    });
+    /*]]>*/
+</script>
+	</main>
+
+
+
+
+	<footer class="d-flex row p-0">
+	    <div class="divfooter col-lg-6 mb-3">
+	      <p class="mb-3 text-center titulos-footer">CONTACTOS</p>
+	      <div class="mb-4">
+	        <p class="mb-0 text-center"><img class="iconos" src="/imagenes/icons8-gps-50.png" alt="">Rivadavia 730,
+	          B1625 Belén de Escobar</p>
+	        <p class="text-center mt-0">Provincia de Buenos Aires</p>
+	      </div>
+	      <div class="mb-4 text-center">
+	        <p><img class="iconos" src="/imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)5744-2608</p>
+	      </div>
+	      <div class="mb-4 text-center">
+	        <p><img class="iconos" src="/imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)5744-2608</p>
+	      </div>
+	      <div class="mb-4 text-center">
+	        <p class=""><img class="iconos pe-1" src="/imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+	      </div>
+	      <div class="text-center iconos3 mt-5 pb-4">
+	        <div class="">
+	          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
+	        </div>
+	        <div>
+	          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+	        </div>
+	        <div>
+	          <a class="link" href="#"> <img class=" iconos2" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
+	        </div>
+	        <div>
+	          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+	        </div>
+	      </div>
+	    </div>
+
+		
+
+		<div class="divfooter col-lg-6">
+			<p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
+			<iframe class="w-100 rounded rounded-2" 
+			   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
+			   width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+			 </iframe>
+		</div>
+	</footer>
+
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+		crossorigin="anonymous"></script>
+</body>
+
+</html>

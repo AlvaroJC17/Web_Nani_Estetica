@@ -34,7 +34,7 @@ public class Profesional extends Persona implements Serializable {
 	@OneToMany(mappedBy = "profesional", cascade = CascadeType.ALL)
 	private List<Turnos> turnos;
 	
-	@OneToMany(mappedBy = "profesional", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "profesional", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<HorariosDisponibles> horariosDisponibles;
 	
 	@Column(name = "matricula")
@@ -46,20 +46,16 @@ public class Profesional extends Persona implements Serializable {
     @Column(name = "calificacion")
     private Double calificacion;
 
-    @Column(name = "precioConsulta")
-    private Double precioConsulta;
+    @Column(name = "valor_multa")
+    private String valorMulta;
     
-    @ElementCollection(targetClass = Especialidad.class)
-    @CollectionTable(name = "especialidad", joinColumns = @JoinColumn(name = "profesional_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "especialidad")
-    private List<Especialidad> especialidad;
+    private Especialidad especialidad;
     
-    @ElementCollection(targetClass = TipoDeEspecialidad.class)
-    @CollectionTable(name = "tipo_especialidad", joinColumns = @JoinColumn(name = "profesional_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_especialidad")
-    private List<TipoDeEspecialidad> tipoEspecialidad;
+    private TipoDeEspecialidad tipoEspecialidad;
     
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "profesional_id")
@@ -87,8 +83,8 @@ public class Profesional extends Persona implements Serializable {
     }
 
 	public Profesional(String matricula, Provincias provincia, Double calificacion,
-			Double precioConsulta, List<Turnos> turnos, List<String> horariosLaborales, List<DiasDeLaSemana> DiasDeLaSemana,
-			List<Tratamiento> tratamientos, List<Especialidad> especialidad, List<TipoDeEspecialidad> tipoEspecialidad) {
+			String valorMulta, List<Turnos> turnos, List<String> horariosLaborales, List<DiasDeLaSemana> DiasDeLaSemana,
+			List<Tratamiento> tratamientos, Especialidad especialidad, TipoDeEspecialidad tipoEspecialidad) {
 		this.turnos = turnos;
 		this.matricula = matricula;
 		this.especialidad = especialidad;
@@ -96,7 +92,7 @@ public class Profesional extends Persona implements Serializable {
 		this.tratamientos = tratamientos;
 		this.provincia = provincia;
 		this.calificacion = calificacion;
-		this.precioConsulta = precioConsulta;
+		this.valorMulta = valorMulta;
 		this.horariosLaborales = horariosLaborales;
 		this.DiasDeLaSemana = DiasDeLaSemana;
 	}
@@ -108,21 +104,20 @@ public class Profesional extends Persona implements Serializable {
 	}
 	
 	
-
-	public List<TipoDeEspecialidad> getTipoEspecialidad() {
-		return tipoEspecialidad;
-	}
-
-	public void setTipoEspecialidad(List<TipoDeEspecialidad> tipoEspecialidad) {
-		this.tipoEspecialidad = tipoEspecialidad;
-	}
-
-	public List<Especialidad> getEspecialidad() {
+	public Especialidad getEspecialidad() {
 		return especialidad;
 	}
 
-	public void setEspecialidad(List<Especialidad> especialidad) {
+	public void setEspecialidad(Especialidad especialidad) {
 		this.especialidad = especialidad;
+	}
+
+	public TipoDeEspecialidad getTipoEspecialidad() {
+		return tipoEspecialidad;
+	}
+
+	public void setTipoEspecialidad(TipoDeEspecialidad tipoEspecialidad) {
+		this.tipoEspecialidad = tipoEspecialidad;
 	}
 
 	public List<Tratamiento> getTratamientos() {
@@ -191,18 +186,18 @@ public class Profesional extends Persona implements Serializable {
 		this.calificacion = calificacion;
 	}
 
-	public Double getPrecioConsulta() {
-		return precioConsulta;
+	public String getValorMulta() {
+		return valorMulta;
 	}
 
-	public void setPrecioConsulta(Double precioConsulta) {
-		this.precioConsulta = precioConsulta;
+	public void setValorMulta(String valorMulta) {
+		this.valorMulta = valorMulta;
 	}
 
 	@Override
 	public String toString() {
 		return super.toString() + "Profesional [matricula=" + matricula + ", tratamientos=" + tratamientos + ", provincia=" + provincia
-				+ ", calificacion=" + calificacion + ", precioConsulta=" + precioConsulta + "]";
+				+ ", calificacion=" + calificacion + ", valorMulta=" + valorMulta + "]";
 	}
 	
 	
