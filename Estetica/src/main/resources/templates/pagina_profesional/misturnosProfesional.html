@@ -213,9 +213,9 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			
 			  <p style="border-bottom: 5px solid;" class="fs-4 border-success">Turnos asistidos desde el <span th:text="${fechaLimiteTurnosAnteriores}"></span>
 			   hasta el <span th:text="${fechaActualTurnosAnteriores}"></span></p>
-			  <div class="d-flex flex-wrap justify-content-center">
 				
 			  
+			  <div class="d-flex flex-wrap justify-content-center">
 			  <div class="text-center" th:if="${#lists.isEmpty(turnosAsistidos)}">
 				<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-success bg-gradient text-white">En este momento no posee turnos en esta categoria</p>
 			  </div>

@@ -93,30 +93,47 @@ tener el mismo ID-->
 		</div>
 		</form>
 			
-		<p class="fs-4 fw-bold ms-4 mb-0" th:text="${'Fecha seleccionada: ' + fechaSeleccionada}"></p>
+		<p class="fs-4 fw-bold ms-4" th:text="${'Fecha seleccionada: ' + fechaSeleccionada}"></p>
 		
+	
 		<ul>
-			<li th:each="hora, turnos : ${turnosPorHora}">
-				
-			</li>
-		</ul>
-		
-		<ul>
-		    <li th:each="horario, iterStatus : ${turnosPorHorarioLaboral}">
-		        <strong th:text="${horario}">Horario</strong>
-		        <ul>
-		            <!-- Verificar si la lista de turnos está vacía fuera del th:each -->
-		            <li th:if="${turnosPorHorarioLaboral[horario].isEmpty()}">
-		                No hay turnos disponibles en este horario.
-		            </li>
-		            <!-- Si la lista no está vacía, iterar sobre los turnos -->
-		            <li th:each="turno : ${turnosPorHorarioLaboral[horario]}" th:unless="${turnosPorHorarioLaboral[horario].isEmpty()}">
-		                <span th:text="${turno.cliente.nombre}">Paciente</span> -
-		                <span th:text="${turno.profesional.nombre}">Servicio</span>
-		            </li>
-		        </ul>
+		    <!-- Iterar sobre las entradas del Map -->
+		    <li class="border-success" style="border-top: 5px solid; list-style-type: none;" th:each="entry : ${turnosPorHorarioLaboral}">
+		        <!-- Imprime la clave del Map, que es el horario -->
+		        <span class="fw-bold fs-4" th:text="${'Hora: ' + entry.key}">Horario</span>
+
+				<div class="d-flex flex-wrap justify-content-center">
+								  <div class="text-center" th:if="${#lists.isEmpty(entry.value)}">
+									<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-success bg-gradient text-white">No tiene turnos en esta horario</p>
+								  </div>
+								  
+								  <div class="ft-misturnos" th:each="turno : ${entry.value}">
+								  <div class="bg-success gb-gradient text-center text-white">Asistido</div>
+								  		  
+								  <div th:unless="${#lists.isEmpty(entry.value)}">
+								   <ul class="ps-2 me-2 mt-3" >
+								   <li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turno.id, turno.id.length() - 12)}"></p> </li>
+								   <li class="list-unstyled d-flex"><strong>Cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.cliente.nombre + ' ' + turno.cliente.apellido}"></p> </li>
+								   <li class="list-unstyled d-flex"><strong>Dni cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.dni}"></p> </li>
+								   <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.fecha}"></p> </li>
+								   <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.horario}"></p> </li>
+								   <span><strong>Tratamientos:</strong></span>
+								   <ul class="pb-3" style="list-style-type: disc;">
+								   <li th:each="tratamientoAsistido : ${turno.tratamientos}">
+								   <span th:text="${tratamientoAsistido.nombreTratamientos.DisplayName}"></span>
+								   </li>
+								   </ul>
+								   </ul>
+								  </div>
+								   </div>
+								   </div>
 		    </li>
 		</ul>
+
+
+		
+		
+
 
 
 			

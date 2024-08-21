@@ -2,6 +2,11 @@ package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -66,19 +71,34 @@ public class ControladorTurnos {
 		if (buscarHorariosProfesional.isPresent()) {
 			Profesional horariosLaborales = buscarHorariosProfesional.get();
 			horariosLaboralesProfesional = horariosLaborales.getHorariosLaborales();
+			
+			
 		}
+		horariosLaboralesProfesional.sort(Comparator.comparing(LocalTime::parse));
 		
 		//Buscamos los turnos por id profesional y fecha
 		List <Turnos> turnosPorFecha = servicioTurnos.buscarTurnosPorProfesionalIdAndFecha(idProfesional, fechaDelTurno);
 		
-	    // Mapear los horarios laborales con los turnos correspondientes
-	    Map<String, List<Turnos>> turnosPorHorarioLaboral = horariosLaboralesProfesional.stream()
-	        .collect(Collectors.toMap(
-	            horario -> horario,
-	            horario -> turnosPorFecha.stream()
-	                .filter(turno -> turno.getHorario().equals(horario))
-	                .collect(Collectors.toList())
-	        ));
+		// Mapear los horarios laborales con los turnos correspondientes sin usar Streams
+		Map<String, List<Turnos>> turnosPorHorarioLaboral = new HashMap<>();
+
+		for (String horario : horariosLaboralesProfesional) {
+		    List<Turnos> turnosEnHorario = new ArrayList<>();
+		    for (Turnos turno : turnosPorFecha) {
+		        if (turno.getHorario().equals(horario)) {
+		            turnosEnHorario.add(turno);
+		        }
+		    }
+		    turnosPorHorarioLaboral.put(horario, turnosEnHorario);
+		}
+
+		turnosPorHorarioLaboral.forEach((horario, turnos) -> {
+		    System.out.println("Horario: " + horario);
+		    System.out.println("Turnos:");
+		    for (Turnos turno : turnos) {
+		        System.out.println("prueba de turnos:" + turno.getEstado()); 
+		    }
+		});
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 		model.addAttribute("fechaSeleccionada", fechaDelTurno);
