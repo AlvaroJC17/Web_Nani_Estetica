@@ -55,7 +55,6 @@ public class ControladorTurnos {
 			@RequestParam (required = false) String fechaTurno,
 			Model model) throws MiExcepcion {
 		
-		System.out.println("Fecha: " + fechaTurno);
 		LocalDate fechaDelTurno = null;
 		
 		  if (fechaTurno != null && !fechaTurno.trim().isEmpty()) {
@@ -91,14 +90,6 @@ public class ControladorTurnos {
 		    }
 		    turnosPorHorarioLaboral.put(horario, turnosEnHorario);
 		}
-
-		turnosPorHorarioLaboral.forEach((horario, turnos) -> {
-		    System.out.println("Horario: " + horario);
-		    System.out.println("Turnos:");
-		    for (Turnos turno : turnos) {
-		        System.out.println("prueba de turnos:" + turno.getEstado()); 
-		    }
-		});
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 		model.addAttribute("fechaSeleccionada", fechaDelTurno);

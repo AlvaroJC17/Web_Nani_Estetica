@@ -68,7 +68,7 @@
   
   <main>
      <div class="">
-      <h3>Mis turnos</h3>
+      <h3>Turnos por fecha</h3>
       <div class="container-fluid">
 
 <!--El iterStat es otro ietrador que agregamos en cada iteracion para darle un id unico a cada modal
@@ -93,22 +93,124 @@ tener el mismo ID-->
 		</div>
 		</form>
 			
-		<p class="fs-4 fw-bold ms-4" th:text="${'Fecha seleccionada: ' + fechaSeleccionada}"></p>
+		<form class="d-flex">
+		<p class="fs-4 fw-bold ms-4 mb-0" >Fecha seleccionada: <span class="fw-normal" th:text="${fechaSeleccionada}"></span></p>
+		<button type="button" data-bs-toggle="modal" data-bs-target="#confirmBackdrop" class="btn btn-danger ms-2">Deshabilitar</button>
 		
+		<!-- Modal Confirmar turno -->
+		<div class="modal fade" id="confirmBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+		tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog">
+		  <div style="background-color: #ebdf9d;" class="modal-content">
+			<div class="modal-header d-block text-center border border-0">
+			  <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
+			  <h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel">Deshabilitar fecha</h1>
+			</div>
+			<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+			  <span class="fw-bold">Estimado Usuario,</span><br><br>
+			  
+			  Estás a punto de deshabilitar la fecha seleccionada. Esto impedirá que los clientes puedan seleccionar turnos para ese día.
+			  Ten en cuenta que si la fecha tiene turnos pendientes, estos serán cancelados automáticamente, y se enviará un email a los clientes
+			  afectados para notificarles. Esta acción no generará multas para los clientes. Una vez que presiones "Aceptar", no podrás revertir
+			  esta acción, así que por favor, verifica bien antes de continuar. Si no estás seguro, puedes presionar "Cancelar" para abortar la operación.
+			  
+			  <br><br>
+			  <span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la deshabilitación?</span>
+			</div>
+			<div class="modal-footer border border-0">
+			  <button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+			  <a href="">
+				<!-- Botón que llama al método para aceptar la confirmación -->
+				<button type="submit" name="accionDelBoton" value="confirmarTurno" class="btn btn-primary">Aceptar</button>
+			  </a>
+			</div>
+		  </div>
+		</div>
+		</div>
+		
+		<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
+		<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input>
+		<input hidden type="text"  name="fechaSeleccionada" th:value="${fechaSeleccionada}"></input>
+		</form>
 	
 		<ul>
 		    <!-- Iterar sobre las entradas del Map -->
-		    <li class="border-success" style="border-top: 5px solid; list-style-type: none;" th:each="entry : ${turnosPorHorarioLaboral}">
+		    <li class="border-success mt-2" style="border-top: 5px solid; list-style-type: none;" th:each="entry, iterStat : ${turnosPorHorarioLaboral}">
+				
+				<form>
 		        <!-- Imprime la clave del Map, que es el horario -->
-		        <span class="fw-bold fs-4" th:text="${'Hora: ' + entry.key}">Horario</span>
+		        <span class="fw-bold fs-4" >Hora: </span> <span class="fw-bold fs-4" th:text="${entry.key}"></span>
+				<button type="button" data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}" class="btn btn-danger pt-0 pb-1 mb-2">x</button>
+				
+				
+				<!-- Modal Cancelar horario -->
+					           			<!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
+					  						<div class="modal fade" th:id="'staticBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+					  							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+					  							<div class="modal-dialog">
+					  								<div style="background-color: #ebdf9d;" class="modal-content">
+					  									<div class="modal-header d-block  text-center border border-0">
+					  										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+					  										<h1 class="modal-title fs-5 fw-bold" id="staticBackdropLabel">
+					  											Deshabilitar horario</h1>
+					  									</div>
+					  									<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+					  										<span class="fw-bold">Estimado Usuario,</span><br><br>
+					  										
+															Estás a punto de deshabilitar el horario seleccionado. Esto impedirá que los clientes puedan reservar turnos 
+															en ese horario para la fecha seleccionada. Ten en cuenta que si el horario tiene turnos pendientes, estos serán
+															cancelados automáticamente, y se enviará un email a los clientes afectados para notificarles. Esta acción no
+															generará multas para los clientes. Una vez que presiones "Aceptar", no podrás revertir esta acción, así que por 
+															favor, verifica bien antes de continuar. Si no estás seguro, puedes presionar "Cancelar" para abortar la operación.
 
+
+															
+															<br><br>
+															
+					  										<br><br>
+					  										<span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la deshabilitación?</span>
+					  									</div>
+					  									<div class="modal-footer border border-0">
+					  										<button type="button" class="btn btn-danger"
+					  											data-bs-dismiss="modal">Cerrar</button>
+					  										<a href="">
+					  											<!--Este boton es el que hace el llamado al metodo-->
+					  											<button type="submit" name="accionDelBoton" value="cancelarTurno"  class="btn btn-primary">Aceptar</button>
+					  												
+					  										</a>
+					  									</div>
+					  								</div>
+					  							</div>
+					  						</div>
+				</form>
+
+				
+
+				
 				<div class="d-flex flex-wrap justify-content-center">
 								  <div class="text-center" th:if="${#lists.isEmpty(entry.value)}">
 									<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-success bg-gradient text-white">No tiene turnos en esta horario</p>
 								  </div>
 								  
 								  <div class="ft-misturnos" th:each="turno : ${entry.value}">
-								  <div class="bg-success gb-gradient text-center text-white">Asistido</div>
+								  
+									<div th:if="${turno.estado.toString} == 'ASISTIDO'" class="bg-success gb-gradient text-center text-white">
+									       Asistido
+									   </div>
+									   
+									   <!-- Condición para estado 'Cancelado' -->
+									   <div th:if="${turno.estado.toString == 'CANCELADO' && !turno.multa}" class="bg-black gb-gradient text-center text-white">
+									       Cancelado
+									   </div>
+
+									   <div th:if="${turno.estado.toString == 'CANCELADO' && turno.multa}" class="bg-danger gb-gradient text-center text-white">
+									       Cancelado
+									   </div>
+									   
+									   <!-- Condición para estado 'Pendiente' -->
+									   <div th:if="${turno.estado.toString} == 'PENDIENTE'" class="bg-warning gb-gradient text-center text-white">
+									       Pendiente
+									   </div>
 								  		  
 								  <div th:unless="${#lists.isEmpty(entry.value)}">
 								   <ul class="ps-2 me-2 mt-3" >
@@ -124,14 +226,20 @@ tener el mismo ID-->
 								   </li>
 								   </ul>
 								   </ul>
+								   <div th:if="${turno.multa}" class="bg-danger gb-gradient text-center text-white">
+								   	 ESTE TURNO POSEE UNA MULTA
+								   </div>
 								  </div>
 								   </div>
 								   </div>
-		    </li>
-		</ul>
+		   				 </li>
+					</ul>
+	       				 </div>			
+           				 </div>
+           				 </div>
 
 
-		
+						
 		
 
 
@@ -140,9 +248,6 @@ tener el mismo ID-->
 			  
           
 		
-	        </div>			
-            </div>
-            </div>
    
         
 
