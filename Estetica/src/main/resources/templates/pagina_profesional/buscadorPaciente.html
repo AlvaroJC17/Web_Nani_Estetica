@@ -86,11 +86,11 @@
 
 	<main class="">
 		<div class="main-interno">
+			<h3>Buscar clientes</h3>
 			<section class=" section-misdatos">
 				<div class="container-fluid form-misdatos d-block  justify-content-center align-items-center ">
 					<div>
-						<h3 class="text-center mb-1">Buscar pacientes</h3>
-						<p class="text-center fs-4 mb-5">Ingrese el nombre, dni o email del paciente para realizar un busqueda</p>
+						<p class="text-center fs-5 mb-5">Ingrese el nombre, dni o email del cliente para realizar un busqueda</p>
 					</div>
 
 					<div class="d-flex justify-content-center">
@@ -101,7 +101,7 @@
 									<input hidden type="text" id="email" name="email" th:value="${datosProfesional.email}"></input>
 									<!--Obtenemos el valor de la variable usuariosEmail del metodo listarUsuariosOcultos que a su vez la obtenemos de la pagina homeAdmin y darle al boton buscar la pasa al metod buscarPorDni-->
 								</div>
-								<div class="d-flex justify-content-center">
+								<div class="d-flex justify-content-center mt-5">
 									<button style="width: 170px;" type="submit" class="btn btn-primary">Buscar</button>
 								</div>
 								</form>

@@ -7,10 +7,14 @@ import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -232,7 +236,7 @@ public class ServicioHorario {
 		   return difereciaDeHorasEntreLasFechas.toHours() < 24;
 	   }
 	   
-			 
+		//Este metodo le da formato a una fech	 
 	    public LocalDate pasarFechaStringToLocalDate(String fecha) throws MiExcepcion {
 			//Recibimos la fecha como un string y la pasamos a Date y luego a LocalDate para guardarla en la base de datos.
 				LocalDate fechaUsuario = null;
@@ -242,7 +246,7 @@ public class ServicioHorario {
 					fechaFormateada = formato.parse(fecha);
 					fechaUsuario =  fechaFormateada.toInstant().atZone(java.time.ZoneId.systemDefault()).toLocalDate();
 				} catch (ParseException e) {
-					throw new MiExcepcion("Error al parsear la fecha a LocalDate");
+					throw new MiExcepcion("Error al parsear la fecha a LocalDate: " + e.getMessage() + " " + "error: " + e.getCause());
 				}
 				return fechaUsuario;
 	    }
@@ -280,12 +284,21 @@ public class ServicioHorario {
 	    	
 	    	return true;
 	    }
-				
+			
+	    
+	    public LocalDate fechaStringToLocalDate(String fecha) throws MiExcepcion {
+	    	
+	    	String fechaSinEspacios = fecha.trim();
+	    	
+	    	try {
+	            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyy");
+	            return LocalDate.parse(fechaSinEspacios, formatter);
+	        } catch (DateTimeParseException e) {
+	            throw new MiExcepcion("Error al parsear la fecha a LocalDate: " + e.getMessage());
+	        }
+	    }
 			
 	    		
-	    	
-				
-		 
 		 public LocalDateTime pasarFechaStringToLocalDateTime(String fecha) throws MiExcepcion{
 			 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			 LocalDateTime fechaProporcionada = LocalDateTime.parse(fecha, dateFormatter);
@@ -309,16 +322,39 @@ public class ServicioHorario {
 			 return fechaFormateada;
 		 }
 		 
+		//Pasamos las fechas string con formato dd/MM/yyyy a LocalDate	 
 		 public String pasarFechasLocalDateToString(LocalDate fechaDate) {
-			 
 			 // Definir un formato para la fecha
 			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 			 // Convertir LocalDate a String
 			 String fechaString = fechaDate.format(formatter);
 			 return fechaString;
 		 }
-		        
-		        
+		 
+		 //Pasamos las fechas de string con formato yyyy-MM-dd a LocalDate
+		 public LocalDate pasarFechaStringToLocalDateOtroFormato(String fecha) throws MiExcepcion {
+			 String fechaSinEspacios = fecha.trim();
+		    	
+		    	try {
+		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
+		            return LocalDate.parse(fechaSinEspacios, formatter);
+		        } catch (DateTimeParseException e) {
+		            throw new MiExcepcion("Error al parsear la fecha a LocalDate: " + e.getMessage());
+		        }
+		    }
+		 
+		 //Listamos los horarios disponibles (que son los horarios que se generan cuando un cliente selecciona una fecha)
+		 public List<HorariosDisponibles> buscarHorariosPorIdProfesionalAndFecha(String idProfesional, String fecha){
+			 return repositorioHorariosDisponibles.findHorariosByProfesionalIdAndFecha(idProfesional, fecha);
+		 }   
+			 
+		 //Validamos con una expresion regular que si la fecha tiene el formato dd/MM/yyy, si correcto devuelve true sino false
+		 public Boolean validarFormatoDeFecha(String fecha) {
+			 String regex = "^(0[1-9]|[12][0-9]|3[01])[-\\/](0[1-9]|1[0-2])[-\\/](\\d{4})$";
+		        Pattern pattern = Pattern.compile(regex);
+		        Matcher matcher = pattern.matcher(fecha);
+		        return matcher.matches();
+		 }
 		        
 			
 			

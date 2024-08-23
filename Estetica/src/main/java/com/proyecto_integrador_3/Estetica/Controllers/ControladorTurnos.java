@@ -2,14 +2,12 @@ package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +45,7 @@ public class ControladorTurnos {
 	@Autowired
 	ServicioProfesional servicioProfesional;
 	
-	//Controlador para visualizar turnos por fecha, asi como deshabilitar fechas y horarios por profesional
+	//Controlador para visualizar turnos por fecha, y horario
 	@GetMapping("/turnosPorFecha")
 	public String turnosPorFecha(
 			@RequestParam String idProfesional,
@@ -56,6 +54,7 @@ public class ControladorTurnos {
 			Model model) throws MiExcepcion {
 		
 		LocalDate fechaDelTurno = null;
+		Boolean mostrarBotonesDeshabilitar = true;
 		
 		  if (fechaTurno != null && !fechaTurno.trim().isEmpty()) {
 		        LocalDate fechaTurnoLocalDate = servicioHorario.pasarFechaStringToLocalDate(fechaTurno);
@@ -63,6 +62,10 @@ public class ControladorTurnos {
 		    } else {
 		        fechaDelTurno = LocalDate.now();
 		    }
+		  
+		  if (servicioHorario.fechaYaPaso(fechaDelTurno)) {
+			mostrarBotonesDeshabilitar = false;
+		}
 		
 		//Buscamos los horarios del profesional
 		List<String> horariosLaboralesProfesional = null;
@@ -70,15 +73,12 @@ public class ControladorTurnos {
 		if (buscarHorariosProfesional.isPresent()) {
 			Profesional horariosLaborales = buscarHorariosProfesional.get();
 			horariosLaboralesProfesional = horariosLaborales.getHorariosLaborales();
-			
-			
 		}
-		horariosLaboralesProfesional.sort(Comparator.comparing(LocalTime::parse));
-		
+					
 		//Buscamos los turnos por id profesional y fecha
 		List <Turnos> turnosPorFecha = servicioTurnos.buscarTurnosPorProfesionalIdAndFecha(idProfesional, fechaDelTurno);
 		
-		// Mapear los horarios laborales con los turnos correspondientes sin usar Streams
+		// Mapear los horarios laborales con los turnos correspondientes
 		Map<String, List<Turnos>> turnosPorHorarioLaboral = new HashMap<>();
 
 		for (String horario : horariosLaboralesProfesional) {
@@ -88,15 +88,23 @@ public class ControladorTurnos {
 		            turnosEnHorario.add(turno);
 		        }
 		    }
+		    //Acá se crea el mapa de horario y turnos
 		    turnosPorHorarioLaboral.put(horario, turnosEnHorario);
 		}
+
+		//Guardamos el mapa anterior en un nuevo mapa de tipo TreeMap, que se encarga de ordenar las key
+		//En este caso las key son horarios, por lo que el mapa resultante tiene los horarios ordenados
+		//de menor a mayor
+		Map<String, List<Turnos>> turnosPorHorarioLaboralOrdenado = new TreeMap<>(turnosPorHorarioLaboral);
+
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 		model.addAttribute("fechaSeleccionada", fechaDelTurno);
 		model.addAttribute("turnosDisponiblesPorFecha", turnosPorFecha);
-		model.addAttribute("turnosPorHorarioLaboral", turnosPorHorarioLaboral);
+		model.addAttribute("turnosPorHorarioLaboral", turnosPorHorarioLaboralOrdenado);
 		model.addAttribute("horariosLaborales", horariosLaboralesProfesional);
 		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("mostrarBotonesDeshabilitar", mostrarBotonesDeshabilitar);
 		return"/pagina_profesional/turnosPorFecha";
 		
 	}

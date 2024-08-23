@@ -37,6 +37,16 @@ public class Profesional extends Persona implements Serializable {
 	@OneToMany(mappedBy = "profesional", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<HorariosDisponibles> horariosDisponibles;
 	
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "fechas_deshabilitadas", joinColumns = @JoinColumn(name = "profesional_id"))
+	@Column(name = "fecha_inactiva")
+	private List<String> fechasDeshabilitadas = new ArrayList<>();
+	
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "horarios_deshabilitados", joinColumns = @JoinColumn(name = "profesional_id"))
+	@Column(name = "horario_inactivo")
+	private List<String> horariosDeshabilitados = new ArrayList<>();
+	
 	@Column(name = "matricula")
 	private String matricula;
 	
@@ -104,6 +114,25 @@ public class Profesional extends Persona implements Serializable {
 	}
 	
 	
+	
+	
+	
+	public List<String> getFechasDeshabilitadas() {
+		return fechasDeshabilitadas;
+	}
+
+	public void setFechasDeshabilitadas(List<String> fechasDeshabilitadas) {
+		this.fechasDeshabilitadas = fechasDeshabilitadas;
+	}
+
+	public List<String> getHorariosDeshabilitados() {
+		return horariosDeshabilitados;
+	}
+
+	public void setHorariosDeshabilitados(List<String> horariosDeshabilitados) {
+		this.horariosDeshabilitados = horariosDeshabilitados;
+	}
+
 	public Especialidad getEspecialidad() {
 		return especialidad;
 	}

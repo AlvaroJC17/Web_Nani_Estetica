@@ -70,7 +70,7 @@ que se genere en iteracion, esto evita que al tener varios turnos, se cruce la i
 tener el mismo ID-->
 
 <div class="d-block mb-4">
-		<p style="border-bottom: solid 5px;" class="fs-1 border-warning">Turnos activos:</p>
+		<p style="border-bottom: solid 5px;" class="fs-4 border-warning">Turnos activos:</p>
 	<div class="d-flex flex-wrap justify-content-center">	
 		
 		<div class="text-center" th:if="${#lists.isEmpty(turnosActivos)}">
@@ -149,7 +149,7 @@ tener el mismo ID-->
 			  </div>
 			  </div>  
 			
-			  <p style="border-bottom: 5px solid;" class="fs-1 border-success">Turnos asistidos:</p>
+			  <p style="border-bottom: 5px solid;" class="fs-4 border-success">Turnos asistidos:</p>
 			  <div class="d-flex flex-wrap justify-content-center">
 			  
 			  <div class="text-center" th:if="${#lists.isEmpty(turnosAsistidos)}">
@@ -178,7 +178,7 @@ tener el mismo ID-->
 						  
 			   
 			
-			<p style="border-bottom: 5px solid;" class="fs-1 border-danger">Turnos con multa:</p>
+			<p style="border-bottom: 5px solid;" class="fs-4 border-danger">Turnos con multa:</p>
 			 <div class="d-flex flex-wrap justify-content-center">		  
 			
 			<div class="text-center" th:if="${#lists.isEmpty(turnosConMulta)}">
@@ -210,7 +210,7 @@ tener el mismo ID-->
 			
 			
 			
-			<p style="border-bottom: 5px solid;" class="fs-1 border-dark">Turnos cancelados:</p>
+			<p style="border-bottom: 5px solid;" class="fs-4 border-dark">Turnos cancelados:</p>
 			<div class="d-flex flex-wrap justify-content-center">
 			
 			<div class="text-center" th:if="${#lists.isEmpty(turnosCancelados)}">

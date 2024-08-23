@@ -76,11 +76,11 @@ que se genere en iteracion, esto evita que al tener varios turnos, se cruce la i
 tener el mismo ID-->
 
 <div class="d-block mb-4">
-		<p class="fs-5">Selecciona una fecha para ver los turnos disponibles por horario, asi como tambien podra deshabilitar fechas o horarios.
+		<p class="fs-5 text-center">Selecciona una fecha para ver los turnos disponibles por horario, asi como tambien podra deshabilitar fechas o horarios.
 		</p>
 	
-		<p class="mt-5 mb-2 text-center fs-5">Seleccione la fecha del turno</p>
-		<form th:action="@{/turnosPorFecha}" class="mb-5 mt-0 d-flex justify-content-center">
+		<p class="mt-5 mb-2 text-center fs-5">Seleccione fecha a consultar</p>
+		<form th:action="@{/turnosPorFecha}" method="get" class="mb-5 mt-0 d-flex justify-content-center">
 		<div class="d-flex">
 		<div class="me-2">
 			<input type="date" class="form-control" name="fechaTurno"  placeholder="Fecha de turno">
@@ -93,9 +93,9 @@ tener el mismo ID-->
 		</div>
 		</form>
 			
-		<form class="d-flex">
-		<p class="fs-4 fw-bold ms-4 mb-0" >Fecha seleccionada: <span class="fw-normal" th:text="${fechaSeleccionada}"></span></p>
-		<button type="button" data-bs-toggle="modal" data-bs-target="#confirmBackdrop" class="btn btn-danger ms-2">Deshabilitar</button>
+		<form th:action="@{/fechasDeshabilitadas}" method="post" class="d-flex">
+		<p class="fs-4  mb-0" >Fecha seleccionada: <span class="fw-normal" th:text="${fechaSeleccionada}"></span></p>
+		<button th:if="${mostrarBotonesDeshabilitar}" type="button" data-bs-toggle="modal" data-bs-target="#confirmBackdrop" class="btn btn-danger ms-2">Deshabilitar</button>
 		
 		<!-- Modal Confirmar turno -->
 		<div class="modal fade" id="confirmBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -137,11 +137,14 @@ tener el mismo ID-->
 		    <!-- Iterar sobre las entradas del Map -->
 		    <li class="border-success mt-2" style="border-top: 5px solid; list-style-type: none;" th:each="entry, iterStat : ${turnosPorHorarioLaboral}">
 				
-				<form>
+				<form th:action="@{/horariosDeshabilitadas}" method="post">
 		        <!-- Imprime la clave del Map, que es el horario -->
-		        <span class="fw-bold fs-4" >Hora: </span> <span class="fw-bold fs-4" th:text="${entry.key}"></span>
-				<button type="button" data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}" class="btn btn-danger pt-0 pb-1 mb-2">x</button>
+		        <span class="fw-medium fs-4" >Hora: </span> <span class="fw-medium fs-4" th:text="${entry.key}"></span>
+				<button th:if="${mostrarBotonesDeshabilitar}" type="button" data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}" class="btn btn-danger pt-0 pb-1 mb-2">x</button>
 				
+				<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
+				<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input>
+				<input hidden type="text"  name="horaSeleccionada" th:value="${entry.key}"></input>
 				
 				<!-- Modal Cancelar horario -->
 					           			<!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
@@ -189,7 +192,7 @@ tener el mismo ID-->
 				
 				<div class="d-flex flex-wrap justify-content-center">
 								  <div class="text-center" th:if="${#lists.isEmpty(entry.value)}">
-									<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-success bg-gradient text-white">No tiene turnos en esta horario</p>
+									<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-success bg-gradient text-white">No tiene turnos en este horario</p>
 								  </div>
 								  
 								  <div class="ft-misturnos" th:each="turno : ${entry.value}">

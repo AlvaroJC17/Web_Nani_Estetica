@@ -412,6 +412,8 @@ public class ControladorProfesional {
 			@RequestParam String emailUsuario,
 			Model model) throws MiExcepcion{
 		
+		System.out.println("provincia del profesional " +  provincia);
+		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailUsuario);
 		model.addAttribute("matricula", matricula);
 		model.addAttribute("sexo", sexo);
@@ -503,11 +505,11 @@ public class ControladorProfesional {
 		model.addAttribute("especialidadModoEnum", especialidadModoEnum);
 		model.addAttribute("datosProfesional", datosProfesional);
 		
-		if (tipoEspecialidadSeleccionada.getDisplayName().equals("Cosmetologa")) {
+		if (tipoEspecialidadSeleccionada.getDisplayName().equalsIgnoreCase("Cosmetologa")) {
 			
-			// Filtrar los tratamientos que contienen "FACIALES" en su nombre y guardarlas en una lista
-		    List<TratamientoEnum> tratamientosFaciales = Arrays.stream(TratamientoEnum.values())
-		            .filter(especialidadList -> especialidadList.name().contains("FACIAL"))
+			// Filtrar los tratamientos que contienen "COSMETOLOGA" en su nombre y guardarlas en una lista
+		    List<TratamientoEnum> tratamientosCosmetologa = Arrays.stream(TratamientoEnum.values())
+		            .filter(especialidadList -> especialidadList.name().contains("COSMETOLOGA"))
 		            .collect(Collectors.toList());
 		    
 		    // Filtrar las especialidades que contienen "FACIAL" en su nombre y guardarlas en una lista
@@ -517,17 +519,17 @@ public class ControladorProfesional {
 
 	        //Pasamos las dos listas a la vista
 	        model.addAttribute("tipoEspecialidad", especialidadesFaciales);
-		    model.addAttribute("tratamiento", tratamientosFaciales);
+		    model.addAttribute("tratamiento", tratamientosCosmetologa);
 		    model.addAttribute("especialidadSeleccionada", nuevaSeleccionEspecialidad.getDisplayName());
 		    model.addAttribute("tipoEspecialidadSeleccionada", tipoEspecialidadSeleccionada.getDisplayName());
 		    model.addAttribute("tipoEspecialidadModoEnum", tipoEspecialidadSeleccionada);
 		    return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
 			
-		}else if(tipoEspecialidadSeleccionada.getDisplayName().equals("Lashista") || tipoEspecialidadSeleccionada.getDisplayName().equals("Pedicura") || tipoEspecialidadSeleccionada.getDisplayName().equals("Manicura")) {
+		}else if(tipoEspecialidadSeleccionada.getDisplayName().equalsIgnoreCase("Lashista")){
 			
-			// Filtrar los tratamientos que contienen "ESTETICO" en su nombre y guardarlas en una lista
-		    List<TratamientoEnum> tratamientosEsteticos = Arrays.stream(TratamientoEnum.values())
-		            .filter(especialidadList -> especialidadList.name().contains("ESTETICO"))
+			// Filtrar los tratamientos que contienen "LASHISTA" en su nombre y guardarlas en una lista
+		    List<TratamientoEnum> tratamientosLashista = Arrays.stream(TratamientoEnum.values())
+		            .filter(especialidadList -> especialidadList.name().contains("LASHISTA"))
 		            .collect(Collectors.toList());
 		    
 		    // Filtrar las especialidades que contienen "ESTETICO" en su nombre y guardarlas en una lista
@@ -536,7 +538,7 @@ public class ControladorProfesional {
 	                .collect(Collectors.toList());
 
 	        //pasamos ambas lista a la vista
-		    model.addAttribute("tratamiento", tratamientosEsteticos);
+		    model.addAttribute("tratamiento", tratamientosLashista);
 		    model.addAttribute("tipoEspecialidad", especialidadesEstetica);
 		    model.addAttribute("especialidadSeleccionada", nuevaSeleccionEspecialidad.getDisplayName());
 		    model.addAttribute("tipoEspecialidadSeleccionada", tipoEspecialidadSeleccionada.getDisplayName());
@@ -544,11 +546,11 @@ public class ControladorProfesional {
 		    return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
 			
 			
-		}else if(tipoEspecialidadSeleccionada.getDisplayName().equals("Masajista")) {
+		}else if(tipoEspecialidadSeleccionada.getDisplayName().equalsIgnoreCase("Masajista")) {
 			
-			// Filtrar los tratamientos que contienen "CORPORAL" en su nombre y guardarlas en una lista
-		    List<TratamientoEnum> tratamientosCorporales = Arrays.stream(TratamientoEnum.values())
-		            .filter(especialidadList -> especialidadList.name().contains("CORPORAL"))
+			// Filtrar los tratamientos que contienen "MASAJE" en su nombre y guardarlas en una lista
+		    List<TratamientoEnum> tratamientosMasajista = Arrays.stream(TratamientoEnum.values())
+		            .filter(especialidadList -> especialidadList.name().contains("MASAJE"))
 		            .collect(Collectors.toList());
 		    
 		    // Filtrar las especialidades que contienen "CORPORAL" en su nombre y guardarlas en una lista
@@ -557,19 +559,61 @@ public class ControladorProfesional {
 	                .collect(Collectors.toList());
 
 	        //pasamos ambas listas a la vista
-		    model.addAttribute("tratamiento", tratamientosCorporales);
+		    model.addAttribute("tratamiento", tratamientosMasajista);
 		    model.addAttribute("tipoEspecialidad", especialidadesCorporales);
 		    model.addAttribute("especialidadSeleccionada", nuevaSeleccionEspecialidad.getDisplayName());
 		    model.addAttribute("tipoEspecialidadSeleccionada", tipoEspecialidadSeleccionada.getDisplayName());
 		    model.addAttribute("tipoEspecialidadModoEnum", tipoEspecialidadSeleccionada);
 		    return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
 		    
+		}else if(tipoEspecialidadSeleccionada.getDisplayName().equalsIgnoreCase("Manicura")) {
+			
+			// Filtrar los tratamientos que contienen "Manicura" en su nombre y guardarlas en una lista
+		    List<TratamientoEnum> tratamientosManicura = Arrays.stream(TratamientoEnum.values())
+		            .filter(especialidadList -> especialidadList.name().contains("MANICURA"))
+		            .collect(Collectors.toList());
+		    
+		    // Filtrar las especialidades que contienen "CORPORAL" en su nombre y guardarlas en una lista
+	        List<TipoDeEspecialidad> especialidadesCorporales = Arrays.stream(TipoDeEspecialidad.values())
+	                .filter(especialidadList -> especialidadList.name().contains("ESTETICO"))
+	                .collect(Collectors.toList());
+
+	        //pasamos ambas listas a la vista
+		    model.addAttribute("tratamiento", tratamientosManicura);
+		    model.addAttribute("tipoEspecialidad", especialidadesCorporales);
+		    model.addAttribute("especialidadSeleccionada", nuevaSeleccionEspecialidad.getDisplayName());
+		    model.addAttribute("tipoEspecialidadSeleccionada", tipoEspecialidadSeleccionada.getDisplayName());
+		    model.addAttribute("tipoEspecialidadModoEnum", tipoEspecialidadSeleccionada);
+		    return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+			
+			
+		}else if(tipoEspecialidadSeleccionada.getDisplayName().equalsIgnoreCase("Pedicura")) {
+			
+			// Filtrar los tratamientos que contienen "PEDICURA" en su nombre y guardarlas en una lista
+		    List<TratamientoEnum> tratamientosManicura = Arrays.stream(TratamientoEnum.values())
+		            .filter(especialidadList -> especialidadList.name().contains("PEDICURA"))
+		            .collect(Collectors.toList());
+		    
+		    // Filtrar las especialidades que contienen "CORPORAL" en su nombre y guardarlas en una lista
+	        List<TipoDeEspecialidad> especialidadesCorporales = Arrays.stream(TipoDeEspecialidad.values())
+	                .filter(especialidadList -> especialidadList.name().contains("ESTETICO"))
+	                .collect(Collectors.toList());
+
+	        //pasamos ambas listas a la vista
+		    model.addAttribute("tratamiento", tratamientosManicura);
+		    model.addAttribute("tipoEspecialidad", especialidadesCorporales);
+		    model.addAttribute("especialidadSeleccionada", nuevaSeleccionEspecialidad.getDisplayName());
+		    model.addAttribute("tipoEspecialidadSeleccionada", tipoEspecialidadSeleccionada.getDisplayName());
+		    model.addAttribute("tipoEspecialidadModoEnum", tipoEspecialidadSeleccionada);
+		    return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
+			
 		}else {
 			String error = "Error al seleccionar una especialidad";
 			model.addAttribute("showModalError", true);
 			model.addAttribute("error", error);
 			return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
 		}
+		
 		
 	}
 		
@@ -588,18 +632,6 @@ public class ControladorProfesional {
 			@RequestParam (required = false) String horariosSeleccionados,
 			@RequestParam (required = false) String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
 			ModelMap model) throws MiExcepcion {
-		
-		System.out.println("matricula: " + matricula);
-		System.out.println("sexo: " + sexo);
-		System.out.println("telefono: " + telefono);
-		System.out.println("provincia: " + provincia);
-		System.out.println("direccion: " +  direccion);
-		System.out.println("especialidadesSeleccionadas: " + especialidadModoEnum);
-		System.out.println("tipoEspecialidadesSeleccionadas: " + tipoEspecialidadModoEnum);
-		System.out.println("tratamientosSeleccionados: " + tratamientosSeleccionados);
-		System.out.println("DiasDeLaSemanaSeleccionados: " + DiasDeLaSemanaSeleccionados);
-		System.out.println("horariosSeleccionados: " + horariosSeleccionados);
-		System.out.println("emailUsuario: " + emailUsuario);
 		
 		try {
 			
@@ -621,7 +653,7 @@ public class ControladorProfesional {
 			model.addAttribute("direccion", direccion);
 			model.addAttribute("emailUsuario", emailUsuario);
 			model.addAttribute("showModalError", true);
-			return "pagina_profesional/completarDatosProfesional";
+			return "pagina_profesional/completarEspecialidadesAndTratamientoProfesional";
 		}
 		return "redirect:/homeProfesional?email=" + emailUsuario; //redirecionamos al metodo homeProfesional enviando la varibale mail
 	}
