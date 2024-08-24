@@ -475,6 +475,12 @@ public class ControladorCliente {
 					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
 				}
 				
+				if (servicioHorario.compararFechaConFechaDeshabilitada(fechaSeleccionadaLocalDate, idProfesional)) {
+					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
+							+ "<span fs-6'>La fecha seleccionada no esta habilitada para seleccionar turnos.</span>";
+					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
+				}
+				
 				//Definimos una fecha maxima de dos meses a partir de la fecha actual
 				//Con esto limitamos al usuario a que no pueda solicitar turnos mas alla de dos meses en adelante de la fecha actual
 				if (fechaSeleccionadaLocalDate.isAfter(fechaMaxima)) {

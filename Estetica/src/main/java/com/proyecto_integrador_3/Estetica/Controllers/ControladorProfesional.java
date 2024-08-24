@@ -412,8 +412,6 @@ public class ControladorProfesional {
 			@RequestParam String emailUsuario,
 			Model model) throws MiExcepcion{
 		
-		System.out.println("provincia del profesional " +  provincia);
-		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailUsuario);
 		model.addAttribute("matricula", matricula);
 		model.addAttribute("sexo", sexo);
@@ -717,42 +715,5 @@ public class ControladorProfesional {
 		}
 	}
 	
-	//metodo relacionado con actualizarContrasenaProfesional
-//	@GetMapping("/cambiarContrasenaProfesional")
-//	public String cambiarContrasenaProfesional(
-//			@RequestParam String email,
-//			@RequestParam(required = false) String exito,
-//			@RequestParam(required = false) String error,
-//			ModelMap model) {
-//		
-//		
-//		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
-//		
-//		model.addAttribute("datosProfesional", datosProfesional);
-//		model.addAttribute("exito", exito);
-//		model.addAttribute("error", error);
-//		return "/pagina_profesional/cambiarContrasenaProfesional";
-//	}
-	
-	//Metodo relacionado con cambiarContrasenaProfesional
-//	@PostMapping("actualizarContrasenaProfesional")
-//	public String actualizarContrasenaProfesional(
-//			@RequestParam String emailProfesional, //Esta variable viene de un input oculto de la pag cambiarContrasenaProfesional
-//			@RequestParam String idProfesional, //Esta variable viene de un input oculto de la pag de la pag cambiarContrasenaCliente
-//			@RequestParam String oldPass, //A partir de estas viene del formulario
-//			@RequestParam String newPass,
-//			@RequestParam String repeatNewPass,
-//			ModelMap model) throws MiExcepcion {
-//		
-//		String error = null;
-//		try {
-//			servicioUsuario.modificarContrasena(idProfesional,oldPass, newPass, repeatNewPass);
-//			return "/index";
-//		} catch (Exception e) {
-//			error = e.getMessage();
-//			return "redirect:/cambiarContrasenaProfesional?email=" + emailProfesional + "&error=" + error;
-//		}
-//		
-//	}
 
 }

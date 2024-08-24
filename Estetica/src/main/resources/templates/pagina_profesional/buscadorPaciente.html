@@ -125,6 +125,7 @@
 															<th class="text-center">Email</th>
 															<th class="text-center">Rol</th>
 															<th class="text-center">Activo</th>
+															<th class="text-center">Multa</th>
 														</tr>
 													</thead>
 													
@@ -142,7 +143,8 @@
 															<td class="text-center" th:text="${#strings.toUpperCase(usuarios.apellido)}"></td>
 															<td class="text-center" th:text="${#strings.toLowerCase(usuarios.email)}"></td>
 															<td class="text-center" th:text="${usuarios.rol}"></td>
-															<td class="text-center" th:text="${usuarios.activo}"></td>
+															<td class="text-center" th:text="${usuarios.activo ? 'SI' : 'NO'}"></td>
+															<td class="text-center" th:text="${usuarios.multa ? 'SI' : 'NO'}"></td>
 															<input hidden type="text" id="usuarioEmail" name="usuarioEmail"
 															th:value="${usuarios.email}"></input>
 														</tr>    

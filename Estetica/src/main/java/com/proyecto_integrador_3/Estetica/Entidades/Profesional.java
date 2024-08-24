@@ -1,8 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
 import java.io.Serializable;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -13,8 +11,6 @@ import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
-import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
@@ -37,15 +33,13 @@ public class Profesional extends Persona implements Serializable {
 	@OneToMany(mappedBy = "profesional", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	private List<HorariosDisponibles> horariosDisponibles;
 	
+	@OneToMany(mappedBy = "profesional", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<FechaHorarioDeshabilitado> fechasHorariosDeshabilitados = new ArrayList<>();
+	
 	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "fechas_deshabilitadas", joinColumns = @JoinColumn(name = "profesional_id"))
 	@Column(name = "fecha_inactiva")
 	private List<String> fechasDeshabilitadas = new ArrayList<>();
-	
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "horarios_deshabilitados", joinColumns = @JoinColumn(name = "profesional_id"))
-	@Column(name = "horario_inactivo")
-	private List<String> horariosDeshabilitados = new ArrayList<>();
 	
 	@Column(name = "matricula")
 	private String matricula;
@@ -114,23 +108,20 @@ public class Profesional extends Persona implements Serializable {
 	}
 	
 	
-	
-	
-	
+	public List<FechaHorarioDeshabilitado> getFechasHorariosDeshabilitados() {
+		return fechasHorariosDeshabilitados;
+	}
+
+	public void setFechasHorariosDeshabilitados(List<FechaHorarioDeshabilitado> fechasHorariosDeshabilitados) {
+		this.fechasHorariosDeshabilitados = fechasHorariosDeshabilitados;
+	}
+
 	public List<String> getFechasDeshabilitadas() {
 		return fechasDeshabilitadas;
 	}
 
 	public void setFechasDeshabilitadas(List<String> fechasDeshabilitadas) {
 		this.fechasDeshabilitadas = fechasDeshabilitadas;
-	}
-
-	public List<String> getHorariosDeshabilitados() {
-		return horariosDeshabilitados;
-	}
-
-	public void setHorariosDeshabilitados(List<String> horariosDeshabilitados) {
-		this.horariosDeshabilitados = horariosDeshabilitados;
 	}
 
 	public Especialidad getEspecialidad() {

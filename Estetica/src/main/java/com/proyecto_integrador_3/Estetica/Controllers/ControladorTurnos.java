@@ -51,8 +51,11 @@ public class ControladorTurnos {
 			@RequestParam String idProfesional,
 			@RequestParam String emailProfesional,
 			@RequestParam (required = false) String fechaTurno,
+			@RequestParam (required = false) String exito,
+			@RequestParam (required = false) String error,
 			Model model) throws MiExcepcion {
 		
+				
 		LocalDate fechaDelTurno = null;
 		Boolean mostrarBotonesDeshabilitar = true;
 		
@@ -63,9 +66,16 @@ public class ControladorTurnos {
 		        fechaDelTurno = LocalDate.now();
 		    }
 		  
+		  
 		  if (servicioHorario.fechaYaPaso(fechaDelTurno)) {
-			mostrarBotonesDeshabilitar = false;
-		}
+			  mostrarBotonesDeshabilitar = false;
+		  }else if(servicioHorario.compararFechaConFechaDeshabilitada(fechaDelTurno, idProfesional)) {
+			  mostrarBotonesDeshabilitar = false;
+		  }else if(servicioHorario.esFinDeSemana(fechaDelTurno) && !servicioHorario.fechaYaPaso(fechaDelTurno)) {
+			  error = "No trabajamos los domingos";
+			  fechaDelTurno = LocalDate.now();
+		  }
+			  
 		
 		//Buscamos los horarios del profesional
 		List<String> horariosLaboralesProfesional = null;
@@ -105,6 +115,15 @@ public class ControladorTurnos {
 		model.addAttribute("horariosLaborales", horariosLaboralesProfesional);
 		model.addAttribute("datosProfesional", datosProfesional);
 		model.addAttribute("mostrarBotonesDeshabilitar", mostrarBotonesDeshabilitar);
+		
+		if (exito != null) {
+			model.addAttribute("exito", exito);
+			model.addAttribute("showModalExito", true);
+		}else if(error != null) {
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+		
 		return"/pagina_profesional/turnosPorFecha";
 		
 	}

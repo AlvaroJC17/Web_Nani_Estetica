@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
-import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
@@ -155,8 +154,6 @@ public class ControladorAdmin {
 		if (dato2 != null) {
 			dato = dato2;
 		}
-		
-		System.out.println("dato: " + dato);
 					
 		String error = null;
 		String datoSinEspacios = dato.trim(); //Le quitamos los espacios en blanco al principio y final de la palabra

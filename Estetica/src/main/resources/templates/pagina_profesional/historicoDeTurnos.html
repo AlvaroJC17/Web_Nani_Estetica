@@ -125,9 +125,9 @@
 																	<td class="text-center" th:text="${#strings.toLowerCase(turnosDelProfesional.email)}"></td>
 																	<td class="text-center" th:text="${#strings.toLowerCase(turnosDelProfesional.profesional.nombre)}"></td>
 																	<td class="text-center" th:text="${#strings.toLowerCase(turnosDelProfesional.profesional.apellido)}"></td>
-																	<td class="text-center" th:text="${turnosDelProfesional.activo}"></td>
+																	<td class="text-center" th:text="${turnosDelProfesional.activo ? 'SI' : 'NO'}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.estado}"></td>
-																	<td class="text-center" th:text="${turnosDelProfesional.multa}"></td>
+																	<td class="text-center" th:text="${turnosDelProfesional.multa ? 'SI' : 'NO'}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.fechaCreacion}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.fecha}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.horario}"></td>

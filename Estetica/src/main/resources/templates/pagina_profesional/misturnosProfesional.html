@@ -100,7 +100,7 @@ tener el mismo ID-->
 		
 		<div class="d-flex flex-wrap justify-content-center">	
 		<div class="text-center" th:if="${#lists.isEmpty(turnosActivos)}">
-		<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-warning bg-gradient text-white">En este momento no posee turnos en esta categoria</p>
+		<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-warning bg-gradient text-white px-1">En este momento no posee turnos en esta categoria</p>
 		</div>
 		
         <div class="ft-misturnos" th:each="turnoActivo, iterStat : ${turnosActivos}">
@@ -217,7 +217,7 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			  
 			  <div class="d-flex flex-wrap justify-content-center">
 			  <div class="text-center" th:if="${#lists.isEmpty(turnosAsistidos)}">
-				<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-success bg-gradient text-white">En este momento no posee turnos en esta categoria</p>
+				<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-success bg-gradient text-white px-1">En este momento no posee turnos en esta categoria</p>
 			  </div>
 			  
 			  <div class="ft-misturnos" th:each="turnoAsistido : ${turnosAsistidos}">
@@ -248,7 +248,7 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			 <div class="d-flex flex-wrap justify-content-center">		  
 				
 			<div class="text-center" th:if="${#lists.isEmpty(turnosConMulta)}">
-			<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-danger bg-gradient text-white">En este momento no posee turnos en esta categoria</p>
+			<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-danger bg-gradient text-white px-1">En este momento no posee turnos en esta categoria</p>
 			</div>
 						  
 			 <div class="ft-misturnos" th:each="turnoMulta : ${turnosConMulta}">
@@ -284,7 +284,7 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			<div class="d-flex flex-wrap justify-content-center">
 				
 			<div class="text-center" th:if="${#lists.isEmpty(turnosCancelados)}">
-			<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-dark bg-gradient text-white">En este momento no posee turnos en esta categoria</p>
+			<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-dark bg-gradient text-white px-1">En este momento no posee turnos en esta categoria</p>
 			</div>
 			
 			<div class="ft-misturnos" th:each="turnoCancelado : ${turnosCancelados}">

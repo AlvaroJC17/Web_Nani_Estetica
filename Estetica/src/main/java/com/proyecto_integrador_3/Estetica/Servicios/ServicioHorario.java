@@ -36,6 +36,9 @@ public class ServicioHorario {
 	 
 	 @Autowired
 	 private RepositorioProfesional repositorioProfesional;
+	 
+	 @Autowired
+	 private ServicioProfesional servicioProfesional;
 	
 	
 	 //busca la lista de horarios guardados en la base de datos pertenecientes a la fecha y el profesional que le pasamos por parametro
@@ -43,6 +46,7 @@ public class ServicioHorario {
 	 //Si existe, entonces devuelve la lista de horarios pertenecientes a esa fecha y profesional
 	@Transactional
 	 public List<String> crearyObtenerHorariosDisponibles(String fecha, String idProfesional) throws MiExcepcion {
+		
 		 //Buscamos los horarios que le profesional registro y lo guardamos en la variable horariosDisponibles
 		 Optional<Profesional> obtenerHorariosLaborales = repositorioProfesional.findById(idProfesional);
 		 List<String> horariosDisponinbles = new ArrayList<>();
@@ -286,26 +290,6 @@ public class ServicioHorario {
 	    }
 			
 	    
-	    public LocalDate fechaStringToLocalDate(String fecha) throws MiExcepcion {
-	    	
-	    	String fechaSinEspacios = fecha.trim();
-	    	
-	    	try {
-	            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyy");
-	            return LocalDate.parse(fechaSinEspacios, formatter);
-	        } catch (DateTimeParseException e) {
-	            throw new MiExcepcion("Error al parsear la fecha a LocalDate: " + e.getMessage());
-	        }
-	    }
-			
-	    		
-		 public LocalDateTime pasarFechaStringToLocalDateTime(String fecha) throws MiExcepcion{
-			 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-			 LocalDateTime fechaProporcionada = LocalDateTime.parse(fecha, dateFormatter);
-			 return fechaProporcionada;
-		 }
-				
-		
 		 public boolean esFinDeSemana(LocalDate fecha) {
 			 DayOfWeek dayOfWeek = fecha.getDayOfWeek();
 		        return dayOfWeek == DayOfWeek.SUNDAY;
@@ -315,6 +299,14 @@ public class ServicioHorario {
 		        return fecha.isBefore(LocalDate.now());
 		    }
 		 
+		   //Pasamos fechas String a localDateTime con el formato yyyy-MM-dd HH:mm 
+		 public LocalDateTime pasarFechaStringToLocalDateTime(String fecha) throws MiExcepcion{
+			 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			 LocalDateTime fechaProporcionada = LocalDateTime.parse(fecha, dateFormatter);
+			 return fechaProporcionada;
+		 }
+		 
+		 //Pasamos fechas LocalDateTime a String con el formato dd/MM/yyyy
 		 public String pasarFechasDeLocalDateTimeToString(LocalDateTime fechaDateTime) {
 			 LocalDate fecha = fechaDateTime.toLocalDate();
 			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -322,7 +314,7 @@ public class ServicioHorario {
 			 return fechaFormateada;
 		 }
 		 
-		//Pasamos las fechas string con formato dd/MM/yyyy a LocalDate	 
+		//Pasamos las fechas LocalDate a String con el formato dd/MM/yyyy 
 		 public String pasarFechasLocalDateToString(LocalDate fechaDate) {
 			 // Definir un formato para la fecha
 			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
@@ -331,12 +323,34 @@ public class ServicioHorario {
 			 return fechaString;
 		 }
 		 
-		 //Pasamos las fechas de string con formato yyyy-MM-dd a LocalDate
+		//Pasamos las fechas LocalDate  a string con el formato yyyy-MM-dd
+		 public String pasarFechasLocalDateToStringOtroFormato(LocalDate fechaDate) {
+			 // Definir un formato para la fecha
+			 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+			 // Convertir LocalDate a String
+			 String fechaString = fechaDate.format(formatter);
+			 return fechaString;
+		 }
+		 
+		 //pasamos fechas String a LocalDate con el formato dd/MM/yyyy
+		 public LocalDate fechaStringToLocalDate(String fecha) throws MiExcepcion {
+			 
+			 String fechaSinEspacios = fecha.trim();
+			 
+			 try {
+				 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+				 return LocalDate.parse(fechaSinEspacios, formatter);
+			 } catch (DateTimeParseException e) {
+				 throw new MiExcepcion("Error al parsear la fecha a LocalDate: " + e.getMessage());
+			 }
+		 }
+		 
+		 //Pasamos las fechas de string a localDate con el formato yyyy-MM-dd
 		 public LocalDate pasarFechaStringToLocalDateOtroFormato(String fecha) throws MiExcepcion {
 			 String fechaSinEspacios = fecha.trim();
 		    	
 		    	try {
-		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyy-MM-dd");
+		            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 		            return LocalDate.parse(fechaSinEspacios, formatter);
 		        } catch (DateTimeParseException e) {
 		            throw new MiExcepcion("Error al parsear la fecha a LocalDate: " + e.getMessage());
@@ -355,9 +369,67 @@ public class ServicioHorario {
 		        Matcher matcher = pattern.matcher(fecha);
 		        return matcher.matches();
 		 }
+		 
+		 //Metodo para validar si la fecha seleccionada se encuentra dentro de la lista de fechas deshabilitadas
+		 public Boolean compararFechaConFechaDeshabilitada (LocalDate fecha, String idProfesional) {
+			 
+			String fechaString = pasarFechasLocalDateToStringOtroFormato(fecha);
+			
+			 List<String> fechasDeshabilitadas = null;
+			 
+				Optional <Profesional> buscarFechasDeshabilitadasProfesional = servicioProfesional.buscarProfesional(idProfesional);
+				if (buscarFechasDeshabilitadasProfesional.isPresent()) {
+					Profesional fechaNoHabilitadas = buscarFechasDeshabilitadasProfesional.get();
+					fechasDeshabilitadas = fechaNoHabilitadas.getFechasDeshabilitadas();
+					
+					for (String fechasInactivas : fechasDeshabilitadas) {
+						if (fechaString.equals(fechasInactivas)) {
+							return true;
+						}
+					}
+				}
+				
+				return false;
+		 }
+		 
+//		 //Metodo para comparar las horas de la fecha seleccionada con la lista de horas deshabilitadas
+//		 public Boolean compararHorasDisponiblesConHorasDeshabilitadas(String hora, String fecha, String idProfesional) throws MiExcepcion {
+//			 
+//			
+//			 
+//			 List<String> horariosDeshabilitados = null;
+//			 List<String> horariosDisponibles = obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fecha);
+//			 Optional<HorariosDisponibles> listaHorariosActualizado = repositorioHorariosDisponibles.findByProfesionalId(idProfesional);
+//
+//			 Optional<Profesional> buscarHorasDeshabilitadasAndDisponiblesProfesional = servicioProfesional.buscarProfesional(idProfesional);
+//			 if (buscarHorasDeshabilitadasAndDisponiblesProfesional.isPresent()) {
+//				Profesional fechasProfesional = buscarHorasDeshabilitadasAndDisponiblesProfesional.get();
+//				horariosDeshabilitados = fechasProfesional.getHorariosDeshabilitados();
+//				
+//				for (String horariosNohabilitados : horariosDeshabilitados) {
+//					horariosDisponibles.remove(horariosNohabilitados);
+//				}
+//				
+//				if (listaHorariosActualizado.isPresent()) {
+//					HorariosDisponibles horarios = listaHorariosActualizado.get();
+//					horarios.setHorarios(horariosDisponibles);
+//					repositorioHorariosDisponibles.save(horarios);
+//				}else {
+//					System.out.println("Error al encontrar la lista de horarios");
+//				}
+//			 }else {
+//				 System.out.println("error al econtrar el profesional");
+//			 }
+//			 return false;
+//		 }
+//				
+				
+				
+				
+			
 		        
-			
-			
+		
+		
 		
 }
 

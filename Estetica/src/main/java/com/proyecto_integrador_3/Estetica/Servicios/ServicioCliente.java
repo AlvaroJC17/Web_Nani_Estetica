@@ -89,7 +89,7 @@ public class ServicioCliente {
 			}
 		
 			Cliente nuevo_cliente = new Cliente();
-			nuevo_cliente.setEmail(email);
+			nuevo_cliente.setEmail(email.trim());
 			nuevo_cliente.setContrasena(datosCliente.getContrasena());
 			nuevo_cliente.setRol(datosCliente.getRol());
 			nuevo_cliente.setActivo(datosCliente.getActivo());
@@ -97,11 +97,11 @@ public class ServicioCliente {
 			nuevo_cliente.setFomularioDatos(FALSE);
 			nuevo_cliente.setEmailValidado(TRUE);
 			nuevo_cliente.setMulta(FALSE);
-			nuevo_cliente.setDni(dni);
-			nuevo_cliente.setNombre(nombre);
-			nuevo_cliente.setApellido(apellido);
-			nuevo_cliente.setTelefono(telefono);
-			nuevo_cliente.setDomicilio(direccion);
+			nuevo_cliente.setDni(dni.trim());
+			nuevo_cliente.setNombre(nombre.trim());
+			nuevo_cliente.setApellido(apellido.trim());
+			nuevo_cliente.setTelefono(telefono.trim());
+			nuevo_cliente.setDomicilio(direccion.trim());
 			nuevo_cliente.setFechaCreacion(LocalDateTime.now()); //En esta instancia esta fecha nos puede servir para saber cuando se dio de alta el usuario
 			nuevo_cliente.setFechaNacimiento(datosCliente.getFechaNacimiento());
 			nuevo_cliente.setSexo(nuevoSexo);

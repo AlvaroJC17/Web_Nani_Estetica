@@ -14,6 +14,8 @@ import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 public interface RepositorioHorariosDisponibles extends JpaRepository<HorariosDisponibles, String> {
 
 		List<String> findByProfesionalAndFecha(Profesional profesional, String fecha);
+		
+		Optional <HorariosDisponibles> findByProfesionalId (String idProfesional);
 	    
 	    List<HorariosDisponibles> findHorariosByProfesionalIdAndFecha(String idProfesional, String fecha);
 	    

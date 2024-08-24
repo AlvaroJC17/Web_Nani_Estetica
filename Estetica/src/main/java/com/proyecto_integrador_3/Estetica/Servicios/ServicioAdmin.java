@@ -1,13 +1,8 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
-import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,10 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
-import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
-import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioAdmin;
@@ -76,7 +69,7 @@ public class ServicioAdmin {
 			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
 			
 			Admin nuevo_admin = new Admin();
-			nuevo_admin.setEmail(email);
+			nuevo_admin.setEmail(email.trim());
 			nuevo_admin.setContrasena(datosDelUsuario.getContrasena());
 			nuevo_admin.setRol(datosDelUsuario.getRol());
 			nuevo_admin.setActivo(datosDelUsuario.getActivo());
@@ -86,11 +79,11 @@ public class ServicioAdmin {
 			nuevo_admin.setDni(dniPersona);
 			nuevo_admin.setNombre(nombrePersona);
 			nuevo_admin.setApellido(apellidoPersona);
-			nuevo_admin.setTelefono(telefono);
-			nuevo_admin.setDomicilio(direccion);
+			nuevo_admin.setTelefono(telefono.trim());
+			nuevo_admin.setDomicilio(direccion.trim());
 			nuevo_admin.setFechaNacimiento(fechaNacimientoPerson);
 			nuevo_admin.setSexo(nuevoSexo);
-			nuevo_admin.setOcupacion(ocupacion);
+			nuevo_admin.setOcupacion(ocupacion.trim());
 			repositorioAdmin.save(nuevo_admin);
 			repositorioUsuario.delete(datosDelUsuario);
 		}

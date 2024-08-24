@@ -259,7 +259,7 @@ public class ServicioProfesional {
 			Nuevaprovincia = Provincias.valueOf(provincia.toUpperCase());
 			
 			Profesional nuevo_profesional = new Profesional();
-			nuevo_profesional.setEmail(email);
+			nuevo_profesional.setEmail(email.trim());
 			nuevo_profesional.setContrasena(datosDelUsuario.getContrasena());
 			nuevo_profesional.setRol(datosDelUsuario.getRol());
 			nuevo_profesional.setActivo(datosDelUsuario.getActivo());
@@ -269,15 +269,15 @@ public class ServicioProfesional {
 			nuevo_profesional.setDni(datosPersonalesPersona.getDni());
 			nuevo_profesional.setNombre(datosPersonalesPersona.getNombre());
 			nuevo_profesional.setApellido(datosPersonalesPersona.getApellido());
-			nuevo_profesional.setMatricula(matricula);
+			nuevo_profesional.setMatricula(matricula.trim());
 			nuevo_profesional.setEspecialidad(nuevoEspecialidad);
 			nuevo_profesional.setTipoEspecialidad(nuevoTipoDeEspecialidad);
 			nuevo_profesional.setDiasDeLaSemana(listaDiasDeLaSemana);
 			nuevo_profesional.setHorariosLaborales(horariosList);
 			nuevo_profesional.setTratamientos(listaTratamientos);
-			nuevo_profesional.setTelefono(telefono);
+			nuevo_profesional.setTelefono(telefono.trim());
 			nuevo_profesional.setProvincia(Nuevaprovincia);
-			nuevo_profesional.setDomicilio(direccion);
+			nuevo_profesional.setDomicilio(direccion.trim());
 			nuevo_profesional.setFechaNacimiento(datosDelUsuario.getFechaNacimiento());
 			nuevo_profesional.setSexo(nuevoSexo);
 			repositorioProfesional.save(nuevo_profesional);

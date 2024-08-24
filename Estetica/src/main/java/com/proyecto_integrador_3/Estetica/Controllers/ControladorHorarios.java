@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -9,11 +10,13 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.proyecto_integrador_3.Estetica.Entidades.FechaHorarioDeshabilitado;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
-import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioFechaHorarioDeshabilitado;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioFechaHorarioDeshabilitado;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
@@ -34,7 +37,13 @@ public class ControladorHorarios {
 	ServicioUsuario servicioUsuario;
 	
 	@Autowired
+	ServicioFechaHorarioDeshabilitado servicioFechaHorarioDeshabilitado;
+	
+	@Autowired
 	RepositorioProfesional repositorioProfesional;
+	
+	@Autowired
+	RepositorioFechaHorarioDeshabilitado repositorioFechaHorarioDeshabilitado;
 	
 
 	@PostMapping("/fechasDeshabilitadas")
@@ -44,9 +53,11 @@ public class ControladorHorarios {
 			@RequestParam String idProfesional,
 			Model model) throws MiExcepcion {
 		
+		String error;
+		
 		if (fechaSeleccionada == null) {
-			//crear forma de redireccionar un mensaje de error
-			return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional;
+			error = "Error al seleccionar la fecha";
+			return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional + "&error=" + error;
 		}
 			
 		
@@ -59,10 +70,11 @@ public class ControladorHorarios {
 			//Comparamos la fecha seleccionada con las fechas guardadas
 			for (String fechasGuardadas : fechasNoDisponibles) {
 				if (fechaSeleccionada.equals(fechasGuardadas)) {
-					//Crear forma de redireccionar un mensaje de error
-					return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional;
+					error = "La fecha seleccionada ya se encuentra deshabilitada";
+					return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional + "&error=" + error;
 				}
 			}
+					
 				//si pasa el filtro anterior, entonces guardamos la nueva fecha deshabilitada en la lista fechasNoDisponibles
 				fechasNoDisponibles.add(fechaSeleccionada);
 				//le agregamos la lista modificada al objeto profesional
@@ -74,10 +86,51 @@ public class ControladorHorarios {
 					throw new MiExcepcion("Error al conectar con el servidor");
 				}
 				
-				//redireccionar con mensaje de exito
-				return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional;
+				String exito ="La fecha fue deshabilitado correctamente";
+				return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional + "&exito=" + exito + "&fechaTurno=" + fechaSeleccionada;
 			
 		}
 	return "";
 	}
+	
+	@PostMapping("/horasDeshabilitadas")
+	public String horasDeshabilitadas(
+			@RequestParam String emailProfesional,
+			@RequestParam String idProfesional,
+			@RequestParam String horaSeleccionada,
+			@RequestParam String fechaSeleccionada,
+			Model model) throws MiExcepcion {
+		
+		String error;
+		String exito;
+		List<String> horariosGuardadosDeshabilitados = null;
+		Optional<FechaHorarioDeshabilitado> horariosDeshabilitadosPorFecha = servicioFechaHorarioDeshabilitado.horariosDeshabilitadosPorFecha(fechaSeleccionada);
+		if (horariosDeshabilitadosPorFecha.isPresent()) {
+			FechaHorarioDeshabilitado horariosGuardados = horariosDeshabilitadosPorFecha.get();
+			horariosGuardadosDeshabilitados = horariosGuardados.getHorariosDeshabilitados();
+			
+			if (horariosGuardadosDeshabilitados.contains(horaSeleccionada)) {
+	            error = "La hora seleccionada ya se encuentra deshabilitada";
+	            return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional + "&error=" + error + "&fechaTurno=" + fechaSeleccionada;
+	        } else {
+	            horariosGuardadosDeshabilitados.add(horaSeleccionada);
+	            horariosGuardados.setHorariosDeshabilitados(horariosGuardadosDeshabilitados);
+	            repositorioFechaHorarioDeshabilitado.save(horariosGuardados);
+	            exito = "La hora seleccionada ha sido deshabilitada correctamente";
+	            return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional + "&exito=" + exito + "&fechaTurno=" + fechaSeleccionada;
+	        }
+			
+		}else {
+			List<String> horarioDeshabilitado = new ArrayList<>();
+			horarioDeshabilitado.add(horaSeleccionada);
+			FechaHorarioDeshabilitado nuevosHorariosDeshabilitadosPorFecha = new FechaHorarioDeshabilitado();
+			nuevosHorariosDeshabilitadosPorFecha.setFecha(fechaSeleccionada);
+			nuevosHorariosDeshabilitadosPorFecha.setHorariosDeshabilitados(horarioDeshabilitado);
+			nuevosHorariosDeshabilitadosPorFecha.setProfesional(new Profesional(idProfesional));
+			repositorioFechaHorarioDeshabilitado.save(nuevosHorariosDeshabilitadosPorFecha);
+		}
+		
+		return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional + "&fechaTurno=" + fechaSeleccionada;
+	}
+	
 }
