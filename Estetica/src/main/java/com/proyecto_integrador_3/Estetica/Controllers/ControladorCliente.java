@@ -412,10 +412,15 @@ public class ControladorCliente {
 				 * Si no existe, nos devuelve una lista de horarios pre establecida */
 				List<String> crearyObtenerHorariosDisponibles = servicioHorario.crearyObtenerHorariosDisponibles(fechaSeleccionada, idProfesional);
 				
+				for (String string : crearyObtenerHorariosDisponibles) {
+					System.out.println("Se crearon los horarios para la fecha:" + string);
+				}
+				
+				List<String> eliminarHorariosDeshabilitados = servicioHorario.eliminarHorasDisponiblesConHorasDeshabilitadas(crearyObtenerHorariosDisponibles, fechaSeleccionada, idProfesional);
 				
 				//Guarda en la base de datos la lista de horarios disponibles pertenecientes a la fecha y el id del profesional que le pasamos, si la
 				//lista ya existe, entonces la actualiza en la base de datos
-				servicioHorario.guardarHorariosDisponibles(fechaSeleccionada, crearyObtenerHorariosDisponibles, idProfesional);
+				servicioHorario.guardarHorariosDisponibles(fechaSeleccionada, eliminarHorariosDeshabilitados, idProfesional);
 				
 				//Solo si la fecha seleccionada es igual a la fecha actual, entonces se entra en este metodo
 				if (fechaSeleccionadaLocalDate.equals(fechaActual)) {

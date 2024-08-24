@@ -78,11 +78,13 @@ que se genere en iteracion, esto evita que al tener varios turnos, se cruce la i
 tener el mismo ID-->
 
 <div class="d-block mb-4">
-		<p class="fs-5 text-center">Selecciona una fecha para ver los turnos disponibles por horario, asi como tambien podra deshabilitar fechas o horarios.
+		<p class="fs-5 text-center">Selecciona una fecha para ver los turnos disponibles por horario, asi como también podrá deshabilitar fechas o horarios.
+			Los clientes no podrán seleccionar nuevos turnos en las fechas u horarios que deshabilites. Los turnos en estado pendiente dentro de las fechas u horarios
+			que deshabilites, se cancelaran de forma automatica.
 		</p>
 	
-		<p class="mt-5 mb-2 text-center fs-5">Seleccione fecha a consultar</p>
-		<form th:action="@{/turnosPorFecha}" method="get" class="mb-5 mt-0 d-flex justify-content-center">
+		
+		<form th:action="@{/turnosPorFecha}" method="get" class="my-5 d-flex justify-content-center">
 		<div class="d-flex">
 		<div class="me-2">
 			<input type="date" class="form-control" name="fechaTurno"  placeholder="Fecha de turno">
@@ -95,9 +97,14 @@ tener el mismo ID-->
 		</div>
 		</form>
 		
-		<form th:action="@{/fechasDeshabilitadas}" method="post" class="d-flex">
-		<p class="fs-4  mb-0" >Fecha seleccionada: <span class="fw-normal" th:text="${fechaSeleccionada}"></span> <span class="text-white fs-6 bg-danger bg-gradient px-1" th:if="${mostrarBotonesDeshabilitar == false}">DESHABILITADO</span></p>
+		<form th:action="@{/fechasDeshabilitadas}" method="post" class="">
+			
+		<div class="d-flex justify-content-center my-4">
+		<p style="width: max-content; box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500)" class="fs-3 px-2 text-white mb-0 text-center bg-success bg-gradient">FECHA SELECCIONADA: <span class="fw-normal" th:text="${fechaSeleccionada}"></span></p>
 		<button th:if="${mostrarBotonesDeshabilitar}" type="button" data-bs-toggle="modal" data-bs-target="#confirmBackdrop" class="btn btn-danger ms-2">Deshabilitar</button>
+		</div>
+		
+		<div class="text-white fs-5 bg-danger bg-gradient px-1 text-center my-3 " th:if="${mostrarBotonesDeshabilitar == false}">ESTA FECHA SE ENCUENTRA DESHABILITADA</div>
 		
 		<!-- Modal Confirmar turno -->
 		<div class="modal fade" id="confirmBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -135,14 +142,36 @@ tener el mismo ID-->
 		<input hidden type="text"  name="fechaSeleccionada" th:value="${fechaSeleccionada}"></input>
 		</form>
 	
-		<ul>
+		<ul class="ps-0">
 		    <!-- Iterar sobre las entradas del Map -->
 		    <li class="border-success mt-2" style="border-top: 5px solid; list-style-type: none;" th:each="entry, iterStat : ${turnosPorHorarioLaboral}">
 				
 				<form th:action="@{/horasDeshabilitadas}" method="post">
+					
+					<!-- Comparar la clave con la lista de horarios deshabilitados -->
+					<div class="text-danger fw-bold px-1 mt-2 fs-6 text-center" 
+					 th:if="${horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar == true }">
+					 HORARIO DESHABILITADO
+					</div>
+				<!--
+				<span style="width: max-content;" class="text-white fs-6 bg-danger bg-gradient px-1" th:if="${mostrarBotonesDeshabilitar == false}"> FECHA DESHABILITADA</span>
+				-->
+				
+				<div style="display: block;" class="">	
+				
+					<div class="ps-0 mt-1 mx-0">
+					<button th:if="${!horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar}" 
+					type="button" data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}" 
+					class="btn btn-danger py-0">Deshabilitar</button>
+					</div>	
+				
 		        <!-- Imprime la clave del Map, que es el horario -->
-		        <span class="fw-medium fs-4" >Hora: </span> <span class="fw-medium fs-4" th:text="${entry.key}"></span>  <span class="text-white fs-6 bg-danger bg-gradient px-1" th:if="${mostrarBotonesDeshabilitar == false}">DESHABILITADO</span>
-				<button th:if="${mostrarBotonesDeshabilitar}" type="button" data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}" class="btn btn-danger pt-0 pb-1 mb-2">x</button>
+		        <div class="fw-medium fs-4" >Hora: <span class="fw-medium fs-4 col-md-1 ps-1" th:text="${entry.key}"></span> 
+				</div> 
+				
+				
+				   
+				</div>
 				
 				<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
 				<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input>
@@ -195,7 +224,7 @@ tener el mismo ID-->
 				
 				<div class="d-flex flex-wrap justify-content-center">
 								  <div class="text-center" th:if="${#lists.isEmpty(entry.value)}">
-									<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-success bg-gradient text-white px-1">No tiene turnos en este horario</p>
+									<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-danger bg-gradient text-white px-2">No tiene turnos en este horario</p>
 								  </div>
 								  
 								  <div class="ft-misturnos" th:each="turno : ${entry.value}">

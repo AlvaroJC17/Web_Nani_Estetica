@@ -18,6 +18,7 @@ import java.util.regex.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.proyecto_integrador_3.Estetica.Entidades.FechaHorarioDeshabilitado;
 import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
@@ -33,6 +34,9 @@ public class ServicioHorario {
 	
 	 @Autowired
 	 private RepositorioHorariosDisponibles repositorioHorariosDisponibles;
+	 
+	 @Autowired
+	 private ServicioFechaHorarioDeshabilitado servicioFechaHorarioDeshabilitado;
 	 
 	 @Autowired
 	 private RepositorioProfesional repositorioProfesional;
@@ -239,6 +243,7 @@ public class ServicioHorario {
 		   //Pasamos el resultados a horas y devolvemos el booleano true si es menos a 24 horas
 		   return difereciaDeHorasEntreLasFechas.toHours() < 24;
 	   }
+	    
 	   
 		//Este metodo le da formato a una fech	 
 	    public LocalDate pasarFechaStringToLocalDate(String fecha) throws MiExcepcion {
@@ -254,6 +259,7 @@ public class ServicioHorario {
 				}
 				return fechaUsuario;
 	    }
+	    
 	    
 	    @Transactional
 	    public Boolean diasLaborales(String fecha, String idProfesional) throws MiExcepcion {
@@ -299,12 +305,18 @@ public class ServicioHorario {
 		        return fecha.isBefore(LocalDate.now());
 		    }
 		 
+		 public Optional <HorariosDisponibles> buscarHorariosDisponiblesPorProfesionalAndFechaOptional(String idProfesional, String fecha){
+			 return repositorioHorariosDisponibles.findOptionalHorariosByProfesionalIdAndFecha(idProfesional, fecha);
+		 }
+		 
 		   //Pasamos fechas String a localDateTime con el formato yyyy-MM-dd HH:mm 
 		 public LocalDateTime pasarFechaStringToLocalDateTime(String fecha) throws MiExcepcion{
 			 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			 LocalDateTime fechaProporcionada = LocalDateTime.parse(fecha, dateFormatter);
 			 return fechaProporcionada;
 		 }
+		 
+		 
 		 
 		 //Pasamos fechas LocalDateTime a String con el formato dd/MM/yyyy
 		 public String pasarFechasDeLocalDateTimeToString(LocalDateTime fechaDateTime) {
@@ -314,6 +326,8 @@ public class ServicioHorario {
 			 return fechaFormateada;
 		 }
 		 
+		 
+		 
 		//Pasamos las fechas LocalDate a String con el formato dd/MM/yyyy 
 		 public String pasarFechasLocalDateToString(LocalDate fechaDate) {
 			 // Definir un formato para la fecha
@@ -322,6 +336,8 @@ public class ServicioHorario {
 			 String fechaString = fechaDate.format(formatter);
 			 return fechaString;
 		 }
+		 
+		 
 		 
 		//Pasamos las fechas LocalDate  a string con el formato yyyy-MM-dd
 		 public String pasarFechasLocalDateToStringOtroFormato(LocalDate fechaDate) {
@@ -345,6 +361,8 @@ public class ServicioHorario {
 			 }
 		 }
 		 
+		 
+		 
 		 //Pasamos las fechas de string a localDate con el formato yyyy-MM-dd
 		 public LocalDate pasarFechaStringToLocalDateOtroFormato(String fecha) throws MiExcepcion {
 			 String fechaSinEspacios = fecha.trim();
@@ -357,10 +375,14 @@ public class ServicioHorario {
 		        }
 		    }
 		 
+		 
+		 
 		 //Listamos los horarios disponibles (que son los horarios que se generan cuando un cliente selecciona una fecha)
 		 public List<HorariosDisponibles> buscarHorariosPorIdProfesionalAndFecha(String idProfesional, String fecha){
 			 return repositorioHorariosDisponibles.findHorariosByProfesionalIdAndFecha(idProfesional, fecha);
 		 }   
+		 
+		 
 			 
 		 //Validamos con una expresion regular que si la fecha tiene el formato dd/MM/yyy, si correcto devuelve true sino false
 		 public Boolean validarFormatoDeFecha(String fecha) {
@@ -369,6 +391,8 @@ public class ServicioHorario {
 		        Matcher matcher = pattern.matcher(fecha);
 		        return matcher.matches();
 		 }
+		 
+		 
 		 
 		 //Metodo para validar si la fecha seleccionada se encuentra dentro de la lista de fechas deshabilitadas
 		 public Boolean compararFechaConFechaDeshabilitada (LocalDate fecha, String idProfesional) {
@@ -392,45 +416,53 @@ public class ServicioHorario {
 				return false;
 		 }
 		 
-//		 //Metodo para comparar las horas de la fecha seleccionada con la lista de horas deshabilitadas
-//		 public Boolean compararHorasDisponiblesConHorasDeshabilitadas(String hora, String fecha, String idProfesional) throws MiExcepcion {
-//			 
-//			
-//			 
-//			 List<String> horariosDeshabilitados = null;
-//			 List<String> horariosDisponibles = obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fecha);
-//			 Optional<HorariosDisponibles> listaHorariosActualizado = repositorioHorariosDisponibles.findByProfesionalId(idProfesional);
-//
-//			 Optional<Profesional> buscarHorasDeshabilitadasAndDisponiblesProfesional = servicioProfesional.buscarProfesional(idProfesional);
-//			 if (buscarHorasDeshabilitadasAndDisponiblesProfesional.isPresent()) {
-//				Profesional fechasProfesional = buscarHorasDeshabilitadasAndDisponiblesProfesional.get();
-//				horariosDeshabilitados = fechasProfesional.getHorariosDeshabilitados();
-//				
-//				for (String horariosNohabilitados : horariosDeshabilitados) {
-//					horariosDisponibles.remove(horariosNohabilitados);
-//				}
-//				
-//				if (listaHorariosActualizado.isPresent()) {
-//					HorariosDisponibles horarios = listaHorariosActualizado.get();
-//					horarios.setHorarios(horariosDisponibles);
-//					repositorioHorariosDisponibles.save(horarios);
-//				}else {
-//					System.out.println("Error al encontrar la lista de horarios");
-//				}
-//			 }else {
-//				 System.out.println("error al econtrar el profesional");
-//			 }
-//			 return false;
-//		 }
-//				
+		 
+		 
+		 //Metodo para comparar las horas de la fecha seleccionada con la lista de horas deshabilitadas
+		 public List<String> eliminarHorasDisponiblesConHorasDeshabilitadas(List<String> horariosDisponibles, String fecha, String idProfesional) throws MiExcepcion {
+			  
+			 // Si los horarios disponibles vienen vacios, devolvemos la misma lista vacia
+			    if (horariosDisponibles.isEmpty()) {
+			        return horariosDisponibles;
+			    }
+			 
+			 //Buscamos los horarios deshabilitados por fecha y profesional
+			 List<FechaHorarioDeshabilitado> obtenerFechaHorarioDeshabilitadosPorProfesionalYFecha = servicioFechaHorarioDeshabilitado.buscarHorariosDeshabilitadosPorIdProfesionalAndFecha(idProfesional, fecha);
+
+			 //Si no se encuentran horarios deshabilitados para esa fecha y profesional, devolvemos la misma lista de horarios disponibles
+			 if (obtenerFechaHorarioDeshabilitadosPorProfesionalYFecha.isEmpty()) {
+				return horariosDisponibles;
+			}
+			 
+			// Extraer los horarios deshabilitados de cada objeto FechaHorarioDeshabilitado
+			List<String> horariosDeshabilitados = new ArrayList<>();
+			for (FechaHorarioDeshabilitado fechaHorarioDeshabilitado : obtenerFechaHorarioDeshabilitadosPorProfesionalYFecha) {
+			    horariosDeshabilitados.addAll(fechaHorarioDeshabilitado.getHorariosDeshabilitados());
+			}
+
+			// Remover de la lista de horarios disponibles aquellos que estén en la lista de horarios deshabilitados
+			horariosDisponibles.removeAll(horariosDeshabilitados);
+				
+			//Buscamos la lista de horarios para esa fecha y profesional, la editamos y la guardamos
+			Optional<HorariosDisponibles> listaHorariosActualizado = buscarHorariosDisponiblesPorProfesionalAndFechaOptional(idProfesional, fecha);
+				if (listaHorariosActualizado.isPresent()) {
+					HorariosDisponibles horarios = listaHorariosActualizado.get();
+					horarios.setHorarios(horariosDisponibles);
+					repositorioHorariosDisponibles.save(horarios);
+					
+					//Buscamos la lista nuevamente despues de ser guardada en la base de datos y la retornamos
+					List<String> horariosDisponiblesActualizados = obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fecha);
+					return horariosDisponiblesActualizados;
+					
+				}else {
+					// Si hay algun error devolvemos un mensaje de error y una lista vacia
+					System.out.println("Error al encontrar la lista de horarios");
+					return new ArrayList<>();
+				}
+			 
+		 }
 				
 				
-				
-			
-		        
-		
-		
-		
 }
 
 

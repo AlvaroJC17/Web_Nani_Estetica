@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.proyecto_integrador_3.Estetica.Entidades.FechaHorarioDeshabilitado;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
@@ -25,6 +26,7 @@ import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioFechaHorarioDeshabilitado;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
@@ -35,6 +37,9 @@ public class ControladorTurnos {
 	
 	@Autowired
 	ServicioHorario servicioHorario;
+	
+	@Autowired
+	ServicioFechaHorarioDeshabilitado servicioFechaHorarioDeshabilitado;
 	
 	@Autowired
 	ServicioUsuario servicioUsuario;
@@ -84,7 +89,16 @@ public class ControladorTurnos {
 			Profesional horariosLaborales = buscarHorariosProfesional.get();
 			horariosLaboralesProfesional = horariosLaborales.getHorariosLaborales();
 		}
-					
+		
+		List<String> horariosDeshabilitados = new ArrayList<>();
+		List<FechaHorarioDeshabilitado> listaDehorariosDeshabilitados = servicioFechaHorarioDeshabilitado.buscarHorariosDeshabilitadosPorIdProfesionalAndFecha(idProfesional, fechaTurno);
+		
+		for (FechaHorarioDeshabilitado fechaHorarioDeshabilitado : listaDehorariosDeshabilitados) {
+			for (String fechaHorarioDeshabilitado2 : fechaHorarioDeshabilitado.getHorariosDeshabilitados()) {
+				horariosDeshabilitados.add(fechaHorarioDeshabilitado2);
+			}
+		}
+		
 		//Buscamos los turnos por id profesional y fecha
 		List <Turnos> turnosPorFecha = servicioTurnos.buscarTurnosPorProfesionalIdAndFecha(idProfesional, fechaDelTurno);
 		
@@ -107,12 +121,15 @@ public class ControladorTurnos {
 		//de menor a mayor
 		Map<String, List<Turnos>> turnosPorHorarioLaboralOrdenado = new TreeMap<>(turnosPorHorarioLaboral);
 
+		//Formateamos la fecha al estilo dd-MM-yyyy antes de pasarla a la vista para que sea mas facil verla para el usuario
+		String fechaFormateada = servicioHorario.pasarFechasLocalDateToString(fechaDelTurno);
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
-		model.addAttribute("fechaSeleccionada", fechaDelTurno);
-		model.addAttribute("turnosDisponiblesPorFecha", turnosPorFecha);
+		model.addAttribute("fechaSeleccionada", fechaFormateada);
+		//model.addAttribute("turnosDisponiblesPorFecha", turnosPorFecha);
 		model.addAttribute("turnosPorHorarioLaboral", turnosPorHorarioLaboralOrdenado);
-		model.addAttribute("horariosLaborales", horariosLaboralesProfesional);
+		model.addAttribute("horariosDeshabilitados", horariosDeshabilitados);
+		//model.addAttribute("horariosLaborales", horariosLaboralesProfesional);
 		model.addAttribute("datosProfesional", datosProfesional);
 		model.addAttribute("mostrarBotonesDeshabilitar", mostrarBotonesDeshabilitar);
 		

@@ -101,8 +101,8 @@ public class ControladorHorarios {
 			@RequestParam String fechaSeleccionada,
 			Model model) throws MiExcepcion {
 		
-		String error;
-		String exito;
+		String error = null;
+		String exito = null;
 		List<String> horariosGuardadosDeshabilitados = null;
 		Optional<FechaHorarioDeshabilitado> horariosDeshabilitadosPorFecha = servicioFechaHorarioDeshabilitado.horariosDeshabilitadosPorFecha(fechaSeleccionada);
 		if (horariosDeshabilitadosPorFecha.isPresent()) {
@@ -128,9 +128,10 @@ public class ControladorHorarios {
 			nuevosHorariosDeshabilitadosPorFecha.setHorariosDeshabilitados(horarioDeshabilitado);
 			nuevosHorariosDeshabilitadosPorFecha.setProfesional(new Profesional(idProfesional));
 			repositorioFechaHorarioDeshabilitado.save(nuevosHorariosDeshabilitadosPorFecha);
+			exito = "La hora ha sido deshabilitada correctamente";
+			return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional + "&exito=" + exito + "&fechaTurno=" + fechaSeleccionada;
 		}
 		
-		return "redirect:/turnosPorFecha?emailProfesional=" + emailProfesional + "&idProfesional=" + idProfesional + "&fechaTurno=" + fechaSeleccionada;
 	}
 	
 }
