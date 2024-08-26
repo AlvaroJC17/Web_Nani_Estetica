@@ -21,9 +21,11 @@ import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
+import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
 import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
+import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
@@ -199,19 +201,20 @@ public class ControladorProfesional {
 	
 	@PostMapping("/buscarDatosPersonalesPaciente")
 	public String buscarDatosPersonalesPaciente(
-			@RequestParam(required = false) String email,
-			@RequestParam(required = false) String idUsuario,
+			@RequestParam(required = false) String emailProfesional,
+			@RequestParam(required = false) String idCliente,
+			@RequestParam String idProfesional,
 			@RequestParam(required = false) String dato,
 			Model modelo) throws MiExcepcion {
 
 		
 		//Datos del profesional para los menu de la pagina
-				List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
+				List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 				
 		//si el profesional le da al boton ver perfil sin seleccionar un paciente, entra en este codigo
 		//para enviarle un mensaje de error pero siempre mostrandole el resultado de la busqueda previa que
 		//realizo. La variable dato es la misma del metodo /buscadorPaciente
-		if (idUsuario == null || idUsuario.isEmpty()) {
+		if (idCliente == null || idCliente.isEmpty()) {
 			String datoSinEspacios = dato.trim();
 			List<Persona> pacienteDni = servicioProfesional.buscarPacienteByRolAndDni(datoSinEspacios, Rol.CLIENTE);
 			List<Persona> pacienteNombre = servicioProfesional.buscarPacienteByRolAndNombre(datoSinEspacios, Rol.CLIENTE);
@@ -237,7 +240,7 @@ public class ControladorProfesional {
 		//Buscamos el email del cliente/usuario con el id
 		String emailCliente = null;
 		String fechaAltaFormateada = null;
-		Optional <Usuario> buscarEmailCliente = repositorioUsuario.buscarPorIdOptional(idUsuario);
+		Optional <Usuario> buscarEmailCliente = repositorioUsuario.buscarPorIdOptional(idCliente);
 		if (buscarEmailCliente.isPresent()) {
 			Usuario emailUsuario = buscarEmailCliente.get();
 			emailCliente = emailUsuario.getEmail();
@@ -247,7 +250,7 @@ public class ControladorProfesional {
 		
 		//Buscamos los si el fomrulario de datos fue completado por el cliente
 		Boolean isEditarDisabled = null;
-		Optional <Cliente> buscarDatosCliente = repositorioCliente.findById(idUsuario);
+		Optional <Cliente> buscarDatosCliente = repositorioCliente.findById(idCliente);
 		if (buscarDatosCliente.isPresent()) {
 			Cliente datosCliente = buscarDatosCliente.get();
 			isEditarDisabled = datosCliente.getFomularioDatos();
@@ -258,20 +261,32 @@ public class ControladorProfesional {
 			isEditarDisabled = false;
 		}
 		
+		
+		List<Turnos> ultimosTurnosCliente = servicioTurnos.buscarTurnosPorProfesionalAndClienteAndEstadoDelTurno(idProfesional, idCliente, EstadoDelTurno.ASISTIDO);
+		
+		List<Turnos> tresUltimosTurnos = new ArrayList<>();
+		int size = ultimosTurnosCliente.size();
+		if (size >= 3) {
+		    tresUltimosTurnos = ultimosTurnosCliente.subList(size - 3, size);
+		} else {
+		    tresUltimosTurnos = ultimosTurnosCliente; // Si hay menos de 3 elementos, tomamos todos
+		}
 	
 		//Datos del cliente para los datos personales
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 		
 		//datos del cliente/paciente para las respuestas del formulario
-		List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idUsuario);
+		List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idCliente);
 		modelo.addAttribute("datosProfesional", datosProfesional); //datos para el menu de la pagina
 		modelo.addAttribute("datosCliente", datosCliente); // datos para la seccion de datos personales
 		modelo.addAttribute("datosPaciente", datosPaciente); // datos para la seccion del formulario y nota del paciente
+		modelo.addAttribute("ultimosTurnos", tresUltimosTurnos); // mandamos los ultimos tres turnos asistidos a la vista
 		modelo.addAttribute("isEditarDisabled", isEditarDisabled);
 		modelo.addAttribute("fechaAltaFormateada", fechaAltaFormateada);
 		return "/pagina_profesional/datosPersonalesPaciente";
-		
 	}
+
+	
 	
 
 	@GetMapping("/listarPacientesOcultos")
@@ -346,6 +361,7 @@ public class ControladorProfesional {
 		model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
 		return "/pagina_profesional/buscadorPaciente";
 	}
+	
 		
 		
 	@GetMapping("/homeProfesional")

@@ -611,6 +611,7 @@ footer {
        #828ea1
      );
      box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
+	 cursor: not-allowed;
    }
 
   .bn632-hover.bn26.apagado {
@@ -799,6 +800,19 @@ tr {
     justify-content: center;
     text-align: center;
     margin-top: 20px;
+}
+
+/*-------- hover para los datos del turno en el perfil del cliente ---------*/
+
+/* Estilo del elemento sin hover */
+.perfilCliente {
+    border: 1px solid transparent; /* Sin borde visible inicialmente */
+    transition: border 0.3s ease;  /* Transición suave para el borde */
+}
+
+/* Estilo del elemento con hover */
+.perfilCliente:hover {
+    border: 2px solid white; /* Color del borde al hacer hover */
 }
 
 

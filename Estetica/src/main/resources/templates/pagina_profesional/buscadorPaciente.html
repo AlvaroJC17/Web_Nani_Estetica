@@ -134,7 +134,7 @@
 														<tr class="" th:each="usuarios : ${usuarios}">
 															<td class="text-center">
 																<div class="">
-																	<input class="form-check-input" type="radio" name="idUsuario" th:value="${usuarios.id}" id="idUsuario">
+																	<input class="form-check-input" type="radio" name="idCliente" th:value="${usuarios.id}" id="idUsuario">
 																</div>
 															</td> 
 															<td class="text-center" th:text="${usuarios.dni}"></td>
@@ -156,8 +156,9 @@
 					<div class="boton-de-registro boton-listado text-center">
 							<button type="submit" class="bn632-hover bn26">Ver perfil</button>
 						</div>
-						<input hidden type="text" id="email" name="email" th:value="${datosProfesional.email}"></input> <!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
-						<input hidden type="text" id="dato" name="dato" th:value="${dato}"></input>
+						<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input> <!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
+						<input hidden type="text"  name="dato" th:value="${dato}"></input>
+						<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
 				</form>
 			</section>
 		</div>

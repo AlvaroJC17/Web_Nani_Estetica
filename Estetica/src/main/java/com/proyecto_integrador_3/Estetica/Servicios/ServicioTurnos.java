@@ -62,6 +62,11 @@ public class ServicioTurnos {
 		}
 	}
 	
+	public List<Turnos> buscarTurnosPorProfesionalAndClienteAndEstadoDelTurno(String idProfesional, String idCliente, EstadoDelTurno estado){
+	
+		return repositorioTurnos.findByProfesionalIdAndClienteIdAndEstadoOrderByFechaCreacion(idProfesional, idCliente, estado);
+	}
+	
 	public List <Turnos> buscarTurnosPorProfesionalId(String idProfesional){
 		return repositorioTurnos.findByProfesionalId(idProfesional);
 	}
@@ -110,7 +115,7 @@ public class ServicioTurnos {
 			
 	
 	 @Transactional
-	public void actualizarEstadoDelTurno(String id, Rol rol, EstadoDelTurno estadoTurno) throws MiExcepcion {
+	public Turnos actualizarEstadoDelTurno(String id, Rol rol, EstadoDelTurno estadoTurno) throws MiExcepcion {
 		 try {
 			 Optional<Turnos> turnoPorId = buscarTurnoPorId(id);
 			 if (turnoPorId.isPresent()) {
@@ -133,31 +138,16 @@ public class ServicioTurnos {
 					
 				 Turnos turnoCancelado;
 				 turnoCancelado = repositorioTurnos.save(actualizarTurnoActivo);
-				 
-				 //Creamos el objeto con los datos del email para poder enviarlo
-				 EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
-				 cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
-				 cancelarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
-				 
-				 //asignamos a la variable el nombre de la plantilla que vamos a utilizar
-				 String plantillaHTML= "emailCancelacionDeTurno";
-				 
-				 //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
-				 Boolean multa = false;
-				 
-				 try {
-					 //Llamamos al servicio para enviar el email
-					 servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnoCancelado, plantillaHTML, multa);
-				 } catch (Exception e) {
-					 throw new MiExcepcion("Error al enviar el email de cancelacion de turno");
-				 }
-				 
+				 return turnoCancelado;
 			 }
+			 
+				 
 		 } catch (Exception e) {
 			 throw new MiExcepcion("Error al conectar con el servidor " + e);
 		 }
-	 }
+				return null;  
 		 
+	 }
 		 
 	
 	//Busca los turnos por email en orden ascendente
@@ -256,7 +246,7 @@ public class ServicioTurnos {
     	
     
     @Transactional
-    public void multarTurnoAndClienteMenosDe24Horas(String email, String idTurno) throws MiExcepcion {
+    public Turnos multarTurnoAndClienteMenosDe24Horas(String email, String idTurno) throws MiExcepcion {
     	
     	try {
     	Optional<Turnos> turnoOptional = repositorioTurnos.findById(idTurno);
@@ -271,28 +261,10 @@ public class ServicioTurnos {
             	turno.setEstado(EstadoDelTurno.CANCELADO);
             	turno.setCanceladoPor(Rol.CLIENTE);
             	turno.setCostoMulta(valorMulta);
-            	Turnos turnoCancelado24h;
-            		turnoCancelado24h = repositorioTurnos.save(turno);
             	
-					
-            	//Creamos el objeto con los datos del email para poder enviarlo
-                EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
-                cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
-                cancelarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
-                
-                //Asiganmos la plantilla html para la cancelacion del turno
-                String plantillaHTML= "emailCancelacionDeTurno"; 
-                
-                //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
-                Boolean multa = true;
-                
-                try {
-                	//Enviamos al servicio para mandar al email con la cancelacion del turno
-                	servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnoCancelado24h, plantillaHTML, multa); 
-                } catch (Exception e) {
-                	throw new MiExcepcion("Error al enviar el email con la cancelacion de turno");
-                }
-					
+            	Turnos turnoCancelado24h;
+            	turnoCancelado24h = repositorioTurnos.save(turno);
+            	
             	
                 //Buscamos al cliente y le asigamos la multa
             	Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(email);
@@ -301,11 +273,14 @@ public class ServicioTurnos {
             		multasDelCliente.setMulta(TRUE); // Le colocamos una multa al cliente
             		repositorioCliente.save(multasDelCliente);
             	}
+            	return turnoCancelado24h;
             }
         }
     	} catch (Exception e) {
     		throw new MiExcepcion("Error al conectar con el servidor " + e);
     	}
+    	
+    	return null;
     }
             		
             		

@@ -204,8 +204,9 @@ public class ServicioHorario {
 	    
 	    //Le pasamos un fecha y un horario, busca la fecha en la base de datos y verifica si el horario
 	    //esta guardado en la lista de esa fecha, sino esta guardado lo agrega nuevamnete a la lista
+		//SI el horario y fecha es pasada por un rol profesional entonces borra la el horario de esa fecha
 	    @Transactional
-	    public void agregarHorarioDisponible(String fecha, String horario, String idProfesional, Rol rol) throws MiExcepcion {
+	    public void agregarOrBorraHorarioDisponible(String fecha, String horario, String idProfesional, Rol rol) throws MiExcepcion {
 	    				
 	    	try {
 	    	 // Obtener los horarios disponibles para el profesional y la fecha dada
@@ -374,6 +375,25 @@ public class ServicioHorario {
 		            throw new MiExcepcion("Error al parsear la fecha a LocalDate: " + e.getMessage());
 		        }
 		    }
+		 
+		 
+			    public  String cambiarFormatoFechaStringToLocalDate(String fecha) {
+			        // Definir el formato original de la fecha
+			        DateTimeFormatter formatoOriginal = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+			        // Definir el nuevo formato de la fecha
+			        DateTimeFormatter nuevoFormato = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+
+			        try {
+			            // Parsear la fecha del formato original a un objeto LocalDate
+			            LocalDate fechaLocalDate = LocalDate.parse(fecha, formatoOriginal);
+			            // Formatear la fecha al nuevo formato
+			            return fechaLocalDate.format(nuevoFormato);
+			        } catch (DateTimeParseException e) {
+			            // Manejar la excepción si la fecha no es válida
+			            System.out.println("Fecha inválida: " + e.getMessage());
+			            return null;
+			        }
+			    }
 		 
 		 
 		 

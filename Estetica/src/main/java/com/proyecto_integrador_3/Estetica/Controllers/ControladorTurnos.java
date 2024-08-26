@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
 import com.proyecto_integrador_3.Estetica.Entidades.FechaHorarioDeshabilitado;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
@@ -26,6 +27,7 @@ import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioEmail;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioFechaHorarioDeshabilitado;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
@@ -37,6 +39,9 @@ public class ControladorTurnos {
 	
 	@Autowired
 	ServicioHorario servicioHorario;
+	
+	@Autowired
+	ServicioEmail servicioEmail;
 	
 	@Autowired
 	ServicioFechaHorarioDeshabilitado servicioFechaHorarioDeshabilitado;
@@ -126,7 +131,8 @@ public class ControladorTurnos {
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 		model.addAttribute("fechaSeleccionada", fechaFormateada);
-		//model.addAttribute("turnosDisponiblesPorFecha", turnosPorFecha);
+		model.addAttribute("fechaFormatoLocalDate", fechaDelTurno);
+		model.addAttribute("turnosDisponiblesPorFecha", turnosPorFecha);
 		model.addAttribute("turnosPorHorarioLaboral", turnosPorHorarioLaboralOrdenado);
 		model.addAttribute("horariosDeshabilitados", horariosDeshabilitados);
 		//model.addAttribute("horariosLaborales", horariosLaboralesProfesional);
@@ -181,15 +187,38 @@ public class ControladorTurnos {
 			
 		case "cancelarTurno":
 			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
-			servicioTurnos.actualizarEstadoDelTurno(idTurno, Rol.PROFESIONAL, EstadoDelTurno.CANCELADO);
+			Turnos turnoCancelado = servicioTurnos.actualizarEstadoDelTurno(idTurno, Rol.PROFESIONAL, EstadoDelTurno.CANCELADO);
 			
-			//Como el turno es cancelado por un profesional, no regresamos el horario a la lista
-			servicioHorario.agregarHorarioDisponible(fecha, horario, idProfesional, Rol.PROFESIONAL);
+			//Como el turno es cancelado por un profesional, el metodo tambien sirve para borra los horarios pasados por un rol profesional
+			servicioHorario.agregarOrBorraHorarioDisponible(fecha, horario, idProfesional, Rol.PROFESIONAL);
 			
-			return "redirect:/misturnosProfesional?email=" + emailProfesional + "&idProfesional=" + idProfesional;
+			//Despues de generar todo el proceso del turno se envia un mail de cancelación
+			//al cliente, para esto debemos instancias un objeto EmailUsuario y pasarle toda
+			//la info necesario que debe llevar el correo
+			EmailUsuarios cancelacionPorEmailTurno = new EmailUsuarios();
+			cancelacionPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
+			cancelacionPorEmailTurno.setDestinatario("alvarocortesia@gmail.com"); // Aqui va turnos.getCliente().getEmail;
+			
+			 //asignamos a la variable el nombre de la plantilla que vamos a utilizar
+			 String plantillaCancelacionHTML = "emailCancelacionDeTurnoPorProfesional";
+			 
+			 //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valor de multa y costo de multa a la plantilla
+			 Boolean multa = false;
+			 
+			 try {
+				 //Llamamos al servicio para enviar el email
+				 servicioEmail.enviarConfirmacionOCancelacionTurno(cancelacionPorEmailTurno, turnoCancelado, plantillaCancelacionHTML, multa);
+			 } catch (Exception e) {
+				 throw new MiExcepcion("Error al enviar el email de cancelacion de turno por parte de un profesional, cuando se cancela una fecha");
+			 }
+			
+			 return "redirect:/misturnosProfesional?email=" + emailProfesional + "&idProfesional=" + idProfesional;
+			
 		}
 		return"/pagina_profesional/misturnosProfesional";
 	}
+	
+	
 				
 	//Controlador para visualizar los turnos de un profesional filtrados por fecha
 	@GetMapping("/misturnosProfesional")
@@ -348,15 +377,52 @@ public class ControladorTurnos {
 		//entra en esta condicion
 		if (servicioHorario.turnoMenorA24Horas(fechaSeleccionadaLocalDateTime, fechaActual)) {
 			//Este servicio se encarga de cancelar y multar el turno y al cliente
-			servicioTurnos.multarTurnoAndClienteMenosDe24Horas(emailCliente, idTurno);
+			
+		Turnos turnosMulta = servicioTurnos.multarTurnoAndClienteMenosDe24Horas(emailCliente, idTurno);
+			
+			//Creamos el objeto con los datos del email para poder enviarlo
+            EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
+            cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
+            cancelarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
+            
+            //Asiganmos la plantilla html para la cancelacion del turno
+            String plantillaHTML= "emailCancelacionDeTurno"; 
+            
+            //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
+            Boolean multa = true;
+            
+            try {
+            	//Enviamos al servicio para mandar al email con la cancelacion del turno
+            	servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnosMulta, plantillaHTML, multa); 
+            } catch (Exception e) {
+            	throw new MiExcepcion("Error al enviar el email con la cancelacion de turno menor a 24 horas");
+            }
 			
 		}else {
 			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
-			servicioTurnos.actualizarEstadoDelTurno(idTurno, Rol.CLIENTE, EstadoDelTurno.CANCELADO);
+			Turnos turnos = servicioTurnos.actualizarEstadoDelTurno(idTurno, Rol.CLIENTE, EstadoDelTurno.CANCELADO);
+			
+			 //Creamos el objeto con los datos del email para poder enviarlo
+			 EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
+			 cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
+			 cancelarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
+			 
+			 //asignamos a la variable el nombre de la plantilla que vamos a utilizar
+			 String plantillaHTML= "emailCancelacionDeTurno";
+			 
+			 //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
+			 Boolean multa = false;
+			 
+			 try {
+				 //Llamamos al servicio para enviar el email
+				 servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnos, plantillaHTML, multa);
+			 } catch (Exception e) {
+				 throw new MiExcepcion("Error al enviar el email de cancelacion de turno");
+			 }
 		}
 		
-		//Regresa a la lista de horarios la hora seleccionada en el turno cancelado
-		servicioHorario.agregarHorarioDisponible(fecha, horario, idProfesional, Rol.CLIENTE);
+		//Regresa a la lista de horarios la hora seleccionada en el turno cancelado si el rol es perteneciente a un CLiente
+		servicioHorario.agregarOrBorraHorarioDisponible(fecha, horario, idProfesional, Rol.CLIENTE);
 		
 		return "redirect:/misturnos?email=" + emailCliente;
 		

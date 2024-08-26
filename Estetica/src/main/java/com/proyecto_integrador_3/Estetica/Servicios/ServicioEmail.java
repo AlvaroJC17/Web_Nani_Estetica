@@ -45,7 +45,7 @@ public class ServicioEmail {
 		 this.templateEngine = templateEngine;
 	 }
 
-	//Esta es el metodo que se encarga de enviar los mial, recibe como parametro una
+	//Esta es el metodo que se encarga de enviar los maill, recibe como parametro una
 		 //entidad EmailUsuario y un String con el nombre del archivo html que quiero usar para el mensaje
 		    public void enviarEmailUsuarioOlvidoContrasena(EmailUsuarios emailUsuarios, String emailDelUsuario) throws MiExcepcion {
 				
@@ -211,9 +211,10 @@ public class ServicioEmail {
 	                		+ "<span class='fs-6'> Ha ocurrido un error al enviar el email de confimación del turno generado, pero no te preocupes"
 	                		+ "que igualmente el turno fue generado con exito y podrás visualizarlo en la pestaña de Mis Turnos sin ningún problema<br>"
 	                		+ "Te pedimos disculpas por las molestias ocacionadas");
-		        
-			}
-	        
+		        }
 	    }
-	
+		        
+	        
+	    
+	   	
 }

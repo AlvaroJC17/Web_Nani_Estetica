@@ -83,7 +83,7 @@
             </div>
             <div class="mb-3 col-lg-4">
               <label for="idpaciente" class="form-label texto-label">ID Paciente</label>
-              <input type="text" th:value="${#strings.toUpperCase(datosCliente.id)}" class="form-control"
+              <input type="text" th:value="${#strings.substring(datosCliente.id, datosCliente.id.length() - 12)}" class="form-control"
                 id="idpaciente" placeholder="" disabled>
             </div>
           </div>
@@ -156,14 +156,10 @@
     <h3 class="mb-1">Formulario de preguntas</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
-        <form th:action="@{/editarDatosPersonalesPaciente}" method="post" th:each="datosPaciente : ${datosPaciente}">
+        <form th:action="@{/editarDatosPersonalesPaciente}" method="post" th:each="datosPaciente, iterStat : ${datosPaciente}">
 			
 			<p th:if="${!isEditarDisabled}" style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="bg-danger bg-gradient text-white fs-5 text-center">El cliente todavía no ha llenado el formulario de preguntas, por lo que no es posible habilitar la edición de estos campos.</p>
-
-          <div class="boton-de-registro mt-4 text-star">
-            <button th:class="${isEditarDisabled == null || !isEditarDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}" th:attr="disabled=${isEditarDisabled == null || !isEditarDisabled ? 'disabled' : null}" class="bn632-hover bn26 ms-2 rounded rounded-0">Habilitar edicion</button>
-          </div>
-
+ 
           <div class="mb-3 row">
             <div class="col-md-6">
 				<label for="fuma" class="form-label texto-label">¿Fuma?</label>
@@ -494,28 +490,101 @@
               <input type="hidden" class="form-control" name="emailProfesional" id="emailProfesional" th:value="${datosProfesional.email}"
               placeholder="">
           </div>
+		  
+		  <div class="d-flex justify-content-center">
+			
+		      <div class="boton-de-registro mt-4 text-star">
+		      <button th:class="${isEditarDisabled == null || !isEditarDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}" th:attr="disabled=${isEditarDisabled == null || !isEditarDisabled ? 'disabled' : null}" class="bn632-hover bn26">Habilitar/Deshabilitar</button>
+		      </div>
+		  	  
+		  	  <div class="boton-de-registro mt-4 text-star">
+		  	  <button id="" type="button" class="bn632-hover bn26 enviar">Guardar</button>
+		  	  </div>
+			  
+		  </div>
+		  
           </form>
           </div>
           </section>
+		  
+	<h3 class="mb-0">Últimos tres turnos</h3>
+	<section class="section-misdatos">
+		<div class="container-fluid form-misdatos">
+			<form th:action="@{/}" method="post">
+				
+				<div th:if="${#lists.isEmpty(ultimosTurnos)}">
+				    <p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="bg-danger bg-gradient text-white fs-5 text-center">No hay turnos disponibles.</p>
+				</div>
+				
+				<div th:if="${!#lists.isEmpty(ultimosTurnos)}" class="row" >
+					
+					<div style="padding-top: 12px; padding-bottom: 12px;" class="col-md-4 my-4  perfilCliente" th:each="ultimosTresTurnos, iterStat : ${ultimosTurnos}">
+						
+					<label for="profesionalTurno" class="form-label texto-label">Profesional</label>
+					<input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.profesional.nombre + ' ' + ultimosTresTurnos.profesional.apellido)}" class="form-control" id="profesionalTurno" disabled>
+					
+					<label for="clienteTurno" class="form-label texto-label mt-2">Cliente</label>
+					<input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.cliente.nombre + ' ' + ultimosTresTurnos.cliente.apellido)}" class="form-control" id="clienteTurno" disabled>
+						
+					<label for="fechaTurno" class="form-label texto-label mt-2">Fecha</label>
+					<input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.fecha)}" class="form-control" id="fechaTurno" disabled>
+					
+					<label for="horaTurno" class="form-label texto-label mt-2">Hora</label>
+					<input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.horario)}" class="form-control" id="horaTurno" disabled>
+					
+					<label for="estadoTurno" class="form-label texto-label mt-2">Estado</label>
+					<input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.estado)}" class="form-control" id="estadoTurno" disabled>
+					
+					<label for="tratamientoTurno" class="form-label texto-label mt-2">Tratamiento</label>
+					<input type="text" th:each="tratamiento : ${ultimosTresTurnos.tratamientos}" th:value="${#strings.toUpperCase(tratamiento.nombreTratamientos.displayName)}" class="form-control" id="tratamientoTurno" disabled>
+					
+					<label for="consultaTurno + ${iterStat.index}" class="form-label texto-label mt-2">Recomendaciones</label>
+					<textarea type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.consulta)}" class="form-control" th:id="consultaTurno + ${iterStat.index}" disabled> </textarea>
+					
+					<div class="d-flex justify-content-center row">
+					<button class="bn632-hover bn26 col-md-6" type="button" th:id="toggleButton + ${iterStat.index}"> <span class="fs-6">Habilitar/Deshabilitar</span> </button>
+					<button class="bn632-hover bn26 enviar col-md-6" type="button" th:id="guardarButton + ${iterStat.index}" disabled> <span class="fs-6">Guardar </span> </button>
+					</div>
+				
+				</div>
+				</div>
+				
+			</form>
+			
+		</div>
+		
+	</section>
 
     <h3 class="mb-0">Notas del paciente</h3>
        <section class="section-misdatos">
         <div class="container-fluid form-misdatos ">
-          <form th:action="@{/editarDatosPersonalesPaciente}" method="post" th:each="datosPaciente : ${datosPaciente}">
+          <form th:action="@{/}" method="post" th:each="datosPaciente : ${datosPaciente}">
 			
 		<p th:if="${!isEditarDisabled}" style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="bg-danger bg-gradient text-white fs-5 text-center">El cliente todavía no ha llenado el formulario de preguntas, por lo que no es posible habilitar la edición de estos campos.</p>
-
-            <div class="boton-de-registro mt-4 text-star">
-              <button th:class="${isEditarDisabled == null || !isEditarDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}" th:attr="disabled=${isEditarDisabled == null || !isEditarDisabled ? 'disabled' : null}" type="submit" class="bn632-hover bn26 ms-2 rounded rounded-0">Habilitar edicion</button>
-            </div>
 
          <div class="mb-3 row">
           <div class="col-12">
             <label for="notas_profesional" class="form-label texto-label">Notas adicionales sobre el paciente</label>
             <textarea type="text" style="height: 200px;" th:text="${datosPaciente.notas_profesional}" th:value="${datosPaciente.notas_profesional}"
-              name="notas_profesional" class="form-control" id="notas_profesional" placeholder="" disabled>
+              name="notas_profesional" class="form-control" id="notas_profesional"  disabled>
             </textarea>
-              
+            
+				
+			<div class="d-flex justify-content-center">
+				<div class="boton-de-registro mt-4 text-star">
+			      <button id="toggleButton" th:class="${isEditarDisabled == null || !isEditarDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}" th:attr="disabled=${isEditarDisabled == null || !isEditarDisabled ? 'disabled' : null}" type="button" class="bn632-hover bn26">Habilitar/Deshabilitar</button>
+				</div>
+				
+			     <div class="boton-de-registro mt-4 text-star">
+					<button class="bn632-hover bn26 enviar" type="button" id="guardarButton" disabled>Guardar</button>
+					<!--
+				<button class="bn632-hover bn26" type="button" id="toggleButton">Habilitar/Deshabilitar</button>
+				  -->		     
+			  </div>
+			</div>  
+					
+					
+			
           </div>
         </div>
 	        <input type="hidden" class="form-control" name="idCliente" id="idCliente" th:value="${datosPaciente.id}"
@@ -651,7 +720,92 @@
 	   </iframe>
     </div>
   </footer>
+  
+  
+  <!--Scrip para habilitar y deshabilitar elementos-->
+  <script>
 
+	// Script para el campo de recomendaciones y su boton guardar del primer turno de la columna  
+	document.getElementById("toggleButton0").addEventListener("click", function() {
+	   		var campoTexto0 = document.getElementById("consultaTurno0");
+	   		var guardarButton0 = document.getElementById("guardarButton0");
+
+	   		// Alterna la propiedad 'disabled' del campo de texto
+	   		campoTexto0.disabled = !campoTexto0.disabled;
+	   				    
+	   		// Alterna la propiedad 'disabled' del botón 'Guardar'
+	   		guardarButton0.disabled = !guardarButton0.disabled;
+	   					
+	   		// Agrega o quita la clase según el estado de deshabilitación
+	   		if (guardarButton0.disabled) {
+	   			guardarButton0.classList.add("enviar");
+	   		} else {
+	   			 guardarButton0.classList.remove("enviar");
+	   		}
+	   		});
+	   
+	  
+	   
+// Script para el campo de recomendaciones y su boton guardar del segundo turno de la columna  	   
+	   document.getElementById("toggleButton1").addEventListener("click", function() {
+	   		var campoTexto1 = document.getElementById("consultaTurno1");
+	   		var guardarButton1 = document.getElementById("guardarButton1");
+
+	   		// Alterna la propiedad 'disabled' del campo de texto
+	   		campoTexto1.disabled = !campoTexto1.disabled;
+	   				    
+	   		// Alterna la propiedad 'disabled' del botón 'Guardar'
+	   		guardarButton1.disabled = !guardarButton1.disabled;
+	   					
+	   		// Agrega o quita la clase según el estado de deshabilitación
+	   		if (guardarButton1.disabled) {
+	   			guardarButton1.classList.add("enviar");
+	   		} else {
+	   			 guardarButton1.classList.remove("enviar");
+	   		}
+	   		});
+			 
+// Script para el campo de recomendaciones y su boton guardar del ultimo turno de la columna  
+		document.getElementById("toggleButton2").addEventListener("click", function() {
+		var campoTexto2 = document.getElementById("consultaTurno2");
+		var guardarButton2 = document.getElementById("guardarButton2");
+
+		// Alterna la propiedad 'disabled' del campo de texto
+		campoTexto2.disabled = !campoTexto2.disabled;
+				    
+		// Alterna la propiedad 'disabled' del botón 'Guardar'
+		guardarButton2.disabled = !guardarButton2.disabled;
+					
+		// Agrega o quita la clase según el estado de deshabilitación
+		if (guardarButton2.disabled) {
+			guardarButton2.classList.add("enviar");
+		} else {
+			 guardarButton2.classList.remove("enviar");
+		}
+		});
+		
+		//Script para el boton de de notas del paciente y su boton de guardar
+		
+		document.getElementById("toggleButton").addEventListener("click", function() {
+		    var campoTexto = document.getElementById("notas_profesional");
+		    var guardarButton = document.getElementById("guardarButton");
+
+		    // Alterna la propiedad 'disabled' del campo de texto
+		    campoTexto.disabled = !campoTexto.disabled;
+		    
+		    // Alterna la propiedad 'disabled' del botón 'Guardar'
+		    guardarButton.disabled = !guardarButton.disabled;
+			
+			// Agrega o quita la clase según el estado de deshabilitación
+			if (guardarButton.disabled) {
+			  guardarButton.classList.add("enviar");
+			} else {
+			  guardarButton.classList.remove("enviar");
+			}
+		  });
+		
+		</script>
+   
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>

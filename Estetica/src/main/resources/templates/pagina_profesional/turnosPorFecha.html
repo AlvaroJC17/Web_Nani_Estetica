@@ -97,23 +97,23 @@ tener el mismo ID-->
 		</div>
 		</form>
 		
-		<form th:action="@{/fechasDeshabilitadas}" method="post" class="">
 			
+		<form th:action="@{/fechasDeshabilitadas}" method="post">
 		<div class="d-flex justify-content-center my-4">
 		<p style="width: max-content; box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500)" class="fs-3 px-2 text-white mb-0 text-center bg-success bg-gradient">FECHA SELECCIONADA: <span class="fw-normal" th:text="${fechaSeleccionada}"></span></p>
-		<button th:if="${mostrarBotonesDeshabilitar}" type="button" data-bs-toggle="modal" data-bs-target="#confirmBackdrop" class="btn btn-danger ms-2">Deshabilitar</button>
+		<button th:if="${mostrarBotonesDeshabilitar}" type="button" data-bs-toggle="modal" data-bs-target="#fechaBackdrop" class="btn btn-danger ms-2">Deshabilitar</button>
 		</div>
 		
 		<div class="text-white fs-5 bg-danger bg-gradient px-1 text-center my-3 " th:if="${mostrarBotonesDeshabilitar == false}">ESTA FECHA SE ENCUENTRA DESHABILITADA</div>
 		
-		<!-- Modal Confirmar turno -->
-		<div class="modal fade" id="confirmBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-		tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
+		<!-- Modal deshabilitar fecha -->
+		<div class="modal fade" id="fechaBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+		tabindex="-1" aria-labelledby="fechaBackdropLabel" aria-hidden="true">
 		<div class="modal-dialog">
 		  <div style="background-color: #ebdf9d;" class="modal-content">
 			<div class="modal-header d-block text-center border border-0">
 			  <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
-			  <h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel">Deshabilitar fecha</h1>
+			  <h1 class="modal-title fs-5 fw-bold" id="fechaBackdropLabel">Deshabilitar fecha</h1>
 			</div>
 			<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
 			  <span class="fw-bold">Estimado Usuario,</span><br><br>
@@ -140,6 +140,7 @@ tener el mismo ID-->
 		<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
 		<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input>
 		<input hidden type="text"  name="fechaSeleccionada" th:value="${fechaSeleccionada}"></input>
+
 		</form>
 	
 		<ul class="ps-0">
@@ -264,6 +265,93 @@ tener el mismo ID-->
 								   <div th:if="${turno.multa}" class="bg-danger gb-gradient text-center text-white">
 								   	 ESTE TURNO POSEE UNA MULTA
 								   </div>
+								   
+								   <form th:action="@{/cancelarOrConfimarTurnoProfesional}" method="post">
+									
+								   <!--Estos botones solo hacen el llamado al modal-->
+								   <div th:if="${turno.activo}" class="d-flex justify-content-center align-items-center">
+
+								   	<!-- Botón para confirmar turno -->
+								   	<button type="button" class="btn btn-success m-2" data-bs-toggle="modal" th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}">Confirmar asistencia</button>
+
+								   	<!-- Botón para cancelar turno -->
+								   	<button type="button" class="btn btn-danger m-2" data-bs-toggle="modal" th:attr="data-bs-target='#cancelBackdrop' + ${iterStat.index}">Cancelar turno</button>
+								   							   	
+								   	</div>
+																
+
+								 <!-- Modal Cancelar turno -->
+							<!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
+																		  						<div class="modal fade" th:id="'cancelBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+																		  							tabindex="-1" aria-labelledby="cancelBackdropLabel" aria-hidden="true">
+																		  							<div class="modal-dialog">
+																		  								<div style="background-color: #ebdf9d;" class="modal-content">
+																		  									<div class="modal-header d-block  text-center border border-0">
+																		  										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+																		  										<h1 class="modal-title fs-5 fw-bold" id="cancelBackdropLabel">
+																		  											Cancelación de Turno</h1>
+																		  									</div>
+																		  									<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+																		  										<span class="fw-bold">Estimado Usuario,</span><br><br>
+																		  										
+																		  										Por favor, verifica cuidadosamente el turno que deseas cancelar. Una vez cancelado no se podrá
+																												revertir la acción. Los turnos cancelados por los usuarios con un rol de profesional no generan
+																												multas al cliente, pero elimian ese horario de la lista de horas disponibles para esa fecha
+																												. El sistema se encarga automaticamente de generar multas a los clientes que no
+																												se presenten al turno en la fecha y hora seleccionada. <br><br>
+																												
+																		  										<br><br>
+																		  										<span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
+																		  									</div>
+																		  									<div class="modal-footer border border-0">
+																		  										<button type="button" class="btn btn-danger"
+																		  											data-bs-dismiss="modal">Cerrar</button>
+																		  										<a href="">
+																		  											<!--Este boton es el que hace el llamado al metodo-->
+																		  											<button type="submit" name="accionDelBoton" value="cancelarTurno"  class="btn btn-primary">Aceptar</button>
+																		  												
+																		  										</a>
+																		  									</div>
+																		  								</div>
+																		  							</div>
+																		  						</div>
+
+																<!-- Modal Confirmar turno -->
+																<div class="modal fade" th:id="'confirmBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+																tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
+																<div class="modal-dialog">
+																  <div style="background-color: #ebdf9d;" class="modal-content">
+																	<div class="modal-header d-block text-center border border-0">
+																	  <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
+																	  <h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel">Confirmación de Turno</h1>
+																	</div>
+																	<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+																	  <span class="fw-bold">Estimado Usuario,</span><br><br>
+																	  Estás a punto de confirmar la asistencia del turno. Por favor, revisa todos los detalles antes de proceder. 
+																	  Una vez confirmado, no podrás deshacer los cambios.
+																	  <br><br>
+																	  <span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la confirmación?</span>
+																	</div>
+																	<div class="modal-footer border border-0">
+																	  <button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+																	  <a href="">
+																		<!-- Botón que llama al método para aceptar la confirmación -->
+																		<button type="submit" name="accionDelBoton" value="confirmarTurno" class="btn btn-primary">Aceptar</button>
+																	  </a>
+																	</div>
+																  </div>
+																</div>
+																</div>
+																			
+																				  <input hidden type="text" id="email" name="emailProfesional" th:value="${datosProfesional.email}"></input>
+																				  <input hidden type="text" id="emailCliente" name="emailCliente" th:value="${turno.email}"></input>
+																				  <input hidden type="text" id="fecha" name="fecha" th:value="${turno.fecha}"></input>
+																				  <input hidden type="text" id="horario" name="horario" th:value="${turno.horario}"></input>
+																				  <input hidden type="text" id="idTurno" name="idTurno" th:value="${turno.id}"></input>
+																				  <input hidden type="text" id="idProfesional" name="idProfesional" th:value="${turno.profesional.id}"></input>
+																				  <input hidden type="text" id="idCliente" name="idCliente" th:value="${turno.cliente.id}"></input>
+																				  </form>
+								   
 								  </div>
 								   </div>
 								   </div>
