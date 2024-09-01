@@ -43,8 +43,8 @@ public class ServicioUsuario {
 	  //se va a realizar, en este caso es a las 12 de la noche
 	  //y este metodo se encarga de borrar los registros imcompletos
 	  //Es importante recordar tambien colocar la etiqueta @EnableScheduling en la pagina principal de la aplicacion, donde este el run
-	 @Scheduled(cron = "0 0 0 * * ?") // Ejecuta todos los días a medianoche
-	 // @Scheduled(cron = "0 * * * * *") // Ejecuta a cada minuto
+	  @Scheduled(cron = "0 0 0 * * ?") // Ejecuta todos los días a medianoche
+	  //@Scheduled(cron = "0 * * * * *") // Ejecuta a cada minuto
 	  @Transactional 
 	  public void limpiarRegistrosIncompletos() throws MiExcepcion {
 	        LocalDateTime limite = LocalDateTime.now().minusDays(1);
@@ -52,20 +52,27 @@ public class ServicioUsuario {
 	        try {
 	        //Obtenemos una lista de usuarios que no tengas el email validado y que la fecha sea anterior a 24hrs
 	        List<Usuario> usuariosIncompletos = repositorioUsuario.findByEmailValidadoFalseAndFechaCreacionBefore(limite);
+	        
 	        //Con este for iteramos sobre los usuarios y obtenemos sus id
-	        for(Usuario usuario: usuariosIncompletos) {
-	        	//Con los id de los usuarios obtenemos la lista de codigos
-				List <CodigoDeVerificacion> listCodigos = repositorioCodigoDeVerificacion.findByUsuarioIdAndUsadoFalse(usuario.getId());
-				//Con este for iteramos sobre los codigos encontrados y los borramos
-				for (CodigoDeVerificacion codigo : listCodigos) {
-			        repositorioCodigoDeVerificacion.delete(codigo);
-			    }
-			}
+	        for (Usuario usuario : usuariosIncompletos) {
+	            // Elimina en bloque todos los códigos asociados al usuario
+	            List<CodigoDeVerificacion> listCodigos = repositorioCodigoDeVerificacion.findByUsuarioIdAndUsadoFalse(usuario.getId());
+	            if (!listCodigos.isEmpty()) {
+	                repositorioCodigoDeVerificacion.deleteAll(listCodigos); // Asegúrate de eliminar todos los códigos
+	            }
+	        }
+	        System.out.println("!!!!!!!!!!!SE BORRARON TODOS LOS CODIGOS CON EXITO!!!!!!!!!");
 	       
 	        //Una vez que se borraron los codigos, ahora iteramos sobre los usuarios encontrados
 	        //y los borramos
-	        usuariosIncompletos.forEach(repositorioUsuario::delete);
-	        System.err.println("¡¡¡¡¡¡¡¡¡¡¡¡¡SE BORRARON LOS REGISTROS INCOMPLETOS!!!!!!!!!!!!");
+	     // Luego, elimina en bloque los usuarios
+	        if (!usuariosIncompletos.isEmpty()) {
+	            repositorioUsuario.deleteAll(usuariosIncompletos);
+	        }
+	        
+	        System.out.println("¡¡¡¡¡¡¡¡¡¡¡¡¡SE BORRARON LOS USUARIOS CON EXITO!!!!!!!!!!!!");
+	        
+	        
 	        } catch (Exception e) {
 				throw new MiExcepcion("Error al conectar con el servidor e intentar borrar los registros incompletos " + e);
 			}
@@ -94,7 +101,7 @@ public class ServicioUsuario {
 					NuevoUsuario.setFechaNacimiento(fecha);
 					NuevoUsuario.setActivo(TRUE);
 					NuevoUsuario.setRol(Rol.CLIENTE);
-					//NuevoUsuario.setEmailValidado(TRUE);
+					NuevoUsuario.setEmailValidado(TRUE);
 					NuevoUsuario.setValidacionForm(FALSE);
 					repositorioUsuario.save(NuevoUsuario);
 				}else {

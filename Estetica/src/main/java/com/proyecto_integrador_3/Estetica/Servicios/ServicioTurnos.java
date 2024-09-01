@@ -67,6 +67,10 @@ public class ServicioTurnos {
 		return repositorioTurnos.findByProfesionalIdAndClienteIdAndEstadoOrderByFechaCreacion(idProfesional, idCliente, estado);
 	}
 	
+	public List<Turnos> buscarTurnosPorClienteAndoEstadoDelTurno(String idCliente, EstadoDelTurno estado){
+		return repositorioTurnos.findByClienteIdAndEstadoOrderByFechaCreacion(idCliente, estado);
+	}
+	
 	public List <Turnos> buscarTurnosPorProfesionalId(String idProfesional){
 		return repositorioTurnos.findByProfesionalId(idProfesional);
 	}
@@ -477,8 +481,8 @@ public class ServicioTurnos {
 	@Transactional
 	public void guardarModificarConsultaTurno(String idTurno, String recomendaciones) throws MiExcepcion {
 		
-		if (recomendaciones.length() > 500)  /*Este no lleva la validacion del Seleccione porque es un textarea*/
-			 throw new MiExcepcion("Ha superado el máximo de caracteres permitidos para el campo de cuidado de la piel");
+		if (recomendaciones.length() > 200)  /*Este no lleva la validacion del Seleccione porque es un textarea*/
+			 throw new MiExcepcion("Ha superado el máximo de caracteres permitidos para el campo recomendaciones");
 
 		try {
 			Optional <Turnos> buscarTurnos = repositorioTurnos.findById(idTurno);

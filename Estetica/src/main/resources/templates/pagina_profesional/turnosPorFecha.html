@@ -246,7 +246,7 @@ tener el mismo ID-->
 								   <li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turno.id, turno.id.length() - 12)}"></p> </li>
 								   <li class="list-unstyled d-flex"><strong>Cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.cliente.nombre + ' ' + turno.cliente.apellido}"></p> </li>
 								   <li class="list-unstyled d-flex"><strong>Dni cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.dni}"></p> </li>
-								   <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.fecha}"></p> </li>
+								   <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turno.fecha, 'dd-MM-yyyy')}"></p> </li>
 								   <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.horario}"></p> </li>
 								   <span><strong>Tratamientos:</strong></span>
 								   <ul class="pb-3" style="list-style-type: disc;">

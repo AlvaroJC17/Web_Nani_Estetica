@@ -125,7 +125,7 @@
 																	<td class="text-center" th:text="${turnosDelProfesional.activo ? 'SI' : 'NO'}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.estado}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.multa ? 'SI' : 'NO'}"></td>
-																	<td class="text-center" th:text="${turnosDelProfesional.fechaCreacion}"></td>
+																	<td class="text-center" th:text="${#temporals.format(turnosDelProfesional.fechaCreacion, 'dd-MM-yyyy')}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.fecha}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.horario}"></td>
 																	

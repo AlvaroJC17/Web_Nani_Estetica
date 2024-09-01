@@ -12,17 +12,17 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="../css/styles.css">
   <title>Datos cliente</title>
-  
- 
+
+
 </head>
 
 <body class="body-misdatos" th:each="datosProfesional : ${datosProfesional}">
 
-	<!--Boton flotante de ws-->
-	 <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
-	   <i class="fa-brands fa-whatsapp"></i>
-	 </a>
-  
+  <!--Boton flotante de ws-->
+  <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
   <nav>
     <div class="navbar navbar1 navbar-expand-md">
       <div class="container-fluid navbar2">
@@ -42,17 +42,22 @@
               <a class="nav-link py-1 ajuste-texto-menu"
                 th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
             </li>
-			<li class="nav-item">
-			           <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Datos personales</a>
-			         </li>
-				  <li class="nav-item">
-				     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
-				   </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
+              <a class="nav-link py-1 ajuste-texto-menu"
+                th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Datos personales</a>
             </li>
             <li class="nav-item">
-             <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
+              <a class="nav-link py-1 ajuste-texto-menu"
+                th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos
+                profesionales</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu"
+                th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu"
+                th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
@@ -67,8 +72,8 @@
     <h3 class="">Datos personales</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
-          
-        <form   th:each="datosCliente : ${datosCliente}">
+
+        <form th:each="datosCliente : ${datosCliente}">
           <div class="row">
             <div class="mb-3 col-lg-4">
               <label for="nombre" class="form-label texto-label" disabled>Nombre</label>
@@ -82,8 +87,8 @@
             </div>
             <div class="mb-3 col-lg-4">
               <label for="idpaciente" class="form-label texto-label">ID Paciente</label>
-              <input type="text" th:value="${#strings.substring(datosCliente.id, datosCliente.id.length() - 12)}" class="form-control"
-                id="idpaciente" placeholder="" disabled>
+              <input type="text" th:value="${#strings.substring(datosCliente.id, datosCliente.id.length() - 12)}"
+                class="form-control" id="idpaciente" placeholder="" disabled>
             </div>
           </div>
           <div class="row">
@@ -92,11 +97,11 @@
               <input type="number" th:value="${#strings.toUpperCase(datosCliente.dni)}" class="form-control" id="dni"
                 placeholder="" disabled>
             </div>
-			<div class="mb-3 col-lg-4 ">
-			<label for="fechaAltaFormateada" class="form-label texto-label">Fecha de alta</label>
-			<input type="text" name="fechaAltaFormateada" th:value="${fechaAltaFormateada}"
-			 class="form-control" id="fechaAltaFormateada" placeholder="" disabled>
-			</div>
+            <div class="mb-3 col-lg-4 ">
+              <label for="fechaAltaFormateada" class="form-label texto-label">Fecha de alta</label>
+              <input type="text" name="fechaAltaFormateada" th:value="${fechaAltaFormateada}" class="form-control"
+                id="fechaAltaFormateada" placeholder="" disabled>
+            </div>
             <div class="mb-3 col-lg-4 ">
               <label for="nacimiento" class="form-label texto-label">Fecha Nacimiento</label>
               <input type="date" th:value="${#strings.toUpperCase(datosCliente.fechaNacimiento)}" class="form-control"
@@ -109,11 +114,11 @@
               <input type="email" name="email" th:value="${#strings.toUpperCase(datosCliente.email)}"
                 class="form-control" id="email" placeholder="" disabled>
             </div>
-			<div class="mb-3 col-lg-4 ">
-			<label for="ocupacion" class="form-label texto-label">Ocupación</label>
-			<input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosCliente.ocupacion)}"
-			 class="form-control" id="ocupacion" placeholder="" disabled>
-			</div>
+            <div class="mb-3 col-lg-4 ">
+              <label for="ocupacion" class="form-label texto-label">Ocupación</label>
+              <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosCliente.ocupacion)}"
+                class="form-control" id="ocupacion" placeholder="" disabled>
+            </div>
             <div class="mb-3 col-lg-4">
               <label for="domicilio" class="form-label texto-label">Direccion</label>
               <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosCliente.domicilio)}"
@@ -132,348 +137,405 @@
                 class="form-control" id="telefono" placeholder="" disabled>
             </div>
           </div>
-		
-		 <div class="row ">
-		<div class="mb-3 col-lg-6">
-	    <label for="multa" class="form-label texto-label">Estado</label>
-	    <input  th:if="${datosCliente.activo}" type="text" name="multa" value="ACTIVO" class="form-control bg-success bg-gradient text-center text-white" id="multa1" placeholder="" disabled>
-		<input th:unless="${datosCliente.activo}"  type="text" name="multa" value="INACTIVO" class="form-control bg-danger bg-gradient text-center text-white" id="multa2" placeholder="" disabled>
-		</div>	
-		
-		 <div class="mb-3 col-lg-6">
-		 <label for="multa" class="form-label texto-label">Multas</label>
-		 <input  th:if="${datosCliente.multa}" type="text" name="multa" value="EL CLIENTE TIENE MULTAS" class="form-control bg-danger bg-gradient text-center text-white" id="multa1" placeholder="" disabled>
-		 <input th:unless="${datosCliente.multa}"  type="text" name="multa" value="EL CLIENTE NO TIENE MULTAS" class="form-control bg-success bg-gradient text-center text-white" id="multa2" placeholder="" disabled>
-		 </div>
+
+          <div class="row ">
+            <div class="mb-3 col-lg-6">
+              <label for="multa" class="form-label texto-label">Estado</label>
+              <input th:if="${datosCliente.activo}" type="text" name="multa" value="ACTIVO"
+                class="form-control bg-success bg-gradient text-center text-white" id="multa1" placeholder="" disabled>
+              <input th:unless="${datosCliente.activo}" type="text" name="multa" value="INACTIVO"
+                class="form-control bg-danger bg-gradient text-center text-white" id="multa2" placeholder="" disabled>
+            </div>
+
+            <div class="mb-3 col-lg-6">
+              <label for="multa" class="form-label texto-label">Multas</label>
+              <input th:if="${datosCliente.multa}" type="text" name="multa" value="EL CLIENTE TIENE MULTAS"
+                class="form-control bg-danger bg-gradient text-center text-white" id="multa1" placeholder="" disabled>
+              <input th:unless="${datosCliente.multa}" type="text" name="multa" value="EL CLIENTE NO TIENE MULTAS"
+                class="form-control bg-success bg-gradient text-center text-white" id="multa2" placeholder="" disabled>
+            </div>
         </form>
       </div>
     </section>
-		 
-		
-		            
+
+
+
 
     <h3 class="mb-1">Formulario de preguntas</h3>
     <section class=" section-misdatos">
-      <div class="container-fluid form-misdatos ">
-			
-        <form id="formualarioDatos" th:action="@{/guardarDatosPacienteEditado}" method="post" th:each="datosPaciente, iterStat : ${datosPaciente}">
-			<p th:if="${!isEditarDisabled}" style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="bg-danger bg-gradient text-white fs-5 text-center">El cliente todavía no ha llenado el formulario de preguntas, por lo que no es posible habilitar la edición de estos campos.</p>
- 
+      <div class="container-fluid form-misdatos">
+
+        <form id="formualarioDatos" th:action="@{/guardarDatosPacienteEditado}" method="post"
+          th:each="datosPaciente, iterStat : ${datosPaciente}">
+
+          <p th:if="${!isEditarDisabled}" style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);"
+            class="bg-danger bg-gradient text-white fs-5 text-center">El cliente todavía no ha llenado el formulario de
+            preguntas, por lo que no es posible habilitar la edición de estos campos.</p>
+
           <div class="mb-3 row">
-            <div class="col-md-6">
-				<label for="fuma" class="form-label texto-label">¿Fuma?</label>
-				<select id="fuma" name="fuma" class="form-select rounded-0" aria-label="Default select example" disabled>
-				    <option th:if="${#strings.isEmpty(datosPaciente.fuma)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-					<option th:value="SI" th:text="SI" th:selected="${datosPaciente.fuma == 'SI'}"></option>
-					<option th:value="NO" th:text="NO" th:selected="${datosPaciente.fuma == 'NO'}"></option>
-				</select>
+            <div class="col-md-6 mt-3">
+              <label for="fuma" class="form-label texto-label">¿Fuma?</label>
+              <select id="fuma" name="fuma" class="form-select rounded-0" aria-label="Default select example" disabled>
+                <option th:if="${#strings.isEmpty(datosPaciente.fuma)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.fuma == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.fuma == 'NO'}"></option>
+              </select>
 
             </div>
             <div class="col-md-6 mt-3">
               <label for="drogas" class="form-label texto-label">¿Consume alguna droga?</label>
-              <select id="drogas" name="drogas" class="form-select rounded-0 " aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.drogas)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.drogas == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.drogas == 'NO'}"></option>
+              <select id="drogas" name="drogas" class="form-select rounded-0 " aria-label="Default select example"
+                disabled>
+                <option th:if="${#strings.isEmpty(datosPaciente.drogas)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.drogas == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.drogas == 'NO'}"></option>
               </select>
             </div>
           </div>
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="alcohol" class="form-label texto-label">¿Consumo aproximado de alcohol?</label>
-              <select id="alcohol" name="alcohol" class="form-select rounded-0 " aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.alcohol)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="Poco" th:text="Poco" th:selected="${datosPaciente.alcohol == 'Poco'}"></option>
-				<option th:value="Moderado" th:text="Moderado" th:selected="${datosPaciente.alcohol == 'Moderado'}"></option>
-				<option th:value="Mucho" th:text="Mucho" th:selected="${datosPaciente.alcohol == 'Mucho'}"></option>
-				<option th:value="'No consumo alcohol'" th:text="'No consumo alcohol'" th:selected="${datosPaciente.alcohol == 'No consumo alcohol'}"></option>
+              <select id="alcohol" name="alcohol" class="form-select rounded-0 " aria-label="Default select example"
+                disabled>
+                <option th:if="${#strings.isEmpty(datosPaciente.alcohol)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="Poco" th:text="Poco" th:selected="${datosPaciente.alcohol == 'Poco'}"></option>
+                <option th:value="Moderado" th:text="Moderado" th:selected="${datosPaciente.alcohol == 'Moderado'}">
+                </option>
+                <option th:value="Mucho" th:text="Mucho" th:selected="${datosPaciente.alcohol == 'Mucho'}"></option>
+                <option th:value="'No consumo alcohol'" th:text="'No consumo alcohol'"
+                  th:selected="${datosPaciente.alcohol == 'No consumo alcohol'}"></option>
               </select>
             </div>
             <div class="col-md-6 mt-3">
               <label for="deportes" class="form-label texto-label">¿Realiza algun deporte?</label>
-              <select id="deportes" name="deportes" class="form-select rounded-0 " aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.deportes)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.deportes == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.deportes == 'NO'}"></option>
+              <select id="deportes" name="deportes" class="form-select rounded-0 " aria-label="Default select example"
+                disabled>
+                <option th:if="${#strings.isEmpty(datosPaciente.deportes)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.deportes == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.deportes == 'NO'}"></option>
                 </option>
-               
+
               </select>
             </div>
           </div>
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="ejercicios" class="form-label texto-label">¿Realiza algun ejercicio?</label>
               <select id="ejercicios" name="ejercicios" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.ejercicio)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.ejercicio == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.ejercicio == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.ejercicio)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.ejercicio == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.ejercicio == 'NO'}"></option>
               </select>
             </div>
             <div class="col-md-6 mt-3">
               <label for="ciclo_menstrual" class="form-label texto-label">Ciclo menstrual</label>
               <select id="ciclo_menstrual" name="ciclo_menstrual" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.ciclo_menstrual)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="Regular" th:text="Regular" th:selected="${datosPaciente.ciclo_menstrual == 'Regular'}"></option>
-				<option th:value="Irregular" th:text="Irregular" th:selected="${datosPaciente.ciclo_menstrual == 'Irregular'}">
+                <option th:if="${#strings.isEmpty(datosPaciente.ciclo_menstrual)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="Regular" th:text="Regular"
+                  th:selected="${datosPaciente.ciclo_menstrual == 'Regular'}"></option>
+                <option th:value="Irregular" th:text="Irregular"
+                  th:selected="${datosPaciente.ciclo_menstrual == 'Irregular'}">
               </select>
             </div>
           </div>
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="medicamentos" class="form-label texto-label">¿Toma algun medicamento?</label>
               <select id="medicamentos" name="medicamentos" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.medicamentos)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.medicamentos == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.medicamentos == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.medicamentos)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.medicamentos == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.medicamentos == 'NO'}"></option>
               </select>
             </div>
             <div class="col-md-6 mt-3">
               <label for="nombreMedicamento" class="form-label texto-label">¿Indique el nombre del medicamento?</label>
-              <input type="text" th:value="${datosPaciente.nombreMedicamento}" name="nombreMedicamento" class="form-control"
-                id="nombreMedicamento" placeholder="Nombre medicamento" disabled>
+              <input type="text" th:value="${datosPaciente.nombreMedicamento}" name="nombreMedicamento"
+                class="form-control" id="nombreMedicamento" placeholder="Nombre medicamento" disabled>
             </div>
           </div>
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="embarazo" class="form-label texto-label">¿Estas embarazada?</label>
-              <select id="embarazo" name="embarazo" class="form-select rounded-0 " aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.embarazo)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.embarazo == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.embarazo == 'NO'}"></option>
+              <select id="embarazo" name="embarazo" class="form-select rounded-0 " aria-label="Default select example"
+                disabled>
+                <option th:if="${#strings.isEmpty(datosPaciente.embarazo)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.embarazo == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.embarazo == 'NO'}"></option>
                 </option>
-               
+
               </select>
             </div>
             <div class="col-md-6 mt-3">
               <label for="amamantando" class="form-label texto-label">¿Estas amamantando?</label>
               <select id="amamantando" name="amamantando" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.amamantando)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.amamantando == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.amamantando == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.amamantando)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.amamantando == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.amamantando == 'NO'}"></option>
               </select>
             </div>
           </div>
-             
+
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="alteracion_hormonal" class="form-label texto-label">¿Has presentado alguna alteración
                 hormonal?</label>
               <select id="alteracion_hormonal" name="alteracion_hormonal" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.alteracion_hormonal)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.alteracion_hormonal == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.alteracion_hormonal  == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.alteracion_hormonal)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.alteracion_hormonal == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.alteracion_hormonal  == 'NO'}"></option>
               </select>
             </div>
-			
+
             <div class="col-md-6 mt-3">
               <label for="vitaminas" class="form-label texto-label">¿Tomas alguna vitamina?</label>
-              <select id="vitaminas" name="vitaminas" class="form-select rounded-0 "
-                aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.vitaminas)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.vitaminas  == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.vitaminas == 'NO'}"></option>
+              <select id="vitaminas" name="vitaminas" class="form-select rounded-0 " aria-label="Default select example"
+                disabled>
+                <option th:if="${#strings.isEmpty(datosPaciente.vitaminas)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.vitaminas  == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.vitaminas == 'NO'}"></option>
               </select>
             </div>
           </div>
-                
+
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="corticoides" class="form-label texto-label">¿Tomas algun corticoide?</label>
               <select id="corticoides" name="corticoides" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.corticoides)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.corticoides == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.corticoides == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.corticoides)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.corticoides == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.corticoides == 'NO'}"></option>
               </select>
             </div>
-                
+
 
             <div class="col-md-6 mt-3">
               <label for="hormonas" class="form-label texto-label">¿Tomas hormonas?</label>
-              <select id="hormonas" name="hormonas" class="form-select rounded-0 " aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.hormonas)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.hormonas == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.hormonas == 'NO'}"></option>
+              <select id="hormonas" name="hormonas" class="form-select rounded-0 " aria-label="Default select example"
+                disabled>
+                <option th:if="${#strings.isEmpty(datosPaciente.hormonas)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.hormonas == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.hormonas == 'NO'}"></option>
               </select>
             </div>
           </div>
-               
-            
+
+
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="tiroides" class="form-label texto-label">¿Paciente con tiroides?</label>
-              <select id="tiroides" name="tiroides" class="form-select rounded-0 " aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.tiroides)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.tiroides == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.tiroides == 'NO'}"></option>
+              <select id="tiroides" name="tiroides" class="form-select rounded-0 " aria-label="Default select example"
+                disabled>
+                <option th:if="${#strings.isEmpty(datosPaciente.tiroides)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.tiroides == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.tiroides == 'NO'}"></option>
               </select>
             </div>
-               
+
             <div class="col-md-6 mt-3">
               <label for="metodo_anticonceptivo" class="form-label texto-label">¿Tomas algun anticonceptivo?</label>
               <select id="metodo_anticonceptivo" name="metodo_anticonceptivo" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.metodo_anticonceptivo)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.metodo_anticonceptivo == 'NO'}"></option>
-				<option th:value="Pastillas" th:text="Pastillas" th:selected="${datosPaciente.metodo_anticonceptivo == 'Pastillas'}"></option>
-				<option th:value="Parche" th:text="Parche" th:selected="${datosPaciente.metodo_anticonceptivo == 'Parche'}"></option>
-				<option th:value="Chip" th:text="Chip" th:selected="${datosPaciente.metodo_anticonceptivo == 'Chip'}"></option>
-				<option th:value="Inyeccion" th:text="Inyeccion" th:selected="${datosPaciente.metodo_anticonceptivo == 'Inyeccion'}"></option>
-				<option th:value="Diu" th:text="Diu" th:selected="${datosPaciente.metodo_anticonceptivo == 'Diu'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.metodo_anticonceptivo)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.metodo_anticonceptivo == 'NO'}">
+                </option>
+                <option th:value="Pastillas" th:text="Pastillas"
+                  th:selected="${datosPaciente.metodo_anticonceptivo == 'Pastillas'}"></option>
+                <option th:value="Parche" th:text="Parche"
+                  th:selected="${datosPaciente.metodo_anticonceptivo == 'Parche'}"></option>
+                <option th:value="Chip" th:text="Chip" th:selected="${datosPaciente.metodo_anticonceptivo == 'Chip'}">
+                </option>
+                <option th:value="Inyeccion" th:text="Inyeccion"
+                  th:selected="${datosPaciente.metodo_anticonceptivo == 'Inyeccion'}"></option>
+                <option th:value="Diu" th:text="Diu" th:selected="${datosPaciente.metodo_anticonceptivo == 'Diu'}">
+                </option>
               </select>
             </div>
           </div>
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="sufre_enfermedad" class="form-label texto-label">¿Tienes algun tipo de enfermedad?</label>
               <select id="sufre_enfermedad" name="sufre_enfermedad" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.sufre_enfermedad)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.sufre_enfermedad == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.sufre_enfermedad == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.sufre_enfermedad)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.sufre_enfermedad == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.sufre_enfermedad == 'NO'}"></option>
               </select>
             </div>
-			
-			
+
+
             <div class="col-md-6 mt-3">
               <label for="cual_enfermedad" class="form-label texto-label">Mencione cual enfermedad</label>
-              <input type="text" th:value="${datosPaciente.cual_enfermedad}" name="cual_enfermedad" class="form-control" id="cual_enfermedad" placeholder="Nombre enfermedad" disabled>
+              <input type="text" th:value="${datosPaciente.cual_enfermedad}" name="cual_enfermedad" class="form-control"
+                id="cual_enfermedad" placeholder="Nombre enfermedad" disabled>
             </div>
           </div>
 
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="paciente_oncologica" class="form-label texto-label">¿Paciente oncologico?</label>
               <select id="paciente_oncologica" name="paciente_oncologica" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.paciente_oncologica)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.paciente_oncologica == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.paciente_oncologica == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.paciente_oncologica)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.paciente_oncologica == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.paciente_oncologica == 'NO'}"></option>
               </select>
             </div>
-               
+
             <div class="col-md-6 mt-3">
               <label for="consumo_carbohidratos" class="form-label texto-label">¿Cual es su consumo de
                 carbohidratos?</label>
               <select id="consumo_carbohidratos" name="consumo_carbohidratos" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.consumo_carbohidratos)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="Poco" th:text="Poco" th:selected="${datosPaciente.consumo_carbohidratos == 'Poco'}"></option>
-				<option th:value="Moderado" th:text="Moderado" th:selected="${datosPaciente.consumo_carbohidratos == 'Moderado'}"></option>
-				<option th:value="Abundante" th:text="Abundante" th:selected="${datosPaciente.consumo_carbohidratos == 'Abundante'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.consumo_carbohidratos)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="Poco" th:text="Poco" th:selected="${datosPaciente.consumo_carbohidratos == 'Poco'}">
+                </option>
+                <option th:value="Moderado" th:text="Moderado"
+                  th:selected="${datosPaciente.consumo_carbohidratos == 'Moderado'}"></option>
+                <option th:value="Abundante" th:text="Abundante"
+                  th:selected="${datosPaciente.consumo_carbohidratos == 'Abundante'}"></option>
               </select>
             </div>
           </div>
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="fractura_facial" class="form-label texto-label">¿Tienes una fractura facial?</label>
-              <select id="fractura_facial" name="fractura_facial" class="form-select rounded-0 " aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.fractura_facial)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.fractura_facial == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.fractura_facial == 'NO'}"></option>
+              <select id="fractura_facial" name="fractura_facial" class="form-select rounded-0 "
+                aria-label="Default select example" disabled>
+                <option th:if="${#strings.isEmpty(datosPaciente.fractura_facial)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.fractura_facial == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.fractura_facial == 'NO'}"></option>
               </select>
             </div>
-			
-			
+
+
             <div class="col-md-6 mt-3">
               <label for="tiene_implantes" class="form-label texto-label">¿Tiene implantes?</label>
               <select id="tiene_implantes" name="tiene_implantes" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.tiene_implantes)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.tiene_implantes == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.tiene_implantes == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.tiene_implantes)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.tiene_implantes == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.tiene_implantes == 'NO'}"></option>
               </select>
             </div>
           </div>
-                
+
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="cirugia_estetica" class="form-label texto-label">¿Tienes alguna cirugia estetica?</label>
               <select id="cirugia_estetica" name="cirugia_estetica" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.cirugia_estetica)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.cirugia_estetica == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.cirugia_estetica == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.cirugia_estetica)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.cirugia_estetica == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.cirugia_estetica == 'NO'}"></option>
               </select>
             </div>
-               
+
             <div class="col-md-6 mt-3">
               <label for="indique_cirugia_estetica" class="form-label texto-label">Indique cirugia estetica</label>
-              <input type="text" th:value="${datosPaciente.indique_cirugia_estetica}" name="indique_cirugia_estetica" class="form-control" id="indique_cirugia_estetica" placeholder="Nombre cirugia estética" disabled>
+              <input type="text" th:value="${datosPaciente.indique_cirugia_estetica}" name="indique_cirugia_estetica"
+                class="form-control" id="indique_cirugia_estetica" placeholder="Nombre cirugia estética" disabled>
             </div>
           </div>
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="marca_pasos" class="form-label texto-label">¿Tienes marca pasos?</label>
               <select id="marca_pasos" name="marca_pasos" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.marca_pasos)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.marca_pasos == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.marca_pasos == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.marca_pasos)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.marca_pasos == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.marca_pasos == 'NO'}"></option>
               </select>
             </div>
-                
+
             <div class="col-md-6 mt-3">
               <label for="horas_sueno" class="form-label texto-label">¿Cuantas horas de sueño al dia?</label>
               <select id="horas_sueno" name="horas_sueno" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.horas_sueno)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="'Mas de ocho horas'" th:text="'Mas de ocho horas'" th:selected="${datosPaciente.horas_sueno == 'Mas de ocho horas'}"></option>
-				<option th:value="'Menos de ocho horas'" th:text="'Menos de ocho horas'" th:selected="${datosPaciente.horas_sueno == 'Menos de ocho horas'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.horas_sueno)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="'Mas de ocho horas'" th:text="'Mas de ocho horas'"
+                  th:selected="${datosPaciente.horas_sueno == 'Mas de ocho horas'}"></option>
+                <option th:value="'Menos de ocho horas'" th:text="'Menos de ocho horas'"
+                  th:selected="${datosPaciente.horas_sueno == 'Menos de ocho horas'}"></option>
               </select>
             </div>
           </div>
-               
+
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="exposicion_sol" class="form-label texto-label">¿horas de exposicion al sol tienes al
                 día?</label>
               <input type="number" th:value="${datosPaciente.exposicion_sol}" name="exposicion_sol" class="form-control"
                 id="exposicion_sol" placeholder="Horas aproximadas de exposicion" disabled>
             </div>
-			
-			
+
+
             <div class="col-md-6 mt-3">
               <label for="protector_solar" class="form-label texto-label">¿Usas protector solar?</label>
               <select id="protector_solar" name="protector_solar" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.protector_solar)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.protector_solar == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.protector_solar == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.protector_solar)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.protector_solar == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.protector_solar == 'NO'}"></option>
               </select>
             </div>
           </div>
-             
+
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="reaplica_protector" class="form-label texto-label">¿Reaplica el protector solar durante el
                 dia?</label>
               <select id="reaplica_protector" name="reaplica_protector" class="form-select rounded-0 "
                 aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.reaplica_protector)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.reaplica_protector == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.reaplica_protector == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.reaplica_protector)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI" th:selected="${datosPaciente.reaplica_protector == 'SI'}"></option>
+                <option th:value="NO" th:text="NO" th:selected="${datosPaciente.reaplica_protector == 'NO'}"></option>
               </select>
             </div>
 
-			               
+
             <div class="col-md-6 mt-3">
               <label for="motivo_consulta" class="form-label texto-label">¿Motivo de la consulta?</label>
               <input type="text" th:value="${datosPaciente.motivo_consulta}" name="motivo_consulta" class="form-control"
@@ -483,261 +545,308 @@
 
 
           <div class="mb-3 row">
-            <div class="col-md-6">
+            <div class="col-md-6 mt-3">
               <label for="tratamientosFacialesAnteriores" class="form-label texto-label">¿tratamientos faciales
                 anteriores?</label>
               <select id="tratamientosFacialesAnteriores" name="tratamientosFacialesAnteriores"
                 class="form-select rounded-0 " aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.tratamientos_faciales_anteriores)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="SI" th:text="SI" th:selected="${datosPaciente.tratamientos_faciales_anteriores == 'SI'}"></option>
-				<option th:value="NO" th:text="NO" th:selected="${datosPaciente.tratamientos_faciales_anteriores == 'NO'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.tratamientos_faciales_anteriores)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="SI" th:text="SI"
+                  th:selected="${datosPaciente.tratamientos_faciales_anteriores == 'SI'}"></option>
+                <option th:value="NO" th:text="NO"
+                  th:selected="${datosPaciente.tratamientos_faciales_anteriores == 'NO'}"></option>
               </select>
             </div>
-              
+
 
             <div class="col-md-6 mt-3">
               <label for="resultados_tratamiento_anterior" class="form-label texto-label">¿Resultado del tratamiento
                 aterior?</label>
               <select id="resultados_tratamiento_anterior" name="resultados_tratamiento_anterior"
                 class="form-select rounded-0 " aria-label="Default select example" disabled>
-				<option th:if="${#strings.isEmpty(datosPaciente.resultados_tratamiento_anterior)}" value="" th:text="'Todavía no se proporcionó esta información'"></option>
-				<option th:value="Bueno" th:text="Bueno" th:selected="${datosPaciente.resultados_tratamiento_anterior == 'Bueno'}"></option>
-				<option th:value="Regular" th:text="Regular" th:selected="${datosPaciente.resultados_tratamiento_anterior == 'Regular'}"></option>
-				<option th:value="Malo" th:text="Malo" th:selected="${datosPaciente.resultados_tratamiento_anterior == 'Malo'}"></option>
+                <option th:if="${#strings.isEmpty(datosPaciente.resultados_tratamiento_anterior)}" value=""
+                  th:text="'Todavía no se proporcionó esta información'"></option>
+                <option th:value="Bueno" th:text="Bueno"
+                  th:selected="${datosPaciente.resultados_tratamiento_anterior == 'Bueno'}"></option>
+                <option th:value="Regular" th:text="Regular"
+                  th:selected="${datosPaciente.resultados_tratamiento_anterior == 'Regular'}"></option>
+                <option th:value="Malo" th:text="Malo"
+                  th:selected="${datosPaciente.resultados_tratamiento_anterior == 'Malo'}"></option>
               </select>
             </div>
           </div>
-          
+
           <div class="mb-3 row">
             <div class="col-md-12">
               <label for="cuidado_de_piel" class="form-label texto-label">¿Describe brevemente como te cuidas las piel y
                 que productos usas?</label>
-				<p id="contadorCuidadoPiel" class="mb-0 fs-6 text-black">Máximo de caracteres 500/500</p>
-              <textarea type="text" maxlength="500" style="height: 100px;" th:text="${datosPaciente.cuidado_de_piel}" th:value="${cuidado_de_piel}"
-                name="cuidado_de_piel" class="form-control" id="cuidado_de_piel" placeholder="" disabled>
+              <p id="contadorCuidadoPiel" class="mb-0 fs-6 text-black">Máximo de caracteres 500/500</p>
+              <textarea type="text" maxlength="500" style="height: 100px;" th:text="${datosPaciente.cuidado_de_piel}"
+                th:value="${cuidado_de_piel}" name="cuidado_de_piel" class="form-control" id="cuidado_de_piel"
+                placeholder="" disabled>
               </textarea>
             </div>
-            
-            <input type="hidden" class="form-control" name="idCliente"  th:value="${datosPaciente.id}"
+
+            <input type="hidden" class="form-control" name="idCliente" th:value="${datosPaciente.id}" placeholder="">
+            <input type="hidden" class="form-control" name="emailCliente" th:value="${datosPaciente.email}"
               placeholder="">
-            <input type="hidden" class="form-control" name="emailCliente"  th:value="${datosPaciente.email}"
+            <input type="hidden" class="form-control" name="emailProfesional" th:value="${datosProfesional.email}"
               placeholder="">
-              <input type="hidden" class="form-control" name="emailProfesional" th:value="${datosProfesional.email}"
+            <input type="hidden" class="form-control" name="idProfesional" th:value="${datosProfesional.id}"
               placeholder="">
-			  <input type="hidden" class="form-control" name="idProfesional"  th:value="${datosProfesional.id}"
-			  placeholder="">
           </div>
-		  
-		  <div class="d-flex flex-wrap justify-content-center">
-			
-		      <div class="mt-2 mx-0">
-		      <button type="button" id="botonEditar" th:class="${isEditarDisabled == null || !isEditarDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}" th:attr="disabled=${isEditarDisabled == null || !isEditarDisabled ? 'disabled' : null}" class="mx-0 bn632-hover bn26">Habilitar/Deshabilitar</button>
-		      </div>
-		  	  
-		  	  <div class="mt-2 mx-0">
-		  	  <button data-bs-target='#confirmBackdrop' data-bs-toggle="modal"  id="botonGuardar" type="button" class="mx-0 bn632-hover bn26 enviar" disabled>Guardar</button>
-		  	  </div>
-		  </div>
-		  
-		  <!-- Modal Confirmar modificacion de formulario -->
-		  		<div class="modal fade" id='confirmBackdrop' data-bs-backdrop="static" data-bs-keyboard="false"
-		  		tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
-		  		<div class="modal-dialog">
-		  		<div style="background-color: #ebdf9d;" class="modal-content">
-		  		<div class="modal-header d-block text-center border border-0">
-		  		<img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
-		  		<h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel"></h1>
-		  		</div>
-		  		<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
-		  		
-		  		<p class="text-center fs-5 fw-mediun">¿Estas seguro de modificar estos datos?</p>
-		  		
-		  		
-		  		</div>
-		  		<div class="modal-footer border border-0">
-		  		<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-		  		<a href="">
-		  		<!-- Botón que llama al método para aceptar la confirmación -->
-		  		<button type="submit" name="funcionalidadBotones" value="botonGuardarFormulario" class="btn btn-primary">Aceptar</button>
-		  		</a>
-		  		</div>
-		  		</div>
-		  		</div>
-		  		</div>
-		  
+
+          <div class="d-flex flex-wrap justify-content-center">
+
+            <div class="mt-2 mx-0">
+              <button type="button" id="botonEditar"
+                th:class="${isEditarDisabled == null || !isEditarDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}"
+                th:attr="disabled=${isEditarDisabled == null || !isEditarDisabled ? 'disabled' : null}"
+                class="bn632-hover bn26">Habilitar/Deshabilitar</button>
+            </div>
+
+            <div class="mt-2 mx-0">
+              <button data-bs-target='#confirmBackdrop' data-bs-toggle="modal" id="botonGuardar" type="button"
+                class="bn632-hover bn26 enviar" disabled>Guardar</button>
+            </div>
+          </div>
+
+          <!-- Modal Confirmar modificacion de formulario -->
+          <div class="modal fade" id='confirmBackdrop' data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="confirmBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div style="background-color: #ebdf9d;" class="modal-content">
+                <div class="modal-header d-block text-center border border-0">
+                  <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
+                  <h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel"></h1>
+                </div>
+                <div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+
+                  <p class="text-center fs-5 fw-mediun">¿Estas seguro de modificar estos datos?</p>
+
+
+                </div>
+                <div class="modal-footer border border-0">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                  <a href="">
+                    <!-- Botón que llama al método para aceptar la confirmación -->
+                    <button type="submit" name="funcionalidadBotones" value="botonGuardarFormulario"
+                      class="btn btn-primary">Aceptar</button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </section>
+
+
+
+    <h3 class="mb-0">Últimos tres turnos asistidos</h3>
+    <section class="section-misdatos">
+      <div class="form-misdatos">
+
+        <p th:if="${cienteSinTurnos}" style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);"
+          class="my-5 bg-danger bg-gradient text-white fs-5 text-center">El cliente no tiene turnos asistidos.</p>
+
+
+        <div class="row">
+          <form th:id="formularioTurnos + ${iterStat.index}" th:action="@{/guardarDatosPacienteEditado}" method="post"
+            style="padding-top: 12px; padding-bottom: 12px;" class="col-md-4 my-4  perfilCliente"
+            th:each="ultimosTresTurnos, iterStat : ${ultimosTurnos}">
+            <div th:if="${#lists.isEmpty(ultimosTurnos)}">
+              <p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);"
+                class="bg-danger bg-gradient text-white fs-5 text-center">El cliente todavía no ha asistido a un turno.
+              </p>
+            </div>
+
+            <div th:if="${!#lists.isEmpty(ultimosTurnos)}">
+
+              <div>
+
+                <label for="profesionalTurno" class="form-label texto-label">Profesional</label>
+                <input type="text"
+                  th:value="${#strings.toUpperCase(ultimosTresTurnos.profesional.nombre + ' ' + ultimosTresTurnos.profesional.apellido)}"
+                  class="form-control" id="profesionalTurno" disabled>
+
+                <label for="clienteTurno" class="form-label texto-label mt-2">Cliente</label>
+                <input type="text"
+                  th:value="${#strings.toUpperCase(ultimosTresTurnos.cliente.nombre + ' ' + ultimosTresTurnos.cliente.apellido)}"
+                  class="form-control" id="clienteTurno" disabled>
+
+                <label for="fechaTurno" class="form-label texto-label mt-2">Fecha</label>
+                <input type="text" th:value="${#temporals.format(ultimosTresTurnos.fecha, 'dd-MM-yyyy')}" class="form-control"
+                  id="fechaTurno" disabled>
+
+                <label for="horaTurno" class="form-label texto-label mt-2">Hora</label>
+                <input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.horario)}" class="form-control"
+                  id="horaTurno" disabled>
+
+                <label for="estadoTurno" class="form-label texto-label mt-2">Estado</label>
+                <input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.estado)}" class="form-control"
+                  id="estadoTurno" disabled>
+
+                <label for="tratamientoTurno" class="form-label texto-label mt-2">Tratamiento</label>
+                <input type="text" th:each="tratamiento : ${ultimosTresTurnos.tratamientos}"
+                  th:value="${#strings.toUpperCase(tratamiento.nombreTratamientos.displayName)}" class="form-control"
+                  id="tratamientoTurno" disabled>
+
+                <label for="consultaTurno + ${iterStat.index}"
+                  class="form-label texto-label mt-2">Recomendaciones</label>
+                <p th:id="contadorTurno + ${iterStat.index}" class="mb-0 fs-6 text-black">Máximo de caracteres 500/500
+                </p>
+                <p class="mb-0 fs-6 text-danger">Última actualización el <span class="fs-6 mb-0"
+                    th:text="${#temporals.format(ultimosTresTurnos.fechaModificacion, 'dd-MM-yyyy')}"></span> </p>
+                <textarea maxlength="500" name="recomendaciones" style="height: 145px;" type="text"
+                  th:text="${ultimosTresTurnos.consulta}" class="form-control" th:id="consultaTurno + ${iterStat.index}"
+                  disabled> </textarea>
+
+                <div class="d-flex justify-content-center row">
+                  <button class="bn632-hover bn26 col-md-6" type="button" th:id="toggleButton + ${iterStat.index}">
+                    <span class="fs-6">Habilitar/Deshabilitar</span> </button>
+                  <button th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}" data-bs-toggle="modal"
+                    class="bn632-hover bn26 enviar col-md-6" type="button" th:id="guardarButton + ${iterStat.index}"
+                    disabled> <span class="fs-6">Guardar </span> </button>
+                </div>
+
+                <input type="hidden" class="form-control" name="idTurnoModificado" id="idTurnoModificado"
+                  th:value="${ultimosTresTurnos.id}">
+
+              </div>
+            </div>
+
+
+            <div th:each="datosPaciente, iterStat : ${datosPaciente}">
+              <input type="hidden" class="form-control" name="idCliente" th:value="${datosPaciente.id}" placeholder="">
+              <input type="hidden" class="form-control" name="emailCliente" th:value="${datosPaciente.email}"
+                placeholder="">
+            </div>
+
+            <input type="hidden" class="form-control" name="emailProfesional" th:value="${datosProfesional.email}"
+              placeholder="">
+            <input type="hidden" class="form-control" name="idProfesional" th:value="${datosProfesional.id}"
+              placeholder="">
+
+
+
+            <!-- Modal Confirmar modificacion de turnos -->
+            <div class="modal fade" th:id="'confirmBackdrop' + ${iterStat.index}" data-bs-backdrop="static"
+              data-bs-keyboard="false" tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
+              <div class="modal-dialog">
+                <div style="background-color: #ebdf9d;" class="modal-content">
+                  <div class="modal-header d-block text-center border border-0">
+                    <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
+                    <h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel"></h1>
+                  </div>
+                  <div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+
+                    <p class="text-center fs-5 fw-mediun">¿Estas seguro de modificar estos datos?</p>
+
+
+                  </div>
+                  <div class="modal-footer border border-0">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                    <a href="">
+                      <!-- Botón que llama al método para aceptar la confirmación -->
+                      <button type="submit" name="funcionalidadBotones" value="botonGuardarRecomendaciones"
+                        class="btn btn-primary">Aceptar</button>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </form>
-          </div>
-          </section>
-			  
-		  
-		  
-	<h3 class="mb-0">Últimos tres turnos asistidos</h3>
-	<section class="section-misdatos">
-		<div class="container form-misdatos">
-			
-			<p th:if="${cienteSinTurnos}" style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="bg-danger bg-gradient text-white fs-5 text-center">El cliente no tiene turnos asistidos.</p>
-			 
-				
-			<div class="row">
-			<form th:action="@{/guardarDatosPacienteEditado}" method="post" style="padding-top: 12px; padding-bottom: 12px;" class="col-md-4 my-4  perfilCliente" th:each="ultimosTresTurnos, iterStat : ${ultimosTurnos}">
-				<div th:if="${#lists.isEmpty(ultimosTurnos)}">
-				    <p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="bg-danger bg-gradient text-white fs-5 text-center">El cliente todavía no ha asistido a un turno.</p>
-				</div>
-				
-				<div th:if="${!#lists.isEmpty(ultimosTurnos)}" >
-					
-					<div >
-						
-					<label for="profesionalTurno" class="form-label texto-label">Profesional</label>
-					<input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.profesional.nombre + ' ' + ultimosTresTurnos.profesional.apellido)}" class="form-control" id="profesionalTurno" disabled>
-					
-					<label for="clienteTurno" class="form-label texto-label mt-2">Cliente</label>
-					<input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.cliente.nombre + ' ' + ultimosTresTurnos.cliente.apellido)}" class="form-control" id="clienteTurno" disabled>
-						
-					<label for="fechaTurno" class="form-label texto-label mt-2">Fecha</label>
-					<input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.fecha)}" class="form-control" id="fechaTurno" disabled>
-					
-					<label for="horaTurno" class="form-label texto-label mt-2">Hora</label>
-					<input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.horario)}" class="form-control" id="horaTurno" disabled>
-					
-					<label for="estadoTurno" class="form-label texto-label mt-2">Estado</label>
-					<input type="text" th:value="${#strings.toUpperCase(ultimosTresTurnos.estado)}" class="form-control" id="estadoTurno" disabled>
-					
-					<label for="tratamientoTurno" class="form-label texto-label mt-2">Tratamiento</label>
-					<input type="text" th:each="tratamiento : ${ultimosTresTurnos.tratamientos}" th:value="${#strings.toUpperCase(tratamiento.nombreTratamientos.displayName)}" class="form-control" id="tratamientoTurno" disabled>
-					
-					<label for="consultaTurno + ${iterStat.index}" class="form-label texto-label mt-2">Recomendaciones</label>
-					<p class="mb-0 fs-6 text-black">Máximo 500 caracteres</p>
-					<p class="mb-0 fs-6 text-danger">Última actualización el <span class="fs-6 mb-0" th:text="${ultimosTresTurnos.fechaModificacion}"></span> </p>
-					<textarea maxlength="500" name="recomendaciones" style="height: 145px;" type="text" th:text="${ultimosTresTurnos.consulta}" class="form-control" th:id="consultaTurno + ${iterStat.index}" disabled> </textarea>
-					
-					<div class="d-flex justify-content-center row">
-					<button class="bn632-hover bn26 col-md-6" type="button" th:id="toggleButton + ${iterStat.index}"> <span class="fs-6">Habilitar/Deshabilitar</span> </button>
-					<button th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}" data-bs-toggle="modal"  class="bn632-hover bn26 enviar col-md-6" type="button" th:id="guardarButton + ${iterStat.index}" disabled> <span class="fs-6">Guardar </span> </button>
-					</div>
-					
-				<input type="hidden" class="form-control" name="idTurnoModificado" id="idTurnoModificado" th:value="${ultimosTresTurnos.id}">
-					
-				</div>
-				</div>
-				
-					
-				<div th:each="datosPaciente, iterStat : ${datosPaciente}">
-				<input type="hidden" class="form-control" name="idCliente"  th:value="${datosPaciente.id}" placeholder="">
-				<input type="hidden" class="form-control" name="emailCliente"  th:value="${datosPaciente.email}" placeholder="">
-				</div>
-				
-				<input type="hidden" class="form-control" name="emailProfesional" th:value="${datosProfesional.email}" placeholder="">
-				<input type="hidden" class="form-control" name="idProfesional"  th:value="${datosProfesional.id}"  placeholder="">
-				
-				
-				
-				<!-- Modal Confirmar modificacion de turnos -->
-			<div class="modal fade" th:id="'confirmBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
-			tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
-			<div class="modal-dialog">
-			<div style="background-color: #ebdf9d;" class="modal-content">
-			<div class="modal-header d-block text-center border border-0">
-			<img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
-			<h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel"></h1>
-			</div>
-			<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
-			
-			<p class="text-center fs-5 fw-mediun">¿Estas seguro de modificar estos datos?</p>
-			
-			
-			</div>
-			<div class="modal-footer border border-0">
-			<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-			<a href="">
-			<!-- Botón que llama al método para aceptar la confirmación -->
-			<button type="submit" name="funcionalidadBotones" value="botonGuardarRecomendaciones" class="btn btn-primary">Aceptar</button>
-			</a>
-			</div>
-			</div>
-			</div>
-			</div>
-				
-			</form>
-			</div>					
-		</div>
-	</section>
-					
-				
-				
-			
-		
+        </div>
+      </div>
+    </section>
+
+
+
+
+
 
     <h3 class="mb-0">Notas del paciente</h3>
-       <section class="section-misdatos">
-        <div class="container-fluid form-misdatos ">
-          <form th:action="@{/guardarDatosPacienteEditado}" method="post" th:each="datosPaciente : ${datosPaciente}">
-			
-		<p th:if="${!isEditarDisabled}" style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="bg-danger bg-gradient text-white fs-5 text-center">El cliente todavía no ha llenado el formulario de preguntas, por lo que no es posible habilitar la edición de estos campos.</p>
+    <section class="section-misdatos">
+      <div class="container-fluid form-misdatos ">
+        <form id="formularioNotas" th:action="@{/guardarDatosPacienteEditado}" method="post"
+          th:each="datosPaciente : ${datosPaciente}">
 
-         <div class="mb-3 row">
-          <div class="col-12">
-            <label for="notas_profesional" class="form-label texto-label mb-2">Estas notas solo serán vistas por el profesional.</label>
-			
-			<div class=" mb-0 d-flex justify-content-between">
-			<p id="contador" class="mb-0 fs-6 text-black">Máximo de caracteres 500/500</p>
-			<p class="mb-0 fs-6 text-danger">Última actualización el <span class="fs-6 mb-0" th:text="${datosPaciente.fechaModificacion}"></span> </p>
-			</div>
-				
-			
-            <textarea id="notas_profesional" maxlength="500"  type="text" style="height: 200px;" th:text="${datosPaciente.notas_profesional}" th:value="${datosPaciente.notas_profesional}"
-              name="notas_profesional" class="form-control"   disabled>
+
+          <div class="mb-3 row">
+            <div class="col-12">
+              <label for="notas_profesional" class="form-label texto-label mb-2">Estas notas solo serán vistas por el
+                profesional.</label>
+
+              <div class=" mb-0 d-flex justify-content-between">
+                <p id="contador" class="mb-0 fs-6 text-black">Máximo de caracteres 500/500</p>
+                <p class="mb-0 fs-6 text-danger">Última actualización el <span class="fs-6 mb-0"
+                    th:text="${#temporals.format(datosPaciente.fechaModificacion, 'dd-MM-yyyy')}"></span> </p>
+              </div>
+
+
+              <textarea id="notas_profesional" maxlength="500" type="text" style="height: 200px;"
+                th:text="${datosPaciente.notas_profesional}" th:value="${datosPaciente.notas_profesional}"
+                name="notas_profesional" class="form-control" disabled>
             </textarea>
-            
-				
-			<div class="d-flex flex-wrap justify-content-center">
-				<div class="mt-2 mx-0">
-			      <button id="botonNotas" th:class="${isEditarDisabled == null || !isEditarDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}"  type="button" class="mx-0 bn632-hover bn26">Habilitar/Deshabilitar</button>
-				</div>
-				
-			     <div class="mt-2 mx-0">
-					<button data-bs-target='#confirmNotas' data-bs-toggle="modal"  class="mx-0 bn632-hover bn26 enviar" type="button" id="guardarButton" disabled>Guardar</button>	     
-			  </div>
-			</div>  
+
+
+              <div class="d-flex flex-wrap justify-content-center">
+                <div class="mt-2 mx-0">
+                  <button id="botonNotas" type="button" class="bn632-hover bn26">Habilitar/Deshabilitar</button>
+                </div>
+
+                <div class="mt-2 mx-0">
+                  <button data-bs-target='#confirmNotas' data-bs-toggle="modal" class="bn632-hover bn26 enviar"
+                    type="button" id="guardarButton" disabled>Guardar</button>
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-					
-	        	<input type="hidden" class="form-control" name="idCliente"  th:value="${datosPaciente.id}" placeholder="">
-	            <input type="hidden" class="form-control" name="emailCliente"  th:value="${datosPaciente.email}" placeholder="">
-	            <input type="hidden" class="form-control" name="emailProfesional"  th:value="${datosProfesional.email}" placeholder="">
-				<input type="hidden" class="form-control" name="idProfesional"  th:value="${datosProfesional.id}"  placeholder="">
-				
-				<!-- Modal Confirmar modificacion de formulario -->
-				<div class="modal fade" id='confirmNotas' data-bs-backdrop="static" data-bs-keyboard="false"
-				tabindex="-1" aria-labelledby="confirmNotasLabel" aria-hidden="true">
-				<div class="modal-dialog">
-				<div style="background-color: #ebdf9d;" class="modal-content">
-				<div class="modal-header d-block text-center border border-0">
-				<img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
-				<h1 class="modal-title fs-5 fw-bold" id="confirmNotasLabel"></h1>
-				</div>
-				<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
-						  		
-				<p class="text-center fs-5 fw-mediun">¿Estas seguro de modificar estos datos?</p>
-						  		
-						  		
-				</div>
-				<div class="modal-footer border border-0">
-				<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-				<a href="">
-				<!-- Botón que llama al método para aceptar la confirmación -->
-				<button type="submit" name="funcionalidadBotones" value="botonGuardarNotas" class="btn btn-primary">Aceptar</button>
-				</a>
-				</div>
-				</div>
-				</div>
-				</div>
-				
-	      
-			</form>
+
+          <input type="hidden" class="form-control" name="idCliente" th:value="${datosPaciente.id}" placeholder="">
+          <input type="hidden" class="form-control" name="emailCliente" th:value="${datosPaciente.email}"
+            placeholder="">
+          <input type="hidden" class="form-control" name="emailProfesional" th:value="${datosProfesional.email}"
+            placeholder="">
+          <input type="hidden" class="form-control" name="idProfesional" th:value="${datosProfesional.id}"
+            placeholder="">
+
+          <!-- Modal Confirmar modificacion de formulario -->
+          <div class="modal fade" id='confirmNotas' data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="confirmNotasLabel" aria-hidden="true">
+            <div class="modal-dialog">
+              <div style="background-color: #ebdf9d;" class="modal-content">
+                <div class="modal-header d-block text-center border border-0">
+                  <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
+                  <h1 class="modal-title fs-5 fw-bold" id="confirmNotasLabel"></h1>
+                </div>
+                <div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+
+                  <p class="text-center fs-5 fw-mediun">¿Estas seguro de modificar estos datos?</p>
+
+
+                </div>
+                <div class="modal-footer border border-0">
+                  <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+                  <a href="">
+                    <!-- Botón que llama al método para aceptar la confirmación -->
+                    <button type="submit" name="funcionalidadBotones" value="botonGuardarNotas"
+                      class="btn btn-primary">Aceptar</button>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+        </form>
       </div>
-       </section>
-				
+    </section>
+
 
 
 
@@ -819,191 +928,372 @@
 
 
   <footer class="d-flex row p-0">
-      <div class="divfooter col-lg-6 mb-3">
-        <p class="mb-3 text-center titulos-footer">CONTACTOS</p>
-        <div class="mb-4">
-          <p class="mb-0 text-center"><img class="iconos" src="/imagenes/icons8-gps-50.png" alt="">Rivadavia 730,
-            B1625 Belén de Escobar</p>
-          <p class="text-center mt-0">Provincia de Buenos Aires</p>
+    <div class="divfooter col-lg-6 mb-3">
+      <p class="mb-3 text-center titulos-footer">CONTACTOS</p>
+      <div class="mb-4">
+        <p class="mb-0 text-center"><img class="iconos" src="/imagenes/icons8-gps-50.png" alt="">Rivadavia 730,
+          B1625 Belén de Escobar</p>
+        <p class="text-center mt-0">Provincia de Buenos Aires</p>
+      </div>
+      <div class="mb-4 text-center">
+        <p><img class="iconos" src="/imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)5744-2608</p>
+      </div>
+      <div class="mb-4 text-center">
+        <p><img class="iconos" src="/imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)5744-2608</p>
+      </div>
+      <div class="mb-4 text-center">
+        <p class=""><img class="iconos pe-1" src="/imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+      </div>
+      <div class="text-center iconos3 mt-5 pb-4">
+        <div class="">
+          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
         </div>
-        <div class="mb-4 text-center">
-          <p><img class="iconos" src="/imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)5744-2608</p>
+        <div>
+          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a>
         </div>
-        <div class="mb-4 text-center">
-          <p><img class="iconos" src="/imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)5744-2608</p>
+        <div>
+          <a class="link" href="#"> <img class=" iconos2" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
         </div>
-        <div class="mb-4 text-center">
-          <p class=""><img class="iconos pe-1" src="/imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
-        </div>
-        <div class="text-center iconos3 mt-5 pb-4">
-          <div class="">
-            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
-          </div>
-          <div>
-            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a>
-          </div>
-          <div>
-            <a class="link" href="#"> <img class=" iconos2" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
-          </div>
-          <div>
-            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
-          </div>
+        <div>
+          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
         </div>
       </div>
+    </div>
 
-    
+
 
     <div class="divfooter col-lg-6">
       <p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
-	  <iframe class="w-100 rounded rounded-2" 
-	     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
-	     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-	   </iframe>
+      <iframe class="w-100 rounded rounded-2"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
+        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
     </div>
   </footer>
-  
-  
+
+
   <!--Scrip para habilitar y deshabilitar elementos-->
   <script>
-	
-	//Script para el boton de de notas del profesional y su boton de guardar
-			
-			document.getElementById("botonNotas").addEventListener("click", function() {
-			    var campoTexto = document.getElementById("notas_profesional");
-			    var guardarButton = document.getElementById("guardarButton");
 
-			    // Alterna la propiedad 'disabled' del campo de texto
-			    campoTexto.disabled = !campoTexto.disabled;
-			    
-			    // Alterna la propiedad 'disabled' del botón 'Guardar'
-			    guardarButton.disabled = !guardarButton.disabled;
-				
-				// Agrega o quita la clase según el estado de deshabilitación
-				if (guardarButton.disabled) {
-				  guardarButton.classList.add("enviar");
-				} else {
-				  guardarButton.classList.remove("enviar");
-				}
-			  });
-			  
-			  
+    //Script para habilitar y deshabilitar las notas del profesional y su boton de guardar
 
-			  //Contador de caracteres notas profesional
-			  		  		  document.addEventListener("DOMContentLoaded", function() {
-			  		  		      const maxCaracteresPiel = 500;
-			  		  		      const textareaPiel = document.getElementById('cuidado_de_piel');
-			  		  		      const contadorPiel = document.getElementById('contadorCuidadoPiel');
+    document.getElementById("botonNotas").addEventListener("click", function () {
+      var campoTexto = document.getElementById("notas_profesional");
+      var guardarButton = document.getElementById("guardarButton");
 
-			  		  		      textareaPiel.addEventListener('input', function() {
-			  		  		          const caracteresRestantesPiel = maxCaracteresPiel - textareaPiel.value.length;
-			  		  		          contadorPiel.textContent = `Máximo de caracteres ${caracteresRestantesPiel}/500`;
-			  		  		      });
-			  		  		  });
-							  
+      // Alterna la propiedad 'disabled' del campo de texto
+      campoTexto.disabled = !campoTexto.disabled;
 
-			 //Contador de caracteres notas profesional
-			  		  document.addEventListener("DOMContentLoaded", function() {
-			  		      const maxCaracteres = 500;
-			  		      const textarea = document.getElementById('notas_profesional');
-			  		      const contador = document.getElementById('contador');
+      // Alterna la propiedad 'disabled' del botón 'Guardar'
+      guardarButton.disabled = !guardarButton.disabled;
 
-			  		      textarea.addEventListener('input', function() {
-			  		          const caracteresRestantes = maxCaracteres - textarea.value.length;
-			  		          contador.textContent = `Máximo de caracteres ${caracteresRestantes}/500`;
-			  		      });
-			  		  });
-	  
-	// Script para el campo de recomendaciones y su boton guardar del primer turno de la columna
-	var tunoEstaPresenteOne = document.getElementById("toggleButton0");
-	if(tunoEstaPresenteOne){
-		
-	document.getElementById("toggleButton0").addEventListener("click", function() {
-	   		var campoTexto0 = document.getElementById("consultaTurno0");
-	   		var guardarButton0 = document.getElementById("guardarButton0");
+      // Agrega o quita la clase según el estado de deshabilitación
+      if (guardarButton.disabled) {
+        guardarButton.classList.add("enviar");
+      } else {
+        guardarButton.classList.remove("enviar");
+      }
+    });
 
-	   		// Alterna la propiedad 'disabled' del campo de texto
-	   		campoTexto0.disabled = !campoTexto0.disabled;
-	   				    
-	   		// Alterna la propiedad 'disabled' del botón 'Guardar'
-	   		guardarButton0.disabled = !guardarButton0.disabled;
-	   					
-	   		// Agrega o quita la clase según el estado de deshabilitación
-	   		if (guardarButton0.disabled) {
-	   			guardarButton0.classList.add("enviar");
-	   		} else {
-	   			 guardarButton0.classList.remove("enviar");
-	   		}
-	   		});
-	}else{
-		console.log("Elemento no presente");
-	}
-	   
-	  
-	   
-// Script para el campo de recomendaciones y su boton guardar del segundo turno de la columna 
 
-		var turnoEstaPresenteTwo =  document.getElementById("toggleButton1");
-		
-		if(turnoEstaPresenteTwo){
-			
-	   document.getElementById("toggleButton1").addEventListener("click", function() {
-	   		var campoTexto1 = document.getElementById("consultaTurno1");
-	   		var guardarButton1 = document.getElementById("guardarButton1");
 
-	   		// Alterna la propiedad 'disabled' del campo de texto
-	   		campoTexto1.disabled = !campoTexto1.disabled;
-	   				    
-	   		// Alterna la propiedad 'disabled' del botón 'Guardar'
-	   		guardarButton1.disabled = !guardarButton1.disabled;
-	   					
-	   		// Agrega o quita la clase según el estado de deshabilitación
-	   		if (guardarButton1.disabled) {
-	   			guardarButton1.classList.add("enviar");
-	   		} else {
-	   			 guardarButton1.classList.remove("enviar");
-	   		}
-	   		});
-		}else{
-			console.log("Elemento dos no presente");
-		}
-			 
-// Script para el campo de recomendaciones y su boton guardar del ultimo turno de la columna  
+    //Contador de caracteres notas profesional
+    document.addEventListener("DOMContentLoaded", function () {
+      const maxCaracteresPiel = 500;
+      const textareaPiel = document.getElementById('cuidado_de_piel');
+      const contadorPiel = document.getElementById('contadorCuidadoPiel');
 
-	var turnoEstaPresenteThree = document.getElementById("toggleButton2");
+      textareaPiel.addEventListener('input', function () {
+        const caracteresRestantesPiel = maxCaracteresPiel - textareaPiel.value.length;
+        contadorPiel.textContent = `Máximo de caracteres ${caracteresRestantesPiel}/500`;
+      });
+    });
 
-	if(turnoEstaPresenteThree){
-		
-		document.getElementById("toggleButton2").addEventListener("click", function() {
-		var campoTexto2 = document.getElementById("consultaTurno2");
-		var guardarButton2 = document.getElementById("guardarButton2");
 
-		// Alterna la propiedad 'disabled' del campo de texto
-		campoTexto2.disabled = !campoTexto2.disabled;
-				    
-		// Alterna la propiedad 'disabled' del botón 'Guardar'
-		guardarButton2.disabled = !guardarButton2.disabled;
-					
-		// Agrega o quita la clase según el estado de deshabilitación
-		if (guardarButton2.disabled) {
-			guardarButton2.classList.add("enviar");
-		} else {
-			 guardarButton2.classList.remove("enviar");
-		}
-		});
-		 
-	}else{
-		console.log("Elemento tres no esta presente");
-	}
-	
-		</script>
-   
+    //Contador de caracteres notas profesional
+    document.addEventListener("DOMContentLoaded", function () {
+      const maxCaracteres = 500;
+      const textarea = document.getElementById('notas_profesional');
+      const contador = document.getElementById('contador');
+
+      textarea.addEventListener('input', function () {
+        const caracteresRestantes = maxCaracteres - textarea.value.length;
+        contador.textContent = `Máximo de caracteres ${caracteresRestantes}/500`;
+      });
+    });
+
+
+    //Contador de caracteres turno 0
+    var tunoEstaPresente0 = document.getElementById("consultaTurno0");
+    if (tunoEstaPresente0) {
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const maxCaracteresTurno0 = 500;
+        const textareaTurno0 = document.getElementById('consultaTurno0');
+        const contadorTurno0 = document.getElementById('contadorTurno0');
+
+        textareaTurno0.addEventListener('input', function () {
+          const caracteresRestantesTurno0 = maxCaracteresTurno0 - textareaTurno0.value.length;
+          contadorTurno0.textContent = `Máximo de caracteres ${caracteresRestantesTurno0}/500`;
+        });
+      });
+    } else {
+      console.log("El contador 0 no esta presente");
+    }
+
+
+    //Contador de caracteres turno 1
+    var tunoEstaPresente1 = document.getElementById("consultaTurno1");
+    if (tunoEstaPresente1) {
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const maxCaracteresTurno1 = 500;
+        const textareaTurno1 = document.getElementById('consultaTurno1');
+        const contadorTurno1 = document.getElementById('contadorTurno1');
+
+        textareaTurno1.addEventListener('input', function () {
+          const caracteresRestantesTurno1 = maxCaracteresTurno1 - textareaTurno1.value.length;
+          contadorTurno1.textContent = `Máximo de caracteres ${caracteresRestantesTurno1}/500`;
+        });
+      });
+    } else {
+      console.log("El contador 1 no esta presente");
+    }
+
+
+    //Contador de caracteres turno 2
+    var tunoEstaPresente2 = document.getElementById("consultaTurno2");
+
+    if (tunoEstaPresente2) {
+      document.addEventListener("DOMContentLoaded", function () {
+        const maxCaracteresTurno2 = 500;
+        const textareaTurno2 = document.getElementById('consultaTurno2');
+        const contadorTurno2 = document.getElementById('contadorTurno2');
+
+        textareaTurno2.addEventListener('input', function () {
+          const caracteresRestantesTurno2 = maxCaracteresTurno2 - textareaTurno2.value.length;
+          contadorTurno2.textContent = `Máximo de caracteres ${caracteresRestantesTurno2}/500`;
+        });
+      });
+    } else {
+      console.log("El contador 2 no esta presente");
+    }
+
+
+    // Script para habilitar y deshabilitar el campo de recomendaciones y su boton guardar del primer turno de la columna
+    var tunoEstaPresenteOne = document.getElementById("toggleButton0");
+    if (tunoEstaPresenteOne) {
+
+      document.getElementById("toggleButton0").addEventListener("click", function () {
+        var campoTexto0 = document.getElementById("consultaTurno0");
+        var guardarButton0 = document.getElementById("guardarButton0");
+
+        // Alterna la propiedad 'disabled' del campo de texto
+        campoTexto0.disabled = !campoTexto0.disabled;
+
+        // Alterna la propiedad 'disabled' del botón 'Guardar'
+        guardarButton0.disabled = !guardarButton0.disabled;
+
+        // Agrega o quita la clase según el estado de deshabilitación
+        if (guardarButton0.disabled) {
+          guardarButton0.classList.add("enviar");
+        } else {
+          guardarButton0.classList.remove("enviar");
+        }
+      });
+    } else {
+      console.log("Elemento no presente");
+    }
+
+
+
+    // Script para habilitar y deshabilitar el campo de recomendaciones y su boton guardar del segundo turno de la columna 
+
+    var turnoEstaPresenteTwo = document.getElementById("toggleButton1");
+
+    if (turnoEstaPresenteTwo) {
+
+      document.getElementById("toggleButton1").addEventListener("click", function () {
+        var campoTexto1 = document.getElementById("consultaTurno1");
+        var guardarButton1 = document.getElementById("guardarButton1");
+
+        // Alterna la propiedad 'disabled' del campo de texto
+        campoTexto1.disabled = !campoTexto1.disabled;
+
+        // Alterna la propiedad 'disabled' del botón 'Guardar'
+        guardarButton1.disabled = !guardarButton1.disabled;
+
+        // Agrega o quita la clase según el estado de deshabilitación
+        if (guardarButton1.disabled) {
+          guardarButton1.classList.add("enviar");
+        } else {
+          guardarButton1.classList.remove("enviar");
+        }
+      });
+    } else {
+      console.log("Elemento dos no presente");
+    }
+
+    // Script para habilitar y deshabilitar el campo de recomendaciones y su boton guardar del ultimo turno de la columna  
+
+    var turnoEstaPresenteThree = document.getElementById("toggleButton2");
+
+    if (turnoEstaPresenteThree) {
+
+      document.getElementById("toggleButton2").addEventListener("click", function () {
+        var campoTexto2 = document.getElementById("consultaTurno2");
+        var guardarButton2 = document.getElementById("guardarButton2");
+
+        // Alterna la propiedad 'disabled' del campo de texto
+        campoTexto2.disabled = !campoTexto2.disabled;
+
+        // Alterna la propiedad 'disabled' del botón 'Guardar'
+        guardarButton2.disabled = !guardarButton2.disabled;
+
+        // Agrega o quita la clase según el estado de deshabilitación
+        if (guardarButton2.disabled) {
+          guardarButton2.classList.add("enviar");
+        } else {
+          guardarButton2.classList.remove("enviar");
+        }
+      });
+
+    } else {
+      console.log("Elemento tres no esta presente");
+    }
+
+    //script para deshabilitar el formulario de datos cuando se ejecute el submit
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var formualarioDatos = document.getElementById('formualarioDatos');
+      var botonGuardar = document.getElementById('botonGuardar');
+
+      formualarioDatos.addEventListener('submit', function (event) {
+        // Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+        setTimeout(function () {
+          botonGuardar.disabled = true;
+          botonGuardar.classList.add("enviar");
+          // Rehabilitar el botón después de 5 segundos
+          setTimeout(function () {
+            botonGuardar.disabled = false;
+            botonGuardar.classList.remove("enviar");
+          }, 5000);
+        }, 0);
+      });
+    });
+
+
+    //script para deshabilitar el boton del formulario de notas del profesional cuando se ejecute el submit
+    document.addEventListener("DOMContentLoaded", function () {
+      var formularioNotas = document.getElementById('formularioNotas');
+      var guardarButton = document.getElementById('guardarButton');
+
+      formularioNotas.addEventListener('submit', function (event) {
+        // Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+        setTimeout(function () {
+          guardarButton.disabled = true;
+          guardarButton.classList.add("enviar");
+          // Rehabilitar el botón después de 5 segundos
+          setTimeout(function () {
+            guardarButton.disabled = false;
+            guardarButton.classList.remove("enviar");
+          }, 5000);
+        }, 0);
+      });
+    });
+
+    //script para deshabilitar el boton guardar del formulario del turno0 cuando se ejecute el submit
+
+    var turnoPresente0 = document.getElementById("guardarButton0");
+
+    if (turnoPresente0) {
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var formularioTurnos0 = document.getElementById('formularioTurnos0');
+        var buttonSubmitTurnos0 = document.getElementById('guardarButton0');
+
+        formularioTurnos0.addEventListener('submit', function (event) {
+          // Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+          setTimeout(function () {
+            buttonSubmitTurnos0.disabled = true;
+            buttonSubmitTurnos0.classList.add("enviar");
+            // Rehabilitar el botón después de 5 segundos
+            setTimeout(function () {
+              buttonSubmitTurnos0.disabled = false;
+              buttonSubmitTurnos0.classList.remove("enviar");
+            }, 5000);
+          }, 0);
+        });
+      });
+    } else {
+      console.log("turno 0 para deshabilitar no encontrado");
+    }
+
+    //script para deshabilitar el boton guardar del formulario del turno1 cuando se ejecute el submit
+    var turnoPresente1 = document.getElementById("guardarButton1");
+
+    if (turnoPresente1) {
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var formularioTurnos1 = document.getElementById('formularioTurnos1');
+        var buttonSubmitTurnos1 = document.getElementById('guardarButton1');
+
+        formularioTurnos1.addEventListener('submit', function (event) {
+          // Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+          setTimeout(function () {
+            buttonSubmitTurnos1.disabled = true;
+            buttonSubmitTurnos1.classList.add("enviar");
+            // Rehabilitar el botón después de 5 segundos
+            setTimeout(function () {
+              buttonSubmitTurnos1.disabled = false;
+              buttonSubmitTurnos1.classList.remove("enviar");
+            }, 5000);
+          }, 0);
+        });
+      });
+    } else {
+      console.log("turno 1 para deshabilitar no encontrado");
+    }
+
+
+
+    //script para deshabilitar el boton guardar del formulario del turno2 cuando se ejecute el submit
+    var turnoPresente2 = document.getElementById("guardarButton2");
+
+    if (turnoPresente2) {
+
+      document.addEventListener("DOMContentLoaded", function () {
+        var formularioTurnos2 = document.getElementById('formularioTurnos2');
+        var buttonSubmitTurnos2 = document.getElementById('guardarButton2');
+
+        formularioTurnos2.addEventListener('submit', function (event) {
+          // Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+          setTimeout(function () {
+            buttonSubmitTurnos2.disabled = true;
+            buttonSubmitTurnos2.classList.add("enviar");
+            // Rehabilitar el botón después de 5 segundos
+            setTimeout(function () {
+              buttonSubmitTurnos2.disabled = false;
+              buttonSubmitTurnos2.classList.remove("enviar");
+            }, 5000);
+          }, 0);
+        });
+      });
+    } else {
+      console.log("turno 2 para deshabilitar no encontrado");
+    }
+
+
+
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous">
-	</script>
-	
-	<script src="../js/habilitarDeshabilitarPreguntas.js"></script>
-	
+    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous">
+    </script>
+
+  <script src="../js/habilitarDeshabilitarPreguntas.js"></script>
+
 </body>
 
 </html>

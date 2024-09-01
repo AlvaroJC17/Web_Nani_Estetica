@@ -343,7 +343,7 @@ public class ServicioProfesional {
 	public void guardarNotasProfesional(String idCliente, String notas_profesional) throws MiExcepcion {
 		
 		if (notas_profesional.length() > 500)  /*Este no lleva la validacion del Seleccione porque es un textarea*/
-			 throw new MiExcepcion("Ha superado el máximo de caracteres permitidos para el campo de cuidado de la piel");
+			 throw new MiExcepcion("Ha superado el máximo de caracteres permitidos para el campo notas del profesional");
 			
 		try {
 			Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);

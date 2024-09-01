@@ -1,9 +1,12 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -154,8 +157,45 @@ public class ControladorProfesional {
 		
 			
 			Boolean esEdicion = true; //con este boolean le indicamos al servicio que es para editar un formulario ya registrado
-			Boolean isEditarDisabled = false;	// Boolean para activar o desactivar los botones en la vista
 			String exito =  null;
+			
+			List<Turnos> ultimosTurnosCliente = servicioTurnos.buscarTurnosPorProfesionalAndClienteAndEstadoDelTurno(idProfesional, idCliente, EstadoDelTurno.ASISTIDO);
+			List<Turnos> tresUltimosTurnos = new ArrayList<>();
+			int size = ultimosTurnosCliente.size();
+			if (size >= 3) {
+			    tresUltimosTurnos = ultimosTurnosCliente.subList(size - 3, size);
+			} else {
+			    tresUltimosTurnos = ultimosTurnosCliente; // Si hay menos de 3 elementos, tomamos todos
+			}
+			
+			//Buscamos los si el fomrulario de datos fue completado por el cliente
+			Boolean isEditarDisabled = null;
+			Optional <Cliente> buscarDatosCliente = repositorioCliente.findById(idCliente);
+			if (buscarDatosCliente.isPresent()) {
+				Cliente datosCliente = buscarDatosCliente.get();
+				isEditarDisabled = datosCliente.getFomularioDatos();
+			}
+			
+			//Si el valor del formulario es null entonces que le coloque un valor de false
+			if (isEditarDisabled == null) {
+				isEditarDisabled = false;
+			}
+			
+			
+			Boolean cienteSinTurnos = false;
+			if (tresUltimosTurnos.isEmpty()) {
+				cienteSinTurnos = true; 
+			}
+			
+			List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+			List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idCliente);
+			modelo.addAttribute("isEditarDisabled", isEditarDisabled);
+			modelo.addAttribute("datosProfesional", datosProfesional); //datos para el menu de la pagina
+			modelo.addAttribute("datosCliente", datosCliente); // datos para la seccion de datos personales
+			modelo.addAttribute("datosPaciente", datosPaciente); // datos para la seccion del formulario y nota del paciente
+			modelo.addAttribute("ultimosTurnos", tresUltimosTurnos); // mandamos los ultimos tres turnos asistidos a la vista
+			modelo.addAttribute("cienteSinTurnos", cienteSinTurnos);
 			
 			try {
 				
@@ -194,35 +234,17 @@ public class ControladorProfesional {
 				modelo.addAttribute("showModalExito", true);
 			}
 				
-			isEditarDisabled = true;
-			
-			List<Turnos> ultimosTurnosCliente = servicioTurnos.buscarTurnosPorProfesionalAndClienteAndEstadoDelTurno(idProfesional, idCliente, EstadoDelTurno.ASISTIDO);
-			List<Turnos> tresUltimosTurnos = new ArrayList<>();
-			int size = ultimosTurnosCliente.size();
-			if (size >= 3) {
-			    tresUltimosTurnos = ultimosTurnosCliente.subList(size - 3, size);
-			} else {
-			    tresUltimosTurnos = ultimosTurnosCliente; // Si hay menos de 3 elementos, tomamos todos
-			}
-			
-			List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
-			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
-			List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idCliente);
-			modelo.addAttribute("isEditarDisabled", isEditarDisabled);
-			modelo.addAttribute("datosProfesional", datosProfesional); //datos para el menu de la pagina
-			modelo.addAttribute("datosCliente", datosCliente); // datos para la seccion de datos personales
-			modelo.addAttribute("datosPaciente", datosPaciente); // datos para la seccion del formulario y nota del paciente
-			modelo.addAttribute("ultimosTurnos", tresUltimosTurnos); // mandamos los ultimos tres turnos asistidos a la vista
+			//Cuando todo sale bien retornamos a esta vista con todos los datos de arriba
 			return "/pagina_profesional/datosPersonalesPaciente";
 			
-				} catch (Exception e) {
-					String error = "Hubo un error al modificar los datos";
-					System.out.println(e.getMessage());
-					modelo.addAttribute("error", error);
-					modelo.addAttribute("showModalError", true);
-					return "/pagina_profesional/datosPersonalesPaciente";
-				}
+			} catch (Exception e) {
+				String error = e.getMessage();
+				modelo.addAttribute("error", error);
+				modelo.addAttribute("showModalError", true);
+				return "/pagina_profesional/datosPersonalesPaciente";
+			}
 	}
+			
 	
 	
 	@PostMapping("/buscarDatosPersonalesPaciente")
@@ -411,7 +433,25 @@ public class ControladorProfesional {
 			ModelMap model) {
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
+		Date fechaNacimiento = new Date();
+		
+		for (Usuario profesional : datosProfesional) {
+			fechaNacimiento = profesional.getFechaNacimiento();
+			System.out.println("Fecha de nacimiento: " + fechaNacimiento);
+		}
+		
+		// Convertir Date a LocalDate usando Calendar
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(fechaNacimiento);
+
+        LocalDate fechaNacimientoLocalDate = LocalDate.of(
+            calendar.get(Calendar.YEAR),
+            calendar.get(Calendar.MONTH) + 1,  // Calendar.MONTH es base 0, por eso sumamos 1
+            calendar.get(Calendar.DAY_OF_MONTH)
+        );
+	
 		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("fechaNacimientoLocalDate", fechaNacimientoLocalDate);
 		return "/pagina_profesional/misdatosProfesional";	
 	}
 	

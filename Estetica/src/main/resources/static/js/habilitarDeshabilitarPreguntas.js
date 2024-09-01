@@ -78,26 +78,4 @@ document.getElementById("botonEditar").addEventListener("click", function() {
 	  		}
 	  	  });
 	
-
 		  
-		  
-//script para deshabilitar el formulario cuando se ejecute el submit
-		  					  										
-	document.addEventListener("DOMContentLoaded", function() {
-	var formualarioDatos = document.getElementById('formualarioDatos');
-	var botonGuardar = document.getElementById('botonGuardar');
-
-	formualarioDatos.addEventListener('submit', function(event) {
-	// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
-	setTimeout(function() {
-	botonGuardar.disabled = true;
-	botonGuardar.classList.add("enviar");
-	// Rehabilitar el botón después de 5 segundos
-	setTimeout(function() {
-	botonGuardar.disabled = false;
-	botonGuardar.classList.remove("enviar");
-	}, 5000);
-	}, 0);
-	});
-	});
-		  					  

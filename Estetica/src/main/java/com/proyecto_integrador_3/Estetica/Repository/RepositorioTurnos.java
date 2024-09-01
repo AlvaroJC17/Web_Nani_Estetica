@@ -59,5 +59,7 @@ public interface RepositorioTurnos extends JpaRepository<Turnos, String> {
 	List<Turnos> findByProfesionalId(String idProfesional);
 	
 	List<Turnos> findByProfesionalIdAndClienteIdAndEstadoOrderByFechaCreacion(String idProfesiona, String idCliente, EstadoDelTurno estado);
+	
+	List<Turnos> findByClienteIdAndEstadoOrderByFechaCreacion(String idCliente, EstadoDelTurno estado);
 }
 

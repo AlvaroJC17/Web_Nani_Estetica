@@ -95,7 +95,6 @@ public class ServicioCliente {
 			nuevo_cliente.setActivo(datosCliente.getActivo());
 			nuevo_cliente.setValidacionForm(TRUE);
 			nuevo_cliente.setFomularioDatos(FALSE);
-			nuevo_cliente.setEmailValidado(TRUE);
 			nuevo_cliente.setMulta(FALSE);
 			nuevo_cliente.setDni(dni.trim());
 			nuevo_cliente.setNombre(nombre.trim());

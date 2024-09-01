@@ -1,6 +1,8 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -906,21 +908,25 @@ public class ControladorCliente {
 	@GetMapping("/misconsultas")
 	public String misconsultas(
 			@RequestParam String email,
+			@RequestParam String idCliente,
 			Model modelo) {
 		
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		Optional <Cliente> obtenerDatosCliente = repositorioCliente.findByEmail(email);
-		String detallesDeConsulta = null;
-		if (obtenerDatosCliente.isPresent()) {
-			Cliente consultaCliente = obtenerDatosCliente.get();
-			detallesDeConsulta = consultaCliente.getNotas_profesional();
-			
+		
+		List<Turnos> ultimosTurnosCliente = servicioTurnos.buscarTurnosPorClienteAndoEstadoDelTurno(idCliente, EstadoDelTurno.ASISTIDO);
+		List<Turnos> tresUltimosTurnos = new ArrayList<>();
+		int size = ultimosTurnosCliente.size();
+		if (size >= 3) {
+		    tresUltimosTurnos = ultimosTurnosCliente.subList(size - 3, size);
+		} else {
+		    tresUltimosTurnos = ultimosTurnosCliente; // Si hay menos de 3 elementos, tomamos todos
 		}
 		
-		List<Turnos> datosDelTurno = servicioTurnos.obtenerTurnosPorEmail(email);
+		LocalDateTime fechaPrueba = LocalDateTime.now();
+		
 		modelo.addAttribute("email", email);
-		modelo.addAttribute("datosDelTurno", datosDelTurno);
-		modelo.addAttribute("detallesDeConsulta", detallesDeConsulta);
+		modelo.addAttribute("datosDelTurno", tresUltimosTurnos);
+		modelo.addAttribute("fechaPrueba", fechaPrueba);
 		modelo.addAttribute("datosCliente", datosCliente);
 	return "/pagina_cliente/misconsultas";	
 	}

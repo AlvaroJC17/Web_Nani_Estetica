@@ -12,6 +12,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCodigoDeVerificacion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 
 import jakarta.transaction.Transactional;
 
@@ -20,6 +21,9 @@ public class ServicioCodigoDeVerificacion {
 
 	@Autowired
 	RepositorioCodigoDeVerificacion repositorioCodigoDeVerificacion;
+	
+	@Autowired
+	RepositorioUsuario repositorioUsuario;
 	
 	@Autowired
 	ServicioEmail servicioEmail;

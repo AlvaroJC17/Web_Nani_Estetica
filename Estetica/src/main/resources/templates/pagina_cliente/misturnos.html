@@ -85,7 +85,7 @@ tener el mismo ID-->
           <ul class="ps-2 mt-3" >
 			<li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turnoActivo.id, turnoActivo.id.length() - 12)}"></p> </li>
             <li class="list-unstyled d-flex"><strong>Profesional:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoActivo.profesional.nombre + ' ' + turnoActivo.profesional.apellido}"></p> </li>
-            <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoActivo.fecha}"></p> </li>
+            <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoActivo.fecha, 'dd-MM-yyyy')}"></p> </li>
             <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoActivo.horario}"></p> </li>
             <span><strong>Tratamientos seleccionado:</strong></span>
             <ul class="" style="list-style-type: disc;">
@@ -163,7 +163,7 @@ tener el mismo ID-->
 			   <ul class="ps-2 mt-3" >
 			   <li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turnoAsistido.id, turnoAsistido.id.length() - 12)}"></p> </li>
 			   <li class="list-unstyled d-flex"><strong>Profesional:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoAsistido.profesional.nombre + ' ' + turnoAsistido.profesional.apellido}"></p> </li>
-			   <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoAsistido.fecha}"></p> </li>
+			   <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoAsistido.fecha, 'dd-MM-yyyy')}"></p> </li>
 			   <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoAsistido.horario}"></p> </li>
 			   <span><strong>Tratamientos:</strong></span>
 			   <ul class="pb-3" style="list-style-type: disc;">
@@ -192,7 +192,7 @@ tener el mismo ID-->
 			<ul class="ps-2 mt-3" >
 			<li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turnoMulta.id, turnoMulta.id.length() - 12)}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Profesional:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoMulta.profesional.nombre + ' ' + turnoMulta.profesional.apellido}"></p> </li>
-			<li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoMulta.fecha}"></p> </li>
+			<li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoMulta.fecha, 'dd-MM-yyyy')}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoMulta.horario}"></p> </li>
 			<span><strong>Tratamientos:</strong></span>
 			<ul class="pb-3" style="list-style-type: disc;">
@@ -226,7 +226,7 @@ tener el mismo ID-->
 			<li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turnoCancelado.id, turnoCancelado.id.length() - 12)}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Profesional:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoCancelado.profesional.nombre + ' ' + turnoCancelado.profesional.apellido}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Cancelado Por:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoCancelado.canceladoPor}"></p> </li>
-			<li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoCancelado.fecha}"></p> </li>
+			<li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoCancelado.fecha, 'dd-MM-yyyy')}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoCancelado.horario}"></p> </li>
 			<span><strong>Tratamientos:</strong></span>
 			<ul class="pb-3" style="list-style-type: disc;">

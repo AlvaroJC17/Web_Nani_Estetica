@@ -62,15 +62,31 @@
     <div class="main-interno">
       <h3>Mis consultas</h3>
 
-       <div th:each="datosTurno : ${datosDelTurno}" class="container-fluid row">
-		   
-        <div class="col-sm-12">
-          <div class="bg-success bg-gradient text-white fs-5 ps-2">Profesional: <span th:text="${datosTurno.profesional.nombre + ' ' + datosTurno.profesional.apellido}"></span>
-			 / Fecha: <span th:text="${datosTurno.fecha}"></span> / Tratamiento:  <span th:each="tratamientosTurno : ${datosTurno.tratamientos}" th:text="${tratamientosTurno.nombreTratamientos.DisplayName}"></span></div>
-        <p th:text="${detallesDeConsulta}" style=" text-align: justify;" class=" p-2"></p>
-       </div>
+      <!-- Condicional para mostrar el mensaje si la lista está vacía -->
+		
+	  <div class="d-flex justify-content-center">
+      <div th:if="${#lists.isEmpty(datosDelTurno)}">
+        <p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="bg-danger bg-gradient text-white fs-5 text-center my-5 px-2">No hay consultas disponibles en este momento.</p>
+      </div>
+	  </div>
 
-</div>
+      <!-- Mostrar los turnos si la lista no está vacía -->
+      <div th:if="${!#lists.isEmpty(datosDelTurno)}">
+        <div th:each="datosTurno : ${datosDelTurno}" class="container-fluid row">
+          <div class="col-sm-12">
+            <div class="bg-success bg-gradient text-white fs-5 ps-2">
+              <span class="text-black">Profesional:</span>
+              <span th:text="${datosTurno.profesional.nombre + ' ' + datosTurno.profesional.apellido}"></span>
+              <span class="text-black"> Fecha:</span>
+              <span th:text="${#temporals.format(datosTurno.fecha, 'dd-MM-yyyy')}"></span> <!--Esta es la forma de formatear fechas con thymeleaf-->
+              <span class="text-black">Tratamiento:</span>
+              <span th:each="tratamientosTurno : ${datosTurno.tratamientos}" th:text="${tratamientosTurno.nombreTratamientos.DisplayName}"></span>
+            </div>
+            <p th:text="${datosTurno.consulta}" style="text-align: justify;" class="p-2"></p>
+          </div>
+        </div>
+      </div>
+      
     </div>
   </main>
 
