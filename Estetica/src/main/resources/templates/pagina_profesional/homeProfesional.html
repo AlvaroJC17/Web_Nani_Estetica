@@ -50,9 +50,6 @@
             <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Consultas</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
           </li>
         </ul>
@@ -101,15 +98,6 @@
           <div class="d-flex justify-content-center align-items-center">
             <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Turnos</p>
-          </div>
-        </a>
-      </div>
-
-       <div class="  ft">
-        <a th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">
-          <div class="d-flex justify-content-center align-items-center">
-            <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
-            <p class="texto-tarjetas-main-home ms-1 hover">Consultas</p>
           </div>
         </a>
       </div>

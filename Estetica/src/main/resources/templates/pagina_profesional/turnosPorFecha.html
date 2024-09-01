@@ -52,9 +52,6 @@
          <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Consultas</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
           </li>
         </ul>
@@ -78,30 +75,32 @@ que se genere en iteracion, esto evita que al tener varios turnos, se cruce la i
 tener el mismo ID-->
 
 <div class="d-block mb-4">
-		<p class="fs-5 text-center">Selecciona una fecha para ver los turnos disponibles por horario, asi como también podrá deshabilitar fechas o horarios.
-			Los clientes no podrán seleccionar nuevos turnos en las fechas u horarios que deshabilites. Los turnos en estado pendiente dentro de las fechas u horarios
-			que deshabilites, se cancelaran de forma automatica.
+		<p class="fs-5 text-center">Selecciona una fecha para ver los turnos disponibles por horario, así como también podrás 
+			deshabilitar fechas u horarios. Los clientes no podrán seleccionar nuevos turnos en las fechas u horarios que deshabilites.
+			 Los turnos en estado pendiente dentro de las fechas u horarios que deshabilites se cancelarán de forma automática.
 		</p>
 	
 		
-		<form th:action="@{/turnosPorFecha}" method="get" class="my-5 d-flex justify-content-center">
-		<div class="d-flex">
-		<div class="me-2">
-			<input type="date" class="form-control" name="fechaTurno"  placeholder="Fecha de turno">
+		<form id="formularioBuscar" th:action="@{/turnosPorFecha}" method="get" class="my-5 d-flex justify-content-center">
+			
+		<div class="row text-center">
+		<div class="col-md-6">
+			<input style="margin-top: 20px;" type="date" class="mb-0 form-control" name="fechaTurno"  placeholder="Fecha de turno">
 		</div>
-		<div class="ms-2">
-			<button class="btn btn-primary">Buscar</button>
+		<div class="col-md-6 mt-3">
+			<button id="botonBuscar" class="my-0 bn632-hover bn26">Buscar</button>
 		</div>
+		
 		<input hidden type="text" id="idProfesional" name="idProfesional" th:value="${datosProfesional.id}"></input>
 		<input hidden type="text" id="emailProfesional" name="emailProfesional" th:value="${datosProfesional.email}"></input>
 		</div>
 		</form>
 		
 			
-		<form th:action="@{/fechasDeshabilitadas}" method="post">
+		<form id="formularioDeshabilitarFecha" style="margin-top: 100px;margin-bottom: 100px;" th:action="@{/fechasDeshabilitadas}"  method="post">
 		<div class="d-flex justify-content-center my-4">
 		<p style="width: max-content; box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500)" class="fs-3 px-2 text-white mb-0 text-center bg-success bg-gradient">FECHA SELECCIONADA: <span class="fw-normal" th:text="${fechaSeleccionada}"></span></p>
-		<button th:if="${mostrarBotonesDeshabilitar}" type="button" data-bs-toggle="modal" data-bs-target="#fechaBackdrop" class="btn btn-danger ms-2">Deshabilitar</button>
+		<button id="botonDeshabilitarFecha" th:if="${mostrarBotonesDeshabilitar}" type="button" data-bs-toggle="modal" data-bs-target="#fechaBackdrop" class="my-0 bn632-hover bn26 cancelar">Deshabilitar</button>
 		</div>
 		
 		<div class="text-white fs-5 bg-danger bg-gradient px-1 text-center my-3 " th:if="${mostrarBotonesDeshabilitar == false}">ESTA FECHA SE ENCUENTRA DESHABILITADA</div>
@@ -123,8 +122,8 @@ tener el mismo ID-->
 			  afectados para notificarles. Esta acción no generará multas para los clientes. Una vez que presiones "Aceptar", no podrás revertir
 			  esta acción, así que por favor, verifica bien antes de continuar. Si no estás seguro, puedes presionar "Cancelar" para abortar la operación.
 			  
-			  <br><br>
-			  <span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la deshabilitación?</span>
+			  <br>
+			  <span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la deshabilitación?</span>
 			</div>
 			<div class="modal-footer border border-0">
 			  <button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
@@ -147,23 +146,20 @@ tener el mismo ID-->
 		    <!-- Iterar sobre las entradas del Map -->
 		    <li class="border-success mt-2" style="border-top: 5px solid; list-style-type: none;" th:each="entry, iterStat : ${turnosPorHorarioLaboral}">
 				
-				<form th:action="@{/horasDeshabilitadas}" method="post">
+				<form id="formularioDeshabilitarHora" th:action="@{/horasDeshabilitadas}" method="post">
 					
 					<!-- Comparar la clave con la lista de horarios deshabilitados -->
 					<div class="text-danger fw-bold px-1 mt-2 fs-6 text-center" 
 					 th:if="${horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar == true }">
 					 HORARIO DESHABILITADO
 					</div>
-				<!--
-				<span style="width: max-content;" class="text-white fs-6 bg-danger bg-gradient px-1" th:if="${mostrarBotonesDeshabilitar == false}"> FECHA DESHABILITADA</span>
-				-->
 				
 				<div style="display: block;" class="">	
 				
 					<div class="ps-0 mt-1 mx-0">
-					<button th:if="${!horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar}" 
+					<button id="botonDeshabilitarHora" style="width: 120px; height: 35px;" th:if="${!horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar}" 
 					type="button" data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}" 
-					class="btn btn-danger py-0">Deshabilitar</button>
+					class="mx-0 my-1 bn632-hover bn26 cancelar">Deshabilitar</button>
 					</div>	
 				
 		        <!-- Imprime la clave del Map, que es el horario -->
@@ -200,11 +196,8 @@ tener el mismo ID-->
 															favor, verifica bien antes de continuar. Si no estás seguro, puedes presionar "Cancelar" para abortar la operación.
 
 
-															
-															<br><br>
-															
 					  										<br><br>
-					  										<span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la deshabilitación?</span>
+					  										<span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la deshabilitación?</span>
 					  									</div>
 					  									<div class="modal-footer border border-0">
 					  										<button type="button" class="btn btn-danger"
@@ -269,13 +262,13 @@ tener el mismo ID-->
 								   <form th:action="@{/cancelarOrConfimarTurnoProfesional}" method="post">
 									
 								   <!--Estos botones solo hacen el llamado al modal-->
-								   <div th:if="${turno.activo}" class="d-flex justify-content-center align-items-center">
+								   <div th:if="${turno.activo}" class="row justify-content-center align-items-center">
 
 								   	<!-- Botón para confirmar turno -->
-								   	<button type="button" class="btn btn-success m-2" data-bs-toggle="modal" th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}">Confirmar asistencia</button>
+								   	<button style="width: 130px; margin: 7px 7px 12px 7px;" type="button" class="col-md-3 bn632-hover bn26 confirmar" data-bs-toggle="modal" th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}">Confirmar</button>
 
 								   	<!-- Botón para cancelar turno -->
-								   	<button type="button" class="btn btn-danger m-2" data-bs-toggle="modal" th:attr="data-bs-target='#cancelBackdrop' + ${iterStat.index}">Cancelar turno</button>
+								   	<button style="width: 130px; margin: 7px 7px 12px 7px;" type="button" class="col-md-3 bn632-hover bn26 cancelar" data-bs-toggle="modal" th:attr="data-bs-target='#cancelBackdrop' + ${iterStat.index}">Cancelar</button>
 								   							   	
 								   	</div>
 																
@@ -300,8 +293,8 @@ tener el mismo ID-->
 																												. El sistema se encarga automaticamente de generar multas a los clientes que no
 																												se presenten al turno en la fecha y hora seleccionada. <br><br>
 																												
-																		  										<br><br>
-																		  										<span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
+																		  										<br>
+																		  										<span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
 																		  									</div>
 																		  									<div class="modal-footer border border-0">
 																		  										<button type="button" class="btn btn-danger"
@@ -329,8 +322,9 @@ tener el mismo ID-->
 																	  <span class="fw-bold">Estimado Usuario,</span><br><br>
 																	  Estás a punto de confirmar la asistencia del turno. Por favor, revisa todos los detalles antes de proceder. 
 																	  Una vez confirmado, no podrás deshacer los cambios.
-																	  <br><br>
-																	  <span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la confirmación?</span>
+																	  <br>
+																	  <br>
+																	  <span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la confirmación?</span>
 																	</div>
 																	<div class="modal-footer border border-0">
 																	  <button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
@@ -503,5 +497,79 @@ tener el mismo ID-->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
+	
+	<script>
+		//script para deshabilitar el formulario cuando se ejecute el submit para Historico de turnos
+								  										
+	document.addEventListener("DOMContentLoaded", function() {
+	var formularioBuscar = document.getElementById('formularioBuscar');
+	var botonsubmitBuscar = document.getElementById('botonBuscar');
+
+	formularioBuscar.addEventListener('submit', function(event) {
+	// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+	setTimeout(function() {
+	botonsubmitBuscar.disabled = true;
+	botonsubmitBuscar.classList.add("enviar");
+	// Rehabilitar el botón después de 5 segundos
+	setTimeout(function() {
+	botonsubmitBuscar.disabled = false;
+	botonsubmitBuscar.classList.remove("enviar");
+	}, 5000);
+	}, 0);
+	});
+	});
+	
+	
+	
+	//script para deshabilitar el formulario cuando se ejecute el submit para Historico de turnos
+							  										
+							  			document.addEventListener("DOMContentLoaded", function() {
+							  			var formularioDeshabilitarFecha = document.getElementById('formularioDeshabilitarFecha');
+							  			var botonDeshabilitarFecha = document.getElementById('botonDeshabilitarFecha');
+
+							  			formularioDeshabilitarFecha.addEventListener('submit', function(event) {
+							  			// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+							  			setTimeout(function() {
+							  			botonDeshabilitarFecha.disabled = true;
+										botonDeshabilitarFecha.classList.remove("cancelar");
+							  			botonDeshabilitarFecha.classList.add("enviar");
+							  			// Rehabilitar el botón después de 5 segundos
+							  			setTimeout(function() {
+							  			botonDeshabilitarFecha.disabled = false;
+							  			botonDeshabilitarFecha.classList.remove("enviar");
+										botonDeshabilitarFecha.classList.add("cancelar");
+							  					}, 5000);
+							  					}, 0);
+							  				});
+							  			});
+			
+										
+										
+										
+										//script para deshabilitar el formulario cuando se ejecute el submit para Historico de turnos
+																  										
+										document.addEventListener("DOMContentLoaded", function() {
+																	  			var formularioDeshabilitarHora = document.getElementById('formularioDeshabilitarHora');
+																	  			var botonDeshabilitarHora = document.getElementById('botonDeshabilitarHora');
+
+																	  			formularioDeshabilitarHora.addEventListener('submit', function(event) {
+																	  			// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+																	  			setTimeout(function() {
+																	  			botonDeshabilitarHora.disabled = true;
+																				botonDeshabilitarHora.classList.remove("cancelar");
+																	  			botonDeshabilitarHora.classList.add("enviar");
+																	  			// Rehabilitar el botón después de 5 segundos
+																	  			setTimeout(function() {
+																	  			botonDeshabilitarHora.disabled = false;
+																	  			botonDeshabilitarHora.classList.remove("enviar");
+																				botonDeshabilitarHora.classList.add("cancelar");
+																	  					}, 5000);
+																	  					}, 0);
+																	  				});
+																	  			});
+												
+				
+	</script>
+	
 </body>
 </html>

@@ -7,6 +7,8 @@
   <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="./css/styles.css">
   <title>Home Profesional</title>
@@ -50,9 +52,6 @@
          <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Consultas</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
           </li>
         </ul>
@@ -81,14 +80,14 @@ tener el mismo ID-->
 		</p>
 
 		<div class="d-flex justify-content-center">
-		<form style="margin-bottom: 50px; margin-top:50px;" class="text-center me-2" th:action="@{/historicoDeTurnos}" method="get">
-			<button class="btn btn-primary fs-5">Histórico de turnos</button>
+		<form id="formularioHistorio" style="margin-bottom: 50px; margin-top:50px;" class="text-center me-2" th:action="@{/historicoDeTurnos}" method="get">
+			<button id="submitHistorico" class="bn632-hover bn26">Histórico de turnos</button>
 			<input hidden type="text" id="idProfesional" name="idProfesional" th:value="${datosProfesional.id}"></input>
 			<input hidden type="text" id="emailProfesional" name="emailProfesional" th:value="${datosProfesional.email}"></input>
 		</form>
 		
-		<form style="margin-bottom: 50px; margin-top:50px;" class="text-center ms-2" th:action="@{/turnosPorFecha}" method="get">
-			<button class="btn btn-primary fs-5">Turnos por fecha</button>
+		<form id="formularioTurnosFechas" style="margin-bottom: 50px; margin-top:50px;" class="text-center ms-2" th:action="@{/turnosPorFecha}" method="get">
+			<button id="submitFechas" class="bn632-hover bn26">Turnos por fecha</button>
 			<input hidden type="text" id="idProfesional" name="idProfesional" th:value="${datosProfesional.id}"></input>
 			<input hidden type="text" id="emailProfesional" name="emailProfesional" th:value="${datosProfesional.email}"></input>
 		</form>
@@ -125,13 +124,13 @@ tener el mismo ID-->
 			
 			
 		<!--Estos botones solo hacen el llamado al modal-->
-		<div class="d-flex justify-content-center align-items-center">
+		<div class="row justify-content-center align-items-center">
 
 			<!-- Botón para confirmar turno -->
-		  <button type="button" class="btn btn-success m-2" data-bs-toggle="modal" th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}">Confirmar asistencia</button>
+		  <button style="width: 130px; margin: 7px 7px 12px 7px;" type="button" class="col-md-3 bn632-hover bn26 confirmar" data-bs-toggle="modal" th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}">Confirmar</button>
 
 			<!-- Botón para cancelar turno -->
-		  <button type="button" class="btn btn-danger m-2" data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}">Cancelar turno</button>
+		  <button style="width: 130px; margin: 7px 7px 12px 7px;" type="button" class="col-md-3 bn632-hover bn26 cancelar" data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}">Cancelar</button>
 		
 		</div>
 
@@ -156,8 +155,8 @@ tener el mismo ID-->
 												. El sistema se encarga automaticamente de generar multas a los clientes que no
 												se presenten al turno en la fecha y hora seleccionada. <br><br>
 												
-		  										<br><br>
-		  										<span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
+		  										<br>
+		  										<span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
 		  									</div>
 		  									<div class="modal-footer border border-0">
 		  										<button type="button" class="btn btn-danger"
@@ -186,7 +185,7 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 	  Estás a punto de confirmar la asistencia del turno. Por favor, revisa todos los detalles antes de proceder. 
 	  Una vez confirmado, no podrás deshacer los cambios.
 	  <br><br>
-	  <span class="fs-5 fw-bold">¿Estás seguro de que deseas proceder con la confirmación?</span>
+	  <span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la confirmación?</span>
 	</div>
 	<div class="modal-footer border border-0">
 	  <button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
@@ -446,5 +445,49 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
+	
+	<script>
+		//script para deshabilitar el formulario cuando se ejecute el submit para Historico de turnos
+						  										
+						  			document.addEventListener("DOMContentLoaded", function() {
+						  			var formularioHistorio = document.getElementById('formularioHistorio');
+						  			var botonsubmitHistorico = document.getElementById('submitHistorico');
+
+						  			formularioHistorio.addEventListener('submit', function(event) {
+						  			// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+						  			setTimeout(function() {
+						  			botonsubmitHistorico.disabled = true;
+						  			botonsubmitHistorico.classList.add("enviar");
+						  			// Rehabilitar el botón después de 5 segundos
+						  			setTimeout(function() {
+						  			botonsubmitHistorico.disabled = false;
+						  			botonsubmitHistorico.classList.remove("enviar");
+						  					}, 5000);
+						  					}, 0);
+						  				});
+						  			});
+		
+									
+									//script para deshabilitar el formulario cuando se ejecute el submit para turnosPorFecha
+													  										
+													  			document.addEventListener("DOMContentLoaded", function() {
+													  			var formularioTurnosFechas = document.getElementById('formularioTurnosFechas');
+													  			var botonsubmitFechas = document.getElementById('submitFechas');
+
+													  			formularioTurnosFechas.addEventListener('submit', function(event) {
+													  			// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+													  			setTimeout(function() {
+													  			botonsubmitFechas.disabled = true;
+													  			botonsubmitFechas.classList.add("enviar");
+													  			// Rehabilitar el botón después de 5 segundos
+													  			setTimeout(function() {
+													  			botonsubmitFechas.disabled = false;
+													  			botonsubmitFechas.classList.remove("enviar");
+													  					}, 5000);
+													  					}, 0);
+													  				});
+													  			});
+													  
+	</script>
 </body>
 </html>

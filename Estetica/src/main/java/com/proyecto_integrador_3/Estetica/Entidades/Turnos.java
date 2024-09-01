@@ -65,6 +65,9 @@ public class Turnos {
 	@Column(name = "fecha_creacion")
 	protected LocalDateTime fechaCreacion;
 	
+	@Column(name = "fechaModificacion")
+	private LocalDate fechaModificacion;
+	
 	@Column(name = "horario")
 	String horario;
 	
@@ -78,7 +81,7 @@ public class Turnos {
 	@Column(name = "multa")
 	Boolean multa;
 	
-	@Column(name = "consulta")
+	@Column(name = "consulta", length = 500) //length = 500 es para crear un campo varchar(500)
 	String consulta;
 	
 	@Column(name = "costo_multa")
@@ -109,7 +112,7 @@ public class Turnos {
 	}
 		
 	public Turnos(String provincia, Profesional profesional, LocalDate fecha, LocalDateTime fechaCracion, String horario, List<Tratamiento> tratamiento, String dni,
-			String email, Boolean activo, Boolean multa, String consulta, String costoMulta, EstadoDelTurno estado, Rol canceladoPor) {
+			String email, Boolean activo, Boolean multa, String consulta, String costoMulta, EstadoDelTurno estado, Rol canceladoPor, LocalDate fechaModificacion) {
 		this.dni = dni;
 		this.email = email;
 		this.provincia = provincia;
@@ -124,9 +127,21 @@ public class Turnos {
 		this.costoMulta = costoMulta;
 		this.estado = estado;
 		this.canceladoPor = canceladoPor;
+		this.fechaModificacion = fechaModificacion;
 	}
 	
 	
+	
+
+	public LocalDate getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+
+	public void setFechaModificacion(LocalDate fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
+	}
+
 
 	public String getConsulta() {
 		return consulta;

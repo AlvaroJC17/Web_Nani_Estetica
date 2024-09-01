@@ -1,6 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -122,18 +123,20 @@ public class Cliente extends Persona implements Serializable {
 	@Column(name = "resultados_tratamiento_anterior")
 	String resultados_tratamiento_anterior;
 	
-	@Column(name = "cuidado_de_piel")
+	@Column(name = "cuidado_de_piel", length = 500)
 	String cuidado_de_piel;
 	
-	@Column(name = "motivo_consulta")
+	@Column(name = "motivo_consulta", length = 500)
 	String motivo_consulta;
 	
-	@Column(name = "notas_profesional")
+	@Column(name = "notas_profesional", length = 500)
 	String notas_profesional;
 	
 	@Column(name = "multa")
 	Boolean multa;
 	
+	@Column(name = "fechaModificacion")
+	LocalDate fechaModificacion;
 	
 	
 
@@ -172,7 +175,7 @@ public class Cliente extends Persona implements Serializable {
 			String cual_enfermedad, String tiroides, String paciente_oncologica, String fractura_facial, String cirugia_estetica, 
 			String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
 			String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
-			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta, String notas_profesional, Boolean multa) {
+			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta, String notas_profesional, Boolean multa, LocalDate fechaModificacion) {
 		super();
 		this.fuma = fuma;
 		this.drogas = drogas;
@@ -210,11 +213,23 @@ public class Cliente extends Persona implements Serializable {
 		this.motivo_consulta = motivo_consulta;
 		this.notas_profesional = notas_profesional;
 		this.multa = multa;
+		this.fechaModificacion = fechaModificacion;
 	}
 
 
 	
 	
+	
+	public LocalDate getFechaModificacion() {
+		return fechaModificacion;
+	}
+
+
+	public void setFechaModificacion(LocalDate fechaModificacion) {
+		this.fechaModificacion = fechaModificacion;
+	}
+
+
 	public List<Turnos> getTurnos() {
 		return turnos;
 	}

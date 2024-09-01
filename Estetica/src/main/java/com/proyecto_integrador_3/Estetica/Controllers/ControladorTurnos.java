@@ -179,11 +179,16 @@ public class ControladorTurnos {
 			
 		switch (accionDelBoton) {
 		case "confirmarTurno":
+			try {
+				//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
+				servicioTurnos.actualizarEstadoDelTurno(idTurno, Rol.PROFESIONAL, EstadoDelTurno.ASISTIDO);
+				return "redirect:/misturnosProfesional?email=" + emailProfesional + "&idProfesional=" + idProfesional;
+				
+			} catch (MiExcepcion e) {
+				String error = e.getMessage();
+				return "redirect:/misturnosProfesional?email=" + emailProfesional + "&idProfesional=" + idProfesional + "&error=" + error;
+			}
 			
-			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
-			servicioTurnos.actualizarEstadoDelTurno(idTurno, Rol.PROFESIONAL, EstadoDelTurno.ASISTIDO);
-			
-			return "redirect:/misturnosProfesional?email=" + emailProfesional + "&idProfesional=" + idProfesional;
 			
 		case "cancelarTurno":
 			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
@@ -225,6 +230,7 @@ public class ControladorTurnos {
 		public String misturnosProfesional(
 				@RequestParam String email,
 				@RequestParam String idProfesional,
+				@RequestParam (required = false)String error,
 				Model model) {
 		
 			
@@ -294,6 +300,10 @@ public class ControladorTurnos {
 		model.addAttribute("fechaLimiteProximosTurnos", fechaLimiteProximosTurnos);
 		model.addAttribute("fechaActualTurnosAnteriores", fechaActualTurnosAnteriores);
 		model.addAttribute("fechaLimiteTurnosAnteriores", fechaLimiteTurnosAnteriores);
+		if (error != null) {
+		model.addAttribute("error", error);
+		model.addAttribute("showModalError", true);
+		}
 		return"/pagina_profesional/misturnosProfesional";
 		}
 	
@@ -506,9 +516,9 @@ public class ControladorTurnos {
 				@RequestParam(required = false) String resultados_tratamiento_anterior,
 				@RequestParam(required = false) String cuidado_de_piel,
 				@RequestParam(required = false) String motivo_consulta,
-				@RequestParam(required = false) String notas_profesional,
 				Model model) throws MiExcepcion{
 		
+			Boolean esEdicion = false; // con esta variable le indicamos que para regitrar un nuevo formulario y no una edicion de uno ya registrado
 			
 			try {
 				servicioTurnos.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes, ejercicios,
@@ -517,7 +527,7 @@ public class ControladorTurnos {
 						cual_enfermedad, tiroides, paciente_oncologica, fractura_facial, cirugia_estetica, 
 						indique_cirugia_estetica, tiene_implantes, marca_pasos, horas_sueno, exposicion_sol,
 						protector_solar, reaplica_protector, consumo_carbohidratos, tratamientos_faciales_anteriores,
-						resultados_tratamiento_anterior, cuidado_de_piel, motivo_consulta, notas_profesional);
+						resultados_tratamiento_anterior, cuidado_de_piel, motivo_consulta, esEdicion);
 				
 				//Pasamos los datos  a la visa de 
 				List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);

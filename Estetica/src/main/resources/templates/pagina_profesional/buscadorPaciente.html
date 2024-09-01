@@ -71,9 +71,6 @@
          <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" href="./misconsultas.html">Consultas</a>
-          </li>
-          <li class="nav-item">
             <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
           </li>
         </ul>
@@ -93,16 +90,16 @@
 						<p class="text-center fs-5 mb-5">Ingrese el nombre, dni o email del cliente para realizar un busqueda</p>
 					</div>
 
-					<div class="d-flex justify-content-center">
-						<div class="mb-3 w-75">
-							<form class="" th:action="@{/buscadorPacientes}" method="post">
+					<div class="">
+						<div class="mb-3">
+							<form id="formularioBuscador" th:action="@{/buscadorPacientes}" method="post">
 								<div>
-									<input type="text" class="form-control mb-3" id="dato" name="dato" placeholder="Buscar por nombre o DNI">
-									<input hidden type="text" id="email" name="email" th:value="${datosProfesional.email}"></input>
+									<input  type="text" class="form-control mb-3" id="dato" name="dato" placeholder="Buscar por nombre o DNI">
+									<input  type="hidden" id="email" name="email" th:value="${datosProfesional.email}"></input>
 									<!--Obtenemos el valor de la variable usuariosEmail del metodo listarUsuariosOcultos que a su vez la obtenemos de la pagina homeAdmin y darle al boton buscar la pasa al metod buscarPorDni-->
 								</div>
-								<div class="d-flex justify-content-center mt-5">
-									<button style="width: 170px;" type="submit" class="btn btn-primary">Buscar</button>
+								<div class="mt-5 text-center">
+									<button id="submitBuscar" type="submit" class="bn632-hover bn26">Buscar</button>
 								</div>
 								</form>
 	</div>
@@ -111,7 +108,7 @@
 				</section>
 								
 			<section th:if="${usuarios}">
-				<form class="alinear-tabla" th:action="@{/buscarDatosPersonalesPaciente}" method="post">
+				<form id="formularioTabla" class="alinear-tabla" th:action="@{/buscarDatosPersonalesPaciente}" method="post">
 					
 					<div class="container-fluid">
 												<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
@@ -153,8 +150,8 @@
 											</div>
 								
 					
-					<div class="boton-de-registro boton-listado text-center">
-							<button type="submit" class="bn632-hover bn26">Ver perfil</button>
+					<div class="text-center">
+							<button id="submitVerPerfil" type="submit" class="bn632-hover bn26">Ver perfil</button>
 						</div>
 						<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input> <!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
 						<input hidden type="text"  name="dato" th:value="${dato}"></input>
@@ -256,6 +253,45 @@ showModal y tambien se encarga de cerrar el modal cuando le damos al boton cerra
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
 		crossorigin="anonymous"></script>
+
+<script>
+	document.addEventListener("DOMContentLoaded", function() {
+		var formularioBuscador = document.getElementById('formularioBuscador');
+		var botonsubmitBuscar = document.getElementById('submitBuscar');
+
+		formularioBuscador.addEventListener('submit', function(event) {
+		// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+		setTimeout(function() {
+		botonsubmitBuscar.disabled = true;
+		botonsubmitBuscar.classList.add("enviar");
+		// Rehabilitar el botón después de 5 segundos
+		setTimeout(function() {
+		botonsubmitBuscar.disabled = false;
+		botonsubmitBuscar.classList.remove("enviar");
+		}, 5000);
+		}, 0);
+	});
+});
+
+
+document.addEventListener("DOMContentLoaded", function() {
+		var formularioTabla = document.getElementById('formularioTabla');
+		var botonSubmitVerPerfil = document.getElementById('submitVerPerfil');
+
+		formularioTabla.addEventListener('submit', function(event) {
+		// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
+		setTimeout(function() {
+		botonSubmitVerPerfil.disabled = true;
+		botonSubmitVerPerfil.classList.add("enviar");
+		// Rehabilitar el botón después de 5 segundos
+		setTimeout(function() {
+		botonSubmitVerPerfil.disabled = false;
+		botonSubmitVerPerfil.classList.remove("enviar");
+		}, 5000);
+		}, 0);
+	});
+});
+</script>
 </body>
 <script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
 <script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.dataTables.js"></script>

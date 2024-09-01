@@ -78,7 +78,7 @@
     
     <div class=" cabecera navbar1 col-6 col-sm-4">
       <div class="d-flex justify-content-center margen-login  align-items-center">
-        <a class="registrarse" th:href="@{/login}">LOGIN</a>
+        <a class="registrarse" th:href="@{/login}">INICIAR SESIÓN</a>
       </div>
       </div>
     </nav>
@@ -94,15 +94,15 @@
 							<img class="img-logo-final-home" src="./imagenes/Nani-removebg-preview.png" alt="">
 						</div>
 						<form id="formularioRegistro" th:action="@{/validarEmail}" method="post">
-							<p class="ps-0 fs-2 text-center">REGISTRASE</p>
+							<p class="ps-0 fs-2 text-center">REGISTRARSE</p>
 
 							<div class="mb-3">
 
-								<label for="email" class="form-label texto-label">Email</label>
+								<label for="email" class="form-label texto-label">Correo electrónico</label>
 								<input type="email" th:value="${email}" class="form-control" name="email" id="email" placeholder="Email"> <!--Se ajusta el input para que el metodo devuelve siempre el campo mail cuando haya un error-->
 								
 								
-								<label for="fechaNacimiento" class="form-label texto-label mt-2">Fecha Nacimiento</label>
+								<label for="fechaNacimiento" class="form-label texto-label mt-2">Fecha nacimiento</label>
 								<input type="date" class="form-control" name="fechaNacimiento" id="fechaNacimiento" placeholder="Fecha de Nacimiento">
 
 
@@ -117,38 +117,17 @@
 							</div>
 
 							<div class="boton-de-registro text-center boton-pag-regi ">
-								<button type="submit" class="bn632-hover bn26">Enviar</button> 
+								<button id="submitRegistrarse" type="submit" class="bn632-hover bn26">Enviar</button> 
 							</div>
 							<div class="text-center fs-5 ">
-								<a class="m-2 " th:href="@{/login}">¿Ya esta registrado?</a>
+								<a class="m-2 " th:href="@{/login}">¿Ya estás registrado?</a>
 							</div>
 							<div class="texto-recuperar1">
-              				<a class="texto fs-5"  th:href="@{/olvidoContrasena}">¿Olvido su contraseña?</a><br>
+              				<a class="texto fs-5"  th:href="@{/olvidoContrasena}">¿Olvidó su contraseña?</a><br>
             				</div>
 							
 							
-							<!--Modal mensaje de exito al registrarse
-	
-	<div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
-	tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
-	th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
-		<div class="modal-dialog">
-			<div style="background-color: #ebdf9d;" class="modal-content">
-				<div class="modal-header border border-0 d-flex justify-content-center">
-					<img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif" alt="imagen de aprobado">
-				</div>
-				<div class="modal-body text-black lh-sm">
-					<p class="text-center" th:utext="${exito}"></p>
-				</div>
-				<div class="modal-footer border border-0">
-					<button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
-				</div>
-			</div>
-		</div>
-	</div>
-								-->
-	
-	
+						
 				<!--Modal mensajes de error al registrarse-->
 			
 			<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
@@ -258,6 +237,26 @@
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
 		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
 		crossorigin="anonymous"></script>
+		
+		<script>
+			//script para el formulario del registro
+					        document.addEventListener("DOMContentLoaded", function() {
+					            var formularioRegistro = document.getElementById('formularioRegistro');
+					            var botonSubmitRegistrarse = document.getElementById('submitRegistrarse');
+
+					            formularioRegistro.addEventListener('submit', function(event) {
+					                // Deshabilitar el botón inmediatamente después de que se inicie el envío
+					                submitRegistrarse.disabled = true;
+									submitRegistrarse.classList.add("enviar");
+
+					                // Rehabilitar el botón después de 5 segundos
+					                setTimeout(function() {
+					                    submitRegistrarse.disabled = false;
+										submitRegistrarse.classList.remove("enviar");
+					                }, 5000);
+					            });
+					        });
+		</script>
 </body>
 
 </html>

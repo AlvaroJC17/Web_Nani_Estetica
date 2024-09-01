@@ -563,7 +563,7 @@ footer {
 /*BOTON DE FORM COMPLETAR DATOS*/
 .bn632-hover {
     width: 200px;
-    font-size: 18px !important;
+    font-size: 15px; 
     font-weight: 600;
     color: #fff;
     cursor: pointer;
@@ -613,6 +613,28 @@ footer {
      box-shadow: 0 4px 15px 0 rgba(65, 132, 234, 0.75);
 	 cursor: not-allowed;
    }
+   
+   .bn632-hover.bn26.cancelar {
+       background-image: linear-gradient(
+         to right,
+         #e12b25,
+         #eb3a44,
+         #fe0404,
+         #ed3f3f
+       );
+       box-shadow: 0 4px 15px 0 rgba(232, 27, 47, 0.75);
+     }
+	 
+	 .bn632-hover.bn26.confirmar {
+	       background-image: linear-gradient(
+	         to right,
+	         #55b15f,
+	         #3aa268,
+	         #40c040,
+	         #328c36
+	       );
+	       box-shadow: 0 4px 15px 0 rgb(11, 209, 16, 0.89);
+	     }
 
   .bn632-hover.bn26.apagado {
     background-image: linear-gradient(to right, grey, grey, grey, grey);

@@ -117,15 +117,22 @@ public class ServicioTurnos {
 	 @Transactional
 	public Turnos actualizarEstadoDelTurno(String id, Rol rol, EstadoDelTurno estadoTurno) throws MiExcepcion {
 		 try {
+			 LocalDate fechaActual = LocalDate.now();
+			 LocalDate fechaDelTurno = null;
 			 Optional<Turnos> turnoPorId = buscarTurnoPorId(id);
 			 if (turnoPorId.isPresent()) {
 				 Turnos actualizarTurnoActivo = turnoPorId.get();
-				 actualizarTurnoActivo.setActivo(FALSE);
+				 fechaDelTurno = actualizarTurnoActivo.getFecha();
+	
 				 
 				 if (estadoTurno == EstadoDelTurno.CANCELADO) {
 					 actualizarTurnoActivo.setEstado(EstadoDelTurno.CANCELADO);
-				 }else if(estadoTurno == EstadoDelTurno.ASISTIDO) {
+				 }
+				 
+				 if(estadoTurno == EstadoDelTurno.ASISTIDO && fechaActual == fechaDelTurno) {
 					 actualizarTurnoActivo.setEstado(EstadoDelTurno.ASISTIDO);
+				 }else if(estadoTurno == EstadoDelTurno.ASISTIDO && fechaActual != fechaDelTurno) {
+					 throw new MiExcepcion("El turno solo puede ser confirmado en la misma fecha para el cual fue reservado");
 				 }
 					
 				 if (rol == Rol.CLIENTE ) {
@@ -135,6 +142,7 @@ public class ServicioTurnos {
 				 }else if(rol == Rol.ADMIN) {
 					 actualizarTurnoActivo.setCanceladoPor(Rol.ADMIN);
 				 }
+				 actualizarTurnoActivo.setActivo(FALSE);
 					
 				 Turnos turnoCancelado;
 				 turnoCancelado = repositorioTurnos.save(actualizarTurnoActivo);
@@ -142,8 +150,8 @@ public class ServicioTurnos {
 			 }
 			 
 				 
-		 } catch (Exception e) {
-			 throw new MiExcepcion("Error al conectar con el servidor " + e);
+		 } catch (MiExcepcion e) {
+			 throw new MiExcepcion(e.getMessage());
 		 }
 				return null;  
 		 
@@ -282,10 +290,7 @@ public class ServicioTurnos {
     	
     	return null;
     }
-            		
-            		
-						
-            
+            		        
                
     @Transactional
 	public void formularioTurnos(String idCliente, String email, String fuma, String drogas, String alcohol, String deportes,
@@ -294,15 +299,18 @@ public class ServicioTurnos {
 			String cual_enfermedad, String tiroides, String paciente_oncologica, String fractura_facial, String cirugia_estetica, 
 			String indique_cirugia_estetica, String tiene_implantes, String marca_pasos, String horas_sueno, String exposicion_sol,
 			String protector_solar, String reaplica_protector, String consumo_carbohidratos, String tratamientos_faciales_anteriores,
-			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta, String notas_profesional) throws MiExcepcion {
+			String resultados_tratamiento_anterior, String cuidado_de_piel, String motivo_consulta, Boolean esEdicion) throws MiExcepcion {
 	
-		
+    	//si es diferente a una edicion entra en la validacion, se asume que si es diferente a una edicion es porque es un nuevo formulario a guardar
+	if (!esEdicion) {
 		validarDatosFormularioTurno(fuma, drogas, alcohol, deportes, ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual, alteracion_hormonal, vitaminas, corticoides,
 				hormonas, metodo_anticonceptivo, sufre_enfermedad, cual_enfermedad, tiroides, paciente_oncologica,
 				fractura_facial, cirugia_estetica, indique_cirugia_estetica, tiene_implantes, marca_pasos,
 				horas_sueno, exposicion_sol, protector_solar, reaplica_protector, consumo_carbohidratos,
 				tratamientos_faciales_anteriores, resultados_tratamiento_anterior, cuidado_de_piel,
 				motivo_consulta);
+	}	
+		
 		
 				
 		try {
@@ -344,7 +352,6 @@ public class ServicioTurnos {
 			formulario_cliente.setCuidado_de_piel(cuidado_de_piel);
 			formulario_cliente.setMotivo_consulta(motivo_consulta);
 			formulario_cliente.setFomularioDatos(TRUE);
-			formulario_cliente.setNotas_profesional(notas_profesional);
 			repositorioCliente.save(formulario_cliente);
 		}
 		} catch (Exception e) {
@@ -465,6 +472,61 @@ public class ServicioTurnos {
 					+ "por profesional y fecha " + e);
 		}
 			
+	}
+	
+	@Transactional
+	public void guardarModificarConsultaTurno(String idTurno, String recomendaciones) throws MiExcepcion {
+		
+		if (recomendaciones.length() > 500)  /*Este no lleva la validacion del Seleccione porque es un textarea*/
+			 throw new MiExcepcion("Ha superado el máximo de caracteres permitidos para el campo de cuidado de la piel");
+
+		try {
+			Optional <Turnos> buscarTurnos = repositorioTurnos.findById(idTurno);
+
+			String nuevaRecomendacion = null;
+			LocalDate fechaModificacion = null;
+			LocalDate fechaActual = LocalDate.now();
+			if (buscarTurnos.isPresent()) {
+				Turnos datosDelTurno = buscarTurnos.get();
+				nuevaRecomendacion = datosDelTurno.getConsulta();
+				fechaModificacion = datosDelTurno.getFechaModificacion();
+
+				// si la recomendacion es null entonces la pasamos a un espacio vacio para poder guardar eso
+				if (nuevaRecomendacion == null) {
+					nuevaRecomendacion = "";
+				}
+				
+				//si la fecha de modificacion viene null, la pasamos a la fecha actual
+				if (fechaModificacion == null) {
+					fechaModificacion = LocalDate.now();
+				}
+				
+				//si la fecha de modificacion es diferente a la fecha actual, entonces la actualizamos a la fecha actual
+				if (fechaModificacion != fechaActual) {
+					fechaModificacion = fechaActual;
+				}
+				
+				//paramos la ejecucion del metodo si las recomendaciones son iguales, es decir que no se modifican y le dan guardar
+				if (nuevaRecomendacion.equalsIgnoreCase(recomendaciones)) {
+					return;
+				}
+				
+				
+
+				//sino son iguales, no entra en el if y modifica o agreaga la recomendacion
+				datosDelTurno.setFechaModificacion(fechaModificacion);
+				datosDelTurno.setConsulta(recomendaciones);
+				repositorioTurnos.save(datosDelTurno);
+		
+			}else {
+				System.out.println("Error al modificar o guardar la consulta del turno, no se econtraron turnos disponibles con ese id");
+			}
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor");
+		}
+			
+		
+		
 	}
 	
                         
@@ -596,9 +658,20 @@ public class ServicioTurnos {
 		 if (cuidado_de_piel == null || cuidado_de_piel.isEmpty() || cuidado_de_piel.trim().isEmpty())  /*Este no lleva la validacion del Seleccione porque es un textarea*/
 			 throw new MiExcepcion("Por favor indique como se cuida la piel");
 		 
+		 if (cuidado_de_piel.length() > 500)  /*Este no lleva la validacion del Seleccione porque es un textarea*/
+			 throw new MiExcepcion("Ha superado el máximo de caracteres permitidos para el campo de cuidado de la piel");
+		 
 		 if (motivo_consulta == null || motivo_consulta.isEmpty() || motivo_consulta.trim().isEmpty() || motivo_consulta.equals("Seleccione")) 
 			 throw new MiExcepcion("Por favor indicar el motivo de la consulta");
 	 }
+    
+    
+    
+    public void validarRecomendaciones (String recomendaciones) throws MiExcepcion {
+    	
+    	if (recomendaciones == null || recomendaciones.isEmpty() || recomendaciones.trim().isEmpty() || recomendaciones.equals("Seleccione")) 
+			 throw new MiExcepcion("Por favor indicar una recomendacion");
+    }
     
    
 }

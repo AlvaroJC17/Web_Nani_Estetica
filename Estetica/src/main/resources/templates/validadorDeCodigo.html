@@ -12,17 +12,55 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
         <link rel="stylesheet" href="./css/styles.css">
         <title>Validar código</title>
+		
+		
+		<script>
+		    // Tiempo de validez del código (por ejemplo, 5 minutos)
+		    var expirationTime = new Date();
+		    expirationTime.setMinutes(expirationTime.getMinutes() + 5);
+
+		    // Función para actualizar el contador
+		    function startCountdown() {
+		        var now = new Date();
+		        var timeDifference = expirationTime - now;
+
+		        if (timeDifference > 0) {
+		            var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+		            var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+		            // Formatear para que siempre tenga 2 dígitos
+		            minutes = ('0' + minutes).slice(-2);
+		            seconds = ('0' + seconds).slice(-2);
+
+		            document.getElementById("countdown").innerText = minutes + ":" + seconds;
+		        } else {
+		            document.getElementById("countdown").innerText = "El código ha expirado.";
+					var divContador = document.getElementById("countdown");
+					divContador.classList.add("text-danger");
+		        }
+		    }
+
+		    // Actualizar el contador cada segundo
+		    setInterval(startCountdown, 1000);
+
+		    // Iniciar el contador inmediatamente al cargar la página
+		    startCountdown();
+		</script>
+
       </head>
 
 
 <body style="background-color: #d4af37;">
+	
   <main>
     <div class="main-interno pb-0 ">
     
+		<a th:ref="@{/index}">
       <div class="text-center">
-        <img src="./imagenes/Nani-removebg-preview.png" style="width: 200px;" class="" alt="logo de la pagina">
+        <img src="./imagenes/Nani-removebg-preview.png" style="width: 100px;" class="" alt="logo de la pagina">
       </div>
-
+	  </a>
+	  
        <div class="container-fluid text-justify fs-5">
 		   
        <p>Estimado/a Usuario,</p>
@@ -36,22 +74,32 @@
       El código tiene una duración de 5 minutos, sino lograste ingresarlo una vez pasado este tiempo, deberas generar uno nuevo.</p>
 
         
-       <p> <span class="fw-bold">3. Ingresa el código:</span> Ve al campo de verificación e ingresa el código exactamente como aparece en el correo electrónico.</p>
+       <p> <span class="fw-bold">3. Ingresa el código:</span> Ve al campo de verificación e ingresa el código exactamente como aparece en el correo electrónico,
+		 luego haz click en "Validar" para completar el proceso.</p>
         
-       <p><span class="fw-bold">4. Completa la verificación:</span> Después de ingresar el código, haz clic en el botón "Verificar" para completar el proceso.</p> <br><br>
 
-<form th:action="@{/validarCodigoYRegistrar}" method="post">
+<form id="formularioCodigo" th:action="@{/validarCodigoYRegistrar}" method="post">
        <div class="text-center mb-2">
          <div class="mb-4">
           <label class="fs-2 fw-bold" for="validacion">Ingrese código de validación</label>
         </div>
-        <input name="codigoUsuario" id="codigoUsuario" class="rounded-1 text-center"  type="text">
+        <input name="codigoUsuario" id="validacion" class="rounded-1 text-center"  type="text">
       </div>
 
       <div class="boton-de-registro mt-4  text-center mb-5">
-        <button type="submit" class="bn632-hover bn26">Validar</button>
+        <button type="submit" id="botonSubmitCodigo" class="bn632-hover bn26">Validar</button>
+		
+		<div class="d-flex justify-content-center mt-3" th:if="${conteoRegresivo}">
+		<p class="fs-3 me-2">Código vence en:</p>			
+	    <p class="fs-3 px-2 text-success fw-bold" id="countdown"></p> <!--En este p se refleja el resultado de la funcion para el conteno regresivo, osea se ve el conteo aqui-->
+		</div>
+		
       </div>
+		
       	
+	  	
+		  
+		  
 		<input type="hidden" class="form-control" name="email" id="email" th:value="${email}" placeholder="">
 		<input type="hidden" class="form-control" name="contrasena" id="contrasena" th:value="${contrasena}" placeholder="">
 		<input type="hidden" class="form-control" name="contrasena2" id="contrasena2" th:value="${contrasena2}" placeholder="">
@@ -60,22 +108,21 @@
 </form>
 
 <!--formulario para reenviar el código-->
-<form th:if="${mostrarEnlace}" th:action="@{/validarEmail}" method="post" class="d-flex justify-content-center">
+<form id="formularioReenviarCodigo" th:if="${mostrarEnlace}" th:action="@{/validarEmail}" method="post" class="d-flex justify-content-center">
 	<input type="hidden" class="form-control" name="email" id="email" th:value="${email}" placeholder="">
 		<input type="hidden" class="form-control" name="contrasena" id="contrasena" th:value="${contrasena}" placeholder="">
 		<input type="hidden" class="form-control" name="contrasena2" id="contrasena2" th:value="${contrasena2}" placeholder="">
 		<input type="hidden" class="form-control" name="fechaNacimiento" id="fechaNacimiento" th:value="${fechaNacimiento}" placeholder="">
 		<input type="hidden" class="form-control" name="idUsuarioNoValidado" id="idUsuarioNoValidado" th:value="${idUsuarioNoValidado}" placeholder="">
 		
-		<button style="width: 60% ;" class=" btn btn-primary mb-4 text-center" type="submit" name="accion" value="reenviarCodigo">Reenviar código</button>
+		<button id="botonSubmitReenvio" style="width: 60% ;" class=" btn btn-primary mb-4 text-center" type="submit" name="accion" value="reenviarCodigo">Reenviar código</button>
 	
 </form>
         
        <p class="text-center bg-success" th:if="${exito}" th:utext="${exito}"> </p>
        
-       <p class="mt-4"> Gracias por tu atención. </p>
         
-       <p> Atentamente,</p>
+    	<p> Atentamente,</p>
         
         <ul class="list-unstyled">
           <li>Nani estética</li>
@@ -125,10 +172,52 @@
   <footer>
     
   </footer>
+  
+  
+  	
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
+	
+	<script>
+		//script para el formulario del codigo
+		        document.addEventListener("DOMContentLoaded", function() {
+		            var formularioCodigo = document.getElementById('formularioCodigo');
+		            var botonSubmitCodigo = document.getElementById('botonSubmitCodigo');
+
+		            formularioCodigo.addEventListener('submit', function(event) {
+		                // Deshabilitar el botón inmediatamente después de que se inicie el envío
+		                botonSubmitCodigo.disabled = true;
+						botonSubmitCodigo.classList.add("enviar");
+
+		                // Rehabilitar el botón después de 5 segundos
+		                setTimeout(function() {
+		                    botonSubmitCodigo.disabled = false;
+							botonSubmitCodigo.classList.remove("enviar");
+		                }, 5000);
+		            });
+		        });
+				
+			
+	//script para el formulario de reenvio de codigo	
+		 document.addEventListener("DOMContentLoaded", function() {
+		var formularioReenvio = document.getElementById('formularioReenviarCodigo');
+		var botonSubmitReenvio = document.getElementById('botonSubmitReenvio');
+
+		formularioReenvio.addEventListener('submit', function(event) {
+		// Deshabilitar el botón inmediatamente después de que se inicie el envío
+		 botonSubmitReenvio.disabled = true;
+		
+
+		// Rehabilitar el botón después de 5 segundos
+		setTimeout(function() {
+		 botonSubmitReenvio.disabled = false;
+		}, 5000);
+		});
+		});
+					    
+</script>
 </body>
-</body>
+
 </html>

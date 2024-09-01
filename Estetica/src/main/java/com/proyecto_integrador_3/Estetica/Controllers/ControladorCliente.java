@@ -694,6 +694,7 @@ public class ControladorCliente {
 			@RequestParam (name ="especialidad") String tipoEspecialidad,
 			ModelMap model) throws MiExcepcion {
 		
+		System.out.println("Action: " + action);
 		
 		//usamos un switch que depende si el usuario le da al boton de aceptar o cancelar del formulario
 		switch (action) {

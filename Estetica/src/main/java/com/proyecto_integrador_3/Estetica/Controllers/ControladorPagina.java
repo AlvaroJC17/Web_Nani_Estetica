@@ -1,6 +1,9 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -221,7 +224,8 @@ public class ControladorPagina {
 			}
         	
 			//Sino es valido lanzamos un error
-		}else {			
+		}else {	
+			Boolean conteoRegresivo = false; //no muestra el conteo regresivo si hay algun error al ingresar el codigo
 			String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
 					 +"<span class='fs-6'>El codigo ingresado no es valido."
 					 + " Por favor intente nuevamente o genere un nuevo codigo.</span>";
@@ -232,6 +236,7 @@ public class ControladorPagina {
 			model.addAttribute("contrasena", password);
 			model.addAttribute("contrasena2", password2);
 			model.addAttribute("fechaNacimiento", fechaNacimiento);
+			model.addAttribute("conteoRegresivo", conteoRegresivo);
 			model.addAttribute("error", error);
         	model.addAttribute("showModalError", true);
 			return "validadorDeCodigo";
@@ -272,12 +277,14 @@ public class ControladorPagina {
 			//Llamamos al metodo que genera el codigo y lo manda por email
 			servicioCodigoDeVerificacion.generarGuardarYEnviarCodigo(usuarioNoValidado, email);
 			
+			Boolean conteoRegresivo = true; //Si el codigo se envia bien, entonces creamos esta variable para mostrar el contador en el html
+						
 			//Retornamos la plantilla donde se va a ingresar el codigo
-			
 			modelo.addAttribute("email",email);
 			modelo.addAttribute("contrasena",password);
 			modelo.addAttribute("contrasena2",password2);
 			modelo.addAttribute("fechaNacimiento",fechaNacimiento);
+			modelo.addAttribute("conteoRegresivo", conteoRegresivo);
 			modelo.addAttribute("idUsuarioNoValidado", usuarioNoValidado.getId());
 			if (accion!=null && accion.equals("reenviarCodigo")) {
 				String exito = "El código ha sido enviado exitosamente a su correo eléctronico";

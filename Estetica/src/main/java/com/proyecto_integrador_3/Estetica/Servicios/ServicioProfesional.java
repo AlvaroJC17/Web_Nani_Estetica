@@ -2,6 +2,7 @@ package com.proyecto_integrador_3.Estetica.Servicios;
 
 import static java.lang.Boolean.TRUE;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -15,7 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.Model;
 
-import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
+import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
@@ -28,6 +29,7 @@ import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
@@ -45,6 +47,11 @@ public class ServicioProfesional {
 	
 	@Autowired
 	public RepositorioPersona repositorioPersona;
+	
+	@Autowired
+	public RepositorioCliente repositorioCliente;
+	
+
 	
 
 	public Optional <Profesional> buscarProfesional(String idProfesional){
@@ -329,6 +336,55 @@ public class ServicioProfesional {
 			throw new MiExcepcion("Error al conectar con el servidor " + e);
 		}
 		return tratamientosProfesional;
+	}
+	
+	//Servicio para guardar las notas que le profesional le coloca al cliente
+	@Transactional
+	public void guardarNotasProfesional(String idCliente, String notas_profesional) throws MiExcepcion {
+		
+		if (notas_profesional.length() > 500)  /*Este no lleva la validacion del Seleccione porque es un textarea*/
+			 throw new MiExcepcion("Ha superado el máximo de caracteres permitidos para el campo de cuidado de la piel");
+			
+		try {
+			Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
+			
+			String notasDelProfesional = null;
+			LocalDate fechaModificacion = null;
+			LocalDate fechaActual = LocalDate.now();
+			if (identificarCliente.isPresent()) {
+				Cliente datosCliente = identificarCliente.get();
+				notasDelProfesional = datosCliente.getNotas_profesional();
+				fechaModificacion = datosCliente.getFechaModificacion();
+				
+				
+				if (notasDelProfesional == null) {
+					notasDelProfesional = "";
+				}
+				
+				if (fechaModificacion == null) {
+					fechaModificacion = LocalDate.now();
+				}
+				
+				if (fechaModificacion != fechaActual) {
+					fechaModificacion = fechaActual;
+				}
+				
+				if (notasDelProfesional.equalsIgnoreCase(notas_profesional)) {
+					return;
+				}
+				
+				datosCliente.setNotas_profesional(notas_profesional);
+				datosCliente.setFechaModificacion(fechaModificacion);
+				repositorioCliente.save(datosCliente);
+				
+				
+			}else {
+				throw new MiExcepcion("No se encontro el cliente");
+			}
+			
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al conectar con el servidor");
+		}
 	}
 	
 	

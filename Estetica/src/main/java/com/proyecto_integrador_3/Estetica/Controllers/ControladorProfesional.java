@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +37,7 @@ import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
@@ -54,6 +56,9 @@ public class ControladorProfesional {
 	
 	@Autowired
 	public ServicioTurnos servicioTurnos;
+	
+	@Autowired
+	public ServicioHorario servicioHorario;
 	
 	@Autowired
 	public RepositorioProfesional repositorioProfesional;
@@ -99,37 +104,16 @@ public class ControladorProfesional {
 		return "/pagina_profesional/datosProfesional";
 	}
 	
-	@PostMapping("/editarDatosPersonalesPaciente")
-	public String editarDatosPersonalesPaciente(
-			@RequestParam(required = false) String emailCliente,
-			@RequestParam(required = false) String emailProfesional,
-			@RequestParam(required = false) String idCliente,
-			Model model) throws MiExcepcion {
-		
-		String fechaAltaFormateada = null;
-		Optional <Usuario> buscarEmailCliente = repositorioUsuario.buscarPorIdOptional(idCliente);
-		if (buscarEmailCliente.isPresent()) {
-			Usuario emailUsuario = buscarEmailCliente.get();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			fechaAltaFormateada = emailUsuario.getFechaCreacion().format(formatter);
-		}
 	
-		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
-		List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idCliente);
-		
-		model.addAttribute("datosProfesional", datosProfesional);
-		model.addAttribute("datosCliente", datosCliente);
-		model.addAttribute("datosPaciente",datosPaciente);
-		model.addAttribute("fechaAltaFormateada", fechaAltaFormateada);
-		return "/pagina_profesional/datosPersonalesPacienteEditar";
-	}
-	
+	//Metodo para guardar y modificar los datos del perfil del cliente, como el formulario de datos y las recomendaciones del turno
 	@PostMapping("/guardarDatosPacienteEditado")
 	public String guardarDatosPacienteEditado(
-			@RequestParam(required = false) String idCliente,
-			@RequestParam(required = false) String emailCliente,
-			@RequestParam(required = false) String emailProfesional,
+			@RequestParam String idCliente,
+			@RequestParam String idProfesional,
+			@RequestParam String emailCliente,
+			@RequestParam String emailProfesional,
+			@RequestParam String funcionalidadBotones,
+			@RequestParam(required = false) String idTurnoModificado,
 			@RequestParam(required = false) String fuma,
 			@RequestParam(required = false) String drogas,
 			@RequestParam(required = false) String alcohol,
@@ -160,44 +144,86 @@ public class ControladorProfesional {
 			@RequestParam(required = false) String protector_solar,
 			@RequestParam(required = false) String reaplica_protector,
 			@RequestParam(required = false) String consumo_carbohidratos,
-			@RequestParam(name="tratamientosFacialesAnteriores", required = false) String tratamientos_faciales_anteriores,
+			@RequestParam(required = false, name="tratamientosFacialesAnteriores") String tratamientos_faciales_anteriores,
 			@RequestParam(required = false) String resultados_tratamiento_anterior,
 			@RequestParam(required = false) String cuidado_de_piel,
 			@RequestParam(required = false) String motivo_consulta,
 			@RequestParam(required = false) String notas_profesional,
+			@RequestParam(required = false) String recomendaciones,
 			Model modelo) throws MiExcepcion {
-
-			Boolean isEditarDisabled = false;			
-		try {
+		
 			
-					servicioTurnos.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes,
-					ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual,
-					alteracion_hormonal, vitaminas, corticoides, hormonas, metodo_anticonceptivo,
-					sufre_enfermedad, cual_enfermedad, tiroides, paciente_oncologica, fractura_facial,
-					cirugia_estetica, indique_cirugia_estetica, tiene_implantes, marca_pasos, horas_sueno,
-					exposicion_sol, protector_solar, reaplica_protector, consumo_carbohidratos,
-					tratamientos_faciales_anteriores, resultados_tratamiento_anterior, cuidado_de_piel,
-					motivo_consulta, notas_profesional);
+			Boolean esEdicion = true; //con este boolean le indicamos al servicio que es para editar un formulario ya registrado
+			Boolean isEditarDisabled = false;	// Boolean para activar o desactivar los botones en la vista
+			String exito =  null;
 			
-					isEditarDisabled = true;
+			try {
+				
+			if (funcionalidadBotones.equalsIgnoreCase("botonGuardarFormulario")) {
+				
+				//Servicio para guardar un formulario nuevo y actualizar uno ya existente
+				servicioTurnos.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes,
+				ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual,
+				alteracion_hormonal, vitaminas, corticoides, hormonas, metodo_anticonceptivo,
+				sufre_enfermedad, cual_enfermedad, tiroides, paciente_oncologica, fractura_facial,
+				cirugia_estetica, indique_cirugia_estetica, tiene_implantes, marca_pasos, horas_sueno,
+				exposicion_sol, protector_solar, reaplica_protector, consumo_carbohidratos,
+				tratamientos_faciales_anteriores, resultados_tratamiento_anterior, cuidado_de_piel,
+				motivo_consulta, esEdicion);
+				
+				exito = "Los datos fueron modificados exitosamente";
+				modelo.addAttribute("exito", exito);
+				modelo.addAttribute("showModalExito", true);
+				
+			}else if(funcionalidadBotones.equalsIgnoreCase("botonGuardarRecomendaciones")) {
+				
+				//Servicio para agregar o editar una recomendacion de un profesional a un turno
+				servicioTurnos.guardarModificarConsultaTurno(idTurnoModificado, recomendaciones);
+				
+				exito = "Los datos fueron modificados exitosamente";
+				modelo.addAttribute("exito", exito);
+				modelo.addAttribute("showModalExito", true);
+				
+			}else if(funcionalidadBotones.equalsIgnoreCase("botonGuardarNotas")) {
+				
+				//servicio para guardar las notas de un profesional en el perfil del cliente
+				servicioProfesional.guardarNotasProfesional(idCliente, notas_profesional);
+				
+				exito = "Los datos fueron modificados exitosamente";
+				modelo.addAttribute("exito", exito);
+				modelo.addAttribute("showModalExito", true);
+			}
+				
+			isEditarDisabled = true;
+			
+			List<Turnos> ultimosTurnosCliente = servicioTurnos.buscarTurnosPorProfesionalAndClienteAndEstadoDelTurno(idProfesional, idCliente, EstadoDelTurno.ASISTIDO);
+			List<Turnos> tresUltimosTurnos = new ArrayList<>();
+			int size = ultimosTurnosCliente.size();
+			if (size >= 3) {
+			    tresUltimosTurnos = ultimosTurnosCliente.subList(size - 3, size);
+			} else {
+			    tresUltimosTurnos = ultimosTurnosCliente; // Si hay menos de 3 elementos, tomamos todos
+			}
 			
 			List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 			List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idCliente);
+			modelo.addAttribute("isEditarDisabled", isEditarDisabled);
 			modelo.addAttribute("datosProfesional", datosProfesional); //datos para el menu de la pagina
 			modelo.addAttribute("datosCliente", datosCliente); // datos para la seccion de datos personales
 			modelo.addAttribute("datosPaciente", datosPaciente); // datos para la seccion del formulario y nota del paciente
-			modelo.addAttribute("isEditarDisabled", isEditarDisabled);
+			modelo.addAttribute("ultimosTurnos", tresUltimosTurnos); // mandamos los ultimos tres turnos asistidos a la vista
 			return "/pagina_profesional/datosPersonalesPaciente";
 			
-			
 				} catch (Exception e) {
+					String error = "Hubo un error al modificar los datos";
 					System.out.println(e.getMessage());
-					
+					modelo.addAttribute("error", error);
+					modelo.addAttribute("showModalError", true);
+					return "/pagina_profesional/datosPersonalesPaciente";
 				}
-		return "";
 	}
-      
+	
 	
 	@PostMapping("/buscarDatosPersonalesPaciente")
 	public String buscarDatosPersonalesPaciente(
@@ -271,17 +297,25 @@ public class ControladorProfesional {
 		} else {
 		    tresUltimosTurnos = ultimosTurnosCliente; // Si hay menos de 3 elementos, tomamos todos
 		}
+		
+		//Verificamos que el cliente tengo por lo menos un turno activo, sino usamos el boolean en la vista para mostrar un mensaje
+		Boolean cienteSinTurnos = false;
+		if (tresUltimosTurnos.isEmpty()) {
+			cienteSinTurnos = true; 
+		}
 	
 		//Datos del cliente para los datos personales
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 		
 		//datos del cliente/paciente para las respuestas del formulario
 		List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idCliente);
+		
 		modelo.addAttribute("datosProfesional", datosProfesional); //datos para el menu de la pagina
 		modelo.addAttribute("datosCliente", datosCliente); // datos para la seccion de datos personales
 		modelo.addAttribute("datosPaciente", datosPaciente); // datos para la seccion del formulario y nota del paciente
 		modelo.addAttribute("ultimosTurnos", tresUltimosTurnos); // mandamos los ultimos tres turnos asistidos a la vista
 		modelo.addAttribute("isEditarDisabled", isEditarDisabled);
+		modelo.addAttribute("cienteSinTurnos", cienteSinTurnos);
 		modelo.addAttribute("fechaAltaFormateada", fechaAltaFormateada);
 		return "/pagina_profesional/datosPersonalesPaciente";
 	}
