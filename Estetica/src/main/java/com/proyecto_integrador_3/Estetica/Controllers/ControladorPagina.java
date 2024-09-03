@@ -1,9 +1,8 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
 import com.proyecto_integrador_3.Estetica.Entidades.TokenUsuario;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
@@ -25,6 +25,7 @@ import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioCodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioToken;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCodigoDeVerificacion;
@@ -40,6 +41,9 @@ public class ControladorPagina {
 	
 	@Autowired
 	public RepositorioToken repositorioToken;
+	
+	@Autowired
+	public RepositorioCodigoDeVerificacion repositorioCodigoDeVerificacion;
 	
 	@Autowired
 	public ServicioUsuario servicioUsuario;
@@ -184,7 +188,7 @@ public class ControladorPagina {
 	@PostMapping("/validarCodigoYRegistrar")
 	public String validarCodigoYRegistrar(
 			@RequestParam String idUsuarioNoValidado,
-			@RequestParam(name="codigoUsuario") String CodigoUsuario,
+			@RequestParam String codigoUsuario,
 			@RequestParam String email,
 			@RequestParam(name="contrasena") String password,
 			@RequestParam(name="contrasena2") String password2,
@@ -192,7 +196,7 @@ public class ControladorPagina {
 			Model model) throws MiExcepcion {
 		
 		//evitamos que el usuario deje espacios en blanco al inicio o final del string
-		String codigoUsuarioSinEspacios = CodigoUsuario.trim();
+		String codigoUsuarioSinEspacios = codigoUsuario.trim();
 		
 		//Usamos un opcional y el id del usuario para buscar el mismo usuario pero en forma de objeto
 		Optional <Usuario> usuarioNoValidado = servicioUsuario.buscarPorIdOptional(idUsuarioNoValidado);
@@ -275,7 +279,17 @@ public class ControladorPagina {
 			usuarioNoValidado.setFechaCreacion(fechaActual);
 			
 			//Llamamos al metodo que genera el codigo y lo manda por email
-			servicioCodigoDeVerificacion.generarGuardarYEnviarCodigo(usuarioNoValidado, email);
+			CodigoDeVerificacion idCodigo = servicioCodigoDeVerificacion.generarGuardarYEnviarCodigo(usuarioNoValidado, email);
+			
+			LocalDateTime fechaExpiracionCodigo = null;
+			System.out.println("id de codigo para buscar: " + idCodigo.getId());
+			Optional<CodigoDeVerificacion> buscarCodigo = repositorioCodigoDeVerificacion.findById(idCodigo.getId());
+			if (buscarCodigo.isPresent()) {
+				CodigoDeVerificacion codigo = buscarCodigo.get();
+				fechaExpiracionCodigo = codigo.getExpiracion();
+			}else {
+				throw new MiExcepcion("No se encontraron codigos registrados");
+			}
 			
 			Boolean conteoRegresivo = true; //Si el codigo se envia bien, entonces creamos esta variable para mostrar el contador en el html
 						
@@ -286,6 +300,7 @@ public class ControladorPagina {
 			modelo.addAttribute("fechaNacimiento",fechaNacimiento);
 			modelo.addAttribute("conteoRegresivo", conteoRegresivo);
 			modelo.addAttribute("idUsuarioNoValidado", usuarioNoValidado.getId());
+			modelo.addAttribute("expiracionCodigo", fechaExpiracionCodigo);
 			if (accion!=null && accion.equals("reenviarCodigo")) {
 				String exito = "El código ha sido enviado exitosamente a su correo eléctronico";
 				modelo.addAttribute("exito", exito);

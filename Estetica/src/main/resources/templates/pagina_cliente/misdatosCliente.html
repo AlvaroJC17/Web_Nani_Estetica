@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="../css/styles.css">
         <title>Datos Cliente</title>
       </head>
-<body class="body-misdatos " th:each="datosCliente : ${datosCliente}"> <!--La variable datosCliente viene del metodo misdatosCliente,-->
+<body onload="actualizarParrafo(prueba)" class="body-misdatos " th:each="datosCliente : ${datosCliente}"> <!--La variable datosCliente viene del metodo misdatosCliente,-->
 																	   <!--usea el bucle en el body para que los datos esten disponibles para todos los enlaces de la pag-->
 
 																	   
@@ -132,7 +132,6 @@
 						<div class="modal-dialog">
 						<div style="background-color: #ebdf9d;" class="modal-content">
 						<div class="modal-header d-block text-center border border-0">
-						<img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
 						<h1 class="modal-title fs-5 fw-bold" id="confirmarLabel"></h1>
 						</div>
 						<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
@@ -158,6 +157,9 @@
       </div>
     </section>
     
+	
+	<p id="pruebaJava"></p>
+	
     <!--Modal mensaje de exito misDatosCliente	-->
 	
 	<div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -324,6 +326,23 @@
 					  				});
 					  			});
 					  
+	</script>
+	
+	<script th:inline="javascript">
+		
+			var prueba = /*[[${datosCliente.fechaCreacion}]]*/
+			console.log(prueba);
+		
+		function actualizarParrafo(prueba) {
+			
+			
+		           // Selecciona la etiqueta <p> por su ID
+		           var parrafo = document.getElementById("pruebaJava")
+		           
+		           // Actualiza el contenido de la etiqueta <p>
+		           parrafo.innerText = prueba
+		       }
+		
 	</script>
 	
 </body>

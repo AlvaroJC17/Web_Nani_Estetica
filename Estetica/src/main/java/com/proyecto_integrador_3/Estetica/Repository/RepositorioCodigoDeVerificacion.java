@@ -16,6 +16,8 @@ public interface RepositorioCodigoDeVerificacion extends JpaRepository<CodigoDeV
 	
 	Optional<CodigoDeVerificacion> findByUsuarioId(String usuarioId);
 	
+	Optional<CodigoDeVerificacion> findById(String idCodigo);
+	
 	List<CodigoDeVerificacion> findByUsuarioIdAndUsadoFalse(String id);
 	
 	

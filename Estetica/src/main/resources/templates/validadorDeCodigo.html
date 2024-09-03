@@ -12,45 +12,10 @@
 		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css">
         <link rel="stylesheet" href="./css/styles.css">
         <title>Validar código</title>
-		
-		
-		<script>
-		    // Tiempo de validez del código (por ejemplo, 5 minutos)
-		    var expirationTime = new Date();
-		    expirationTime.setMinutes(expirationTime.getMinutes() + 5);
-
-		    // Función para actualizar el contador
-		    function startCountdown() {
-		        var now = new Date();
-		        var timeDifference = expirationTime - now;
-
-		        if (timeDifference > 0) {
-		            var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
-		            var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
-
-		            // Formatear para que siempre tenga 2 dígitos
-		            minutes = ('0' + minutes).slice(-2);
-		            seconds = ('0' + seconds).slice(-2);
-
-		            document.getElementById("countdown").innerText = minutes + ":" + seconds;
-		        } else {
-		            document.getElementById("countdown").innerText = "El código ha expirado.";
-					var divContador = document.getElementById("countdown");
-					divContador.classList.add("text-danger");
-		        }
-		    }
-
-		    // Actualizar el contador cada segundo
-		    setInterval(startCountdown, 1000);
-
-		    // Iniciar el contador inmediatamente al cargar la página
-		    startCountdown();
-		</script>
-
       </head>
 
 
-<body style="background-color: #d4af37;">
+<body  style="background-color: #d4af37;">
 	
   <main>
     <div class="main-interno pb-0 ">
@@ -91,8 +56,8 @@
 		
 		<div class="d-flex justify-content-center mt-3" th:if="${conteoRegresivo}">
 		<p class="fs-3 me-2">Código vence en:</p>			
-	    <p class="fs-3 px-2 text-success fw-bold" id="countdown"></p> <!--En este p se refleja el resultado de la funcion para el conteno regresivo, osea se ve el conteo aqui-->
-		</div>
+		<p class="fs-3 px-2 text-success fw-bold" id="countdown2"></p>	<!--En este p se refleja el resultado de la funcion para el conteno regresivo, osea se ve el conteo aqui-->
+	</div>
 		
       </div>
 		
@@ -108,14 +73,14 @@
 </form>
 
 <!--formulario para reenviar el código-->
-<form id="formularioReenviarCodigo" th:if="${mostrarEnlace}" th:action="@{/validarEmail}" method="post" class="d-flex justify-content-center">
-	<input type="hidden" class="form-control" name="email" id="email" th:value="${email}" placeholder="">
+<form id="formularioReenviarCodigo"  th:action="@{/validarEmail}" method="post" class="d-flex justify-content-center">
+		<input type="hidden" class="form-control" name="email" id="email" th:value="${email}" placeholder="">
 		<input type="hidden" class="form-control" name="contrasena" id="contrasena" th:value="${contrasena}" placeholder="">
 		<input type="hidden" class="form-control" name="contrasena2" id="contrasena2" th:value="${contrasena2}" placeholder="">
 		<input type="hidden" class="form-control" name="fechaNacimiento" id="fechaNacimiento" th:value="${fechaNacimiento}" placeholder="">
 		<input type="hidden" class="form-control" name="idUsuarioNoValidado" id="idUsuarioNoValidado" th:value="${idUsuarioNoValidado}" placeholder="">
 		
-		<button id="botonSubmitReenvio" style="width: 60% ;" class=" btn btn-primary mb-4 text-center" type="submit" name="accion" value="reenviarCodigo">Reenviar código</button>
+		<button id="botonSubmitReenvio" style="width: 60% ;" class=" btn btn-primary mb-4 text-center" type="submit" name="accion" value="reenviarCodigo" disabled>Reenviar código</button>
 	
 </form>
         
@@ -218,6 +183,45 @@
 		});
 					    
 </script>
+
+
+	<script th:inline="javascript">
+	    /* Obtener el valor de la fecha desde el controlador */
+	    var expirationTime = new Date(/*[[${expiracionCodigo}]]*/);
+
+	    // Función para actualizar el contador
+	    function startCountdown() {
+	        var now = new Date();
+	        var timeDifference = expirationTime - now;
+
+	        if (timeDifference > 0) {
+	            var minutes = Math.floor((timeDifference % (1000 * 60 * 60)) / (1000 * 60));
+	            var seconds = Math.floor((timeDifference % (1000 * 60)) / 1000);
+
+	            // Formatear para que siempre tenga 2 dígitos
+	            minutes = ('0' + minutes).slice(-2);
+	            seconds = ('0' + seconds).slice(-2);
+
+	            document.getElementById("countdown2").innerText = minutes + ":" + seconds;
+	        } else {
+	            document.getElementById("countdown2").innerText = "El código ha expirado.";
+	            var divContador = document.getElementById("countdown2");
+	            divContador.classList.add("text-danger");
+				
+				// Habilitar el botón de reenvío
+				var botonSubmitReenvio = document.getElementById("botonSubmitReenvio");
+				botonSubmitReenvio.disabled = false;
+	        }
+	    }
+
+	    // Actualizar el contador cada segundo
+	    setInterval(startCountdown, 1000);
+
+	    // Iniciar el contador inmediatamente al cargar la página
+	    startCountdown();
+	</script>
+
+
 </body>
 
 </html>

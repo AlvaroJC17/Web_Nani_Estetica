@@ -2,6 +2,7 @@ package com.proyecto_integrador_3.Estetica.Servicios;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,10 @@ public class ServicioCodigoDeVerificacion {
 	@Autowired
 	ServicioEmail servicioEmail;
 	
+	public List<CodigoDeVerificacion> buscarCodigosPorUsuariosYNoUsados(String idUsuario){
+		return repositorioCodigoDeVerificacion.findByUsuarioIdAndUsadoFalse(idUsuario);
+	}
+	
 	//Metodo para generar codigo alfa numerico de 6 digitos
 	  public String generadorDeCodigos() {
 		  	final String CHARACTERS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -47,7 +52,7 @@ public class ServicioCodigoDeVerificacion {
 	  // el unico valor que usamos en este metodo del objeto usuario es su id.
 	  //este metodo tambien se encargar de enviar el mail al usuario
 	  @Transactional
-	public void generarGuardarYEnviarCodigo(Usuario usuario, String email) throws MiExcepcion {
+	public CodigoDeVerificacion generarGuardarYEnviarCodigo(Usuario usuario, String email) throws MiExcepcion {
         String codigo = generadorDeCodigos();
         LocalDateTime expiracion = LocalDateTime.now().plusMinutes(5);
 
@@ -57,10 +62,13 @@ public class ServicioCodigoDeVerificacion {
         codigoVerificacion.setUsuario(usuario);
         codigoVerificacion.setUsado(false);
 
+        CodigoDeVerificacion idCodigoVerificacion;
         try {
-        	repositorioCodigoDeVerificacion.save(codigoVerificacion);
+        	idCodigoVerificacion = repositorioCodigoDeVerificacion.save(codigoVerificacion);
+        	System.out.println("Id del codigo antes de guardar: " + codigoVerificacion.getId());
+        	System.out.println("Id del codigo despues de guardar:" + idCodigoVerificacion.getId());
         } catch (Exception e) {
-        	throw new MiExcepcion("Error al conectar con el servidor " + e);
+        	throw new MiExcepcion("Error al guardar el codigo de verificación en el servidor " + e);
         }
 			        
         EmailUsuarios datosDelEmail = new EmailUsuarios();
@@ -71,8 +79,11 @@ public class ServicioCodigoDeVerificacion {
         try {
 			servicioEmail.enviarEmailUsuario(datosDelEmail);
 		} catch (Exception e) {
-			throw new MiExcepcion("Error al enviar codigo de verificación.");
+			throw new MiExcepcion("Error al enviar codigo de verificación por correo eléctronico.");
 		}
+        return idCodigoVerificacion;
+        
+        
 	  }
 			
 	
