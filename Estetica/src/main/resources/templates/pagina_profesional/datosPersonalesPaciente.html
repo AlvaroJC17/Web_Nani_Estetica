@@ -99,7 +99,7 @@
             </div>
             <div class="mb-3 col-lg-4 ">
               <label for="fechaAltaFormateada" class="form-label texto-label">Fecha de alta</label>
-              <input type="text" name="fechaAltaFormateada" th:value="${fechaAltaFormateada}" class="form-control"
+              <input type="text" th:value="${#temporals.format(datosCliente.fechaCreacion, 'dd-MM-yyyy')}" class="form-control"
                 id="fechaAltaFormateada" placeholder="" disabled>
             </div>
             <div class="mb-3 col-lg-4 ">
@@ -582,9 +582,8 @@
               <label for="cuidado_de_piel" class="form-label texto-label">¿Describe brevemente como te cuidas las piel y
                 que productos usas?</label>
               <p id="contadorCuidadoPiel" class="mb-0 fs-6 text-black">Máximo de caracteres 500/500</p>
-              <textarea type="text" maxlength="500" style="height: 100px;" th:text="${datosPaciente.cuidado_de_piel}"
-                th:value="${cuidado_de_piel}" name="cuidado_de_piel" class="form-control" id="cuidado_de_piel"
-                placeholder="" disabled>
+              <textarea type="text" maxlength="500" style="height: 100px;" th:text="${datosPaciente.cuidado_de_piel}" 
+			  	name="cuidado_de_piel" class="form-control" id="cuidado_de_piel" disabled>
               </textarea>
             </div>
 
@@ -789,7 +788,7 @@
 
 
               <textarea id="notas_profesional" maxlength="500" type="text" style="height: 200px;"
-                th:text="${datosPaciente.notas_profesional}" th:value="${datosPaciente.notas_profesional}"
+                th:text="${datosPaciente.notas_profesional}"
                 name="notas_profesional" class="form-control" disabled>
             </textarea>
 
@@ -821,12 +820,13 @@
             <div class="modal-dialog">
               <div style="background-color: #ebdf9d;" class="modal-content">
                 <div class="modal-header d-block text-center border border-0">
-                  <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
-                  <h1 class="modal-title fs-5 fw-bold" id="confirmNotasLabel"></h1>
+                  <img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+                  <h1 class="modal-title fs-6 fw-bold mt-4" id="confirmNotasLabel">Estimado usuario</h1>
                 </div>
                 <div style="text-align: justify;" class="modal-body fs-6 lh-sm">
-
-                  <p class="text-center fs-5 fw-mediun">¿Estas seguro de modificar estos datos?</p>
+					
+				
+                  <p class="text-center fs-6 fw-mediun">¿Estas seguro de modificar estos datos?</p>
 
 
                 </div>

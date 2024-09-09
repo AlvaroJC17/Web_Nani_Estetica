@@ -158,8 +158,6 @@
     </section>
     
 	
-	<p id="pruebaJava"></p>
-	
     <!--Modal mensaje de exito misDatosCliente	-->
 	
 	<div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
@@ -328,22 +326,7 @@
 					  
 	</script>
 	
-	<script th:inline="javascript">
-		
-			var prueba = /*[[${datosCliente.fechaCreacion}]]*/
-			console.log(prueba);
-		
-		function actualizarParrafo(prueba) {
-			
-			
-		           // Selecciona la etiqueta <p> por su ID
-		           var parrafo = document.getElementById("pruebaJava")
-		           
-		           // Actualiza el contenido de la etiqueta <p>
-		           parrafo.innerText = prueba
-		       }
-		
-	</script>
+
 	
 </body>
 </html>

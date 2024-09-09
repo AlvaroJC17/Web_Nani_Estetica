@@ -2,6 +2,7 @@ package com.proyecto_integrador_3.Estetica.Entidades;
 
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
@@ -58,13 +59,32 @@ public class Usuario implements Serializable {
 	protected boolean ValidacionForm;
 	
 	@Temporal(TemporalType.DATE)
-	protected Date fechaNacimiento;
+	protected LocalDate fechaNacimiento;
 	
 	@Column(name="email_validado")
 	protected Boolean emailValidado = false;
 	
 	@Column(name="fecha_creacion")
 	protected LocalDateTime fechaCreacion;
+	
+	@Column(name ="intentos_verificacion")
+	protected int intentosValidacion = 0;
+	
+	@Column(name = "bloqueado_verificacion")
+	protected Boolean bloqueoValidacion = false;
+	
+	@Column(name = "hora_bloqueo_validacion")
+	protected LocalDateTime horaDeBloqueoValidacion;
+	
+	@Column(name ="intentos_login")
+	protected int intentosLogin = 0;
+	
+	@Column(name = "bloqueo_login")
+	protected Boolean bloqueoLogin = false;
+	
+	@Column(name = "hora_bloqueo_login")
+	protected LocalDateTime horaBloqueologin;
+	
 	
 	@Transient
 	@OneToOne(cascade = CascadeType.ALL)
@@ -78,7 +98,10 @@ public class Usuario implements Serializable {
 		this.id = id;
 	}
 	
-	public Usuario(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, Date fechaNacimiento) {
+	
+	public Usuario(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, LocalDate fechaNacimiento,
+			Boolean emailValidado, LocalDateTime fechaCreacion, int intentosValidacion, Boolean bloqueoValidacion,  LocalDateTime horaDeBloqueoValidacion,
+			int intentosLogin, Boolean bloqueoLogin, LocalDateTime horaBloqueoLogin) {
 		this.id = id;
 		this.tokens = tokens;
 		this.email = email;
@@ -87,12 +110,73 @@ public class Usuario implements Serializable {
 		this.activo = activo;
 		this.ValidacionForm = ValidacionForm;
 		this.fechaNacimiento = fechaNacimiento;
+		this.emailValidado = emailValidado;
+		this.fechaCreacion = fechaCreacion;
+		this.intentosValidacion = intentosValidacion;
+		this.bloqueoValidacion = bloqueoValidacion;
+		this.horaDeBloqueoValidacion = horaDeBloqueoValidacion;
+		this.intentosLogin = intentosLogin;
+		this.bloqueoLogin = bloqueoLogin;
+		this.horaDeBloqueoValidacion = horaBloqueoLogin;
+	}
 
 	
 		
+
+
+
+
+	public Boolean getBloqueoValidacion() {
+		return bloqueoValidacion;
 	}
-	
-	
+
+	public void setBloqueoValidacion(Boolean bloqueoValidacion) {
+		this.bloqueoValidacion = bloqueoValidacion;
+	}
+
+	public LocalDateTime getHoraDeBloqueoValidacion() {
+		return horaDeBloqueoValidacion;
+	}
+
+	public void setHoraDeBloqueoValidacion(LocalDateTime horaDeBloqueoValidacion) {
+		this.horaDeBloqueoValidacion = horaDeBloqueoValidacion;
+	}
+
+	public Boolean getBloqueoLogin() {
+		return bloqueoLogin;
+	}
+
+	public void setBloqueoLogin(Boolean bloqueoLogin) {
+		this.bloqueoLogin = bloqueoLogin;
+	}
+
+	public LocalDateTime getHoraBloqueologin() {
+		return horaBloqueologin;
+	}
+
+	public void setHoraBloqueologin(LocalDateTime horaBloqueologin) {
+		this.horaBloqueologin = horaBloqueologin;
+	}
+
+	public int getIntentosValidacion() {
+		return intentosValidacion;
+	}
+
+	public void setIntentosValidacion(int intentosValidacion) {
+		this.intentosValidacion = intentosValidacion;
+	}
+
+	public int getIntentosLogin() {
+		return intentosLogin;
+	}
+
+	public void setIntentosLogin(int intentosLogin) {
+		this.intentosLogin = intentosLogin;
+	}
+
+	public void setValidacionForm(boolean validacionForm) {
+		ValidacionForm = validacionForm;
+	}
 
 	public List<TokenUsuario> getTokens() {
 		return tokens;
@@ -168,11 +252,11 @@ public class Usuario implements Serializable {
 	
 	
 
-	public Date getFechaNacimiento() {
+	public LocalDate getFechaNacimiento() {
 		return fechaNacimiento;
 	}
 
-	public void setFechaNacimiento(Date fechaNacimiento) {
+	public void setFechaNacimiento(LocalDate fechaNacimiento) {
 		this.fechaNacimiento = fechaNacimiento;
 	}
 

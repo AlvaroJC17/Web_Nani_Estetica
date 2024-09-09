@@ -1,6 +1,8 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
 import java.io.Serializable;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -62,9 +64,12 @@ public class Persona extends Usuario implements Serializable{
 		this.id = id;
 	}
 
-	public Persona(String id, List<TokenUsuario> tokens, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm, String nombre, String apellido,
-			String ocupacion, Sexo sexo, Date fechaNacimiento, String domicilio, String telefono) {
-		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
+	public Persona(String id, List<TokenUsuario> tokens, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm,
+			String nombre, String apellido, String ocupacion, Sexo sexo, LocalDate fechaNacimiento, Boolean emailValidado, LocalDateTime fechaCreacion,
+			int intentosValidacion, Boolean bloqueoValidacion, LocalDateTime horaDeBloqueoValidacion, int intentosLogin, Boolean bloqueoLogin,
+			LocalDateTime horaDeBloqueoLogin, String domicilio, String telefono) {
+		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento, emailValidado, fechaCreacion, intentosValidacion, 
+				bloqueoValidacion,  horaDeBloqueoValidacion,  intentosLogin, bloqueoLogin, horaDeBloqueoLogin);
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;
@@ -86,14 +91,19 @@ public class Persona extends Usuario implements Serializable{
 		this.telefono = telefono;
 	}
 
-	public Persona(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, Date fechaNacimiento) {
-		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento);
+	public Persona(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, LocalDate fechaNacimiento,
+			Boolean emailValidado, LocalDateTime fechaCreacion, int intentosValidacion,  Boolean bloqueoValidacion, LocalDateTime horaDeBloqueoValidacion, int intentosLogin,
+			Boolean bloqueoLogin, LocalDateTime horaDeBloqueoLogin) {
+		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento,  emailValidado,  fechaCreacion,  intentosValidacion,  
+				bloqueoValidacion,  horaDeBloqueoValidacion, intentosLogin, bloqueoLogin, horaDeBloqueoLogin );
 	}
 		
 	public Persona(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean validacionForm,
-			String dni, String nombre, String apellido, String ocupacion, Sexo sexo, Date fechaNacimiento,
-			String domicilio, String telefono) {
-		super(id, tokens, email, contrasena, rol, activo, validacionForm, fechaNacimiento);
+			Boolean emailValidado, LocalDateTime fechaCreacion, int intentosValidacion,  Boolean bloqueoValidacion, LocalDateTime horaDeBloqueoValidacion,
+			int intentosLogin, Boolean bloqueoLogin, LocalDateTime horaDeBloqueoLogin, String dni, String nombre, String apellido, String ocupacion, Sexo sexo,
+			LocalDate fechaNacimiento, String domicilio, String telefono) {
+		super(id, tokens, email, contrasena, rol, activo, validacionForm, fechaNacimiento, emailValidado, fechaCreacion, intentosValidacion,  
+				bloqueoValidacion,  horaDeBloqueoValidacion, intentosLogin, bloqueoLogin, horaDeBloqueoLogin);
 		this.dni = dni;
 		this.nombre = nombre;
 		this.apellido = apellido;

@@ -116,7 +116,7 @@ tener el mismo ID-->
 			<form class="" th:action="@{/cancelarOrConfimarTurnoProfesional}" method="post">
           <ul class="ps-2 me-2 mt-3" >
 			<li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turnoActivo.id, turnoActivo.id.length() - 12)}"></p> </li>
-			<li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoActivo.fechaCreacion}"></p> </li>
+			<li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoActivo.fechaCreacion, 'dd-MM-yyyy')}"></p> </li>
             <li class="list-unstyled d-flex"><strong>Cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoActivo.cliente.nombre + ' ' + turnoActivo.cliente.apellido}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Dni cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoActivo.dni}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoActivo.fecha, 'dd-MM-yyyy')}"></p> </li>

@@ -369,6 +369,8 @@ public class ServicioProfesional {
 					fechaModificacion = fechaActual;
 				}
 				
+				System.out.println("Notas guardadas::: " + notasDelProfesional + "notase enviadas::::" + notas_profesional);
+				
 				if (notasDelProfesional.equalsIgnoreCase(notas_profesional)) {
 					return;
 				}

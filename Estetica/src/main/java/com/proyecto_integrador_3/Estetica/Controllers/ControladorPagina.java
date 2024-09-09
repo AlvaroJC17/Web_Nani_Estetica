@@ -30,6 +30,7 @@ import com.proyecto_integrador_3.Estetica.Repository.RepositorioToken;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioEmail;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioToken;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
@@ -57,6 +58,9 @@ public class ControladorPagina {
 	@Autowired
 	ServicioToken servicioToken;
 	
+	@Autowired
+	ServicioHorario servicioHorario;
+	
 	
 	@GetMapping("/login")
 	public String login() {
@@ -69,7 +73,17 @@ public class ControladorPagina {
 	}
 	
 	@GetMapping("/registrarse")
-	public String registrarse() {
+	public String registrarse(
+			@RequestParam(required = false) String error,
+			Model model) {
+		
+		if (error != null) {
+			String error2 = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><p class='fs-6 text-center'>Ha superado el número máximo de intentos, por favor espere unos minutos y registrese nuevamente para "
+					 + "generar un nuevo código de validación.</p>"; 
+			model.addAttribute("error", error2);
+			model.addAttribute("showModalError", true);	
+		}
+		
 		return "registrarse";
 	}
 	
@@ -193,19 +207,15 @@ public class ControladorPagina {
 			@RequestParam(name="contrasena") String password,
 			@RequestParam(name="contrasena2") String password2,
 			@RequestParam String fechaNacimiento,
+			@RequestParam String fechaExpiracionCodigo,
 			Model model) throws MiExcepcion {
 		
 		//evitamos que el usuario deje espacios en blanco al inicio o final del string
 		String codigoUsuarioSinEspacios = codigoUsuario.trim();
-		
-		//Usamos un opcional y el id del usuario para buscar el mismo usuario pero en forma de objeto
-		Optional <Usuario> usuarioNoValidado = servicioUsuario.buscarPorIdOptional(idUsuarioNoValidado);
-		if (usuarioNoValidado.isPresent()) {
-			Usuario usuarioSinValidar = usuarioNoValidado.get();
-			usuarioSinValidar.getId();
 			
 			//Llamamos al metodo para verificar el codigo y guardamos el resultado booleano en una variable
-		Boolean isValido = servicioCodigoDeVerificacion.validarCodigoIngresado(codigoUsuarioSinEspacios, usuarioSinValidar);
+		Boolean isValido = servicioCodigoDeVerificacion.validarCodigoIngresado(codigoUsuarioSinEspacios);
+		
 		
 		//Si el codigo es valido, llamamos al metodo que guarda a los usuarios en la tabla
 		if (isValido) {
@@ -221,7 +231,6 @@ public class ControladorPagina {
 			} catch (MiExcepcion e) {
 				
 				String error = e.getMessage();
-				System.out.println("Error al registrar el usuario");
 	            model.addAttribute("error", error);
 	        	model.addAttribute("showModalError", true);
 	            return "registrarse";
@@ -229,31 +238,72 @@ public class ControladorPagina {
         	
 			//Sino es valido lanzamos un error
 		}else {	
-			Boolean conteoRegresivo = false; //no muestra el conteo regresivo si hay algun error al ingresar el codigo
-			String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-					 +"<span class='fs-6'>El codigo ingresado no es valido."
-					 + " Por favor intente nuevamente o genere un nuevo codigo.</span>";
-			Boolean mostrarEnlace = true;
-			model.addAttribute("mostrarEnlace",mostrarEnlace);
-			model.addAttribute("idUsuarioNoValidado", idUsuarioNoValidado);
-			model.addAttribute("email", email);
-			model.addAttribute("contrasena", password);
-			model.addAttribute("contrasena2", password2);
-			model.addAttribute("fechaNacimiento", fechaNacimiento);
-			model.addAttribute("conteoRegresivo", conteoRegresivo);
-			model.addAttribute("error", error);
-        	model.addAttribute("showModalError", true);
-			return "validadorDeCodigo";
+			
+			try {
+				
+				//Sumamos y obtenemos el numero de intentos del usuario a traves del email
+				int numeroDeIntentos = servicioUsuario.validarIntentosVerificacion(email);
+				
+				//Mientras los intentos sean menores a 4 seguira mostrando este mensaje de error, luego del 4to intento pasara al else
+				if (numeroDeIntentos <= 3) {
+					
+					LocalDateTime pasearFecha = servicioHorario.pasarFechaStringToLocalDateTime(fechaExpiracionCodigo);
+					
+					Boolean conteoRegresivo = true; //no muestra el conteo regresivo si hay algun error al ingresar el codigo
+					String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+							 +"<p class='fs-6 text-center'>El codigo ingresado no es valido. Intentos  " + numeroDeIntentos + "/3 </p>" ;
+					Boolean mostrarEnlace = false;
+					model.addAttribute("error", error);
+					model.addAttribute("mostrarEnlace",mostrarEnlace);
+					model.addAttribute("conteoRegresivo", conteoRegresivo);
+					model.addAttribute("expiracionCodigo", pasearFecha);
+					model.addAttribute("idUsuarioNoValidado", idUsuarioNoValidado);
+					model.addAttribute("email", email);
+					model.addAttribute("contrasena", password);
+					model.addAttribute("contrasena2", password2);
+					model.addAttribute("fechaNacimiento", fechaNacimiento);
+		        	model.addAttribute("showModalError", true);
+					return "validadorDeCodigo";
+				}else {
+					
+					String error = null;
+					//Bloqueamos al usuario porque supero el numero de intentos
+					servicioUsuario.bloquearUsuarioPorIntentosValidacion(email);
+					
+					//Este metodo solo genera true si el usuario esta bloqueado
+					if (servicioUsuario.verificarYDesbloquearUsuarioValidacion(email)) {
+						   error= "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><p class='fs-6 text-center'>Ha superado el numero máximo de intentos, por favor espere unos minutos y registrese nuevamente para "
+									 + "generar un nuevo código de validación.</p>";
+					}else {
+					     error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+								 +"<span class='fs-6'>Genere un nuevo código.</span>";
+					}
+					
+					return "redirect:/registrarse?error=" + error; 
+		        	
+				}
+				
+				
+			} catch (MiExcepcion e) {
+				String error = e.getMessage();
+				Boolean conteoRegresivo = false; //no muestra el conteo regresivo si hay algun error al ingresar el codigo 
+				Boolean mostrarEnlace = true;
+				model.addAttribute("mostrarEnlace",mostrarEnlace);
+				model.addAttribute("idUsuarioNoValidado", idUsuarioNoValidado);
+				model.addAttribute("email", email);
+				model.addAttribute("contrasena", password);
+				model.addAttribute("contrasena2", password2);
+				model.addAttribute("fechaNacimiento", fechaNacimiento);
+				model.addAttribute("conteoRegresivo", conteoRegresivo);
+				model.addAttribute("error", error);
+	        	model.addAttribute("showModalError", true);
+				return "validadorDeCodigo";
+			}
 		}
-		
-		}else {
-			System.out.println("Usuario sin validar no encontrado");
-			return "registrarse";
-		}
-		
 	}
-	
-	
+			
+			
+
 	//Valida los datos del usuario al registrarse, genera un codigo y lo envia por email
 	@PostMapping("/validarEmail")
 	public String validarEmail(
@@ -265,24 +315,27 @@ public class ControladorPagina {
 			Model modelo) throws MiExcepcion {	
 		
 		try {
-			//Validamos que los datos ingresados sean correctos, sino tiramos una excepcion que sale por el catch
-			servicioUsuario.validarDatosDelUsuario(email, password, password2, fechaNacimiento);
 			
-			//Buscamos la fecha actual para registrar cuando se creo el usuario
-			//esto sirve para despues limpiar registros imcompletos viejos
-			LocalDateTime fechaActual = LocalDateTime.now();
-			
-			//Creamos una instancia de Usuario para pasar su id al metodo, en este punto el id
-			//es el unico valor disponible en la entidad usuario por que se crea de forma dinamica
-			//al instanciarla
-			Usuario usuarioNoValidado = new Usuario();
-			usuarioNoValidado.setFechaCreacion(fechaActual);
+			if (servicioUsuario.verificarYDesbloquearUsuarioValidacion(email)) {				
+				throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br>"
+						+ "<p class= 'fs-6 text-center'> Ha superado el número de intentos máximo para validar el correo electrónico, por favor espera unos minutos e intente nuevamente.</p>");
+			}
+	
+				//Validamos que el usuario esta registrado y con el email validado, sino es asi no entra en este condicional
+			if (servicioUsuario.validarUsuarioRegistradoActivo(email)) {
+				//Validamos que los datos ingresados sean correctos, sino tiramos una excepcion que sale por el catch
+				servicioUsuario.validarDatosDelUsuario(email, password, password2, fechaNacimiento);
+			}
+				
+			//creamos un usuario temporal para poder validar los intentos de validacion de codigo, si este usuario no completa su validacion sera borrado
+			//por el metodo para limpiar la base da datos. El email que se guarda acá tampoco influye en los intentos para registrarse
+			//Este metodo registra un nuevo usuario si no estaba registrado el email, caso contrario devuelve los datos del usuario registrado
+			Usuario usuarioTemporal = servicioUsuario.guardarOEncontrarUsuarioTemporal(email, password, password2, fechaNacimiento);
 			
 			//Llamamos al metodo que genera el codigo y lo manda por email
-			CodigoDeVerificacion idCodigo = servicioCodigoDeVerificacion.generarGuardarYEnviarCodigo(usuarioNoValidado, email);
+			CodigoDeVerificacion idCodigo = servicioCodigoDeVerificacion.generarGuardarYEnviarCodigo(usuarioTemporal);
 			
 			LocalDateTime fechaExpiracionCodigo = null;
-			System.out.println("id de codigo para buscar: " + idCodigo.getId());
 			Optional<CodigoDeVerificacion> buscarCodigo = repositorioCodigoDeVerificacion.findById(idCodigo.getId());
 			if (buscarCodigo.isPresent()) {
 				CodigoDeVerificacion codigo = buscarCodigo.get();
@@ -291,15 +344,17 @@ public class ControladorPagina {
 				throw new MiExcepcion("No se encontraron codigos registrados");
 			}
 			
+			
 			Boolean conteoRegresivo = true; //Si el codigo se envia bien, entonces creamos esta variable para mostrar el contador en el html
-						
+			Boolean mostrarEnlace = false;		
 			//Retornamos la plantilla donde se va a ingresar el codigo
 			modelo.addAttribute("email",email);
 			modelo.addAttribute("contrasena",password);
 			modelo.addAttribute("contrasena2",password2);
 			modelo.addAttribute("fechaNacimiento",fechaNacimiento);
 			modelo.addAttribute("conteoRegresivo", conteoRegresivo);
-			modelo.addAttribute("idUsuarioNoValidado", usuarioNoValidado.getId());
+			modelo.addAttribute("mostrarEnlace", mostrarEnlace);
+			modelo.addAttribute("idUsuarioNoValidado", usuarioTemporal.getId());
 			modelo.addAttribute("expiracionCodigo", fechaExpiracionCodigo);
 			if (accion!=null && accion.equals("reenviarCodigo")) {
 				String exito = "El código ha sido enviado exitosamente a su correo eléctronico";
@@ -325,30 +380,59 @@ public class ControladorPagina {
 		         @RequestParam(name = "password") String contrasena,
 		         ModelMap model, Model modelo) throws MiExcepcion {
 			
+			String emailUsuarioSinEspacios = email.trim();
+			String passwordSinEspacios = contrasena.trim();
 			
 			//VAlidamos que la casilla de mail no esta vacia
 			try {
-				servicioUsuario.validarEmail(email);
+				servicioUsuario.validarEmail(emailUsuarioSinEspacios);
 			} catch (MiExcepcion e) {
 				String error = e.getMessage();
 				model.addAttribute("error", error);
 				modelo.addAttribute("showModalError", true);
 				return "login";
 			}
+			
+			//validamos si es un usuario temporal o real a traves de su email, si su email esta validado es un usuario real sino es temporal
+			//Si es temporal tiramos una excepcion porque los usuarios temporales no pueden loguearse
+			if (!servicioUsuario.validarUsuarioRegistradoActivo(emailUsuarioSinEspacios)) {
+				String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br>"
+   					 +"<p class='fs-6 text-center'>La cuenta no se encuentra registrada en nuestro sistema, por favor registrate para poder "
+   					 + "usar nuestros servicios.</p>";
+				
+				model.addAttribute("error", error);
+				modelo.addAttribute("showModalError", true);
+				modelo.addAttribute("email", emailUsuarioSinEspacios);
+				return "login";
+			}
+			
+			
+			//Este metodo solo devuelve true si el usuario esta bloqueado, tambien verifica si ya pasaron los 5 min minutos de bloqueo y si es asi lo desbloquea y
+			// devuelve false, si el usuario no estaba bloqueado tambien devuelve false
+			if (servicioUsuario.verificarYDesbloquearUsuarioLogin(emailUsuarioSinEspacios)) {
+				String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br>"
+	   					 +"<p class='fs-6 text-center'>Ha superado en número máximo de intentos para iniciar sesión, por favor espera unos minutos e intente nuevamente.</p>";
+					
+					model.addAttribute("error", error);
+					modelo.addAttribute("showModalError", true);
+					modelo.addAttribute("email", emailUsuarioSinEspacios);
+					return "login";
+			}
+			
 				
 			//Validamos con el mail ingresado si el usuario existe en la base de datos
 			// Si existe entonces le buscamos todos los valores de las variables mostradas abajo
 			Usuario usuario;
 			String emailUsuario = null;
-			String password = null;
+			String passwordRegistrado = null;
 			Boolean activo;
 			Boolean validarForm = null;
 			Rol rol = null;
-		     Optional<Usuario> usuarioOptional = servicioUsuario.buscarPorEmailOptional(email);
+		     Optional<Usuario> usuarioOptional = servicioUsuario.buscarPorEmailOptional(emailUsuarioSinEspacios);
 		     if (usuarioOptional.isPresent()) {		    	 
 		         usuario = usuarioOptional.get(); //con el metodo get, asociamos al usuario encontrado a la variable usuario y asi poder acceder a sus atributos
 		         emailUsuario = usuario.getEmail();
-		         password = usuario.getContrasena();
+		         passwordRegistrado = usuario.getContrasena();
 		         activo = usuario.getActivo();
 		         validarForm = usuario.getValidacionForm();
 		         rol = usuario.getRol();
@@ -361,7 +445,7 @@ public class ControladorPagina {
 		         if (!activo) {
 						model.addAttribute("error", error1);
 						modelo.addAttribute("showModalError", true);
-						modelo.addAttribute("email", email);
+						modelo.addAttribute("email", emailUsuarioSinEspacios);
 						return "login";
 					}
 			     
@@ -372,14 +456,17 @@ public class ControladorPagina {
     					 + "  Por favor, verifica tus datos e intenta nuevamente.</span><br><br>"
     					 + "Gracias.";
 		    	 modelo.addAttribute("error", error3);
-		    	 modelo.addAttribute("email", email);
+		    	 modelo.addAttribute("email", emailUsuarioSinEspacios);
 		    	 modelo.addAttribute("showModalError", true);
 		     }
 
 		     
 		         try {
 		        	// validamos que las contraseña ingresada coincida con la registrada en la base de datos
-		        	  if (servicioUsuario.verificarPassword(contrasena, password)) {
+		        	  if (servicioUsuario.verificarPasswordLogin(passwordSinEspacios, passwordRegistrado)) {
+		        		  
+		        		  //Servicio para limpiar todos los valores relacionados al bloqueo por login
+		        		  servicioUsuario.blanquearBloqueoLogin(emailUsuario);
 		        		  
 		        		  //Buscamos los datos pertenecientes a ese email en la tabla de persona y los pasamos a homeAdmin
 		        		  //Dependiendo si es admin, profesional o cliente lo direccionamos a su respectivo home
@@ -416,10 +503,15 @@ public class ControladorPagina {
 				             }
 		        	  }
 		        	  //En caso que la contraseña ingresada no sea igual a la guardada, tiramos exta excepcion con un mensaje
-		         } catch (Exception e) {
-		        	 String error2 = "Usuario o contraseña incorrecta";
+		         } catch (MiExcepcion e) {
+		        	 int intentosLogin = servicioUsuario.validarIntentosLogin(emailUsuario);
+		        	 
+		        	 if (intentosLogin >= 3) {
+						servicioUsuario.bloquearUsuarioPorIntentosLogin(emailUsuario);
+					}
+		        	 String error2 = e.getMessage();
 		        	 modelo.addAttribute("error", error2);
-		        	 modelo.addAttribute("email", email);
+		        	 modelo.addAttribute("email", emailUsuarioSinEspacios);
 			         modelo.addAttribute("showModalError", true);
 			         return "login";
 		         }

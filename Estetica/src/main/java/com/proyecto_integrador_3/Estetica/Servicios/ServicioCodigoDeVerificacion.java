@@ -52,28 +52,62 @@ public class ServicioCodigoDeVerificacion {
 	  // el unico valor que usamos en este metodo del objeto usuario es su id.
 	  //este metodo tambien se encargar de enviar el mail al usuario
 	  @Transactional
-	public CodigoDeVerificacion generarGuardarYEnviarCodigo(Usuario usuario, String email) throws MiExcepcion {
+	public CodigoDeVerificacion generarGuardarYEnviarCodigo(Usuario usuario) throws MiExcepcion {
         String codigo = generadorDeCodigos();
         LocalDateTime expiracion = LocalDateTime.now().plusMinutes(5);
 
-        CodigoDeVerificacion codigoVerificacion = new CodigoDeVerificacion();
-        codigoVerificacion.setCodigo(codigo);
-        codigoVerificacion.setExpiracion(expiracion);
-        codigoVerificacion.setUsuario(usuario);
-        codigoVerificacion.setUsado(false);
-
+        //Buscamos al usuario temporal previamente guardado para asiganerle un codigo de verificacion
+        Optional <Usuario> encontraUsuario = repositorioUsuario.findByEmail(usuario.getEmail());
+       
+        //creamos la variable donde vamos a devolver el id del codigo
         CodigoDeVerificacion idCodigoVerificacion;
-        try {
-        	idCodigoVerificacion = repositorioCodigoDeVerificacion.save(codigoVerificacion);
-        	System.out.println("Id del codigo antes de guardar: " + codigoVerificacion.getId());
-        	System.out.println("Id del codigo despues de guardar:" + idCodigoVerificacion.getId());
-        } catch (Exception e) {
-        	throw new MiExcepcion("Error al guardar el codigo de verificación en el servidor " + e);
-        }
-			        
+        
+        //Si el usuario existe
+        if (encontraUsuario.isPresent()) {
+        	  Usuario usuarioEncontrado = encontraUsuario.get(); //obetenemos sus atributos
+        	  
+        	  //buscamos si hay codigo ya existentes para ese usuario
+        	  Optional <CodigoDeVerificacion> buscarCodigo = repositorioCodigoDeVerificacion.findByUsuarioId(usuarioEncontrado.getId());
+        	  
+        	  //verificamos si existe un codigo anterior, si es asi, sobreescribimos ese codigo con el nuevo codigo generado
+        	  //con esto evitamos que el mismo usuario tenga varios codigos guardados en base de datos al mismo tiempo
+        	  if (buscarCodigo.isPresent()) {
+        		  CodigoDeVerificacion sobreEscribirCodigo = buscarCodigo.get();
+        		  sobreEscribirCodigo.setCodigo(codigo);
+        		  sobreEscribirCodigo.setExpiracion(expiracion);
+        		  sobreEscribirCodigo.setUsuario(usuarioEncontrado);
+        		  sobreEscribirCodigo.setUsado(false);
+        		  
+        		  try {
+        			  //guardamos la sobreescritura del codigo
+                    	idCodigoVerificacion = repositorioCodigoDeVerificacion.save(sobreEscribirCodigo);
+                    } catch (Exception e) {
+                    	throw new MiExcepcion("Error al sobrescribir el código de verificación en el servidor " + e);
+                    }
+        		 //si no existen codigos anteriores, entonces generamos uno nuevo, esto es si el usuario se esta registrando por primera vez
+        	  }else {
+        		  CodigoDeVerificacion codigoVerificacion = new CodigoDeVerificacion();
+        		  codigoVerificacion.setCodigo(codigo);
+        		  codigoVerificacion.setExpiracion(expiracion);
+        		  codigoVerificacion.setUsuario(usuarioEncontrado);
+        		  codigoVerificacion.setUsado(false);
+        		  
+        		  try {
+        			  //guardamos el nuevo codigo
+                    	idCodigoVerificacion = repositorioCodigoDeVerificacion.save(codigoVerificacion);
+                    } catch (Exception e) {
+                    	throw new MiExcepcion("Error al guardar el codigo de verificación en el servidor " + e);
+                    }
+        	  }
+        	  
+		}else {
+			throw new MiExcepcion("Usuario temporal no econtrado");
+		}
+        
+        //Servicio para enviar el codigo generado por email
         EmailUsuarios datosDelEmail = new EmailUsuarios();
         datosDelEmail.setAsunto("Nani estética - Validar correo eléctronico");
-        datosDelEmail.setDestinatario("alvarocortesia@gmail.com");
+        datosDelEmail.setDestinatario("alvarocortesia@gmail.com"); // el correo lo sacamos de usuarioEncontrado.getEmail();
         datosDelEmail.setMensaje(codigo);
         
         try {
@@ -81,6 +115,7 @@ public class ServicioCodigoDeVerificacion {
 		} catch (Exception e) {
 			throw new MiExcepcion("Error al enviar codigo de verificación por correo eléctronico.");
 		}
+        // retornamos el id del codigo, ya sea codigo por sobreescritura o nuevo codigo
         return idCodigoVerificacion;
         
         
@@ -91,10 +126,10 @@ public class ServicioCodigoDeVerificacion {
 	//ademos valida que el codigo no haya expirado y que no este usado y sino fue usado entonces lo pasa
 	//a usado
 	  @Transactional
-	  public boolean validarCodigoIngresado(String codigoUsuario, Usuario usuario) throws MiExcepcion {
+	  public boolean validarCodigoIngresado(String codigoUsuario) throws MiExcepcion {
 
 		  try {
-			  CodigoDeVerificacion codigoVerificacion = repositorioCodigoDeVerificacion.findByCodigoAndUsuario(codigoUsuario, usuario);
+			  CodigoDeVerificacion codigoVerificacion = repositorioCodigoDeVerificacion.findByCodigo(codigoUsuario);
 	        if (codigoVerificacion != null && codigoVerificacion.esValido()) {
 	            codigoVerificacion.setUsado(true);
 	            repositorioCodigoDeVerificacion.save(codigoVerificacion);

@@ -70,14 +70,17 @@ public class ServicioCliente {
 		
 		Sexo nuevoSexo = null;
 		nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
+
 		
 		try {
 		//Con este optional buscamos los datos del usuario que le vamos a pasar al nuevo cliente
 		//y despues borrar ese usuario
 		Optional <Usuario> datosUsuario = servicioUsuario.buscarPorEmailOptional(email);
+	
 		if (datosUsuario.isPresent()) {
 			Usuario datosCliente = datosUsuario.get();
-			
+	
+
 			//Con este opcional usamos el id del usuario obtenido del optional anterior y buscamos
 			//los datos de ese usario en la tabla de codigo_de_verificacion para borrarlos
 			//sino borramos primero esos datos de la tabla de codigo nos da un error de llave foranea al intentar borrar el usuario viejo
@@ -85,7 +88,6 @@ public class ServicioCliente {
 			Optional<CodigoDeVerificacion> datosTabla = servicioCodigoDeVerificacion.obtenerDatosTablaCodigoPorUsuarioId(datosCliente.getId());
 			if (datosTabla.isPresent()) {
 				datos = datosTabla.get();
-				System.out.println("Datos de codigo: " + datos);
 			}
 		
 			Cliente nuevo_cliente = new Cliente();
@@ -93,6 +95,9 @@ public class ServicioCliente {
 			nuevo_cliente.setContrasena(datosCliente.getContrasena());
 			nuevo_cliente.setRol(datosCliente.getRol());
 			nuevo_cliente.setActivo(datosCliente.getActivo());
+			nuevo_cliente.setEmailValidado(datosCliente.getEmailValidado());
+			nuevo_cliente.setIntentosLogin(datosCliente.getIntentosLogin());
+			nuevo_cliente.setIntentosValidacion(datosCliente.getIntentosValidacion());
 			nuevo_cliente.setValidacionForm(TRUE);
 			nuevo_cliente.setFomularioDatos(FALSE);
 			nuevo_cliente.setMulta(FALSE);
@@ -112,7 +117,7 @@ public class ServicioCliente {
 				repositorioCliente.save(nuevo_cliente); //Guardamos los datos del usuario como un nuevo cliente
 		}
 		} catch (Exception e) {
-			throw new MiExcepcion("Error al conectar con el servidor " + e);
+			throw new MiExcepcion("Error al conectar con el servidor en registrar clientes" + e.getMessage());
 		}
 		
 	}

@@ -234,7 +234,7 @@ public class ServicioTurnos {
     			String valorMulta = turno.getProfesional().getValorMulta();
     			
     			LocalDateTime fechaTurnoLocalDateTime = null;
-    			fechaTurnoLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTime(fechaAndHorario);
+    			fechaTurnoLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTimeOtroFormato(fechaAndHorario);
     			
     			if (fechaTurnoLocalDateTime.isBefore(fechaActual.plusMinutes(15)) && turno.getActivo()) { //comparamos la fecha del tunos con la fecha actual mas 15 min
     				turno.setMulta(TRUE); //Le colocamos una multa al turno que tiene fecha pasada

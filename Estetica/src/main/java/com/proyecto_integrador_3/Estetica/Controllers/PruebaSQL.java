@@ -1,7 +1,9 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -94,6 +96,7 @@ public class PruebaSQL implements CommandLineRunner {
 		
 		//Codigo para crear un administrador default en la base de datos cuando se inicia
 		//el programa por primera vez
+	
 		if (!repositorioAdmin.existsByRol(Rol.ADMIN)) {
             Admin admin = new Admin();
             admin.setActivo(true);
@@ -109,6 +112,7 @@ public class PruebaSQL implements CommandLineRunner {
             admin.setValidacionForm(true);
             admin.setOcupacion("Ingeniero");
             admin.setTelefono("22736382");
+            admin.setFechaNacimiento(LocalDate.now());
             admin.setSexo(Sexo.MASCULINO);
             repositorioAdmin.save(admin);
             System.out.println("Administrador creado: " + admin);

@@ -84,6 +84,9 @@ public class ControladorTurnos {
 		  }else if(servicioHorario.esFinDeSemana(fechaDelTurno) && !servicioHorario.fechaYaPaso(fechaDelTurno)) {
 			  error = "No trabajamos los domingos";
 			  fechaDelTurno = LocalDate.now();
+		  }else if(servicioHorario.diasLaborales(fechaTurno, idProfesional)) {
+			  error = "No tiene este día habilitado como día laboral";
+			  mostrarBotonesDeshabilitar = false;
 		  }
 			  
 		

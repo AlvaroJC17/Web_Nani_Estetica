@@ -158,6 +158,45 @@ public class ControladorProfesional {
 			
 			Boolean esEdicion = true; //con este boolean le indicamos al servicio que es para editar un formulario ya registrado
 			String exito =  null;
+		
+			try {
+				
+			if (funcionalidadBotones.equalsIgnoreCase("botonGuardarFormulario")) {
+				
+				//Servicio para guardar un formulario nuevo y actualizar uno ya existente
+				servicioTurnos.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes,
+				ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual,
+				alteracion_hormonal, vitaminas, corticoides, hormonas, metodo_anticonceptivo,
+				sufre_enfermedad, cual_enfermedad, tiroides, paciente_oncologica, fractura_facial,
+				cirugia_estetica, indique_cirugia_estetica, tiene_implantes, marca_pasos, horas_sueno,
+				exposicion_sol, protector_solar, reaplica_protector, consumo_carbohidratos,
+				tratamientos_faciales_anteriores, resultados_tratamiento_anterior, cuidado_de_piel,
+				motivo_consulta, esEdicion);
+				
+				exito = "Los datos fueron modificados exitosamente";
+				modelo.addAttribute("exito", exito);
+				modelo.addAttribute("showModalExito", true);
+				
+			}else if(funcionalidadBotones.equalsIgnoreCase("botonGuardarRecomendaciones")) {
+				
+				//Servicio para agregar o editar una recomendacion de un profesional a un turno
+				servicioTurnos.guardarModificarConsultaTurno(idTurnoModificado, recomendaciones);
+				
+				exito = "Los datos fueron modificados exitosamente";
+				modelo.addAttribute("exito", exito);
+				modelo.addAttribute("showModalExito", true);
+				
+			}else if(funcionalidadBotones.equalsIgnoreCase("botonGuardarNotas")) {
+				
+				System.out.println("Notas del profesional: " + notas_profesional);
+				
+				//servicio para guardar las notas de un profesional en el perfil del cliente
+				servicioProfesional.guardarNotasProfesional(idCliente, notas_profesional);
+				
+				exito = "Los datos fueron modificados exitosamente";
+				modelo.addAttribute("exito", exito);
+				modelo.addAttribute("showModalExito", true);
+			}
 			
 			List<Turnos> ultimosTurnosCliente = servicioTurnos.buscarTurnosPorProfesionalAndClienteAndEstadoDelTurno(idProfesional, idCliente, EstadoDelTurno.ASISTIDO);
 			List<Turnos> tresUltimosTurnos = new ArrayList<>();
@@ -196,43 +235,6 @@ public class ControladorProfesional {
 			modelo.addAttribute("datosPaciente", datosPaciente); // datos para la seccion del formulario y nota del paciente
 			modelo.addAttribute("ultimosTurnos", tresUltimosTurnos); // mandamos los ultimos tres turnos asistidos a la vista
 			modelo.addAttribute("cienteSinTurnos", cienteSinTurnos);
-			
-			try {
-				
-			if (funcionalidadBotones.equalsIgnoreCase("botonGuardarFormulario")) {
-				
-				//Servicio para guardar un formulario nuevo y actualizar uno ya existente
-				servicioTurnos.formularioTurnos(idCliente, email, fuma, drogas, alcohol, deportes,
-				ejercicios, medicamentos, nombreMedicamento, embarazo, amamantando, ciclo_menstrual,
-				alteracion_hormonal, vitaminas, corticoides, hormonas, metodo_anticonceptivo,
-				sufre_enfermedad, cual_enfermedad, tiroides, paciente_oncologica, fractura_facial,
-				cirugia_estetica, indique_cirugia_estetica, tiene_implantes, marca_pasos, horas_sueno,
-				exposicion_sol, protector_solar, reaplica_protector, consumo_carbohidratos,
-				tratamientos_faciales_anteriores, resultados_tratamiento_anterior, cuidado_de_piel,
-				motivo_consulta, esEdicion);
-				
-				exito = "Los datos fueron modificados exitosamente";
-				modelo.addAttribute("exito", exito);
-				modelo.addAttribute("showModalExito", true);
-				
-			}else if(funcionalidadBotones.equalsIgnoreCase("botonGuardarRecomendaciones")) {
-				
-				//Servicio para agregar o editar una recomendacion de un profesional a un turno
-				servicioTurnos.guardarModificarConsultaTurno(idTurnoModificado, recomendaciones);
-				
-				exito = "Los datos fueron modificados exitosamente";
-				modelo.addAttribute("exito", exito);
-				modelo.addAttribute("showModalExito", true);
-				
-			}else if(funcionalidadBotones.equalsIgnoreCase("botonGuardarNotas")) {
-				
-				//servicio para guardar las notas de un profesional en el perfil del cliente
-				servicioProfesional.guardarNotasProfesional(idCliente, notas_profesional);
-				
-				exito = "Los datos fueron modificados exitosamente";
-				modelo.addAttribute("exito", exito);
-				modelo.addAttribute("showModalExito", true);
-			}
 				
 			//Cuando todo sale bien retornamos a esta vista con todos los datos de arriba
 			return "/pagina_profesional/datosPersonalesPaciente";
@@ -287,13 +289,10 @@ public class ControladorProfesional {
 			
 		//Buscamos el email del cliente/usuario con el id
 		String emailCliente = null;
-		String fechaAltaFormateada = null;
 		Optional <Usuario> buscarEmailCliente = repositorioUsuario.buscarPorIdOptional(idCliente);
 		if (buscarEmailCliente.isPresent()) {
 			Usuario emailUsuario = buscarEmailCliente.get();
 			emailCliente = emailUsuario.getEmail();
-			DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-			fechaAltaFormateada = emailUsuario.getFechaCreacion().format(formatter);
 		}
 		
 		//Buscamos los si el fomrulario de datos fue completado por el cliente
@@ -338,7 +337,6 @@ public class ControladorProfesional {
 		modelo.addAttribute("ultimosTurnos", tresUltimosTurnos); // mandamos los ultimos tres turnos asistidos a la vista
 		modelo.addAttribute("isEditarDisabled", isEditarDisabled);
 		modelo.addAttribute("cienteSinTurnos", cienteSinTurnos);
-		modelo.addAttribute("fechaAltaFormateada", fechaAltaFormateada);
 		return "/pagina_profesional/datosPersonalesPaciente";
 	}
 
@@ -433,25 +431,15 @@ public class ControladorProfesional {
 			ModelMap model) {
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
-		Date fechaNacimiento = new Date();
+		LocalDate fechaNacimiento = null;
 		
 		for (Usuario profesional : datosProfesional) {
 			fechaNacimiento = profesional.getFechaNacimiento();
 			System.out.println("Fecha de nacimiento: " + fechaNacimiento);
 		}
-		
-		// Convertir Date a LocalDate usando Calendar
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(fechaNacimiento);
-
-        LocalDate fechaNacimientoLocalDate = LocalDate.of(
-            calendar.get(Calendar.YEAR),
-            calendar.get(Calendar.MONTH) + 1,  // Calendar.MONTH es base 0, por eso sumamos 1
-            calendar.get(Calendar.DAY_OF_MONTH)
-        );
 	
 		model.addAttribute("datosProfesional", datosProfesional);
-		model.addAttribute("fechaNacimientoLocalDate", fechaNacimientoLocalDate);
+		model.addAttribute("fechaNacimientoLocalDate", fechaNacimiento);
 		return "/pagina_profesional/misdatosProfesional";	
 	}
 	

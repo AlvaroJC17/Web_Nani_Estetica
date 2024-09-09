@@ -482,6 +482,7 @@ public class ControladorCliente {
 					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
 				}
 				
+				//Metodo que compara la fecha seleccionada con las fechas deshabilitadas del profesional, devuelve true si hay alguna coincidencia
 				if (servicioHorario.compararFechaConFechaDeshabilitada(fechaSeleccionadaLocalDate, idProfesional)) {
 					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 							+ "<span fs-6'>La fecha seleccionada no esta habilitada para seleccionar turnos.</span>";

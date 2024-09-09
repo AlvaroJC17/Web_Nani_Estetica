@@ -2,6 +2,7 @@ package com.proyecto_integrador_3.Estetica.Servicios;
 
 import static java.lang.Boolean.TRUE;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -55,7 +56,7 @@ public class ServicioAdmin {
 			String nombrePersona = null;
 			String apellidoPersona = null;
 			String dniPersona = null;
-			Date fechaNacimientoPerson = null;
+			LocalDate fechaNacimientoPerson = null;
 			Optional <Persona> datosPersona = repositorioPersona.buscarPorEmailOptional(email);
 			if (datosPersona.isPresent()) {
 				Persona datosPersonalesPersona = datosPersona.get();

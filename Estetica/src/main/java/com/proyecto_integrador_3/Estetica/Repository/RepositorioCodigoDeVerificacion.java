@@ -12,13 +12,15 @@ import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 @Repository
 public interface RepositorioCodigoDeVerificacion extends JpaRepository<CodigoDeVerificacion, String> {
 
-	CodigoDeVerificacion findByCodigoAndUsuario(String codigo, Usuario usuario);
+	CodigoDeVerificacion findByCodigo(String codigo);
 	
 	Optional<CodigoDeVerificacion> findByUsuarioId(String usuarioId);
 	
 	Optional<CodigoDeVerificacion> findById(String idCodigo);
 	
 	List<CodigoDeVerificacion> findByUsuarioIdAndUsadoFalse(String id);
+	
+	
 	
 	
 }

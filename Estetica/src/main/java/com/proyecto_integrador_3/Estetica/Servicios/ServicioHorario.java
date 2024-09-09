@@ -312,6 +312,14 @@ public class ServicioHorario {
 		 
 		   //Pasamos fechas String a localDateTime con el formato yyyy-MM-dd HH:mm 
 		 public LocalDateTime pasarFechaStringToLocalDateTime(String fecha) throws MiExcepcion{
+			 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS");
+			 LocalDateTime fechaProporcionada = LocalDateTime.parse(fecha, dateFormatter);
+			 return fechaProporcionada;
+		 }
+		 
+		 //pasar la fecha de string a localDateTime con otro formato sin los segundos OJO este metodo lo uso en seleccion de turnos y para visualizar los turnos
+		 //del cliente
+		 public LocalDateTime pasarFechaStringToLocalDateTimeOtroFormato(String fecha) throws MiExcepcion {
 			 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 			 LocalDateTime fechaProporcionada = LocalDateTime.parse(fecha, dateFormatter);
 			 return fechaProporcionada;

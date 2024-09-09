@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -37,6 +38,9 @@ public class ServicioUsuario {
 	  
 	  @Autowired
 	  public RepositorioCodigoDeVerificacion repositorioCodigoDeVerificacion;
+	  
+	  @Autowired
+	  public ServicioHorario servicioHorario;
 	  
 	  
 	  //La anotacion Scheduled indica que es un tarea programada y el cron indica en el momento que
@@ -78,19 +82,341 @@ public class ServicioUsuario {
 			}
 	    }
 	  
+	  
+	  public Boolean validarUsuarioBloqueadoLogin(String emailUsuario) throws MiExcepcion {
+		  // Buscar usuario por email
+	      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+	      if (encontrarUsuario.isPresent()) {
+			Usuario usuario = encontrarUsuario.get();
+			
+			if (usuario.getBloqueoLogin()) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+	      //retorna false si el usuario no se encuentra
+	      return false;
+	  }
+	  
+	  @Transactional
+	  public void bloquearUsuarioPorIntentosLogin(String emailUsuario) throws MiExcepcion {
+	      // Buscar el usuario por email en la base de datos
+	      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+
+	      // Verificar si el usuario existe
+	      if (encontrarUsuario.isPresent()) {
+	          Usuario usuario = encontrarUsuario.get();
+	         
+	          // Verificar si el usuario ya está bloqueado
+	          if (Boolean.TRUE.equals(usuario.getBloqueoLogin())) {
+	        	  throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+								 +"<span class='fs-6'>Ha superado en número máximo de intentos para iniciar sesión, por favor espera unos minutos e intente nuevamente.</span>");
+	           
+	          }
+
+	          // Establecer el usuario como bloqueado
+	          usuario.setBloqueoLogin(TRUE);
+
+	          // Definir el tiempo actual de bloqueo
+	          LocalDateTime tiempoDeBloqueo = LocalDateTime.now();
+	          usuario.setHoraBloqueologin(tiempoDeBloqueo);
+	          // Guardar los cambios en la base de datos
+	          try {
+	              repositorioUsuario.save(usuario);
+	          } catch (Exception e) {
+	              throw new MiExcepcion("Error al guardar el estado de bloqueo del usuario: " + e.getMessage());
+	          }
+	      } else {
+	          throw new MiExcepcion("No se encontró un usuario con el email proporcionado.");
+	      }
+	  }
+	  
+	  
+	  
+	  @Transactional
+	  public void bloquearUsuarioPorIntentosValidacion(String emailUsuario) throws MiExcepcion {
+	      // Buscar el usuario por email en la base de datos
+	      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+
+	      // Verificar si el usuario existe
+	      if (encontrarUsuario.isPresent()) {
+	          Usuario usuario = encontrarUsuario.get();
+	         
+	          // Verificar si el usuario ya está bloqueado
+	          if (Boolean.TRUE.equals(usuario.getBloqueoValidacion())) {
+	        	  throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+								 +"<span class='fs-6'>Ha superado en número máximo de intentos, por favor espera unos minutos y genere un nuevo codigo.</span>");
+	           
+	          }
+
+	          // Establecer el usuario como bloqueado
+	          usuario.setBloqueoValidacion(TRUE);
+
+	          // Definir el tiempo actual de bloqueo
+	          LocalDateTime tiempoDeBloqueo = LocalDateTime.now();
+	          usuario.setHoraDeBloqueoValidacion(tiempoDeBloqueo);
+	          // Guardar los cambios en la base de datos
+	          try {
+	              repositorioUsuario.save(usuario);
+	          } catch (Exception e) {
+	              throw new MiExcepcion("Error al guardar el estado de bloqueo del usuario: " + e.getMessage());
+	          }
+	      } else {
+	          throw new MiExcepcion("No se encontró un usuario con el email proporcionado.");
+	      }
+	  }
+	  
+	  @Transactional
+	  public void blanquearBloqueoLogin(String emailUsuario) throws MiExcepcion {
+		  
+		  try {
+			  //buscar al usuario por email en la base de datos
+			  Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+
+			  //verificar si el usuario existe
+		      if (encontrarUsuario.isPresent()) {
+		          Usuario usuario = encontrarUsuario.get();
+		          usuario.setIntentosLogin(0);
+		          usuario.setBloqueoLogin(FALSE);
+		          usuario.setHoraBloqueologin(null);
+		          
+		          try {
+					repositorioUsuario.save(usuario);
+				} catch (Exception e) {
+					throw new MiExcepcion("No se pudo guardar el blanqueo de login" + e.getMessage());
+				}
+		          
+		      }
+		} catch (Exception e) {
+			throw new MiExcepcion("No se encontro el usuario por el metodo blanquear usuario login");
+		}
+	  }
+		  
+
+	  @Transactional
+	  public Boolean verificarYDesbloquearUsuarioLogin(String emailUsuario) throws MiExcepcion {
+		  
+		  //buscar al usuario por email en la base de datos
+	      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+
+	      //verificar si el usuario existe
+	      if (encontrarUsuario.isPresent()) {
+	          Usuario usuario = encontrarUsuario.get();
+
+	          // Verificar si el usuario está bloqueado
+	          if (Boolean.TRUE.equals(usuario.getBloqueoLogin())) {
+	              // Calcular la diferencia de tiempo entre el momento actual y el tiempo de bloqueo
+	              LocalDateTime tiempoActual = LocalDateTime.now();
+	              LocalDateTime tiempoDeBloqueo = usuario.getHoraBloqueologin();
+
+	              // Verificar si han pasado 5 minutos desde el tiempo de bloqueo
+	              if (tiempoDeBloqueo != null && ChronoUnit.MINUTES.between(tiempoDeBloqueo, tiempoActual) >= 5) {
+	                  // Desbloquear al usuario
+	                  usuario.setBloqueoLogin(FALSE); //Limpiar el bloqueo
+	                  usuario.setHoraBloqueologin(null); // Limpiar el tiempo de bloqueo
+	                  usuario.setIntentosLogin(0); //volvemos los intentos a cero
+
+	                  try {
+	                	  //guardamos la modificacion en la base de datos
+	                      repositorioUsuario.save(usuario);
+	                      return false; //devolvemos false si el usuario fue desbloqueado
+	                  } catch (Exception e) {
+	                      throw new MiExcepcion("Error al desbloquear al usuario: " + e.getMessage());
+	                  }
+	              }else {
+	            	  return true; // devuelve true si todavia no han transcurrido los 5 min de bloqueo
+	              }
+	            	  
+	          }else {
+	        	  return false; // Retornar false si el usuario no esta bloqueado
+	          }
+	        	 
+	      } else {
+	          System.out.println("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+ 					 +"<span class='fs-6'>No se encontró usuario con el correo electrónico ingresado</span><br><br>");
+	          
+	          return false; //tambien devolvemos false si el usuario no esta registrado en la base de datos
+	      }
+	  }
+	  
+	  
+	  @Transactional
+	  public Boolean verificarYDesbloquearUsuarioValidacion(String emailUsuario) throws MiExcepcion {
+		  
+		  //buscar al usuario por email en la base de datos
+	      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+
+	      //verificar si el usuario existe
+	      if (encontrarUsuario.isPresent()) {
+	          Usuario usuario = encontrarUsuario.get();
+
+	          // Verificar si el usuario está bloqueado
+	          if (Boolean.TRUE.equals(usuario.getBloqueoValidacion())) {
+	              // Calcular la diferencia de tiempo entre el momento actual y el tiempo de bloqueo
+	              LocalDateTime tiempoActual = LocalDateTime.now();
+	              LocalDateTime tiempoDeBloqueo = usuario.getHoraDeBloqueoValidacion();
+
+	              // Verificar si han pasado 5 minutos desde el tiempo de bloqueo
+	              if (tiempoDeBloqueo != null && ChronoUnit.MINUTES.between(tiempoDeBloqueo, tiempoActual) >= 5) {
+	                  // Desbloquear al usuario
+	                  usuario.setBloqueoValidacion(FALSE); //Limpiar el bloqueo
+	                  usuario.setHoraDeBloqueoValidacion(null); // Limpiar el tiempo de bloqueo
+	                  usuario.setIntentosValidacion(0); //volvemos los intentos a cero
+
+	                  try {
+	                	  //guardamos la modificacion en la base de datos
+	                      repositorioUsuario.save(usuario);
+	                      return false; //devolvemos false si el usuario fue desbloqueado
+	                  } catch (Exception e) {
+	                      throw new MiExcepcion("Error al desbloquear al usuario: " + e.getMessage());
+	                  }
+	              }else {
+	            	  return true; // devuelve true si todavia no han transcurrido los 5 min de bloqueo
+	              }
+	            	  
+	          }else {
+	        	  return false; // Retornar false si el usuario no esta bloqueado
+	          }
+	        	 
+	      } else {
+	          System.out.println("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+ 					 +"<span class='fs-6'>No se encontró usuario con el correo electrónico ingresado</span><br><br>");
+	          
+	          return false; //tambien devolvemos false si el usuario no esta registrado en la base de datos
+	      }
+	  }
+
+	  
+	  
+	  public Boolean validarUsuarioRegistradoActivo(String emailUsuario) throws MiExcepcion {
+		  // Buscar usuario por email
+	      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+	      if (encontrarUsuario.isPresent()) {
+			Usuario usuario = encontrarUsuario.get();
+			
+			if (usuario.getEmailValidado()) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+	      
+	      return false;
+	  }
+	  
+	  public Boolean validarUsuarioRegistradoTemporal(String emailUsuario) throws MiExcepcion {
+		  // Buscar usuario por email
+	      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+	      if (encontrarUsuario.isPresent()) {
+			Usuario usuario = encontrarUsuario.get();
+			
+			if (encontrarUsuario.isPresent() && !usuario.getActivo() && !usuario.getEmailValidado()) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+	      
+	      return false;
+	  }
+		  
+		  @Transactional
+		  public int validarIntentosVerificacion(String emailUsuario) throws MiExcepcion {
+		      // Buscar usuario por email
+		      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+
+		      if (!encontrarUsuario.isPresent()) {
+		          throw new MiExcepcion("Usuario no encontrado con el email proporcionado.");
+		      }
+
+		      // Obtener usuario existente
+		      Usuario usuario = encontrarUsuario.get();
+		      int numeroIntentos = usuario.getIntentosValidacion();
+
+		      // Incrementar el contador de intentos de verificación
+		      numeroIntentos++; 
+		      usuario.setIntentosValidacion(numeroIntentos); 
+
+		      try {
+		          // Guardar el usuario actualizado en la base de datos
+		          Usuario usuarioActualizado = repositorioUsuario.save(usuario);
+		          return usuarioActualizado.getIntentosValidacion();
+		      } catch (Exception e) {
+		          throw new MiExcepcion("No se pudieron guardar los intentos realizados");
+		      }
+		  }
+		  
+		  @Transactional
+		  public int validarIntentosLogin(String emailUsuario) throws MiExcepcion {
+		      // Buscar usuario por email
+		      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+
+		      if (!encontrarUsuario.isPresent()) {
+		          throw new MiExcepcion("Usuario no encontrado con el email proporcionado.");
+		      }
+
+		      // Obtener usuario existente
+		      Usuario usuario = encontrarUsuario.get();
+		      int numeroIntentosLogin = usuario.getIntentosLogin();
+
+		      // Incrementar el contador de intentos de verificación
+		      numeroIntentosLogin++; 
+		      usuario.setIntentosLogin(numeroIntentosLogin); 
+
+		      try {
+		          // Guardar el usuario actualizado en la base de datos
+		          Usuario usuarioActualizado = repositorioUsuario.save(usuario);
+		          return usuarioActualizado.getIntentosLogin();
+		      } catch (Exception e) {
+		          throw new MiExcepcion("No se pudieron guardar los intentos realizados");
+		      }
+		  }
+
+
+	  
+	  
+	  @Transactional
+	    public Usuario guardarOEncontrarUsuarioTemporal(String emailUsuario, String password, String password2, String fechaNacimiento) throws MiExcepcion {
+		  
+		//Buscamos la fecha actual para registrar cuando se creo el usuario
+			//esto sirve para despues limpiar registros imcompletos viejos
+			LocalDateTime fechaActual = LocalDateTime.now();
+			
+						
+			try {
+				
+				  Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+
+			      if (!encontrarUsuario.isPresent()) {
+			    	  
+			    	  //Validamos los datos ingresados por el usuario
+			    	  validarDatosUsuarioTemporal(emailUsuario, password, password2, fechaNacimiento);
+			    	  
+			    	  //Si los datos estan bien, creamos el nuevo usuario temporal
+			    	  Usuario nuevoUsuario = new Usuario();
+						nuevoUsuario.setFechaCreacion(fechaActual);
+						nuevoUsuario.setEmail(emailUsuario);
+						
+						Usuario nuevoUsuarioTemp =  repositorioUsuario.save(nuevoUsuario);
+						return nuevoUsuarioTemp;
+			      }else {
+			    	  //si el usuario ya esta registrado, obtenemos sus datos y los retornamos.
+			    	 Usuario nuevoUsuario = encontrarUsuario.get();
+			    	 return nuevoUsuario;
+			      }
+					
+				
+			} catch (Exception e) {
+				throw new MiExcepcion(e.getMessage());
+			}	
+	    }
+	  
 	    
 	  @Transactional
 	    public void guardarUsuario(String email, String password, String password2, String fechaNacimiento, String idUsuarioNoValidado) throws MiExcepcion {
-		  
-		    //pasamos la fecha de string a date
-	        SimpleDateFormat formato = new SimpleDateFormat("yyyy-MM-dd");
-			Date fecha = null;
-			try {
-				fecha = formato.parse(fechaNacimiento);
-			} catch (ParseException e) {
-				e.printStackTrace();
-				System.out.println("Error al parsear la fecha");
-			}
+			
+			LocalDate fechaDeNacimiento = servicioHorario.pasarFechaStringToLocalDate(fechaNacimiento);
 			
 			try {
 				Optional <Usuario> usuarioNoValidado = buscarPorIdOptional(idUsuarioNoValidado);
@@ -98,11 +424,17 @@ public class ServicioUsuario {
 					Usuario NuevoUsuario = usuarioNoValidado.get();
 					NuevoUsuario.setEmail(email);
 					NuevoUsuario.setContrasena(password);
-					NuevoUsuario.setFechaNacimiento(fecha);
+					NuevoUsuario.setFechaNacimiento(fechaDeNacimiento);
 					NuevoUsuario.setActivo(TRUE);
 					NuevoUsuario.setRol(Rol.CLIENTE);
 					NuevoUsuario.setEmailValidado(TRUE);
 					NuevoUsuario.setValidacionForm(FALSE);
+					NuevoUsuario.setBloqueoValidacion(FALSE);
+					NuevoUsuario.setBloqueoLogin(FALSE);
+					NuevoUsuario.setHoraDeBloqueoValidacion(null);
+					NuevoUsuario.setHoraBloqueologin(null);
+					NuevoUsuario.setIntentosValidacion(0);
+					NuevoUsuario.setIntentosLogin(0);
 					repositorioUsuario.save(NuevoUsuario);
 				}else {
 					throw new MiExcepcion("Usuario no encontrando");
@@ -271,6 +603,12 @@ public class ServicioUsuario {
 			 }
 		 }
 				
+		 public void validarDatosUsuarioTemporal(String email, String password, String password2, String fechaNacimiento) throws MiExcepcion { 
+			 verificarEmailUsuarioTemporal(email);
+			 verificarPassword(password, password2);
+			 validarEdad(fechaNacimiento);
+			 
+		 }
 		 
 		 //VALIDACIONES
 		 public void validarDatosDelUsuario(String email, String password, String password2, String fechaNacimiento) throws MiExcepcion {
@@ -287,6 +625,29 @@ public class ServicioUsuario {
 		            					 + " Por favor ingrese un correo electrónico válido</span>");
 		        }
 		  }
+		 
+		 public void verificarEmailUsuarioTemporal(String email) throws MiExcepcion {
+				// Expresión regular para validar un correo electrónico
+			        String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+
+			        // Compilar la expresión regular
+			        Pattern pattern = Pattern.compile(regex);
+
+			        // Crear un objeto Matcher
+			        Matcher matcher = pattern.matcher(email);
+
+			        if (Objects.equals(email, null) || email.isEmpty() || email.trim().isEmpty()) {
+			            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+		   					 +"<span class='fs-6'>El campo de correo electrónico no puede quedar vacío."
+		   					 + " Por favor ingrese un correo electrónico válido</span>");
+			        }
+			        // Verificar si la cadena cumple con la expresión regular
+			        if (!matcher.matches()) {
+			            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+		   					 +"<span class='fs-6'>El correo electrónico no es válido.</span>");
+			        } 
+
+			    }
 		 
 		 
 	  public void verificarEmail(String email) throws MiExcepcion {
@@ -346,7 +707,7 @@ public class ServicioUsuario {
 	         // Verificar si la cadena cumple con la expresión regular
 	         if (!matcher.matches()) {
 	        	 throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-    					 +"<span class='fs-6'>La contraseña debe tener al menos 8 dígitos, de los cuales de haber mínimo"
+    					 +"<span class='fs-6'>La contraseña debe tener al menos 8 dígitos y debe tener mínimo"
     					 + " una letra mayúscula,"
     					 + " una letra minúscula y un número.</span>");
 	         }  
@@ -354,6 +715,26 @@ public class ServicioUsuario {
 	        	 throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
     					 +"<span class='fs-6'>Las contraseñas ingresadas no coinciden, por favor"
     					 + " intente nuevamente.</span>");
+	         }
+	         return true;
+	    }
+	    
+	    //Esta verificacion es para el login y el registrarse
+	    public boolean verificarPasswordLogin(String password, String password2) throws MiExcepcion {
+	    	
+	    	 String pass = password.trim();
+	    	 String pass2 = password2.trim();
+	    	 
+	         if (pass.isEmpty()) {
+	        	 throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+    					 +"<span class='fs-6'>El campo de la contraseña no puede quedar vacío."
+    					 + "Por favor ingrese una contraseña válida.</span>");
+	         }
+	         
+	 
+	         if (!pass.equals(pass2)) {
+	        	 throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+    					 +"<span class='fs-6'>Usuario o contraseña incorrectos, por favor intente nuevamente.</span>");
 	         }
 	         return true;
 	    }

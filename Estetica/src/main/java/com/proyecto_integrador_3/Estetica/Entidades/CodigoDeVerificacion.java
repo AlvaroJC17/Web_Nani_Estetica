@@ -23,7 +23,7 @@ public class CodigoDeVerificacion {
     
 	@Column(name="expiracion")
     private LocalDateTime expiracion;
-    
+	
 	@Column(name="usado")
     private boolean usado;
 
