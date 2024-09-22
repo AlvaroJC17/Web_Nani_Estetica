@@ -17,6 +17,8 @@ public interface RepositorioHorariosDisponibles extends JpaRepository<HorariosDi
 		
 		Optional <HorariosDisponibles> findByProfesionalId (String idProfesional);
 		
+		List<HorariosDisponibles> findAllByProfesionalId (String idProfesional);
+		
 		Optional <HorariosDisponibles> findByProfesionalIdAndFecha (String idProfesional, String fecha);
 	    
 	    List<HorariosDisponibles> findHorariosByProfesionalIdAndFecha(String idProfesional, String fecha);

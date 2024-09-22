@@ -2,6 +2,7 @@ package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -65,15 +66,19 @@ public class ControladorTurnos {
 			@RequestParam (required = false) String error,
 			Model model) throws MiExcepcion {
 		
+		
 				
 		LocalDate fechaDelTurno = null;
 		Boolean mostrarBotonesDeshabilitar = true;
+		LocalDate fechaActual = LocalDate.now();
+		LocalTime horaActual = LocalTime.now();
 		
 		  if (fechaTurno != null && !fechaTurno.trim().isEmpty()) {
 		        LocalDate fechaTurnoLocalDate = servicioHorario.pasarFechaStringToLocalDate(fechaTurno);
 		        fechaDelTurno = fechaTurnoLocalDate;
 		    } else {
 		        fechaDelTurno = LocalDate.now();
+		        fechaTurno = fechaDelTurno.toString();
 		    }
 		  
 		  
@@ -128,7 +133,26 @@ public class ControladorTurnos {
 		//En este caso las key son horarios, por lo que el mapa resultante tiene los horarios ordenados
 		//de menor a mayor
 		Map<String, List<Turnos>> turnosPorHorarioLaboralOrdenado = new TreeMap<>(turnosPorHorarioLaboral);
+		
+		// Mapa que almacenará los horarios laborales y su valor booleano
+		List<String> mapaHorarioNoDisponible = new ArrayList<>();
 
+		// Verificar si la fecha seleccionada es igual a la fecha actual
+		if (fechaTurno.equals(fechaActual.toString())) {
+		    // Recorrer los horarios laborales del profesional
+		    for (String horarioLaboral : horariosLaboralesProfesional) {
+		    	
+		        // Parsear la hora laboral a un objeto LocalTime
+		        LocalTime horaLaboral = LocalTime.parse(horarioLaboral);
+
+		        if (horaLaboral.isBefore(horaActual)) {
+		        	mapaHorarioNoDisponible.add(horarioLaboral);
+				}
+		 
+		    }
+		}
+		
+		
 		//Formateamos la fecha al estilo dd-MM-yyyy antes de pasarla a la vista para que sea mas facil verla para el usuario
 		String fechaFormateada = servicioHorario.pasarFechasLocalDateToString(fechaDelTurno);
 		
@@ -138,9 +162,9 @@ public class ControladorTurnos {
 		model.addAttribute("turnosDisponiblesPorFecha", turnosPorFecha);
 		model.addAttribute("turnosPorHorarioLaboral", turnosPorHorarioLaboralOrdenado);
 		model.addAttribute("horariosDeshabilitados", horariosDeshabilitados);
-		//model.addAttribute("horariosLaborales", horariosLaboralesProfesional);
 		model.addAttribute("datosProfesional", datosProfesional);
 		model.addAttribute("mostrarBotonesDeshabilitar", mostrarBotonesDeshabilitar);
+		model.addAttribute("mapaHorarioNoDisponible", mapaHorarioNoDisponible);
 		
 		if (exito != null) {
 			model.addAttribute("exito", exito);
@@ -234,13 +258,16 @@ public class ControladorTurnos {
 				@RequestParam String email,
 				@RequestParam String idProfesional,
 				@RequestParam (required = false)String error,
-				Model model) {
+				Model model) throws MiExcepcion {
 		
 			
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
 		
-		//Obtenemos los turnos pedientes filtrados por fecha
+		//servicio para veirficar si hay turnos con horas antiguas antes de mostrarlos en la vista, si hay algun turno con alguna hora antigua, se cancela y
+		//se multa al cliente de ese turno, asi en la vista del profesional ya figura el turno cancelado y multado
+		servicioTurnos.actualizarTurnosAntiguosProfesional(idProfesional);
 		
+		//Obtenemos los turnos pedientes filtrados por fecha
 		List<Turnos> turnosActivos = servicioTurnos.ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno.PENDIENTE, true, false, idProfesional);
 		// Obtener la fecha actual y la fecha límite (7 días después)
 		LocalDate fechaActual = LocalDate.now();
@@ -320,17 +347,11 @@ public class ControladorTurnos {
 		
 		try {
 		//cuando el usuario ingrese a turnos se verifica si algun turno tiene fecha anterior
-		//a la actual y si eso es afirmativo, entonces pasa el turno a cencelado.
+		//a la actual y si eso es afirmativo, entonces pasa el turno a cencelado, le coloca una multa y le manda un email
 		servicioTurnos.actualizarTurnosAntiguos(email);
-		
-		//Elimina los turnos mas antiguo cuando la lista es mayor a 3 y no tienen multas
-		//servicioTurnos.eliminarTurnoMasAntiguoNoActivo(email);
 		
 		//datos del cliente y los pasa a la vista, sirve para renderizar la vista
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		
-		//busca todos los turnos disponinbles del usuario y los pasa a la vista
-		//List<Turnos> turnosDisponibles = servicioTurnos.obtenerTurnosPorEmail(email);
 		
 		//Obtenemos los tunos asistidos, turnos activos, turnos cancelados y turnos con multa.
 		List<Turnos> turnosAsistidos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.ASISTIDO, false, false, email);
@@ -381,8 +402,8 @@ public class ControladorTurnos {
 			Model model
 			) throws MiExcepcion {
 		
-		String fechaConHora = fecha + " " + horario;
-		LocalDateTime fechaSeleccionadaLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTime(fechaConHora);
+		String fechaConHora = fecha + " " + horario + ":00.000001";
+		LocalDateTime fechaSeleccionadaLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTimeOtroFormato(fechaConHora);
 		LocalDateTime fechaActual = LocalDateTime.now();
 		
 		try {

@@ -838,6 +838,36 @@ tr {
 }
 
 
+/*------------- ESTILOS PAGINA DATOS PROFESIONAL -------------*/
+
+
+.elemento-hover {
+
+    border: 2px solid transparent;
+ 
+}
+
+.elemento-hover:hover {
+    animation: borde-reloj 1s forwards;
+}
+
+@keyframes borde-reloj {
+    0% {
+        border-top: 2px solid lightseagreen;
+    }
+    25% {
+        border-right: 2px solid lightseagreen;
+    }
+    50% {
+        border-bottom: 2px solid lightseagreen;
+    }
+    75% {
+        border-left: 2px solid lightseagreen;
+    }
+    100% {
+        border: 2px solid lightseagreen;
+    }
+}
 
 /*-------- MEDIAS PARA RESPONSIVE ---------*/
 

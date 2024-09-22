@@ -122,6 +122,7 @@ public class ServicioTurnos {
 	public Turnos actualizarEstadoDelTurno(String id, Rol rol, EstadoDelTurno estadoTurno) throws MiExcepcion {
 		 try {
 			 LocalDate fechaActual = LocalDate.now();
+			 LocalDateTime fechaCancelacion = LocalDateTime.now();
 			 LocalDate fechaDelTurno = null;
 			 Optional<Turnos> turnoPorId = buscarTurnoPorId(id);
 			 if (turnoPorId.isPresent()) {
@@ -133,11 +134,13 @@ public class ServicioTurnos {
 					 actualizarTurnoActivo.setEstado(EstadoDelTurno.CANCELADO);
 				 }
 				 
-				 if(estadoTurno == EstadoDelTurno.ASISTIDO && fechaActual == fechaDelTurno) {
+				 if(estadoTurno == EstadoDelTurno.ASISTIDO) { //&& fechaActual == fechaDelTurno
 					 actualizarTurnoActivo.setEstado(EstadoDelTurno.ASISTIDO);
-				 }else if(estadoTurno == EstadoDelTurno.ASISTIDO && fechaActual != fechaDelTurno) {
-					 throw new MiExcepcion("El turno solo puede ser confirmado en la misma fecha para el cual fue reservado");
 				 }
+				 
+//				 else if(estadoTurno == EstadoDelTurno.ASISTIDO && fechaActual != fechaDelTurno) {
+//					 throw new MiExcepcion("El turno solo puede ser confirmado en la misma fecha para el cual fue reservado");
+//				 }
 					
 				 if (rol == Rol.CLIENTE ) {
 					 actualizarTurnoActivo.setCanceladoPor(Rol.CLIENTE);
@@ -147,6 +150,7 @@ public class ServicioTurnos {
 					 actualizarTurnoActivo.setCanceladoPor(Rol.ADMIN);
 				 }
 				 actualizarTurnoActivo.setActivo(FALSE);
+				 actualizarTurnoActivo.setFechaCancelacion(fechaCancelacion);
 					
 				 Turnos turnoCancelado;
 				 turnoCancelado = repositorioTurnos.save(actualizarTurnoActivo);
@@ -154,7 +158,7 @@ public class ServicioTurnos {
 			 }
 			 
 				 
-		 } catch (MiExcepcion e) {
+		 } catch (Exception e) {
 			 throw new MiExcepcion(e.getMessage());
 		 }
 				return null;  
@@ -222,33 +226,126 @@ public class ServicioTurnos {
     
     //pasa los turnos activos con fecha anterior a la actual a inactivo y les asigna una multa al turno y al cliente
     @Transactional
-    public void actualizarTurnosAntiguos(String email) throws MiExcepcion {
+    public void actualizarTurnosAntiguos(String emailCliente) throws MiExcepcion {
     	try {
-    		List<Turnos> turnos = getTurnosByEmail(email);
+    		List<Turnos> turnos = getTurnosByEmail(emailCliente);
+    		
+    		if (turnos.isEmpty()) {
+				return;
+			}
+    		
     		LocalDateTime fechaActual = LocalDateTime.now();
     		
     		for (Turnos turno : turnos) {
     			String fechaTurno = turno.getFecha().toString();
     			String horarioTurno = turno.getHorario().toString();
-    			String fechaAndHorario = fechaTurno + " " + horarioTurno;
+    			String fechaAndHorario = fechaTurno + " " + horarioTurno + ":00.000001"; //agrego el formato :00.000001 para completar el formato LocalDateTime
     			String valorMulta = turno.getProfesional().getValorMulta();
     			
     			LocalDateTime fechaTurnoLocalDateTime = null;
     			fechaTurnoLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTimeOtroFormato(fechaAndHorario);
     			
-    			if (fechaTurnoLocalDateTime.isBefore(fechaActual.plusMinutes(15)) && turno.getActivo()) { //comparamos la fecha del tunos con la fecha actual mas 15 min
+    			if (fechaTurnoLocalDateTime.plusMinutes(10).isBefore(fechaActual) && turno.getActivo()) { //comparamos la fecha del tunos con la fecha actual mas 15 min
     				turno.setMulta(TRUE); //Le colocamos una multa al turno que tiene fecha pasada
     				turno.setActivo(false); // Lo pasamos a inactivo
     				turno.setEstado(EstadoDelTurno.CANCELADO);
+    				turno.setFechaCancelacion(fechaActual);
     				turno.setCostoMulta(valorMulta);
     				repositorioTurnos.save(turno);
     				
-    				Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(email);
+    				Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(emailCliente);
     				if (obtenerDatosDeMultas.isPresent()) {
     					Cliente multasDelCliente = obtenerDatosDeMultas.get();
     					multasDelCliente.setMulta(TRUE); // Le colocamos una multa al cliente
     					repositorioCliente.save(multasDelCliente);
     				}
+    				
+    				//Despues de generar todo el proceso del turno se envia un mail de cancelación
+    				//al cliente, para esto debemos instancias un objeto EmailUsuario y pasarle toda
+    				//la info necesario que debe llevar el correo
+    				EmailUsuarios cancelacionPorEmailTurno = new EmailUsuarios();
+    				cancelacionPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
+    				cancelacionPorEmailTurno.setDestinatario("alvarocortesia@gmail.com"); // Aqui va el email del cliente
+    				
+    				 //asignamos a la variable el nombre de la plantilla que vamos a utilizar
+    				 String plantillaCancelacionHTML = "emailCancelacionDeTurno";
+    				 
+    				 //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valor de multa y costo de multa a la plantilla
+    				 Boolean multa = true;
+    				 
+    				 try {
+    					 //Llamamos al servicio para enviar el email
+    					 servicioEmail.enviarConfirmacionOCancelacionTurno(cancelacionPorEmailTurno, turno, plantillaCancelacionHTML, multa);
+    				 } catch (Exception e) {
+    					 throw new MiExcepcion("Error al enviar el email de cancelacion de turno por parte del cliente, cuando se la fecha y hora ya paso");
+    				 }
+    			}
+    		}
+    	} catch (MiExcepcion e) {
+    		System.out.println("Error al conectar con el servidor, no se pudieron cancelar los turnos antiguos " + e);
+    	}
+    }
+    
+    
+    
+    //pasa los turnos asigandos a un profesional que esten activos con fecha anterior a la actual a inactivo y les asigna una multa al turno y al cliente
+    //al cual pertecene ese turno
+    @Transactional
+    public void actualizarTurnosAntiguosProfesional(String idProfesional) throws MiExcepcion {
+    	try {
+    		List<Turnos> turnos = buscarTurnosPorProfesionalId(idProfesional);
+    		
+    		//Si el profesional todavia no tiene turnos a su nombre, entonces paramos la ejecucion del metodo
+    		if (turnos.isEmpty()) {
+				return;
+			}
+    		
+    		LocalDateTime fechaActual = LocalDateTime.now();
+    		
+    		for (Turnos turno : turnos) {
+    			String fechaTurno = turno.getFecha().toString();
+    			String horarioTurno = turno.getHorario().toString();
+    			String fechaAndHorario = fechaTurno + " " + horarioTurno + ":00.000001"; //completamos el formato de la fecha LocalDateTime
+    			String valorMulta = turno.getProfesional().getValorMulta();
+    			String emailCliente = turno.getCliente().getEmail();
+    			
+    			LocalDateTime fechaTurnoLocalDateTime = null;
+    			fechaTurnoLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTimeOtroFormato(fechaAndHorario);
+    			
+    			if (fechaTurnoLocalDateTime.plusMinutes(10).isBefore(fechaActual) && turno.getActivo()) { //comparamos la fecha del tunos con la fecha actual mas 15 min
+    				turno.setMulta(TRUE); //Le colocamos una multa al turno que tiene fecha pasada
+    				turno.setActivo(false); // Lo pasamos a inactivo
+    				turno.setEstado(EstadoDelTurno.CANCELADO);
+    				turno.setFechaCancelacion(fechaActual);
+    				turno.setCostoMulta(valorMulta);
+    				repositorioTurnos.save(turno);
+    				
+    				Optional<Cliente> multarCliente = repositorioCliente.findByEmail(emailCliente);
+    				if (multarCliente.isPresent()) {
+    					Cliente multasDelCliente = multarCliente.get();
+    					multasDelCliente.setMulta(TRUE); // Le colocamos una multa al cliente
+    					repositorioCliente.save(multasDelCliente);
+    				}
+    				
+    				
+    				//Se envia un email de cancelacion al cliente, para esto debemos instancias un objeto EmailUsuario y pasarle toda
+    				//la info necesario que debe llevar el correo
+    				EmailUsuarios cancelacionPorEmailTurno = new EmailUsuarios();
+    				cancelacionPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
+    				cancelacionPorEmailTurno.setDestinatario("alvarocortesia@gmail.com"); // Aqui va el email del cliente
+    				
+    				 //asignamos a la variable el nombre de la plantilla que vamos a utilizar
+    				 String plantillaCancelacionHTML = "emailCancelacionDeTurno";
+    				 
+    				 //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valor de multa y costo de multa a la plantilla
+    				 Boolean multa = true;
+    				 
+    				 try {
+    					 //Llamamos al servicio para enviar el email
+    					 servicioEmail.enviarConfirmacionOCancelacionTurno(cancelacionPorEmailTurno, turno, plantillaCancelacionHTML, multa);
+    				 } catch (Exception e) {
+    					 throw new MiExcepcion("Error al enviar el email de cancelacion de turno por parte del profesional, cuando se la fecha y hora ya paso");
+    				 }
     			}
     		}
     	} catch (MiExcepcion e) {
@@ -261,6 +358,7 @@ public class ServicioTurnos {
     public Turnos multarTurnoAndClienteMenosDe24Horas(String email, String idTurno) throws MiExcepcion {
     	
     	try {
+    	LocalDateTime fechaCancelacion = LocalDateTime.now();
     	Optional<Turnos> turnoOptional = repositorioTurnos.findById(idTurno);
         if (turnoOptional.isPresent()) {
             Turnos turno = turnoOptional.get();
@@ -271,6 +369,7 @@ public class ServicioTurnos {
             	turno.setMulta(TRUE); // Le colocamos una multa al turno que tiene fecha pasada
             	turno.setActivo(false); // Lo pasamos a inactivo
             	turno.setEstado(EstadoDelTurno.CANCELADO);
+            	turno.setFechaCancelacion(fechaCancelacion);
             	turno.setCanceladoPor(Rol.CLIENTE);
             	turno.setCostoMulta(valorMulta);
             	

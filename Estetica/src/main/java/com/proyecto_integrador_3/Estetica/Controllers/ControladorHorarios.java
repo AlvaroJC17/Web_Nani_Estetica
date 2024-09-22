@@ -183,8 +183,17 @@ public class ControladorHorarios {
 		//Buscamos los turnos por id profesional y fecha
 		List <Turnos> turnosPorFecha = servicioTurnos.buscarTurnosPorProfesionalIdAndFecha(idProfesional, fechaLocalDate);
 		
-		//Si la lista no esta vacía, quiere decir que habia turnos para esta fecha, los buscamos y los cancelamos
-		if (!turnosPorFecha.isEmpty()) {
+		//Despues de crear la lista de turnos por fecha, creamos una lista de turnos que contengan la hora seleccionada
+		//si la hora seleccionada coincide con la hora de algun turno, entonces guardamos ese turno es la lista turnosPorHora
+		List<Turnos> turnosPorHora = new ArrayList<>();
+		for (Turnos turnos : turnosPorFecha) {
+			if (turnos.getHorario().equals(horaSeleccionada)) {
+				turnosPorHora.add(turnos);
+			}
+		}
+		
+		//Si la lista turnosPorHora no esta vacía, quiere decir que habia turnos para esta fecha, los buscamos y los cancelamos
+		if (!turnosPorHora.isEmpty()) {
 			
 			for (Turnos turnos : turnosPorFecha) {
 				
@@ -219,6 +228,8 @@ public class ControladorHorarios {
 					}
 				}
 			}
+		}else {
+			System.out.println("No habia turnos para cancelar asociados a esa hora");
 		}
 		
 		

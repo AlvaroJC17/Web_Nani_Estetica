@@ -41,6 +41,7 @@ import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioEmail;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
@@ -79,6 +80,9 @@ public class ControladorCliente {
 	@Autowired
 	public ServicioEmail servicioEmail;
 	
+	@Autowired
+	public ServicioPersona servicioPersona;
+	
 	
 	//Muestra las multas del cliente con todo sus datos
 	@GetMapping("/multas")
@@ -99,18 +103,15 @@ public class ControladorCliente {
 				System.err.println("No se puede convertir int, el string tiene un formato no valido: " + turnos.getCostoMulta());
 			}
 				
-			String idProfesional = turnos.getProfesional().getId();
+			String idProfesional = turnos.getProfesional().getId(); //Sacamos el id del profesional del turno
+			
 			//Buscamos el nombre del profesional asociado a ese turno para pasarlo al email de confirmacion
-			Optional <Persona> datosProfesional = repositorioPersona.findById(idProfesional);
-	    	String nombreDelProfesional = null;
-	    	String apellidoDelProfesional = null;
-	    	String nombreCompletoProfesional = null;
-			if (datosProfesional.isPresent()) {
-				Persona nombreProfesional = datosProfesional.get();
-				nombreDelProfesional = nombreProfesional.getNombre();
-				apellidoDelProfesional = nombreProfesional.getApellido();
-				nombreCompletoProfesional = apellidoDelProfesional + " " + nombreDelProfesional;
-			}
+
+			
+			Persona buscarDatosProfesional = servicioPersona.buscarDatosPersona(idProfesional);
+			
+			String nombreCompletoProfesional = null;
+			nombreCompletoProfesional = buscarDatosProfesional.getApellido() + " " + buscarDatosProfesional.getNombre();
 			
 			 if (nombreCompletoProfesional != null) {
 		            // Agregamos el nombre del profesional al mapa junto al id del turno iterado
@@ -414,10 +415,8 @@ public class ControladorCliente {
 				 * Si no existe, nos devuelve una lista de horarios pre establecida */
 				List<String> crearyObtenerHorariosDisponibles = servicioHorario.crearyObtenerHorariosDisponibles(fechaSeleccionada, idProfesional);
 				
-				for (String string : crearyObtenerHorariosDisponibles) {
-					System.out.println("Se crearon los horarios para la fecha:" + string);
-				}
-				
+				//Metodo para comparar las horas creadas en el metodo anterior con las horas deshabilitadas por el profesional, en si esta metodo mantine
+				//actualizada la lista de horarios del profesional sacando los horarios deshabilitados
 				List<String> eliminarHorariosDeshabilitados = servicioHorario.eliminarHorasDisponiblesConHorasDeshabilitadas(crearyObtenerHorariosDisponibles, fechaSeleccionada, idProfesional);
 				
 				//Guarda en la base de datos la lista de horarios disponibles pertenecientes a la fecha y el id del profesional que le pasamos, si la
@@ -598,6 +597,7 @@ public class ControladorCliente {
 			@RequestParam(required = false) String horario,
 			ModelMap modelo) throws Exception {
 		
+		System.out.println("Especialidad: " + tipoEspecialidad);
 		
 		//pasamos la provincia a enum provincia
 		Provincias nuevaProvincia = null;
@@ -622,19 +622,14 @@ public class ControladorCliente {
 		List <String> ObtenerHorariosDisponibles = servicioHorario.obtenerHorariosDisponiblesPorProfesionalYFecha(idProfesional, fechaSeleccionada);
 		Collections.sort(ObtenerHorariosDisponibles); //ordenamos la lista por horas de menor a mayor
 		
-		// Determinamos la palabra clave según el identificador
-        final String palabraClave = identificador.equals("tratamientoFacial") ? "FACIAL" :
-                                    identificador.equals("tratamientoCorporal") ? "CORPORAL" :
-                                    identificador.equals("tratamientoEstetico") ? "ESTETICO" :
-                                    null;
+		//Pasamos la especialidad seleccionada a string para aplicar el filtro
+		String nombreEspecialidad = nuevoRolTipoDeEspecialidad.getDisplayName().toString().toUpperCase();
 		
-        
-        // Filtramos los tratamientos
+        // Filtramos los tratamientos mediante la especialidad seleccionada
             List<Tratamiento> tratamientosFiltrados = tratamientosProfesional.stream()
-                .filter(tratamiento -> tratamiento.getNombreTratamientos().toString().contains(palabraClave))
+                .filter(tratamiento -> tratamiento.getNombreTratamientos().toString().contains(nombreEspecialidad))
                 .collect(Collectors.toList());
             
-           
 		//Buscamos los datos del profesional
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 		
@@ -756,12 +751,6 @@ public class ControladorCliente {
                 //Actualizamos y guardamos en la base de datos la lista con el horario removido por el usuario.
 				servicioHorario.actualizarHorariosDisponibles(fechaSeleccionada, horariosDisponibles, idProfesional);
                 
-                //cuando el usuario selecciona un nuevo turno, eliminar el turno mas antiguo
-                //que tenga estado inactivo y no tenga multas
-               // servicioTurnos.eliminarTurnoMasAntiguoNoActivo(emailCliente);
-                
-                //Obtenemos una lista de turnos del usuario a traves de su id
-               //List<Turnos> tunosDisponibles = servicioTurnos.buscarTurnoPorClienteId(idCliente);
 				
 				//Obtenemos los tunos asistidos, turnos activos, turnos cancelados y turnos con multa.
 				List<Turnos> turnosActivos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.PENDIENTE, true, false, emailCliente);

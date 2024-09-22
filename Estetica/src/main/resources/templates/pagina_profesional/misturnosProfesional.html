@@ -116,15 +116,16 @@ tener el mismo ID-->
 			<form class="" th:action="@{/cancelarOrConfimarTurnoProfesional}" method="post">
           <ul class="ps-2 me-2 mt-3" >
 			<li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turnoActivo.id, turnoActivo.id.length() - 12)}"></p> </li>
-			<li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoActivo.fechaCreacion, 'dd-MM-yyyy')}"></p> </li>
             <li class="list-unstyled d-flex"><strong>Cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoActivo.cliente.nombre + ' ' + turnoActivo.cliente.apellido}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Dni cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoActivo.dni}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoActivo.fecha, 'dd-MM-yyyy')}"></p> </li>
             <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoActivo.horario}"></p> </li>
+			<li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoActivo.fechaCreacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
+			<li th:if="${turnoActivo.fechaCancelacion}" class="list-unstyled d-flex"><strong>Fecha de cancelación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoActivo.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
             <span><strong>Tratamientos seleccionado:</strong></span>
             <ul class="" style="list-style-type: disc;">
             <li class="" th:each="tratamientoActivo : ${turnoActivo.tratamientos}">
-            	<span th:text="${tratamientoActivo.nombreTratamientos.DisplayName}"></span>
+            	<span th:text="${tratamientoActivo.nombreTratamientos.DisplayName + ' - $' + tratamientoActivo.costoTratamiento}"></span>
             </li>
             </ul>
             </ul>
@@ -236,6 +237,8 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			   <li class="list-unstyled d-flex"><strong>Dni cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoAsistido.dni}"></p> </li>
 			   <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoAsistido.fecha, 'dd-MM-yyyy')}"></p> </li>
 			   <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoAsistido.horario}"></p> </li>
+			   <li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoAsistido.fechaCreacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
+			   <li th:if="${turnoAsistido.fechaCancelacion}" class="list-unstyled d-flex"><strong>Fecha de cancelación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoAsistido.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
 			   <span><strong>Tratamientos:</strong></span>
 			   <ul class="pb-3" style="list-style-type: disc;">
 			   <li th:each="tratamientoAsistido : ${turnoAsistido.tratamientos}">
@@ -269,6 +272,8 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			<li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoMulta.fecha, 'dd-MM-yyyy')}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoMulta.horario}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Costo multa:</strong>&nbsp <p class="m-0 p-0" th:text="'$' + ${turnoMulta.costoMulta}"></p> </li>
+			<li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoMulta.fechaCreacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
+			<li th:if="${turnoMulta.fechaCancelacion}" class="list-unstyled d-flex"><strong>Fecha de cancelación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoMulta.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
 			<span><strong>Tratamientos:</strong></span>
 			<ul class="pb-3" style="list-style-type: disc;">
 			<li th:each="tratamientoMulta: ${turnoMulta.tratamientos}">
@@ -305,6 +310,8 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			<li class="list-unstyled d-flex"><strong>Cancelado por:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoCancelado.canceladoPor}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoCancelado.fecha, 'dd-MM-yyyy')}"></p> </li>
 			<li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoCancelado.horario}"></p> </li>
+			<li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoCancelado.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
+			<li th:if="${turnoCancelado.fechaCancelacion}" class="list-unstyled d-flex"><strong>Fecha de cancelación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnoCancelado.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
 			<span><strong>Tratamientos:</strong></span>
 			<ul class="pb-3" style="list-style-type: disc;">
 			<li th:each="tratamientoCancelado : ${turnoCancelado.tratamientos}">

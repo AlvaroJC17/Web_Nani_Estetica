@@ -87,8 +87,10 @@
      //   <!--Scrip para la seleccion de tratamientos-->
      
         function agregarTratamiento() {
-            const tratamiento = document.getElementById('tratamiento').value;
-            const costo = document.getElementById('costo').value;
+			const tratamiento = document.getElementById('tratamiento').value;
+			const costoInput = document.getElementById('costo');
+			const costo = parseFloat(costoInput.value);
+			
             const tratamientoCosto = tratamiento + ' - $' + costo;
             const lista = document.getElementById('listaTratamientos');
 
@@ -233,7 +235,7 @@
                       
                       <div class="mt-2">
                         <label class="form-label texto-label mb-0" for="costo">Costo:</label>
-                        <input  aria-label="Default select example" class="form-control" type="number" id="costo" name="costo" placeholder="ingrese costo del tratamiento" />
+                        <input aria-label="Default select example" class="form-control" type="number" id="costo" name="costo" placeholder="ingrese costo del tratamiento" />
                       </div>
                     </div>
 					</div>
@@ -302,8 +304,8 @@
                   <div class="row d-flex align-items-end justify-content-center">
 
                     <div class="col-md-6">
-                     <div>
-                      <label class="form-label texto-label mb-0" for="horas">Selecciona la hora:</label>
+         <div>
+        <label class="form-label texto-label mb-0" for="horas">Selecciona la hora:</label>
         <select aria-label="Default select example" class="form-select" id="horas" name="horas">
             <!-- Opciones de horas (puedes agregar más) -->
             <option value="08">08</option>
@@ -317,6 +319,11 @@
             <option value="16">16</option>
             <option value="17">17</option>
             <option value="18">18</option>
+			<option value="19">19</option>
+			<option value="20">20</option>
+			<option value="21">21</option>
+			<option value="22">22</option>
+			<option value="23">23</option>
         </select>
       </div>
 

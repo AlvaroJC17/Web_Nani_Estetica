@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
+import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
@@ -57,6 +58,16 @@ public class ServicioCliente {
 			throw new MiExcepcion("Error con conectar el servidor " + e);
 		}
 			
+	}
+	
+	public Cliente buscarDatosCliente(String idCliente) throws MiExcepcion {
+		Optional<Cliente> buscarCliente = repositorioCliente.findById(idCliente);
+		if (buscarCliente.isPresent()) {
+			Cliente datosDelCliente = buscarCliente.get();
+			return datosDelCliente;
+		}else {
+			throw new MiExcepcion("No se encontro al cliente");
+		}
 	}
 	
 	

@@ -1,5 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Repository;
 
+import java.util.List;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -22,8 +22,6 @@ import jakarta.transaction.Transactional;
 public interface RepositorioTurnos extends JpaRepository<Turnos, String> {
 
 	Optional<Turnos> findById(String idTurno);
-	
-	//Optional<Turnos> buscarTurnoPorDni(@Param("dni") String dni);
 		
 	List<Turnos> findByDni(String dniCliente);
 	
@@ -61,5 +59,6 @@ public interface RepositorioTurnos extends JpaRepository<Turnos, String> {
 	List<Turnos> findByProfesionalIdAndClienteIdAndEstadoOrderByFechaCreacion(String idProfesiona, String idCliente, EstadoDelTurno estado);
 	
 	List<Turnos> findByClienteIdAndEstadoOrderByFechaCreacion(String idCliente, EstadoDelTurno estado);
+	
 }
 

@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
 import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
+import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
@@ -81,6 +82,16 @@ public class ServicioUsuario {
 				throw new MiExcepcion("Error al conectar con el servidor e intentar borrar los registros incompletos " + e);
 			}
 	    }
+	  
+	  public Usuario buscarDatosUsuario(String idUsuario) throws MiExcepcion {
+		  Optional<Usuario> buscarUsuario = repositorioUsuario.findById(idUsuario);
+			if (buscarUsuario.isPresent()) {
+				Usuario datosDelUsuario = buscarUsuario.get();
+				return datosDelUsuario;
+			}else {
+				throw new MiExcepcion("No se encontro al usuario+");
+			}
+	  }
 	  
 	  
 	  public Boolean validarUsuarioBloqueadoLogin(String emailUsuario) throws MiExcepcion {
@@ -661,20 +672,19 @@ public class ServicioUsuario {
 	        Matcher matcher = pattern.matcher(email);
 
 	        if (Objects.equals(email, null) || email.isEmpty() || email.trim().isEmpty()) {
-	            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+	            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br>"
    					 +"<span class='fs-6'>El campo de correo electrónico no puede quedar vacío."
    					 + " Por favor ingrese un correo electrónico válido</span>");
 	        }
 	        // Verificar si la cadena cumple con la expresión regular
 	        if (!matcher.matches()) {
-	            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
+	            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br>"
    					 +"<span class='fs-6'>El correo electrónico no es válido.</span>");
 	        } 
 	       
 	        if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
-	            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-   					 +"<span class='fs-6'>El correo electrónico ya se encuentra registrado, por favor"
-   					 + " ingrese otro.</span>");
+	            throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br>"
+   					 +"<span class='fs-6'>El correo electrónico ya se encuentra registrado, por favor ingrese otro.</span>");
 	        }
 
 	    }

@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
+import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
@@ -40,6 +41,16 @@ public class ServicioAdmin {
 	
 	@Autowired
 	public RepositorioPersona repositorioPersona;
+	
+	public Admin buscarDatosAdmin(String idAdmin)throws MiExcepcion {
+		Optional<Admin> buscarAdmin = repositorioAdmin.findById(idAdmin);
+		if (buscarAdmin.isPresent()) {
+			Admin datosDelAdmin = buscarAdmin.get();
+			return datosDelAdmin;
+		}else {
+			throw new MiExcepcion("No se encontro al Admin");
+		}
+	}
 	
 	@Transactional
 	public void registrarAdmin(String email, String ocupacion,

@@ -6,6 +6,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -71,39 +72,157 @@ public class ControladorProfesional {
 	
 	@Autowired
 	public RepositorioCliente repositorioCliente;
+	
+	
+	@PostMapping("/actualizarTratamientos")
+	public String actualizarTratamientos( 
+			@RequestParam String idProfesional,
+			@RequestParam String emailProfesional,
+			@RequestParam String tratamientosSeleccionadosCampo,
+			Model model) throws MiExcepcion {
+		
+		//Guarda una lista de tipo tratamientos
+		
+		try {
+			servicioProfesional.actualizarTratamientos(idProfesional, tratamientosSeleccionadosCampo);
+			String exito = "Los datos fueron modificados exitosamente";
+			model.addAttribute("exito", exito);
+			model.addAttribute("showModalExito", true);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+		
+		//Buscamos los datos del profesional
+		Profesional profesional = servicioProfesional.obetenerDatosProfesional(idProfesional);
+		
+		//Filtramos la lista de enum por el tipo de especialidad que selecciono el profesional
+        List<TratamientoEnum> tratamientosCompletos = Arrays.stream(TratamientoEnum.values())
+                .filter(especialidadList -> especialidadList.name().contains(profesional.getTipoEspecialidad().getDisplayName().toUpperCase()))
+                .collect(Collectors.toList());
+		
+		//Buscamos los datos del profesional para pasarlos a la vista
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+		
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("diasLaborales", profesional.getDiasDeLaSemana());
+		model.addAttribute("especialidad", profesional.getEspecialidad());
+		model.addAttribute("horariosDisponibles", profesional.getHorariosDisponibles());
+		model.addAttribute("horariosLaborales", profesional.getHorariosLaborales());
+		model.addAttribute("tipoDeEspecialidad", profesional.getTipoEspecialidad());
+		model.addAttribute("tratamientos", profesional.getTratamientos());
+		model.addAttribute("tratamientosFiltrados", tratamientosCompletos);
+		model.addAttribute("diasDeLaSemana", DiasDeLaSemana.values());
+		return "/pagina_profesional/datosProfesional";
+	}
+	
+	@PostMapping("/actualizarHorarioLaboral")
+	public String actualizarHorarioLaboral( 
+			@RequestParam String idProfesional,
+			@RequestParam String emailProfesional,
+			@RequestParam String horasSeleccionados,
+			Model model) throws MiExcepcion {
+		
+		try {
+			servicioProfesional.actualizarHorasLaborales(idProfesional, horasSeleccionados);
+			String exito = "Los datos fueron modificados exitosamente";
+			model.addAttribute("exito", exito);
+			model.addAttribute("showModalExito", true);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+		
+		//Buscamos los datos del profesional
+		Profesional profesional = servicioProfesional.obetenerDatosProfesional(idProfesional);
+		
+		List<String> horariosOrdenados = profesional.getHorariosLaborales();
+		Collections.sort(horariosOrdenados);
+		
+		//Buscamos los datos del profesional para pasarlos a la vista
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+		
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("diasLaborales", profesional.getDiasDeLaSemana());
+		model.addAttribute("especialidad", profesional.getEspecialidad());
+		model.addAttribute("horariosDisponibles", profesional.getHorariosDisponibles());
+		model.addAttribute("horariosLaborales", horariosOrdenados);
+		model.addAttribute("tipoDeEspecialidad", profesional.getTipoEspecialidad());
+		model.addAttribute("tratamientos", profesional.getTratamientos());
+		model.addAttribute("diasDeLaSemana", DiasDeLaSemana.values());
+		return "/pagina_profesional/datosProfesional";
+	}
+	
+	@PostMapping("/actualizarDiaLaboral")
+	public String actualizarDiaLaboral( 
+			@RequestParam String idProfesional,
+			@RequestParam String emailProfesional,
+			@RequestParam String diasSeleccionados,
+			Model model) throws MiExcepcion {
+		
+		try {
+			servicioProfesional.actualizarDiasLaborales(idProfesional, diasSeleccionados);
+			String exito = "Los datos fueron modificados exitosamente";
+			model.addAttribute("exito", exito);
+			model.addAttribute("showModalExito", true);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+		
+		//Buscamos los datos del profesional
+		Profesional profesional = servicioProfesional.obetenerDatosProfesional(idProfesional);
+		
+		//Buscamos los datos del profesional para pasarlos a la vista
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+				
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("diasLaborales", profesional.getDiasDeLaSemana());
+		model.addAttribute("especialidad", profesional.getEspecialidad());
+		model.addAttribute("horariosDisponibles", profesional.getHorariosDisponibles());
+		model.addAttribute("horariosLaborales", profesional.getHorariosLaborales());
+		model.addAttribute("tipoDeEspecialidad", profesional.getTipoEspecialidad());
+		model.addAttribute("tratamientos", profesional.getTratamientos());
+		model.addAttribute("diasDeLaSemana", DiasDeLaSemana.values());
+		return "/pagina_profesional/datosProfesional";
+			
+	}
+	
+	
 
 	@GetMapping("/datosProfesional")
 	public String datosProfesional(
 			@RequestParam String email,
 			@RequestParam String idProfesional,
-			Model model) {
+			Model model) throws MiExcepcion {
 		
+		//Buscamos los datos del profesional
+		Profesional profesional = servicioProfesional.obetenerDatosProfesional(idProfesional);
+		
+		List<String> horariosOrdenados = profesional.getHorariosLaborales();
+		Collections.sort(horariosOrdenados);
+		
+		//Filtramos la lista de enum por el tipo de especialidad que selecciono el profesional
+		//Esta lista es la que brinda las opciones en el select para modficiar los tratamientos existentes
+        List<TratamientoEnum> tratamientosCompletos = Arrays.stream(TratamientoEnum.values())
+                .filter(especialidadList -> especialidadList.name().contains(profesional.getTipoEspecialidad().getDisplayName().toUpperCase()))
+                .collect(Collectors.toList());
+		
+		//Pasamos los datos del profesional a la vista
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
-		
-		List<DiasDeLaSemana> diasLaborales = null;
-		Especialidad especialidad = null;
-		List<HorariosDisponibles> horariosDisponibles = null;
-		List<String> horariosLaborales = null;
-		TipoDeEspecialidad tipoDeEspecialidad = null;
-		List<Tratamiento> tratamientos = null;
-		Optional<Profesional> buscarProfesional = repositorioProfesional.findById(idProfesional);
-		if (buscarProfesional.isPresent()) {
-			Profesional datosDelProfesional = buscarProfesional.get();
-			diasLaborales = datosDelProfesional.getDiasDeLaSemana();
-			especialidad = datosDelProfesional.getEspecialidad();
-			horariosDisponibles = datosDelProfesional.getHorariosDisponibles();
-			horariosLaborales = datosDelProfesional.getHorariosLaborales();
-			tipoDeEspecialidad = datosDelProfesional.getTipoEspecialidad();
-			tratamientos = datosDelProfesional.getTratamientos();
-		}
-		
+				
 		model.addAttribute("datosProfesional", datosProfesional);
-		model.addAttribute("diasLaborales", diasLaborales);
-		model.addAttribute("especialidad", especialidad);
-		model.addAttribute("horariosDisponibles", horariosDisponibles);
-		model.addAttribute("horariosLaborales", horariosLaborales);
-		model.addAttribute("tipoDeEspecialidad", tipoDeEspecialidad);
-		model.addAttribute("tratamientos", tratamientos);
+		model.addAttribute("diasLaborales", profesional.getDiasDeLaSemana());
+		model.addAttribute("especialidad", profesional.getEspecialidad());
+		model.addAttribute("horariosDisponibles", profesional.getHorariosDisponibles());
+		model.addAttribute("horariosLaborales", horariosOrdenados);
+		model.addAttribute("tipoDeEspecialidad", profesional.getTipoEspecialidad());
+		model.addAttribute("tratamientos", profesional.getTratamientos());
+		model.addAttribute("tratamientosFiltrados", tratamientosCompletos);
+		model.addAttribute("diasDeLaSemana", DiasDeLaSemana.values());
 		return "/pagina_profesional/datosProfesional";
 	}
 	
@@ -746,35 +865,25 @@ public class ControladorProfesional {
 		//Buscamos mediante el id el mail anterior del admin y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
 		// entonces usamos este mail anterior para poder pasarlo al controlador de misdatosClientes y poder visualizar los datos del cliente
 		// Tambien buscamos los valores previamente guardados en la base de datos para poder compararlos con los nuevos
-		String emailAnterior = null;
-		String domicilioAnterior = null;
-		Sexo sexoAnterior = null;
-		String nuevoSexo = null;
-		String telefonoAnterior = null;
-		
-		Optional<Profesional> identificarProfesional = repositorioProfesional.findById(idProfesional);
-		if (identificarProfesional.isPresent()) {
-			Profesional datosAnteriorProfesional = identificarProfesional.get();
-			emailAnterior = datosAnteriorProfesional.getEmail().toUpperCase();
-			domicilioAnterior = datosAnteriorProfesional.getDomicilio().toUpperCase();
-			sexoAnterior = datosAnteriorProfesional.getSexo();
-			nuevoSexo = sexoAnterior.toString().toUpperCase();
-			telefonoAnterior = datosAnteriorProfesional.getTelefono().toUpperCase();
-		}
+		Profesional profesional = servicioProfesional.obetenerDatosProfesional(idProfesional);
 					
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
 		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
 		//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
-		if (emailAnterior.equals(email.toUpperCase()) && domicilioAnterior.equals(domicilio.toUpperCase()) && nuevoSexo.equals(sexo.toUpperCase()) && telefonoAnterior.equals(telefono.toUpperCase())) {
+		if (profesional.getEmail().toUpperCase().equals(email.toUpperCase()) 
+				&& profesional.getDomicilio().toUpperCase().equals(domicilio.toUpperCase()) 
+				&& profesional.getSexo().toString().toUpperCase().equals(sexo.toUpperCase()) 
+				&& profesional.getTelefono().toUpperCase().equals(telefono.toUpperCase())) {
+			
 			model.addAttribute("email", email);
 			model.addAttribute("datosProfesional",datosProfesional);
 			return "/pagina_profesional/misdatosProfesional";
-			//return "redirect:/misdatosProfesional?email=" + email;
+			
 		}
 		
 		try {
 			//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
-			servicioProfesional.modificarProfesional(idProfesional, email, emailAnterior, domicilio, sexo, telefono );
+			servicioProfesional.modificarProfesional(idProfesional, email, profesional.getEmail().toUpperCase(), domicilio, sexo, telefono );
 			List <Usuario> datosProfesionalActualizado = servicioUsuario.buscarPorEmail(email);
 			String exito = "Datos actualizados correctamente";
 			model.addAttribute("datosProfesional",datosProfesionalActualizado);
@@ -785,7 +894,7 @@ public class ControladorProfesional {
 			
 		} catch (MiExcepcion e) {
 			String error = e.getMessage(); // en la exepcion e.getmessage obtenenos el valor de la exepcion personalizada que se de y la enviamos al controlador de misdatosProfesional para ser monstrada en pantalla
-			List <Usuario> datosProfesionalAnterior = servicioUsuario.buscarPorEmail(emailAnterior);
+			List <Usuario> datosProfesionalAnterior = servicioUsuario.buscarPorEmail(profesional.getEmail().toUpperCase());
 			model.addAttribute("datosProfesional",datosProfesionalAnterior);
 			model.addAttribute("error",error);
 			model.addAttribute("showModalError", true);

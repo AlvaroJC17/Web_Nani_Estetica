@@ -68,6 +68,9 @@ public class Turnos {
 	@Column(name = "fechaModificacion")
 	private LocalDate fechaModificacion;
 	
+	@Column(name = "fecha_cancelacion")
+	private LocalDateTime fechaCancelacion;
+	
 	@Column(name = "horario")
 	String horario;
 	
@@ -112,7 +115,8 @@ public class Turnos {
 	}
 		
 	public Turnos(String provincia, Profesional profesional, LocalDate fecha, LocalDateTime fechaCracion, String horario, List<Tratamiento> tratamiento, String dni,
-			String email, Boolean activo, Boolean multa, String consulta, String costoMulta, EstadoDelTurno estado, Rol canceladoPor, LocalDate fechaModificacion) {
+			String email, Boolean activo, Boolean multa, String consulta, String costoMulta, EstadoDelTurno estado, Rol canceladoPor, LocalDate fechaModificacion, 
+			LocalDateTime fechaCancelacion) {
 		this.dni = dni;
 		this.email = email;
 		this.provincia = provincia;
@@ -128,10 +132,20 @@ public class Turnos {
 		this.estado = estado;
 		this.canceladoPor = canceladoPor;
 		this.fechaModificacion = fechaModificacion;
+		this.fechaCancelacion = fechaCancelacion;
 	}
 	
 	
 	
+
+	public LocalDateTime getFechaCancelacion() {
+		return fechaCancelacion;
+	}
+
+
+	public void setFechaCancelacion(LocalDateTime fechaCancelacion) {
+		this.fechaCancelacion = fechaCancelacion;
+	}
 
 	public LocalDate getFechaModificacion() {
 		return fechaModificacion;

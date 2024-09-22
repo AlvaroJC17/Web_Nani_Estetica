@@ -32,6 +32,7 @@ import com.proyecto_integrador_3.Estetica.Servicios.ServicioCodigoDeVerificacion
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioEmail;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioToken;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
 @Controller
@@ -60,6 +61,9 @@ public class ControladorPagina {
 	
 	@Autowired
 	ServicioHorario servicioHorario;
+	
+	@Autowired
+	ServicioTurnos servicioTurnos;
 	
 	
 	@GetMapping("/login")
@@ -397,8 +401,7 @@ public class ControladorPagina {
 			//Si es temporal tiramos una excepcion porque los usuarios temporales no pueden loguearse
 			if (!servicioUsuario.validarUsuarioRegistradoActivo(emailUsuarioSinEspacios)) {
 				String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br>"
-   					 +"<p class='fs-6 text-center'>La cuenta no se encuentra registrada en nuestro sistema, por favor registrate para poder "
-   					 + "usar nuestros servicios.</p>";
+   					 +"<p class='fs-6 text-center'>Usuario o contraseña incorrectos, por favor intente nuevamente.</p>";
 				
 				model.addAttribute("error", error);
 				modelo.addAttribute("showModalError", true);
@@ -452,9 +455,7 @@ public class ControladorPagina {
 		     // Si usuario no existe en la base de datos, tiramos el error y el mensaje    
 		     }else {
 		    	 String error3 = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-    					 +"<span class='fs-6'>La contraseña o el nombre de usuario que has ingresado son incorrectos."
-    					 + "  Por favor, verifica tus datos e intenta nuevamente.</span><br><br>"
-    					 + "Gracias.";
+    					 +"<span class='fs-6'>Usuario o contraseña incorrectos, por favor intente nuevamente.</span>";
 		    	 modelo.addAttribute("error", error3);
 		    	 modelo.addAttribute("email", emailUsuarioSinEspacios);
 		    	 modelo.addAttribute("showModalError", true);
@@ -482,6 +483,7 @@ public class ControladorPagina {
 				             } else if ("CLIENTE".equals(rol.toString())) {
 				            	 if (validarForm) {
 				            		 modelo.addAttribute("datosCliente", datosPersonaUsuario);
+				            		 servicioTurnos.actualizarTurnosAntiguos(emailUsuario); //validamos si el cliente tiene turnos vencidos antes de enviarlo a su home
 				            		 return "pagina_cliente/homeCliente";
 				            	 }else if(!validarForm) {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario); //Esta variable envia el email en un input oculto hacia el metodo guardarDatosPersona

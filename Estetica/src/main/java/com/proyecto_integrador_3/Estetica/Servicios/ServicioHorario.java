@@ -60,10 +60,10 @@ public class ServicioHorario {
 		}
 	
 		 try {
-			 //Verificamos que el profesional seleccionado tenga horarios en la fecha seleccionada
+			 //buscamos que el profesional seleccionado tenga horarios en la fecha seleccionada
 			 List<HorariosDisponibles> horarios = repositorioHorariosDisponibles.findHorariosByProfesionalIdAndFecha(idProfesional, fecha);
 			
-			 //sino tiene horarios, creamos una lista nueva de horarios con los que selecciono el profesional
+			 //sino tiene horarios, creamos una lista nueva de horarios con los que selecciono el profesional cuando se registro
 		    if (horarios.isEmpty()) {
 		        return horariosDisponinbles;
 		    } else {
@@ -188,7 +188,6 @@ public class ServicioHorario {
 	            if (fechaProporcionada.isBefore(fechaHoraActual)) {
 	            	//si entra al if, agragamos ese horario a la lista temporal horariosAEliminar
 	            	horariosAEliminar.add(horario);
-	            	System.out.println("Se actualizo la lista de horarios para la fecha: " + fecha);
 	            }
 	        }
 
@@ -200,6 +199,54 @@ public class ServicioHorario {
 				throw new MiExcepcion("Error al conectar con el servidor " +  e);
 			}
 	    }
+		
+		
+		//Este metodo es parecido al de eliminar horarios viejos, pero este solo valida si hay algun horario viejo presente y devuelve un booleano
+		//Este metodo a diferencia del otro no elimina el horario viejo
+		public boolean validarHorariosViejos(String idProfesional, String fecha) throws MiExcepcion {
+		    try {            
+		    	List<String> horariosLaboralesProfesional = null;
+				Optional <Profesional> buscarHorariosProfesional = servicioProfesional.buscarProfesional(idProfesional);
+				if (buscarHorariosProfesional.isPresent()) {
+					Profesional horariosLaborales = buscarHorariosProfesional.get();
+					horariosLaboralesProfesional = horariosLaborales.getHorariosLaborales();
+				}
+		        
+		        // Si la lista está vacía, no hay horarios para verificar, devolvemos false
+		        if (horariosLaboralesProfesional.isEmpty()) {
+		            System.out.println("No hay horarios disponibles para verificar.");
+		            return false; 
+		        }
+
+		        // Obtener la fecha y hora actual
+		        LocalDateTime fechaHoraActual = LocalDateTime.now();
+		        
+		        // Designar el formato de fecha y hora a parsear
+		        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+		        // Iterar sobre los horarios disponibles
+		        for (String horario : horariosLaboralesProfesional) {
+		            // Crear una variable String para la fecha y hora combinadas
+		            String fechaHoraStr = fecha + " " + horario;
+
+		            // Parsear la fecha y hora proporcionadas a LocalDateTime
+		            LocalDateTime fechaProporcionada = LocalDateTime.parse(fechaHoraStr, dateFormatter);
+
+		            // Comparar con la fecha y hora actual
+		            if (fechaProporcionada.isBefore(fechaHoraActual)) {
+		                // Si encontramos un horario anterior a la fecha y hora actual, retornamos true
+		                return true;
+		            }
+		        }
+
+		        // Si no se encontraron horarios anteriores a la fecha y hora actual, devolvemos false
+		        return false;
+		        
+		    } catch (Exception e) {
+		        throw new MiExcepcion("Error al conectar con el servidor: " + e);
+		    }
+		}
+
 	    
 	    
 	    //Le pasamos un fecha y un horario, busca la fecha en la base de datos y verifica si el horario
@@ -320,7 +367,7 @@ public class ServicioHorario {
 		 //pasar la fecha de string a localDateTime con otro formato sin los segundos OJO este metodo lo uso en seleccion de turnos y para visualizar los turnos
 		 //del cliente
 		 public LocalDateTime pasarFechaStringToLocalDateTimeOtroFormato(String fecha) throws MiExcepcion {
-			 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+			 DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSSSSS");
 			 LocalDateTime fechaProporcionada = LocalDateTime.parse(fecha, dateFormatter);
 			 return fechaProporcionada;
 		 }

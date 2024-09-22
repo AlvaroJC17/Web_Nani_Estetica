@@ -35,13 +35,13 @@ public class Tratamiento {
     private TratamientoEnum nombreTratamientos;
 	
 	@Column(name="costo")
-	int costoTratamiento;
+	long costoTratamiento;
 	
 	public Tratamiento() {
 		
 	}
 	
-	public Tratamiento(TratamientoEnum nombreTratamientos, int costoTratamiento) {
+	public Tratamiento(TratamientoEnum nombreTratamientos, long costoTratamiento) {
 		this.nombreTratamientos = nombreTratamientos;
 		this.costoTratamiento = costoTratamiento;
 	}
@@ -56,11 +56,11 @@ public class Tratamiento {
 		this.nombreTratamientos = nombreTratamientos;
 	}
 
-	public int getCostoTratamiento() {
+	public long getCostoTratamiento() {
 		return costoTratamiento;
 	}
 
-	public void setCostoTratamiento(int costoTratamiento) {
+	public void setCostoTratamiento(long costoTratamiento) {
 		this.costoTratamiento = costoTratamiento;
 	}
 	

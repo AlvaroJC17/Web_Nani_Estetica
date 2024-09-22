@@ -6,7 +6,7 @@ public enum TipoDeEspecialidad {
 	ESTETICO_LASHISTA("Lashista"),
 	ESTETICO_PEDICURA("Pedicura"),
 	ESTETICO_MANICURA("Manicura"),
-	CORPORAL_MASAJISTA("Masajista");
+	CORPORAL_MASAJISTA("Masaje");
 	
 private String displayName;
 	

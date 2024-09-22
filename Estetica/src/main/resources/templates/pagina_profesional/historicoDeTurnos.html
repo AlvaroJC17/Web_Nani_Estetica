@@ -104,6 +104,7 @@
 																	<th class="text-center">Estado del tuno</th>
 																	<th class="text-center">Multa</th>
 																	<th class="text-center">Fecha de creación</th>
+																	<th class="text-center">Fecha de cancelación</th>
 																	<th class="text-center">Fecha del turno</th>
 																	<th class="text-center">Horario del turno</th>
 																	
@@ -125,7 +126,8 @@
 																	<td class="text-center" th:text="${turnosDelProfesional.activo ? 'SI' : 'NO'}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.estado}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.multa ? 'SI' : 'NO'}"></td>
-																	<td class="text-center" th:text="${#temporals.format(turnosDelProfesional.fechaCreacion, 'dd-MM-yyyy')}"></td>
+																	<td class="text-center" th:text="${#temporals.format(turnosDelProfesional.fechaCreacion, 'dd-MM-yyyy HH:mm')}"></td>
+																	<td class="text-center" th:text="${#temporals.format(turnosDelProfesional.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.fecha}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.horario}"></td>
 																	

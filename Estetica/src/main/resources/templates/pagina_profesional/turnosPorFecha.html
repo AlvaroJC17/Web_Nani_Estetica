@@ -148,19 +148,27 @@ tener el mismo ID-->
 				
 				<form id="formularioDeshabilitarHora" th:action="@{/horasDeshabilitadas}" method="post">
 					
-					<!-- Comparar la clave con la lista de horarios deshabilitados -->
-					<div class="text-danger fw-bold px-1 mt-2 fs-6 text-center" 
-					 th:if="${horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar == true }">
-					 HORARIO DESHABILITADO
-					</div>
-				
-				<div style="display: block;" class="">	
-				
-					<div class="ps-0 mt-1 mx-0">
-					<button id="botonDeshabilitarHora" style="width: 120px; height: 35px;" th:if="${!horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar}" 
-					type="button" data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}" 
-					class="mx-0 my-1 bn632-hover bn26 cancelar">Deshabilitar</button>
-					</div>	
+					<!-- Mostrar mensaje "HORARIO NO DISPONIBLE" basado en la nueva variable booleana -->
+					    <div class="text-danger fw-bold px-1 mt-2 fs-6 text-star" 
+					        th:if="${mapaHorarioNoDisponible.contains(entry.key)}">
+					        HORARIO NO DISPONIBLE
+					    </div>
+
+					    <!-- Mensaje de "HORARIO DESHABILITADO" solo si el horario no está marcado como no disponible -->
+					    <div class="text-danger fw-bold px-1 mt-2 fs-6 text-star" 
+					        th:if="${!mapaHorarioNoDisponible.contains(entry.key) && horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar == true}">
+					        HORARIO DESHABILITADO
+					    </div>
+
+					    <div style="display: block;" th:if="${!mapaHorarioNoDisponible.contains(entry.key)}" class="">    
+					        <div class="ps-0 mt-1 mx-0">
+					            <button id="botonDeshabilitarHora" style="width: 120px; height: 35px;" 
+					                th:if="${!horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar}" 
+					                type="button" data-bs-toggle="modal" 
+					                th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}" 
+					                class="mx-0 my-1 bn632-hover bn26 cancelar">Deshabilitar</button>
+					        </div>    
+	
 				
 		        <!-- Imprime la clave del Map, que es el horario -->
 		        <div class="fw-medium fs-4" >Hora: <span class="fw-medium fs-4 col-md-1 ps-1" th:text="${entry.key}"></span> 
@@ -248,6 +256,8 @@ tener el mismo ID-->
 								   <li class="list-unstyled d-flex"><strong>Dni cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.dni}"></p> </li>
 								   <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turno.fecha, 'dd-MM-yyyy')}"></p> </li>
 								   <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.horario}"></p> </li>
+								   <li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turno.fechaCreacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
+								   <li th:if="${turno.fechaCancelacion}" class="list-unstyled d-flex"><strong>Fecha de cancelación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turno.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
 								   <span><strong>Tratamientos:</strong></span>
 								   <ul class="pb-3" style="list-style-type: disc;">
 								   <li th:each="tratamientoAsistido : ${turno.tratamientos}">

@@ -330,14 +330,12 @@ public class ControladorAdmin {
 			if (!rolActual.equals(nuevoRol)) { // si los roles son direfentes ejecuta esto
 				//metodo para moficar el rol
 				servicioUsuario.modificarRol(id, nuevoRol);
-				//String usuarioModificado = "usuarioModificado";
 				exito = "Actializacion realizada correctamente";
 				model.addAttribute("usuariosEmail", emailAdministrador);
 				model.addAttribute("showModalExito", true);
 				model.addAttribute("usuarios", usuarios);
 				model.addAttribute("exito", exito);
 				model.addAttribute("dato2",email); // enviamos el mismo mail del usuario como dato para el formulario de buscarDNIoNombre
-				//model.addAttribute("usuarioModificado", usuarioModificado);
 				return "/pagina_admin/portalAdmin";
 			}else {
 				error = "El usuario ya posee un rol de " + nuevoRol;
@@ -438,28 +436,18 @@ public class ControladorAdmin {
 		//Buscamos mediante el id el mail anterior del admin y lo guardamos en la variable emailAnterior por si acaso deja el campo de email vacio o coloca un email no valido
 		// entonces usamos este mail anterior para poder pasarlo al controlador de misdatosClientes y poder visualizar los datos del cliente
 		// Tambien buscamos los valores previamente guardados en la base de datos para poder compararlos con los nuevos
-		String ocupacionAnterior = null;
-		String emailAnterior = null;
-		String domicilioAnterior = null;
-		Sexo sexoAnterior = null;
-		String nuevoSexo = null;
-		String telefonoAnterior = null;
 		
-		Optional<Admin> identificarAdmin = repositorioAdmin.findById(idAdmin);
-		if (identificarAdmin.isPresent()) {
-			Admin datosAdminAnterior = identificarAdmin.get();
-			emailAnterior = datosAdminAnterior.getEmail();
-			ocupacionAnterior = datosAdminAnterior.getOcupacion();
-			domicilioAnterior = datosAdminAnterior.getDomicilio();
-			sexoAnterior = datosAdminAnterior.getSexo();
-			nuevoSexo = sexoAnterior.toString();
-			telefonoAnterior = datosAdminAnterior.getTelefono();
-		}
+		Admin admin = servicioAdmin.buscarDatosAdmin(idAdmin); //buscamos los datos del admin
 		
 		List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
 		//Teniendo el valos de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
 		//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
-		if (ocupacionAnterior.equals(ocupacion) && emailAnterior.equals(email) && domicilioAnterior.equals(domicilio) && nuevoSexo.equals(sexo) && telefonoAnterior.equals(telefono)) {
+		if (admin.getOcupacion().toUpperCase().equals(ocupacion.toUpperCase()) 
+				&& admin.getEmail().toUpperCase().equals(email.toUpperCase()) 
+				&& admin.getDomicilio().toUpperCase().equals(domicilio.toUpperCase()) 
+				&& admin.getSexo().toString().toUpperCase().equals(sexo.toUpperCase()) 
+				&& admin.getTelefono().toUpperCase().equals(telefono.toUpperCase())) {
+			
 			model.addAttribute("email", email);
 			model.addAttribute("datosAdmin",datosAdmin);
 			return "/pagina_admin/misdatosAdmin";
@@ -467,7 +455,7 @@ public class ControladorAdmin {
 		
 		try {
 			//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
-			servicioAdmin.modificarAdmin(idAdmin, ocupacion, email, emailAnterior, domicilio, sexo, telefono );
+			servicioAdmin.modificarAdmin(idAdmin, ocupacion, email, admin.getEmail().toUpperCase(), domicilio, sexo, telefono );
 			List <Usuario> datosAdminActualizados = servicioUsuario.buscarPorEmail(email);
 			String exito = "Datos actualizados correctamente";
 			model.addAttribute("datosAdmin",datosAdminActualizados);
@@ -477,7 +465,7 @@ public class ControladorAdmin {
 			
 		} catch (MiExcepcion e) {
 			String error = e.getMessage(); // en la exepcion e.getmessage obtenenos el valor de la exepcion personalizada que se de y la enviamos al controlador de misdatosAdmin para ser monstrada en pantalla
-			List <Usuario> datosAdminAnterior = servicioUsuario.buscarPorEmail(emailAnterior);
+			List <Usuario> datosAdminAnterior = servicioUsuario.buscarPorEmail(admin.getEmail().toUpperCase());
 			model.addAttribute("datosAdmin",datosAdminAnterior);
 			model.addAttribute("error",error);
 			model.addAttribute("showModalError", true);
@@ -485,24 +473,7 @@ public class ControladorAdmin {
 		}
 	}
 			
-	
-	//metodo relacionado con actualizarContrasenaProfesional
-//		@GetMapping("/cambiarContrasenaAdmin")
-//		public String cambiarContrasenaAdmin(
-//				@RequestParam String email,
-//				@RequestParam(required = false) String exito,
-//				@RequestParam(required = false) String error,
-//				ModelMap model) {
-//			
-//			List <Usuario> datosAdmin = servicioUsuario.buscarPorEmail(email);
-//			
-//			model.addAttribute("datosAdmin", datosAdmin);
-//			model.addAttribute("exito", exito);
-//			model.addAttribute("error", error);
-//			return "/pagina_admin/cambiarContrasenaAdmin";
-//		}
-//		
-		
+			
 		//Metodo relacionado con cambiarContrasenaProfesional
 		@PostMapping("actualizarContrasenaAdmin")
 		public String actualizarContrasenaAdmin(

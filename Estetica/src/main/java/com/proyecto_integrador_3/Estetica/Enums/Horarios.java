@@ -8,7 +8,12 @@ public enum Horarios {
 	QUINCE("15:00"),
 	DIECISEIS("16:00"),
 	DIECISIETE("17:00"),
-	DIECIOCHO("18:00");
+	DIECIOCHO("18:00"),
+	DIECINUEVE("19:00"),
+	VEINTE("20:00"),
+	VEINTIUNO("21:00"),
+	VEINTIDOS("22:00"),
+	VEINTITRES("23:00");
 	
 	 private final String hora;
 

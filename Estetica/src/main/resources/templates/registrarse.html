@@ -130,22 +130,22 @@
 						
 				<!--Modal mensajes de error al registrarse-->
 			
-			<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
-	     th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
-	    <div class="modal-dialog">
-	        <div style="background-color: #ebdf9d;" class="modal-content">
-	            <div class="modal-header border border-0 d-flex justify-content-center ">
-				<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
-	            </div>
-	            <div class="modal-body text-black">
-	                <p class="text-center" th:utext="${error}"></p>
-	            </div>
-	            <div class="modal-footer border border-0">
-	                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
-	            </div>
-	        </div>
-	    </div>
-	</div>
+				<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
+				     th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
+				    <div class="modal-dialog">
+				        <div style="background-color: #ebdf9d;" class="modal-content">
+				            <div class="modal-header border border-0 d-flex justify-content-center ">
+							<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+				            </div>
+				            <div class="modal-body text-black lh-sm">
+				                <p class="text-center" th:utext="${error}"></p>
+				            </div>
+				            <div class="modal-footer border border-0">
+				                <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+				            </div>
+				        </div>
+				    </div>
+				</div>
 							
 							
 						</form>

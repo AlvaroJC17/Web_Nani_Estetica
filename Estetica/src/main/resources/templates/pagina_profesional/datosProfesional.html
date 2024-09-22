@@ -11,6 +11,8 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
         <link rel="stylesheet" href="../css/styles.css">
         <title>Datos Profesional</title>
+		
+			
       </head>
 <body class="body-misdatos" th:each="datosProfesional : ${datosProfesional}">
 
@@ -61,60 +63,314 @@
   <h3 class="">Datos profesionales</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
-        <form th:action="@{/actualizarDatosProfesional}" method="post">
          
 			<div class="row">
 				
           <div class="mb-3 col-lg-12">
-            <label for="id" class="form-label texto-label" disabled >ID profesional</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosProfesional.id)}" class="form-control"  placeholder="Nombre" disabled >
+            <label for="idProfesional" class="form-label texto-label" disabled >ID profesional</label>
+            <input id="idProfesional" type="text" th:value="${#strings.toUpperCase(datosProfesional.id)}" class="form-control"  placeholder="Nombre" disabled >
           </div>
 		  
 		  <div class="mb-3 col-lg-12">
-		   <label for="id" class="form-label texto-label" disabled >Nombre</label>
-		   <input type="text" th:value="${#strings.toUpperCase(datosProfesional.nombre + ' ' + datosProfesional.apellido)}" class="form-control"  placeholder="Nombre" disabled >
+		   <label for="nombreProfesional" class="form-label texto-label" disabled >Nombre</label>
+		   <input id="nombreProfesional" type="text" th:value="${#strings.toUpperCase(datosProfesional.nombre + ' ' + datosProfesional.apellido)}" class="form-control"  placeholder="Nombre" disabled >
 		  </div>
 		  
 		  <div class="mb-3 col-lg-12">
-		  <label for="id" class="form-label texto-label" disabled >Especialidad</label>
-		  <input type="text" th:value="${#strings.toUpperCase(datosProfesional.tipoEspecialidad.displayName)}" class="form-control" placeholder="Nombre" disabled >
+		  <label for="especialidadProfesional" class="form-label texto-label" disabled >Especialidad</label>
+		  <input id="especialidadProfesional" type="text" th:value="${#strings.toUpperCase(datosProfesional.tipoEspecialidad.displayName)}" class="form-control" placeholder="Nombre" disabled >
+		  </div>
 		  </div>
 		  
-		  </div>
-		  
+
+<h4 class="text-center mt-5">Modificar datos laborales</h4>
+<p class="text-center fs-6">Para modificar los elementos, primero debes presionar el botón <span class="fw-bold">"Modificar"</span> en cada casilla,
+	 lo que habilitará la edición. Una vez habilitada, podrás seleccionar un nuevo elemento de la lista y agregarlo
+	  a la casilla pulsando el botón <span class="fw-bold">"Agregar"</span>. Si deseas eliminar un elemento, selecciona el que está en la casilla
+	   y pulsa el botón <span class="fw-bold">"Eliminar"</span>. Para guardar los cambios realizados, presiona el botón <span class="fw-bold">"Guardar"</span>.
+	    Si prefieres cancelar o no guardar los cambios, presiona el botón <span class="fw-bold">"Cancelar"</span>.</p>
+		  	  
 		  <div class="row mt-5">
+		 
+        <form id="formularioDiasLaborales" th:action="@{/actualizarDiaLaboral}" method="post" class="mb-3 col-lg-6 elemento-hover">
 			
-          <div class="mb-3 col-lg-4">
-			<p class="fw-bold text-center">Días laborales</p>
-            <ul class="">
-				<li th:each="diasLaborales : ${diasLaborales}" th:text="${diasLaborales}"></li>
-			</ul>
+		 <div>
+			<div id="divSeleccionDias" style="display: none;" class="text-center">
+			    <label class="fs-5 form-label texto-label mb-0" for="selectDiasLaborales">Selecciona un día laboral:</label>
+			    <select aria-label="Default select example" class="form-select" id="selectDiasLaborales" name="selectDiasLaborales" disabled>
+			        <option th:each="dia : ${diasDeLaSemana}" th:value="${dia}" th:text="${dia}"></option>
+			    </select>
+			</div>
+
+			<div class="row d-flex align-items-center justify-content-center">
+				
+				<!-- Botones para agregar o eliminar días -->
+			<div id="divBotones" style="display: none;" class="text-center col-md-6">
+			<button type="button" onclick="agregarDia('selectDiasLaborales', 'listaSeleccionadas3', 'diasSeleccionadosCampo')" class="btn btn-primary mt-2">Agregar</button>
+			 <button type="button" onclick="eliminarDia('listaSeleccionadas3', 'diasSeleccionadosCampo')" class="btn btn-danger mt-2">Eliminar</button>
+			</div>	
+				
+			<!-- Select de días seleccionados (precargados con días guardados en la base de datos) -->
+			<div class="text-center mt-3 col-md-6">
+			    <label class="fs-5 form-label texto-label mb-0" for="listaSeleccionadas3">Días laborales</label>
+			    <select aria-label="Default select example" class="form-select" id="listaSeleccionadas3" name="listaSeleccionadas3" size="6" multiple disabled>
+			        <!-- Pre-cargar con los días almacenados en la base de datos -->
+			        <option th:each="diaSeleccionado : ${diasLaborales}" th:value="${diaSeleccionado}" th:text="${diaSeleccionado}"></option>
+			    </select>
+			</div>
+
+			</div>
+			
+			
+			
+			<div id="divModificar" class="text-center">
+				<button type="button" class="bn632-hover bn26" onclick="habilitarEdicion()" >Modificar</button>
+			</div>
+			
+			<div class="text-center d-flex justify-content-center">
+				<button id="btnGuardar" style="display: none;" type="button" class="bn632-hover bn26" data-bs-toggle="modal" data-bs-target="#staticBackdrop3">Guardar</button>
+				 <button id="btnCancelar" style="display: none;" type="button" class="bn632-hover bn26 cancelar" onclick="cancelarEdicion()">Cancelar</button>
+			</div>
+			
+
+			<!-- Campo oculto para enviar los días seleccionados al backend -->
+			<input type="hidden" id="diasSeleccionadosCampo" name="diasSeleccionados">
+			<input type="hidden" th:value="${datosProfesional.id}" class="form-control" name="idProfesional" id="idProfesional"> <!--input oculto para enviar el id del profesional al controlador actualizarDatosProfesional-->
+			<input type="hidden" th:value="${datosProfesional.email}" class="form-control" name="emailProfesional" id="email">
 		 </div>
+			      
+		 
+		 <!--Modal para guardar la actualizacion de dias laborales-->
+
+		 						<div class="modal fade" id="staticBackdrop3" data-bs-backdrop="static" data-bs-keyboard="false"
+		 							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		 							<div class="modal-dialog">
+		 								<div style="background-color: #ebdf9d;" class="modal-content">
+		 									<div class="modal-header d-block  text-center border border-0">
+		 										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+		 										<h1 class="modal-title text-black lh-sm text-center fs-5 fw-bold" id="staticBackdropLabel"></h1>
+		 									</div>
+		 									<div class="modal-body text-black lh-sm text-center">
+		 										<span class="fs-6 fw-bold">Estimado usuario,</span><br><br>
+		 										<span class="fs-6">¿Estas seguro de guardar los cambios realizados?</span>
+		 									</div>
+		 									<div class="modal-footer border border-0">
+		 										<button type="button" class="btn btn-danger"
+		 											data-bs-dismiss="modal">Cerrar</button>
+		 										<a href="">
+		 											<!--Este boton es el que hace el llamado al metodo-->
+		 											<button type="submit" name="action" value="modificarRol"
+		 												class="btn btn-primary">Aceptar</button>
+		 										</a>
+		 									</div>
+		 								</div>
+		 							</div>
+		 						</div>
+        </form>
+		
+		<form id="formularioHorarioLaboral" th:action="@{actualizarHorarioLaboral}" method="post" class="mb-3 col-lg-6 elemento-hover">
 			
-		  <div class="mb-3 col-lg-4">
-			<p class="fw-bold text-center">Horario laboral</p>
-			<ul>
-			 <li th:each="horariosLaborales : ${horariosLaborales}" th:text="${horariosLaborales}"></li>
-			</ul>
-		  </div>
+		 <div>
+			<div id="divHorasMinutos" style="display: none;" class="row">
+			<div class="text-center col-md-6">
+			       <label class="form-label texto-label mb-0" for="selectHorasLaborales">Selecciona la hora:</label>
+			       <select aria-label="Default select example" class="form-select" id="selectHorasLaborales" name="selectHorasLaborales" disabled>
+			           <!-- Opciones de horas (puedes agregar más) -->
+			         <option value="08">08</option>
+			        <option value="09">09</option>
+			        <option value="10">10</option>
+			        <option value="11">11</option>
+			        <option value="12">12</option>
+			        <option value="13">13</option>
+			        <option value="14">14</option>
+			        <option value="15">15</option>
+			        <option value="16">16</option>
+			        <option value="17">17</option>
+			        <option value="18">18</option>
+					<option value="19">19</option>
+					<option value="20">20</option>
+					<option value="21">21</option>
+					<option value="22">22</option>
+					<option value="23">23</option>
+			       </select>
+			     </div>
+				 
+				 
+				 <div class="col-md-6">
+				      <label class="form-label texto-label mb-0" for="selectMinutos">Selecciona minutos:</label>
+				      <select aria-label="Default select example" class="form-select" id="selectMinutos" name="selectMinutos" disabled>
+				          <!-- Opciones de minutos -->
+				          <option value="00">00</option>
+				          <option value="15">15</option>
+				          <option value="30">30</option>
+				          <option value="45">45</option>
+				      </select>
+				    </div>
+				</div>
+				
+					
+					
+				 <div class="row d-flex align-items-center justify-content-center">
+					<!-- Botones para agregar o eliminar días -->
+					<div id="divBotones2" style="display: none;"  class="text-center col-md-6">
+					<button type="button" onclick="agregarHora('selectHorasLaborales', 'selectMinutos', 'listaSeleccionadas2', 'horasSeleccionadosCampo')" class="btn btn-primary mt-2">Agregar</button>
+					<button type="button" onclick="eliminarHora('listaSeleccionadas2', 'horasSeleccionadosCampo')" class="btn btn-danger mt-2">Eliminar</button>
+					</div>	
+					
+					<!-- Select de días seleccionados (precargados con días guardados en la base de datos) -->
+					<div class="text-center mt-3 col-md-6">
+					<label class="fs-5 form-label texto-label mb-0" for="listaSeleccionadas2">Horas laborales</label>
+					<select aria-label="Default select example" class="form-select" id="listaSeleccionadas2" name="listaSeleccionadas2" size="6" multiple disabled>
+						<!-- Pre-cargar con los días almacenados en la base de datos -->
+					<option th:each="horariosLaborales : ${horariosLaborales}" th:value="${horariosLaborales}" th:text="${horariosLaborales}"></option>
+					</select>
+					</div>
+					
+					<div id="divModificar2" class="text-center">
+					<button type="button" class="bn632-hover bn26" onclick="habilitarEdicion2()" >Modificar</button>
+					</div>
+								
+					<div class="text-center d-flex justify-content-center">
+						<button id="btnGuardar2" style="display: none;" type="button" class="bn632-hover bn26" data-bs-toggle="modal" data-bs-target="#staticBackdrop2">Guardar</button>
+						<button id="btnCancelar2" style="display: none;" type="button" class="bn632-hover bn26 cancelar" onclick="cancelarEdicion2()">Cancelar</button>
+					</div>
+								
+
+					<!-- Campo oculto para enviar los días seleccionados al backend -->
+					<input type="hidden" id="horasSeleccionadosCampo" name="horasSeleccionados">
+					<input type="hidden" th:value="${datosProfesional.id}" class="form-control" name="idProfesional" id="idProfesional"> <!--input oculto para enviar el id del profesional al controlador actualizarDatosProfesional-->
+					<input type="hidden" th:value="${datosProfesional.email}" class="form-control" name="emailProfesional" id="email">
+					
+				 </div>
+		 </div>
+		 
+		 
+		 <!-- Modal boton guardar actualizacion de horas laborales -->
+		 
+		 						<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false"
+		 							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		 							<div class="modal-dialog">
+		 								<div style="background-color: #ebdf9d;" class="modal-content">
+		 									<div class="modal-header d-block  text-center border border-0">
+		 										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+		 										<h1 class="modal-title text-black lh-sm fs-4 fw-bold text-center" id="staticBackdropLabel"></h1>
+		 									</div>
+		 									<div class="modal-body lh-sm text-center">
+		 										<span class="fs-6 fw-bold">Estimado usuario,</span><br><br>
+		 										<span class="fs-6">¿Estas seguro de guardar los cambios realizados?</span>
+		 									</div>
+		 									<div class="modal-footer border border-0">
+		 										<button type="button" class="btn btn-danger"
+		 											data-bs-dismiss="modal">Cerrar</button>
+		 										<a href="">
+		 											<!--Este boton es el que hace el llamado al metodo-->
+		 											<button type="submit" name="action" value="altaUsuario"
+		 												class="btn btn-primary">Aceptar</button>
+		 										</a>
+		 									</div>
+		 								</div>
+		 							</div>
+		 						</div>
+		 
+		</form>
+		 </div>
+		 
+		 		
+	   <div class="row">
+		
+		<form id="formularioTratamientos" th:action="@{actualizarTratamientos}" method="post" class="mb-3 col-lg-12 elemento-hover">
+			
+		<div>
+			<div id="divSeleccionTratamientos", style="display: none;" class="row">
+				
+			<div class="col-md-6">
+				<label class="fs-5 form-label texto-label mb-0" for="selectTratamientos">Selecciona un tratamiento:</label>
+				<select aria-label="Default select example" class="form-select" id="selectTratamientos" name="selectTratamientos" disabled>
+					<option th:each="tratamientos : ${tratamientosFiltrados}" th:value="${tratamientos.displayName}" th:text="${tratamientos.displayName}"></option>
+				</select>
+			</div>
+			
+			<div class="col-md-6">
+			   <label class="form-label texto-label mb-0" for="costoTratamiento">Costo:</label>
+			   <input aria-label="Default select example" class="form-control" type="number" id="costoTratamiento" name="costoTratamiento" placeholder="ingrese costo del tratamiento" />
+			</div>
+			
+			</div>
 			
 			
-		  <div class="mb-3 col-lg-4">
-		  <p class="fw-bold text-center">Tratamientos ofrecidos</p>
-		  <ul>
-		  <li th:each="tratamientos : ${tratamientos}" th:text="${tratamientos.nombreTratamientos.displayName}"></li>
-		  </ul>
-		  </div>
-       
+			<div class="row d-flex align-items-center justify-content-center">
+							
+			<!-- Botones para agregar o eliminar tratamientos -->
+			<div id="divBotones1" style="display: none;" class="text-center col-md-6">
+				<button type="button" onclick="agregarTratamiento('selectTratamientos', 'listaSeleccionadas1', 'tratamientosSeleccionadosCampo', 'costoTratamiento')" class="btn btn-primary mt-2">Agregar</button>
+				<button type="button" onclick="eliminarTratamiento('listaSeleccionadas1', 'tratamientosSeleccionadosCampo')" class="btn btn-danger mt-2">Eliminar</button>
+			</div>	
+							
+			<!-- Select de días seleccionados (precargados con días guardados en la base de datos) -->
+				<div class="text-center mt-3 col-md-6">
+					<label class="fs-5 form-label texto-label mb-0" for="listaSeleccionadas1">Tratamientos</label>
+					<select aria-label="Default select example" class="form-select" id="listaSeleccionadas1" name="listaSeleccionadas1" size="6" multiple disabled>
+					 <!-- Pre-cargar con los días almacenados en la base de datos -->
+					<option th:each="tratamientos : ${tratamientos}" th:value="${tratamientos.nombreTratamientos.displayName + ' - $' + tratamientos.costoTratamiento}" th:text="${tratamientos.nombreTratamientos.displayName + ' - $' + tratamientos.costoTratamiento}"></option>
+					</select>
+				</div>
+				
+
+				<div id="divModificar1" class="text-center">
+					<button type="button" class="bn632-hover bn26" onclick="habilitarEdicion1()" >Modificar</button>
+				</div>
+
+				<div class="text-center d-flex justify-content-center">
+					<button id="btnGuardar1" style="display: none;" type="button" class="bn632-hover bn26" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">Guardar</button>
+					 <button id="btnCancelar1" style="display: none;" type="button" class="bn632-hover bn26 cancelar" onclick="cancelarEdicion1()">Cancelar</button>
+				</div>
+
+
+				<!-- Campo oculto para enviar los días seleccionados al backend -->
+				<input type="hidden" id="tratamientosSeleccionadosCampo" name="tratamientosSeleccionadosCampo">
+				<input type="hidden" th:value="${datosProfesional.id}" class="form-control" name="idProfesional" id="idProfesional"> <!--input oculto para enviar el id del profesional al controlador actualizarDatosProfesional-->
+				<input type="hidden" th:value="${datosProfesional.email}" class="form-control" name="emailProfesional" id="email">
+
+			</div>
+		</div>
+		
+		
+		<!-- Modal boton guardar actualizacion de tratamientos -->
+								<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false"
+									tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+									<div class="modal-dialog">
+										<div style="background-color: #ebdf9d;" class="modal-content">
+											<div class="modal-header d-block  text-center border border-0">
+												<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+												<h1 class="modal-title text-black lh-sm fs-4 fw-bold text-center" id="staticBackdropLabel"></h1>
+											</div>
+											<div class="modal-body lh-sm text-center">
+												<span class="fs-6 fw-bold">Estimado usuario,</span><br><br>
+												<span class="fs-6">¿Estas seguro de guardar los cambios realizados?</span>
+											</div>
+											<div class="modal-footer border border-0">
+												<button type="button" class="btn btn-danger"
+													data-bs-dismiss="modal">Cerrar</button>
+												<a href="">
+													<!--Este boton es el que hace el llamado al metodo-->
+													<button type="submit" name="action" value="bajaUsuario"
+														class="btn btn-primary">Aceptar</button>
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>			
+		
+		</form>
 	   </div>
        
-       <input type="hidden" th:value="${datosProfesional.id}" class="form-control" name="idProfesional" id="idProfesional"> <!--input oculto para enviar el id del profesional al controlador actualizarDatosProfesional-->
-       <input type="hidden" th:value="${datosProfesional.email}" class="form-control" name="email" id="email">
-       
-        </form>
       </div>
     </section>
         </div>
+      
+	   
+	   
+	   
     
     <!--Modal mensaje de exito misDatosProfesional	-->
 	
@@ -238,5 +494,8 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
     crossorigin="anonymous"></script>
+	
+	<script src="../js/datosProfesionales.js"></script> <!--Hoja de todos los scripts para la manipuñacion de los dias laborales, horas y tratamientos-->
+	
 </body>
 </html>
