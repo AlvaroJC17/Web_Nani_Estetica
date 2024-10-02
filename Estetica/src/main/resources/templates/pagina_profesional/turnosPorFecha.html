@@ -141,8 +141,131 @@ tener el mismo ID-->
 		<input hidden type="text"  name="fechaSeleccionada" th:value="${fechaSeleccionada}"></input>
 
 		</form>
+		
+		<p class="fs-1 mb-0">Turnos remanentes</p>
+		<div style="border-top: 5px solid;" class="border-success mb-5 d-flex flex-wrap justify-content-center">
+
+			<div th:if="${#lists.isEmpty(turnosRemanentes)}" class="d-flex  justify-content-center" >
+			        <p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500); width: fit-content;"
+					 class="fs-3 fw-light bg-danger bg-gradient text-white px-2 text-center mt-5">No tiene turnos remanentes.</p>
+			    </div>		
+					
+			<div  th:each="turnosRemanentes, iterStat : ${turnosRemanentes}" class="ft-misturnos">
+			<div th:if="${turnosRemanentes.remanenteDias || turnosRemanentes.remanenteHoras || turnosRemanentes.remanenteTratamientos}">
+				<div class="bg-warning bg-gradient text-center text-white">Pendiente</div>
+				<div th:if="${turnosRemanentes.remanenteDias || turnosRemanentes.remanenteHoras || turnosRemanentes.remanenteTratamientos}" class="bg-secondary bg-gradient text-center text-white">Remanete</div>
+					  
+					  <div th:unless="${#lists.isEmpty(turnosRemanentes)}">
+					  <form  th:action="@{/cancelarOrConfimarTurnoProfesional}" method="post">
+			          <ul  class="ps-2 me-2 mt-3" >
+						<li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turnosRemanentes.id, turnosRemanentes.id.length() - 12)}"></p> </li>
+			            <li class="list-unstyled d-flex"><strong>Cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turnosRemanentes.cliente.nombre + ' ' + turnosRemanentes.cliente.apellido}"></p> </li>
+						<li class="list-unstyled d-flex"><strong>Dni cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turnosRemanentes.dni}"></p> </li>
+						<li class="list-unstyled d-flex align-items-center"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnosRemanentes.fecha, 'dd-MM-yyyy')}"></p><span th:if="${turnosRemanentes.remanenteDias}" style="font-size: 12px;" class="ms-3 fw-light bg-danger bg-gradient text-white px-1 py-0">No disponible</span> </li>
+			            <li class="list-unstyled d-flex align-items-center"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnosRemanentes.horario}"></p><span th:if="${turnosRemanentes.remanenteHoras}" style="font-size: 12px;" class="ms-3 fw-light bg-danger bg-gradient text-white px-1 py-0">No disponible</span> </li>
+						<li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnosRemanentes.fechaCreacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
+						<li th:if="${turnosRemanentes.fechaCancelacion}" class="list-unstyled d-flex"><strong>Fecha de cancelación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turnosRemanentes.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
+			            <span><strong>Tratamientos seleccionado:</strong><span th:if="${turnosRemanentes.remanenteTratamientos}" style="font-size: 12px;" class="ms-3 fw-light bg-danger bg-gradient text-white px-1 py-0">No disponible</span> </span>
+			            <ul id="myList" class="" style="list-style-type: disc;">
+			            <li class="" th:each="tratamientoActivo : ${turnosRemanentes.tratamientos}">
+			            	<span th:text="${tratamientoActivo.nombreTratamientos.DisplayName + ' - $' + tratamientoActivo.costoTratamiento}"></span>
+			            </li>
+			            </ul>
+			            </ul>
+						
+						
+					<!--Estos botones solo hacen el llamado al modal-->
+					<div class="row justify-content-center align-items-center">
+
+						<!-- Botón para confirmar turno -->
+					  <button style="width: 130px; margin: 7px 7px 12px 7px;" type="button" class="col-md-3 bn632-hover bn26 confirmar" data-bs-toggle="modal" th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}" >Confirmar</button>
+
+						<!-- Botón para cancelar turno -->
+					  <button style="width: 130px; margin: 7px 7px 12px 7px;" type="button" class="col-md-3 bn632-hover bn26 cancelar" data-bs-toggle="modal" th:attr="data-bs-target='#staticBackdrop' + ${iterStat.index}" >Cancelar</button>
+					
+					</div>
+
+					
+					 <!-- Modal Cancelar turno -->
+							           			<!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
+							  						<div class="modal fade" th:id="'staticBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+							  							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+							  							<div class="modal-dialog">
+							  								<div style="background-color: #ebdf9d;" class="modal-content">
+							  									<div class="modal-header d-block  text-center border border-0">
+							  										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+							  										<h1 class="modal-title fs-5 fw-bold" id="staticBackdropLabel">
+							  											Cancelación de Turno</h1>
+							  									</div>
+							  									<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+							  										<span class="fw-bold">Estimado Usuario,</span><br><br>
+							  										
+							  										Por favor, verifica cuidadosamente el turno que deseas cancelar. Una vez cancelado no se podrá
+																	revertir la acción. Los turnos cancelados por los usuarios con un rol de profesional no generan
+																	multas al cliente, pero elimian ese horario de la lista de horas disponibles para esa fecha
+																	. El sistema se encarga automaticamente de generar multas a los clientes que no
+																	se presenten al turno en la fecha y hora seleccionada. <br><br>
+																	
+							  										<br>
+							  										<span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
+							  									</div>
+							  									<div class="modal-footer border border-0">
+							  										<button type="button" class="btn btn-danger"
+							  											data-bs-dismiss="modal">Cerrar</button>
+							  										<a href="">
+							  											<!--Este boton es el que hace el llamado al metodo-->
+							  											<button type="submit" name="accionDelBoton" value="cancelarTurno"  class="btn btn-primary">Aceptar</button>
+							  												
+							  										</a>
+							  									</div>
+							  								</div>
+							  							</div>
+							  						</div>
+
+					<!-- Modal Confirmar turno -->
+					<div class="modal fade" th:id="'confirmBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+					tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
+					<div class="modal-dialog">
+					  <div style="background-color: #ebdf9d;" class="modal-content">
+						<div class="modal-header d-block text-center border border-0">
+						  <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
+						  <h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel">Confirmación de Turno</h1>
+						</div>
+						<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+						  <span class="fw-bold">Estimado Usuario,</span><br><br>
+						  Estás a punto de confirmar la asistencia del turno. Por favor, revisa todos los detalles antes de proceder. 
+						  Una vez confirmado, no podrás deshacer los cambios.
+						  <br><br>
+						  <span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la confirmación?</span>
+						</div>
+						<div class="modal-footer border border-0">
+						  <button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+						  <a href="">
+							<!-- Botón que llama al método para aceptar la confirmación -->
+							<button type="submit" name="accionDelBoton" value="confirmarTurno" class="btn btn-primary">Aceptar</button>
+						  </a>
+						</div>
+					  </div>
+					</div>
+					</div>
+						
+							  <input hidden type="text" id="email" name="emailProfesional" th:value="${datosProfesional.email}"></input>
+							  <input hidden type="text" id="emailCliente" name="emailCliente" th:value="${turnosRemanentes.email}"></input>
+							  <input hidden type="text" id="fecha" name="fecha" th:value="${turnosRemanentes.fecha}"></input>
+							  <input hidden type="text" id="horario" name="horario" th:value="${turnosRemanentes.horario}"></input>
+							  <input hidden type="text" id="idTurno" name="idTurno" th:value="${turnosRemanentes.id}"></input>
+							  <input hidden type="text" id="idProfesional" name="idProfesional" th:value="${turnosRemanentes.profesional.id}"></input>
+							  <input hidden type="text" id="idCliente" name="idCliente" th:value="${turnosRemanentes.cliente.id}"></input>
+						</form>
+						</div>
+						</div>
+						</div>
+			</div>
+						
+						
 	
 		<ul class="ps-0">
+			<p class="fs-1">Turnos por hora</p>
 		    <!-- Iterar sobre las entradas del Map -->
 		    <li class="border-success mt-2" style="border-top: 5px solid; list-style-type: none;" th:each="entry, iterStat : ${turnosPorHorarioLaboral}">
 				
@@ -225,6 +348,9 @@ tener el mismo ID-->
 
 				
 				<div class="d-flex flex-wrap justify-content-center">
+					
+					
+				
 								  <div class="text-center" th:if="${#lists.isEmpty(entry.value)}">
 									<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-danger bg-gradient text-white px-2">No tiene turnos en este horario</p>
 								  </div>
@@ -248,6 +374,10 @@ tener el mismo ID-->
 									   <div th:if="${turno.estado.toString} == 'PENDIENTE'" class="bg-warning gb-gradient text-center text-white">
 									       Pendiente
 									   </div>
+									   
+									   <div th:if="${turno.remanenteDias || turno.remanenteHoras || turno.remanenteTratamientos}" class="bg-secondary gb-gradient text-center text-white">
+									 	    Remanente
+									   </div>
 								  		  
 								  <div th:unless="${#lists.isEmpty(entry.value)}">
 								   <ul class="ps-2 me-2 mt-3" >
@@ -261,7 +391,7 @@ tener el mismo ID-->
 								   <span><strong>Tratamientos:</strong></span>
 								   <ul class="pb-3" style="list-style-type: disc;">
 								   <li th:each="tratamientoAsistido : ${turno.tratamientos}">
-								   <span th:text="${tratamientoAsistido.nombreTratamientos.DisplayName}"></span>
+								   <span th:text="${tratamientoAsistido.nombreTratamientos.DisplayName + ' - $' + tratamientoAsistido.costoTratamiento}"></span>
 								   </li>
 								   </ul>
 								   </ul>

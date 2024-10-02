@@ -11,4 +11,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
 @Repository
 public interface RepositorioTratamiento extends JpaRepository<Tratamiento, String> {
 
+	List<Tratamiento> findByProfesionalId(String idProfesiona);
+	
+	List<Tratamiento> findByProfesionalIdAndActualTrue(String idProfesional);
 }

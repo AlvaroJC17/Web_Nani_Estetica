@@ -1,13 +1,9 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -22,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
-import com.proyecto_integrador_3.Estetica.Entidades.HorariosDisponibles;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
@@ -33,7 +28,6 @@ import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
-import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
@@ -43,6 +37,7 @@ import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioTratamiento;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
@@ -65,6 +60,9 @@ public class ControladorProfesional {
 	public ServicioHorario servicioHorario;
 	
 	@Autowired
+	public ServicioTratamiento servicioTratamiento;
+	
+	@Autowired
 	public RepositorioProfesional repositorioProfesional;
 	
 	@Autowired
@@ -80,8 +78,6 @@ public class ControladorProfesional {
 			@RequestParam String emailProfesional,
 			@RequestParam String tratamientosSeleccionadosCampo,
 			Model model) throws MiExcepcion {
-		
-		//Guarda una lista de tipo tratamientos
 		
 		try {
 			servicioProfesional.actualizarTratamientos(idProfesional, tratamientosSeleccionadosCampo);
@@ -101,17 +97,26 @@ public class ControladorProfesional {
         List<TratamientoEnum> tratamientosCompletos = Arrays.stream(TratamientoEnum.values())
                 .filter(especialidadList -> especialidadList.name().contains(profesional.getTipoEspecialidad().getDisplayName().toUpperCase()))
                 .collect(Collectors.toList());
+        
+        List<String> horariosOrdenados = profesional.getHorariosLaborales();
+		Collections.sort(horariosOrdenados); //ordenamos la lista de menor a mayor
+        
+        List<DiasDeLaSemana> listaDeDiasOrdenada = profesional.getDiasDeLaSemana();
+		Collections.sort(listaDeDiasOrdenada); //Ordenamos la lista de lunes a viernes
+        
+        //Buscamos solo los tratamientos marcados como actuales en la base de datos, los actuales son los que tienen las ultimas modificaciones de costo
+        List<Tratamiento> listaTratamientos = servicioTratamiento.tratamientosActuales(idProfesional);
 		
 		//Buscamos los datos del profesional para pasarlos a la vista
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 		
 		model.addAttribute("datosProfesional", datosProfesional);
-		model.addAttribute("diasLaborales", profesional.getDiasDeLaSemana());
+		model.addAttribute("diasLaborales", listaDeDiasOrdenada);
 		model.addAttribute("especialidad", profesional.getEspecialidad());
 		model.addAttribute("horariosDisponibles", profesional.getHorariosDisponibles());
-		model.addAttribute("horariosLaborales", profesional.getHorariosLaborales());
+		model.addAttribute("horariosLaborales", horariosOrdenados);
 		model.addAttribute("tipoDeEspecialidad", profesional.getTipoEspecialidad());
-		model.addAttribute("tratamientos", profesional.getTratamientos());
+		model.addAttribute("tratamientos", listaTratamientos);
 		model.addAttribute("tratamientosFiltrados", tratamientosCompletos);
 		model.addAttribute("diasDeLaSemana", DiasDeLaSemana.values());
 		return "/pagina_profesional/datosProfesional";
@@ -138,19 +143,33 @@ public class ControladorProfesional {
 		//Buscamos los datos del profesional
 		Profesional profesional = servicioProfesional.obetenerDatosProfesional(idProfesional);
 		
+		//Filtramos la lista de enum por el tipo de especialidad que selecciono el profesional
+		//Esta lista es la que brinda las opciones en el select para modficiar los tratamientos existentes
+		List<TratamientoEnum> tratamientosCompletos = Arrays.stream(TratamientoEnum.values())
+				.filter(especialidadList -> especialidadList.name().contains(profesional.getTipoEspecialidad().getDisplayName().toUpperCase()))
+				.collect(Collectors.toList());
+		
 		List<String> horariosOrdenados = profesional.getHorariosLaborales();
-		Collections.sort(horariosOrdenados);
+		Collections.sort(horariosOrdenados); //ordenamos la lista de menor a mayor
+		
+		List<DiasDeLaSemana> listaDeDiasOrdenada = profesional.getDiasDeLaSemana();
+		Collections.sort(listaDeDiasOrdenada); //Ordenamos la lista de lunes a viernes
 		
 		//Buscamos los datos del profesional para pasarlos a la vista
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 		
+		//Buscamos solo los tratamientos marcados como actuales en la base de datos, los actuales son los que tienen las ultimas modificaciones de costo
+        List<Tratamiento> listaTratamientos = servicioTratamiento.tratamientosActuales(idProfesional);
+				
+		
 		model.addAttribute("datosProfesional", datosProfesional);
-		model.addAttribute("diasLaborales", profesional.getDiasDeLaSemana());
+		model.addAttribute("diasLaborales", listaDeDiasOrdenada);
 		model.addAttribute("especialidad", profesional.getEspecialidad());
 		model.addAttribute("horariosDisponibles", profesional.getHorariosDisponibles());
 		model.addAttribute("horariosLaborales", horariosOrdenados);
 		model.addAttribute("tipoDeEspecialidad", profesional.getTipoEspecialidad());
-		model.addAttribute("tratamientos", profesional.getTratamientos());
+		model.addAttribute("tratamientosFiltrados", tratamientosCompletos);
+		model.addAttribute("tratamientos", listaTratamientos);
 		model.addAttribute("diasDeLaSemana", DiasDeLaSemana.values());
 		return "/pagina_profesional/datosProfesional";
 	}
@@ -178,14 +197,30 @@ public class ControladorProfesional {
 		
 		//Buscamos los datos del profesional para pasarlos a la vista
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+		
+		//Filtramos la lista de enum por el tipo de especialidad que selecciono el profesional
+		//Esta lista es la que brinda las opciones en el select para modficiar los tratamientos existentes
+		List<TratamientoEnum> tratamientosCompletos = Arrays.stream(TratamientoEnum.values())
+				.filter(especialidadList -> especialidadList.name().contains(profesional.getTipoEspecialidad().getDisplayName().toUpperCase()))
+				.collect(Collectors.toList());
+		
+		List<String> horariosOrdenados = profesional.getHorariosLaborales();
+		Collections.sort(horariosOrdenados); //ordenamos la lista de menor a mayor
+		
+		List<DiasDeLaSemana> listaDeDiasOrdenada = profesional.getDiasDeLaSemana();
+		Collections.sort(listaDeDiasOrdenada); //Ordenamos la lista de lunes a viernes
+		
+		//Buscamos solo los tratamientos marcados como actuales en la base de datos, los actuales son los que tienen las ultimas modificaciones de costo
+        List<Tratamiento> listaTratamientos = servicioTratamiento.tratamientosActuales(idProfesional);
 				
 		model.addAttribute("datosProfesional", datosProfesional);
-		model.addAttribute("diasLaborales", profesional.getDiasDeLaSemana());
+		model.addAttribute("diasLaborales", listaDeDiasOrdenada);
 		model.addAttribute("especialidad", profesional.getEspecialidad());
 		model.addAttribute("horariosDisponibles", profesional.getHorariosDisponibles());
-		model.addAttribute("horariosLaborales", profesional.getHorariosLaborales());
+		model.addAttribute("horariosLaborales", horariosOrdenados);
 		model.addAttribute("tipoDeEspecialidad", profesional.getTipoEspecialidad());
-		model.addAttribute("tratamientos", profesional.getTratamientos());
+		model.addAttribute("tratamientosFiltrados", tratamientosCompletos);
+		model.addAttribute("tratamientos", listaTratamientos);
 		model.addAttribute("diasDeLaSemana", DiasDeLaSemana.values());
 		return "/pagina_profesional/datosProfesional";
 			
@@ -202,25 +237,33 @@ public class ControladorProfesional {
 		//Buscamos los datos del profesional
 		Profesional profesional = servicioProfesional.obetenerDatosProfesional(idProfesional);
 		
+		//Guardamos los horarios laborales en una nueva lista
 		List<String> horariosOrdenados = profesional.getHorariosLaborales();
-		Collections.sort(horariosOrdenados);
+		Collections.sort(horariosOrdenados); //Ordenamos la lista de menor a mayor
+		
+		List<DiasDeLaSemana> listaDeDiasOrdenada = profesional.getDiasDeLaSemana();
+		Collections.sort(listaDeDiasOrdenada); //Ordenamos la lista de lunes a viernes
 		
 		//Filtramos la lista de enum por el tipo de especialidad que selecciono el profesional
 		//Esta lista es la que brinda las opciones en el select para modficiar los tratamientos existentes
         List<TratamientoEnum> tratamientosCompletos = Arrays.stream(TratamientoEnum.values())
                 .filter(especialidadList -> especialidadList.name().contains(profesional.getTipoEspecialidad().getDisplayName().toUpperCase()))
                 .collect(Collectors.toList());
+        
+        //Buscamos solo los tratamientos marcados como actuales en la base de datos, los actuales son los que tienen las ultimas modificaciones de costo
+        List<Tratamiento> listaTratamientos = servicioTratamiento.tratamientosActuales(idProfesional);
+        
 		
 		//Pasamos los datos del profesional a la vista
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
 				
 		model.addAttribute("datosProfesional", datosProfesional);
-		model.addAttribute("diasLaborales", profesional.getDiasDeLaSemana());
+		model.addAttribute("diasLaborales", listaDeDiasOrdenada);
 		model.addAttribute("especialidad", profesional.getEspecialidad());
 		model.addAttribute("horariosDisponibles", profesional.getHorariosDisponibles());
 		model.addAttribute("horariosLaborales", horariosOrdenados);
 		model.addAttribute("tipoDeEspecialidad", profesional.getTipoEspecialidad());
-		model.addAttribute("tratamientos", profesional.getTratamientos());
+		model.addAttribute("tratamientos", listaTratamientos);
 		model.addAttribute("tratamientosFiltrados", tratamientosCompletos);
 		model.addAttribute("diasDeLaSemana", DiasDeLaSemana.values());
 		return "/pagina_profesional/datosProfesional";

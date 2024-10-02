@@ -91,22 +91,25 @@
 		<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
 															<thead>
 																<tr class="">
-																	<th class="text-center">ID del turno</th>
-																	<th class="text-center">ID del cliente</th>
-																	<th class="text-center">ID del profesional</th>
-																	<th class="text-center">Nombre cliente</th>
-																	<th class="text-center">Apellido cliente</th>
-																	<th class="text-center">DNI cliente</th>
-																	<th class="text-center">Email cliente</th>
-																	<th class="text-center">Nombre del profesional</th>
-																	<th class="text-center">Apellido del profesional</th>
-																	<th class="text-center">Activo</th>
-																	<th class="text-center">Estado del tuno</th>
-																	<th class="text-center">Multa</th>
-																	<th class="text-center">Fecha de creación</th>
-																	<th class="text-center">Fecha de cancelación</th>
-																	<th class="text-center">Fecha del turno</th>
-																	<th class="text-center">Horario del turno</th>
+																	<th class="text-center">ID del turno:</th>
+																	<th class="text-center">ID del cliente:</th>
+																	<th class="text-center">ID del profesional:</th>
+																	<th class="text-center">Nombre cliente:</th>
+																	<th class="text-center">Apellido cliente:</th>
+																	<th class="text-center">DNI cliente:</th>
+																	<th class="text-center">Email cliente:</th>
+																	<th class="text-center">Nombre del profesional:</th>
+																	<th class="text-center">Apellido del profesional:</th>
+																	<th class="text-center">Activo:</th>
+																	<th class="text-center">Estado del tuno:</th>
+																	<th class="text-center">Fecha del turno:</th>
+																	<th class="text-center">Horario del turno:</th>
+																	<th class="text-center">Tratamiento:</th>
+																	<th class="text-center">Multa:</th>
+																	<th class="text-center">Remanente:</th>
+																	<th class="text-center">Tipo de remenencia:</th>
+																	<th class="text-center">Fecha de creación:</th>
+																	<th class="text-center">Fecha de cancelación:</th>
 																	
 																</tr>
 															</thead>
@@ -125,12 +128,27 @@
 																	<td class="text-center" th:text="${#strings.toLowerCase(turnosDelProfesional.profesional.apellido)}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.activo ? 'SI' : 'NO'}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.estado}"></td>
-																	<td class="text-center" th:text="${turnosDelProfesional.multa ? 'SI' : 'NO'}"></td>
-																	<td class="text-center" th:text="${#temporals.format(turnosDelProfesional.fechaCreacion, 'dd-MM-yyyy HH:mm')}"></td>
-																	<td class="text-center" th:text="${#temporals.format(turnosDelProfesional.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.fecha}"></td>
-																	<td class="text-center" th:text="${turnosDelProfesional.horario}"></td>
-																	
+																	<td class="text-center" th:text="${turnosDelProfesional.horario}"></td>																
+																	<td class="text-center" >
+																		<span th:each="tratamientos : ${turnosDelProfesional.tratamientos}">
+																			<ul>
+																				<li th:text="${tratamientos.nombreTratamientos.DisplayName + ' - $' + tratamientos.costoTratamiento + ' '}"></li>
+																			</ul>
+																		</span>
+																	</td>
+																	<td class="text-center" th:text="${turnosDelProfesional.multa ? 'SI' : 'NO'}"></td>	
+																	<td class="text-center" th:text="${turnosDelProfesional.remanenteTratamientos || turnosDelProfesional.remanenteDias || turnosDelProfesional.remanenteHoras ? 'SI' : 'NO'}"></td>
+																	<td class="text-center">
+																		<ul>
+																		  <li th:if="${turnosDelProfesional.remanenteHoras}">Remanente por horas</li>
+																		  <li th:if="${turnosDelProfesional.remanenteDias}">Remanente por dias de la semana</li>
+																		  <li th:if="${turnosDelProfesional.remanenteTratamientos}">Remanente por tratamientos</li>
+																		</ul>
+																	</td>																
+																	<td class="text-center" th:text="${#temporals.format(turnosDelProfesional.fechaCreacion, 'dd-MM-yyyy HH:mm')}"></td>
+																	<td class="text-center" th:text="${turnosDelProfesional.fechaCancelacion != null ? #temporals.format(turnosDelProfesional.fechaCancelacion, 'dd-MM-yyyy HH:mm') : 'N/A'}"></td>
+																
 																</tr>    
 															</tbody>
 														</table>

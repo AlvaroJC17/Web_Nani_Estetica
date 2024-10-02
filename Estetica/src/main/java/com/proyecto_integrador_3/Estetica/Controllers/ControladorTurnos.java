@@ -156,6 +156,16 @@ public class ControladorTurnos {
 		//Formateamos la fecha al estilo dd-MM-yyyy antes de pasarla a la vista para que sea mas facil verla para el usuario
 		String fechaFormateada = servicioHorario.pasarFechasLocalDateToString(fechaDelTurno);
 		
+		List<Turnos> buscarTurnosActivos = servicioTurnos.buscarPorActivoAndProfesionalId(idProfesional);
+		List<Turnos> turnosRemanentes = new ArrayList<>();
+		if (!buscarTurnosActivos.isEmpty()) {
+			for (Turnos turnos : buscarTurnosActivos) {
+				if (turnos.getRemanenteDias() || turnos.getRemanenteHoras() || turnos.getRemanenteTratamientos()) {
+					turnosRemanentes.add(turnos);
+				}
+			}
+		}
+		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 		model.addAttribute("fechaSeleccionada", fechaFormateada);
 		model.addAttribute("fechaFormatoLocalDate", fechaDelTurno);
@@ -163,6 +173,7 @@ public class ControladorTurnos {
 		model.addAttribute("turnosPorHorarioLaboral", turnosPorHorarioLaboralOrdenado);
 		model.addAttribute("horariosDeshabilitados", horariosDeshabilitados);
 		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("turnosRemanentes", turnosRemanentes);
 		model.addAttribute("mostrarBotonesDeshabilitar", mostrarBotonesDeshabilitar);
 		model.addAttribute("mapaHorarioNoDisponible", mapaHorarioNoDisponible);
 		
@@ -269,27 +280,29 @@ public class ControladorTurnos {
 		
 		//Obtenemos los turnos pedientes filtrados por fecha
 		List<Turnos> turnosActivos = servicioTurnos.ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno.PENDIENTE, true, false, idProfesional);
+		
 		// Obtener la fecha actual y la fecha límite (7 días después)
 		LocalDate fechaActual = LocalDate.now();
 		LocalDate fechaLimite = fechaActual.plusDays(7);
+		
 		// Filtrar la lista para incluir solo los turnos dentro del rango de fechas
 		List<Turnos> turnosFiltradosPorFechaPendientes = turnosActivos.stream()
 		    .filter(turno -> !turno.getFecha().isBefore(fechaActual) && !turno.getFecha().isAfter(fechaLimite))
 		    .collect(Collectors.toList());
 		
 		//Obetenemos los turnos asistidos filtrados por fecha
-		
 		List<Turnos> turnosAsistidos = servicioTurnos.ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno.ASISTIDO, false, false, idProfesional);
+		
 		// Obtener la fecha actual y la fecha límite (7 días antes)
 		LocalDate fechaActualAsistidos = LocalDate.now();
 		LocalDate fechaInicioAsistidos = fechaActualAsistidos.minusDays(7);
+		
 		// Filtrar la lista para incluir solo los turnos dentro del rango de fechas
 		List<Turnos> turnosFiltradosPorFechaAsistidos = turnosAsistidos.stream()
 		    .filter(turno -> !turno.getFecha().isBefore(fechaInicioAsistidos) && !turno.getFecha().isAfter(fechaActualAsistidos))
 		    .collect(Collectors.toList());
 		
 		//Obtenemos los turnos cancelados sin multa por fecha
-		
 		List<Turnos> turnosCancelados = servicioTurnos.ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno.CANCELADO, false, false, idProfesional);
 		// Obtener la fecha actual y la fecha límite (7 días antes)
 				LocalDate fechaActualCancelados = LocalDate.now();
@@ -299,8 +312,7 @@ public class ControladorTurnos {
 				    .filter(turno -> !turno.getFecha().isBefore(fechaInicioCancelados) && !turno.getFecha().isAfter(fechaActualCancelados))
 				    .collect(Collectors.toList());
 		
-		//Obtenemos los turnos cancelados con multas y filtrados por fecha
-				
+				//Obtenemos los turnos cancelados con multas y filtrados por fecha
 		List<Turnos> turnosConMulta = servicioTurnos.ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno.CANCELADO, false, true, idProfesional);
 		// Obtener la fecha actual y la fecha límite (7 días antes)
 		LocalDate fechaActualMultas = LocalDate.now();

@@ -43,6 +43,7 @@ import com.proyecto_integrador_3.Estetica.Servicios.ServicioEmail;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioTratamiento;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
 
@@ -82,6 +83,9 @@ public class ControladorCliente {
 	
 	@Autowired
 	public ServicioPersona servicioPersona;
+	
+	@Autowired
+	public ServicioTratamiento servicioTratamiento;
 	
 	
 	//Muestra las multas del cliente con todo sus datos
@@ -614,8 +618,8 @@ public class ControladorCliente {
 		//Creamos una lista de TipoDeEspecialidades vacia para guardar el resultado del filtrado
 		List<TipoDeEspecialidad> especialidadDisponibles = servicioProfesional.listarEspecialidadesDisponibles(identificador);
 		
-		//Buscamos los enum de tratamientos y lo filtramos por el tipo de especialidad seleccionado por el cliente
-		List<Tratamiento> tratamientosProfesional = servicioProfesional.buscarTratamitosPorProfesional(idProfesional);
+		//Buscamos los tratamientos marcados como actuales en la base de datos, que son los que tiene las ultimas actualizaciones de costos
+		List<Tratamiento> tratamientosProfesional = servicioTratamiento.tratamientosActuales(idProfesional);
 		
 		//Obetenemos los horarios del profesional por fecha y id del profesional, puede devolver una lista con horarios disponibles
 		//o puede devolver una lista vacia si ya al profesional le solicitaron todos los horarios de esa fecha

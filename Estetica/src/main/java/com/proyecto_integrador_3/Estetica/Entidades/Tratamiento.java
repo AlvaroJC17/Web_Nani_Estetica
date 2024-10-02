@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Entidades;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
 
@@ -29,6 +31,10 @@ public class Tratamiento {
 	@ManyToMany(mappedBy = "tratamientos")
 	private List<Turnos> turnos = new ArrayList<>();
 	
+	@ManyToOne
+	@JoinColumn(name = "profesional_id")
+	private Profesional profesional; // Relación con Profesional
+	
     @CollectionTable(name = "tratamiento_nombres", joinColumns = @JoinColumn(name = "tratamiento_id"))
     @Enumerated(EnumType.STRING)
     @Column(name = "nombre_tratamiento")
@@ -37,16 +43,57 @@ public class Tratamiento {
 	@Column(name="costo")
 	long costoTratamiento;
 	
+	@Column(name="fecha_creacion")
+	private LocalDateTime fechaCreacion;
+	
+	@Column(name="actual")
+	private Boolean actual;
+	
 	public Tratamiento() {
 		
 	}
 	
-	public Tratamiento(TratamientoEnum nombreTratamientos, long costoTratamiento) {
+	public Tratamiento(TratamientoEnum nombreTratamientos, Profesional profesional, long costoTratamiento, LocalDateTime fechaCreacion, Boolean actual) {
 		this.nombreTratamientos = nombreTratamientos;
+		this.profesional = profesional;
 		this.costoTratamiento = costoTratamiento;
+		this.fechaCreacion = fechaCreacion;
+		this.actual = actual;
 	}
 
 	
+
+	public Boolean getActual() {
+		return actual;
+	}
+
+	public void setActual(Boolean actual) {
+		this.actual = actual;
+	}
+
+	public Profesional getProfesional() {
+		return profesional;
+	}
+
+	public void setProfesional(Profesional profesional) {
+		this.profesional = profesional;
+	}
+
+	public List<Turnos> getTurnos() {
+		return turnos;
+	}
+
+	public void setTurnos(List<Turnos> turnos) {
+		this.turnos = turnos;
+	}
+
+	public LocalDateTime getFechaCreacion() {
+		return fechaCreacion;
+	}
+
+	public void setFechaCreacion(LocalDateTime fechaCreacion) {
+		this.fechaCreacion = fechaCreacion;
+	}
 
 	public TratamientoEnum getNombreTratamientos() {
 		return nombreTratamientos;

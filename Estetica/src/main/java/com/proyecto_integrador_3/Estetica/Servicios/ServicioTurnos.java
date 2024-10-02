@@ -8,7 +8,9 @@ import java.time.LocalDateTime;
 import static java.lang.Boolean.FALSE;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +23,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
+import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
@@ -62,6 +65,14 @@ public class ServicioTurnos {
 		}
 	}
 	
+	public List <Turnos> buscarPorActivoAndProfesionalId(String idProfesional) throws MiExcepcion{
+		try {
+			return repositorioTurnos.findByActivoTrueAndProfesionalId(idProfesional);
+		} catch (Exception e) {
+			throw new MiExcepcion("No se encontraron turnos");
+		}
+	}
+	
 	public List<Turnos> buscarTurnosPorProfesionalAndClienteAndEstadoDelTurno(String idProfesional, String idCliente, EstadoDelTurno estado){
 	
 		return repositorioTurnos.findByProfesionalIdAndClienteIdAndEstadoOrderByFechaCreacion(idProfesional, idCliente, estado);
@@ -98,6 +109,7 @@ public class ServicioTurnos {
 	public List<Turnos> ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno estado, Boolean activo, Boolean multa, String idProfesional){
 		return repositorioTurnos.findByEstadoAndActivoAndMultaAndProfesionalIdOrderByFechaCreacion(estado, activo, multa, idProfesional);
 	}
+	
 	
 	 public List<Turnos> obtenerUltimosTresRegistros(List<Turnos> turnos) {
 	        int size = turnos.size();
@@ -150,6 +162,9 @@ public class ServicioTurnos {
 					 actualizarTurnoActivo.setCanceladoPor(Rol.ADMIN);
 				 }
 				 actualizarTurnoActivo.setActivo(FALSE);
+				 actualizarTurnoActivo.setRemanenteDias(FALSE);
+				 actualizarTurnoActivo.setRemanenteHoras(FALSE);
+				 actualizarTurnoActivo.setRemanenteTratamientos(FALSE);
 				 actualizarTurnoActivo.setFechaCancelacion(fechaCancelacion);
 					
 				 Turnos turnoCancelado;
@@ -250,6 +265,9 @@ public class ServicioTurnos {
     				turno.setActivo(false); // Lo pasamos a inactivo
     				turno.setEstado(EstadoDelTurno.CANCELADO);
     				turno.setFechaCancelacion(fechaActual);
+    				turno.setRemanenteDias(FALSE);
+    				turno.setRemanenteHoras(FALSE);
+    				turno.setRemanenteTratamientos(FALSE);
     				turno.setCostoMulta(valorMulta);
     				repositorioTurnos.save(turno);
     				
@@ -318,6 +336,9 @@ public class ServicioTurnos {
     				turno.setEstado(EstadoDelTurno.CANCELADO);
     				turno.setFechaCancelacion(fechaActual);
     				turno.setCostoMulta(valorMulta);
+    				turno.setRemanenteDias(FALSE);
+    				turno.setRemanenteHoras(FALSE);
+    				turno.setRemanenteTratamientos(FALSE);
     				repositorioTurnos.save(turno);
     				
     				Optional<Cliente> multarCliente = repositorioCliente.findByEmail(emailCliente);
@@ -371,6 +392,9 @@ public class ServicioTurnos {
             	turno.setEstado(EstadoDelTurno.CANCELADO);
             	turno.setFechaCancelacion(fechaCancelacion);
             	turno.setCanceladoPor(Rol.CLIENTE);
+            	turno.setRemanenteDias(FALSE);
+            	turno.setRemanenteHoras(FALSE);
+            	turno.setRemanenteTratamientos(FALSE);
             	turno.setCostoMulta(valorMulta);
             	
             	Turnos turnoCancelado24h;
@@ -553,6 +577,9 @@ public class ServicioTurnos {
 		nuevoTurno.setDniCliente(dniCliente);
 		nuevoTurno.setMulta(FALSE);
 		nuevoTurno.setActivo(TRUE);
+		nuevoTurno.setRemanenteDias(FALSE);
+		nuevoTurno.setRemanenteHoras(FALSE);
+		nuevoTurno.setRemanenteTratamientos(FALSE);
 		nuevoTurno.setEstado(EstadoDelTurno.PENDIENTE);
 		//la funcionalidad de jpa que perminte obtener los datos de un objeto recien guarado siempre y cuando este haya sido
 		//guardado como una entidad nueva.

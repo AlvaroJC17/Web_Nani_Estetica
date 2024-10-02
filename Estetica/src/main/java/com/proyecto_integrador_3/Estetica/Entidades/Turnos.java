@@ -74,7 +74,7 @@ public class Turnos {
 	@Column(name = "horario")
 	String horario;
 	
-	@ManyToMany(fetch = FetchType.EAGER)
+	 @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable( name = "turno_tratamiento",  joinColumns = @JoinColumn(name = "turno_id"), inverseJoinColumns = @JoinColumn(name = "tratamiento_id"))
 	private List<Tratamiento> tratamientos = new ArrayList<>();
 	
@@ -101,6 +101,15 @@ public class Turnos {
 	@Column(name = "cancelado_por")
 	Rol canceladoPor;
 	
+	@Column(name="remanente_dias")
+	Boolean remanenteDias;
+	
+	@Column(name="remanente_horas")
+	Boolean remanenteHoras;
+	
+	@Column(name="remanente_tratamientos")
+	Boolean remanenteTratamientos;
+	
 	public Turnos() {
 		
 	}
@@ -116,7 +125,7 @@ public class Turnos {
 		
 	public Turnos(String provincia, Profesional profesional, LocalDate fecha, LocalDateTime fechaCracion, String horario, List<Tratamiento> tratamiento, String dni,
 			String email, Boolean activo, Boolean multa, String consulta, String costoMulta, EstadoDelTurno estado, Rol canceladoPor, LocalDate fechaModificacion, 
-			LocalDateTime fechaCancelacion) {
+			LocalDateTime fechaCancelacion, Boolean remanenteDias, Boolean remanenteHoras, Boolean remanenteTratamientos) {
 		this.dni = dni;
 		this.email = email;
 		this.provincia = provincia;
@@ -133,10 +142,43 @@ public class Turnos {
 		this.canceladoPor = canceladoPor;
 		this.fechaModificacion = fechaModificacion;
 		this.fechaCancelacion = fechaCancelacion;
+		this.remanenteDias = remanenteDias;
+		this.remanenteHoras = remanenteHoras;
+		this.remanenteTratamientos = remanenteTratamientos;
 	}
 	
+
 	
-	
+
+	public Boolean getRemanenteDias() {
+		return remanenteDias;
+	}
+
+
+	public void setRemanenteDias(Boolean remanenteDias) {
+		this.remanenteDias = remanenteDias;
+	}
+
+
+	public Boolean getRemanenteHoras() {
+		return remanenteHoras;
+	}
+
+
+	public void setRemanenteHoras(Boolean remanenteHoras) {
+		this.remanenteHoras = remanenteHoras;
+	}
+
+
+	public Boolean getRemanenteTratamientos() {
+		return remanenteTratamientos;
+	}
+
+
+	public void setRemanenteTratamientos(Boolean remanenteTratamientos) {
+		this.remanenteTratamientos = remanenteTratamientos;
+	}
+
 
 	public LocalDateTime getFechaCancelacion() {
 		return fechaCancelacion;
