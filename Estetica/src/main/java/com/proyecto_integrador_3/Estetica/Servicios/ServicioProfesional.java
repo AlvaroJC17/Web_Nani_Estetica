@@ -93,105 +93,113 @@ public class ServicioProfesional {
 	//pero manteniendo el precio viejo en los turnos no activos que tambien tengan el mismo tratamiento asociado
 	@Transactional
 	public void modificarTratamientoDelTurno(String idProfesional) throws MiExcepcion {
-		
-		// Ahora buscamos todos los turnos del profesional
-        List<Turnos> turnosProfesional = repositorioTurnos.findByProfesionalId(idProfesional);
-        
-        List<Tratamiento> tratamientosActuales = servicioTratamiento.tratamientosActuales(idProfesional); // Lista de tratamientos actuales del profesional
-        
-        // Validamos que la lista no esté vacía
-        if (!turnosProfesional.isEmpty()) {
 
-            // Iteramos sobre la lista de turnos asociados al profesional
-            for (Turnos turnos : turnosProfesional) {
-                
-                // Filtramos la lista solo por turnos activos y pendientes
-                if (turnos.getActivo() && turnos.getEstado() == EstadoDelTurno.PENDIENTE) {
-                    
-                	 boolean seModifico = false;
-                	
-                    // Iteramos sobre la lista de tratamientos de los turnos activos y pendientes
-                    for (Tratamiento tratamientosTurno : turnos.getTratamientos()) {
-                    	
-                        // Iteramos sobre la lista de tratamientos actuales
-                        for (Tratamiento nuevosTratamientos : tratamientosActuales) {
+	    // Ahora buscamos todos los turnos del profesional
+	    List<Turnos> turnosProfesional = repositorioTurnos.findByProfesionalId(idProfesional);
 
-                            // Si el nombre del tratamiento en el turno coincide con el de la nueva lista entramos en el condicional y actualizamos el turno
-                        	//existente con los nuevos datos del tratamiento.
-                            if (tratamientosTurno.getNombreTratamientos().equals(nuevosTratamientos.getNombreTratamientos())) {
-                            	tratamientosTurno.setCostoTratamiento(nuevosTratamientos.getCostoTratamiento());
-                            	tratamientosTurno.setProfesional(nuevosTratamientos.getProfesional());
-                            	tratamientosTurno.setFechaCreacion(nuevosTratamientos.getFechaCreacion());
-                            	tratamientosTurno.setActual(nuevosTratamientos.getActual());
-                            	seModifico = true; 
-                            }
-                          
-                        }
-                        
-                    }
-                    
-                    if (seModifico) {
-                    	//Guardamos el turno modificado con los tratamientos actualizados y la bandera de remanente
-                    	repositorioTurnos.save(turnos);
-                    	
-                    }
-                }
-            }
-        }
+	    List<Tratamiento> tratamientosActuales = servicioTratamiento.tratamientosActuales(idProfesional); // Lista de tratamientos actuales del profesional
+
+	    // Validamos que la lista no esté vacía
+	    if (!turnosProfesional.isEmpty()) {
+
+	        // Iteramos sobre la lista de turnos asociados al profesional
+	        for (Turnos turnos : turnosProfesional) {
+
+	            // Filtramos la lista solo por turnos activos y pendientes
+	            if (turnos.getActivo() && turnos.getEstado() == EstadoDelTurno.PENDIENTE) {
+
+	                boolean seModifico = false;
+
+	                // Iteramos sobre la lista de tratamientos de los turnos activos y pendientes
+	                for (String tratamientosTurno : turnos.getTratamientos()) {
+
+	                    // Separamos el nombre del tratamiento y el precio usando como referencia el símbolo $
+	                    String[] partes = tratamientosTurno.split("\\$");
+	                    String nombreTratamientoTurno = partes[0].trim();  // Nombre del tratamiento
+
+	                    // Iteramos sobre la lista de tratamientos actuales
+	                    for (Tratamiento nuevosTratamientos : tratamientosActuales) {
+	                    	
+	                        // Si el nombre del tratamiento en el turno coincide con el de la nueva lista entramos en el condicional
+	                        if (nombreTratamientoTurno.equals(nuevosTratamientos.getNombreTratamientos().getDisplayName().toString())) {
+	                        	String nuevoTratamiento = nuevosTratamientos.getNombreTratamientos().getDisplayName().toString() + " " + "$"+nuevosTratamientos.getCostoTratamiento();
+	                            // Vaciamos la lista actual y agregamos los nuevos tratamientos solo si hay coincidencia
+	                            turnos.getTratamientos().clear();
+	                            turnos.getTratamientos().add(nuevoTratamiento);
+
+	                            seModifico = true;
+	                            break; // Rompemos el bucle ya que encontramos una coincidencia
+	                        }
+	                    }
+	                }
+
+	                if (seModifico) {
+	                    // Guardamos el turno modificado con los tratamientos actualizados
+	                    repositorioTurnos.save(turnos);
+	                }
+	            }
+	        }
+	    }
 	}
-						
-                    
+
+    
 	//Metodo para marcar como remanente aquellos turnos que queden huerfanos de hora, dia o tratamiento. Osea que el profesional elimine un dia, hora o tratamiento
 	//de su lista y este item ya estaba asociado a un turno activo
 	@Transactional
 	public void pasarTurnoARemanentePorTratamiento(String idProfesional) throws MiExcepcion {
 		
-	     // Ahora buscamos todos los turnos del profesional
-	        List<Turnos> turnosProfesional = repositorioTurnos.findByProfesionalId(idProfesional);
+	    // Buscamos todos los turnos del profesional
+	    List<Turnos> turnosProfesional = repositorioTurnos.findByProfesionalId(idProfesional);
 	        
-	        List<Tratamiento> tratamientosActuales = servicioTratamiento.tratamientosActuales(idProfesional); // Lista de tratamientos actuales del profesional
+	    List<Tratamiento> tratamientosActuales = servicioTratamiento.tratamientosActuales(idProfesional); // Lista de tratamientos actuales del profesional
 
-	        // Validamos que la lista no esté vacía
-	        if (!turnosProfesional.isEmpty()) {
+	    // Validamos que la lista no esté vacía
+	    if (!turnosProfesional.isEmpty()) {
 
-	            // Iteramos sobre la lista de turnos asociados al profesional
-	            for (Turnos turnos : turnosProfesional) {
+	        // Iteramos sobre la lista de turnos asociados al profesional
+	        for (Turnos turnos : turnosProfesional) {
 	                
-	                // Filtramos la lista solo por turnos activos y pendientes
-	                if (turnos.getActivo() && turnos.getEstado() == EstadoDelTurno.PENDIENTE) {
+	            // Filtramos la lista solo por turnos activos y pendientes
+	            if (turnos.getActivo() && turnos.getEstado() == EstadoDelTurno.PENDIENTE) {
 	                    
-	                    boolean coincidencia = false; // Variable para marcar cuando haya coincidencia de tratamientos
+	                boolean coincidencia = false; // Variable para marcar cuando haya coincidencia de tratamientos
 	                    
-	                    // Iteramos sobre la lista de tratamientos de los turnos activos y pendientes
-	                    for (Tratamiento tratamientosTurno : turnos.getTratamientos()) {
+	                // Iteramos sobre la lista de tratamientos de los turnos activos y pendientes, los tratamientos vienen en un string con el nombre del tratamiento
+	                // mas el precio, ejemplo "Laminado de cejas $5000"
+	                for (String tratamientosTurno : turnos.getTratamientos()) {
+	                    
+	                    // Separamos el nombre del tratamiento y el precio usanso como referencia el simbolo $
+	                    String[] partes = tratamientosTurno.split("\\$");
+	                    String nombreTratamientoTurno = partes[0].trim();  // Nombre del tratamiento
+	                    //String precioTratamientoTurno = partes.length > 1 ? partes[1].trim() : "";  // Precio (si existe)
 	                        
-	                        // Iteramos sobre la nueva lista de tratamientos recien creada del profesional
-	                        for (Tratamiento nuevosTratamientos : tratamientosActuales) {
-	                            
-	                        
-	                        	//Determina si un turno es remanente o no, si el turno no entra en este condicional, entonces
-	                        	//es un turno remanente
-	                            if (tratamientosTurno.getNombreTratamientos().equals(nuevosTratamientos.getNombreTratamientos())) {
-	                                coincidencia = true; // Marcamos que hubo coincidencia, esta coincidencia es para la remanencia del turno
-	                                break; // Rompemos el ciclo interno porque ya se encontró una coincidencia
-	                            }
+	                    // Iteramos sobre la nueva lista de tratamientos actuales del profesional
+	                    for (Tratamiento nuevosTratamientos : tratamientosActuales) {
+	                    	
+	                        // Comparamos solo el nombre del tratamiento del turno con el nombre de la lista de tratamientos del profesional
+	                    	//Los tratamientos del turno son string y los tratamientos del profesional son enum, por lo que tenemos de usar el metodo displayName
+	                    	//y despues pasarlo a string para poder hacer la comparacion
+	                        if (nombreTratamientoTurno.equals(nuevosTratamientos.getNombreTratamientos().getDisplayName().toString())) {
+	                            coincidencia = true; // Marcamos que hubo coincidencia, es un turno que no será remanente
+	                            break; // Rompemos el ciclo interno porque ya se encontró una coincidencia
 	                        }
 	                    }
-
-	                    // Si no hubo coincidencia, el turno debe marcarse como remanente por modificación de tratamiento
-	                    if (!coincidencia) {
-	                        turnos.setRemanenteTratamientos(true);  // No se encontró coincidencia, por lo que es remanente
-	                    } else {
-	                        turnos.setRemanenteTratamientos(false); // Hubo coincidencia, no es remanente
-	                    }
-
-	                    //Guardamos el turno modificado con los tratamientos actualizados y la bandera de remanente
-	                      repositorioTurnos.save(turnos);
 	                }
+
+	                // Si no hubo coincidencia, el turno debe marcarse como remanente por modificación de tratamiento
+	                if (!coincidencia) {
+	                    turnos.setRemanenteTratamientos(true);  // No se encontró coincidencia, por lo que es remanente
+	                } else {
+	                    turnos.setRemanenteTratamientos(false); // Hubo coincidencia, no es remanente
+	                }
+
+	                // Guardamos el turno modificado con los tratamientos actualizados y la bandera de remanente
+	                repositorioTurnos.save(turnos);
 	            }
 	        }
-
-	    } 
+	    }
+	}
+ 
 	
 	//Metodo para poder modificar la lista de tratamientos disponibles de un profesional, ya sea el tipo de tratamiento con el costo o simplemente el costo
 	@Transactional
@@ -322,10 +330,10 @@ public class ServicioProfesional {
 		    
 		    //Aplicamos el metodo para pasar el turno a remanente de ser necesario cuando es por modificacion de tratamiento
 		    pasarTurnoARemanentePorTratamiento(idProfesional);
-		    System.out.println("PASO POR REMANENTE");
-	        
+		
+	        //Luego aplicamos el metodo para verificar si hay alguna modificacion en el precio del tratamiento y actualizarlo
 		    modificarTratamientoDelTurno(idProfesional);
-	        System.out.println("PASO POR MODIFICACION");
+	        
 	}
 		        
 

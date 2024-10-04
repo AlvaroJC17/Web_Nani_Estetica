@@ -107,8 +107,8 @@
                 <p><strong>Hora:</strong> [[${horario}]]</p>
                 <span><strong>Tratamiento:</strong></span>
                 <ul style="list-style-type: disc;">
-                    <li th:each="tratamiento : ${tratamiento}">
-                        <span th:text="${tratamiento.nombreTratamientos.DisplayName}"></span>
+                    <li th:each="tratamientos : ${tratamiento}">
+                        <span th:text="${tratamientos}"></span>
                     </li>
                 </ul>
             </div>

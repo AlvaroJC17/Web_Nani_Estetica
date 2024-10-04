@@ -28,8 +28,8 @@ public class Tratamiento {
 	@GeneratedValue(strategy = GenerationType.UUID)
 	public String id;
 	
-	@ManyToMany(mappedBy = "tratamientos")
-	private List<Turnos> turnos = new ArrayList<>();
+//	@ManyToMany(mappedBy = "tratamientos")
+//	private List<Turnos> turnos = new ArrayList<>();
 	
 	@ManyToOne
 	@JoinColumn(name = "profesional_id")
@@ -79,13 +79,13 @@ public class Tratamiento {
 		this.profesional = profesional;
 	}
 
-	public List<Turnos> getTurnos() {
-		return turnos;
-	}
-
-	public void setTurnos(List<Turnos> turnos) {
-		this.turnos = turnos;
-	}
+//	public List<Turnos> getTurnos() {
+//		return turnos;
+//	}
+//
+//	public void setTurnos(List<Turnos> turnos) {
+//		this.turnos = turnos;
+//	}
 
 	public LocalDateTime getFechaCreacion() {
 		return fechaCreacion;

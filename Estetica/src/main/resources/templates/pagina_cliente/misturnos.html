@@ -89,9 +89,11 @@ tener el mismo ID-->
             <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoActivo.horario}"></p> </li>
             <span><strong>Tratamientos seleccionado:</strong></span>
             <ul class="" style="list-style-type: disc;">
-            <li class="" th:each="tratamientoActivo : ${turnoActivo.tratamientos}">
-            	<span th:text="${tratamientoActivo.nombreTratamientos.DisplayName}"></span>
-            </li>
+						
+			<li th:each="tratamientoTurnoActivo : ${turnoActivo.tratamientos}">
+			<span th:text="${tratamientoTurnoActivo}"></span>
+			</li>
+			
             </ul>
             </ul>
 			
@@ -167,9 +169,9 @@ tener el mismo ID-->
 			   <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoAsistido.horario}"></p> </li>
 			   <span><strong>Tratamientos:</strong></span>
 			   <ul class="pb-3" style="list-style-type: disc;">
-			   <li th:each="tratamientoAsistido : ${turnoAsistido.tratamientos}">
-			   <span th:text="${tratamientoAsistido.nombreTratamientos.DisplayName}"></span>
-			   </li>
+				<li th:each="tratamientoTurnoAsistido : ${turnoAsistido.tratamientos}">
+							<span th:text="${tratamientoTurnoAsistido}"></span>
+				</li>
 			   </ul>
 			   </ul>
 			  </div>
@@ -199,9 +201,11 @@ tener el mismo ID-->
 			<li class="list-unstyled d-flex"><strong>Cancelado por:</strong>&nbsp <p class="m-0 p-0">INASISTENCIA</p> </li>
 			<span><strong>Tratamientos:</strong></span>
 			<ul class="pb-3" style="list-style-type: disc;">
-			<li th:each="tratamientoMulta: ${turnoMulta.tratamientos}">
-			<span th:text="${tratamientoMulta.nombreTratamientos.DisplayName}"></span>
+				
+			<li th:each="tratamientoTurnoMulta : ${turnoMulta.tratamientos}">
+				<span th:text="${tratamientoTurnoMulta}"></span>
 			</li>
+			
 			</ul>
 			</ul>
 
@@ -235,9 +239,11 @@ tener el mismo ID-->
 			<li class="list-unstyled d-flex"><strong>Cancelado Por:</strong>&nbsp <p class="m-0 p-0" th:text="${turnoCancelado.canceladoPor}"></p> </li>
 			<span><strong>Tratamientos:</strong></span>
 			<ul class="pb-3" style="list-style-type: disc;">
-			<li th:each="tratamientoCancelado : ${turnoCancelado.tratamientos}">
-			<span th:text="${tratamientoCancelado.nombreTratamientos.DisplayName}"></span>
-			</li>
+				
+				<li th:each="tratamientoTurnoCancelado : ${turnoCancelado.tratamientos}">
+				<span th:text="${tratamientoTurnoCancelado}"></span>
+				</li>
+			
 			</ul>
 			</ul>
 			</div>

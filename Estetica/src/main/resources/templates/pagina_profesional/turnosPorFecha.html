@@ -168,7 +168,7 @@ tener el mismo ID-->
 			            <span><strong>Tratamientos seleccionado:</strong><span th:if="${turnosRemanentes.remanenteTratamientos}" style="font-size: 12px;" class="ms-3 fw-light bg-danger bg-gradient text-white px-1 py-0">No disponible</span> </span>
 			            <ul id="myList" class="" style="list-style-type: disc;">
 			            <li class="" th:each="tratamientoActivo : ${turnosRemanentes.tratamientos}">
-			            	<span th:text="${tratamientoActivo.nombreTratamientos.DisplayName + ' - $' + tratamientoActivo.costoTratamiento}"></span>
+			            	<span th:text="${tratamientoActivo}"></span>
 			            </li>
 			            </ul>
 			            </ul>
@@ -391,7 +391,7 @@ tener el mismo ID-->
 								   <span><strong>Tratamientos:</strong></span>
 								   <ul class="pb-3" style="list-style-type: disc;">
 								   <li th:each="tratamientoAsistido : ${turno.tratamientos}">
-								   <span th:text="${tratamientoAsistido.nombreTratamientos.DisplayName + ' - $' + tratamientoAsistido.costoTratamiento}"></span>
+								   <span th:text="${tratamientoAsistido}"></span>
 								   </li>
 								   </ul>
 								   </ul>

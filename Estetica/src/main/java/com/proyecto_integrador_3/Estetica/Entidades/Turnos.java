@@ -4,7 +4,9 @@ import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 
 import jakarta.persistence.CascadeType;
+import jakarta.persistence.CollectionTable;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -74,9 +76,14 @@ public class Turnos {
 	@Column(name = "horario")
 	String horario;
 	
-	 @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-	@JoinTable( name = "turno_tratamiento",  joinColumns = @JoinColumn(name = "turno_id"), inverseJoinColumns = @JoinColumn(name = "tratamiento_id"))
-	private List<Tratamiento> tratamientos = new ArrayList<>();
+//	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+//	@JoinTable( name = "turno_tratamiento",  joinColumns = @JoinColumn(name = "turno_id"), inverseJoinColumns = @JoinColumn(name = "tratamiento_id"))
+//	private List<Tratamiento> tratamientos = new ArrayList<>();
+	
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "turno_tratamientos", joinColumns = @JoinColumn(name = "turno_id"))
+    @Column(name = "tratamientos")
+    private List<String> tratamientos = new ArrayList<>();
 	
 	@Column(name = "activo")
 	Boolean activo;
@@ -123,7 +130,7 @@ public class Turnos {
 		
 	}
 		
-	public Turnos(String provincia, Profesional profesional, LocalDate fecha, LocalDateTime fechaCracion, String horario, List<Tratamiento> tratamiento, String dni,
+	public Turnos(String provincia, Profesional profesional, LocalDate fecha, LocalDateTime fechaCracion, String horario, List<String> tratamientos, String dni,
 			String email, Boolean activo, Boolean multa, String consulta, String costoMulta, EstadoDelTurno estado, Rol canceladoPor, LocalDate fechaModificacion, 
 			LocalDateTime fechaCancelacion, Boolean remanenteDias, Boolean remanenteHoras, Boolean remanenteTratamientos) {
 		this.dni = dni;
@@ -133,7 +140,7 @@ public class Turnos {
 		this.fecha = fecha;
 		this.fechaCreacion = fechaCracion;
 		this.horario = horario;
-		this.tratamientos = tratamiento;
+		this.tratamientos = tratamientos;
 		this.activo = activo;
 		this.multa = multa;
 		this.consulta = consulta;
@@ -149,6 +156,21 @@ public class Turnos {
 	
 
 	
+
+
+
+	
+
+
+	public List<String> getTratamientos() {
+		return tratamientos;
+	}
+
+
+	public void setTratamientos(List<String> tratamientos) {
+		this.tratamientos = tratamientos;
+	}
+
 
 	public Boolean getRemanenteDias() {
 		return remanenteDias;
@@ -348,15 +370,15 @@ public class Turnos {
 		this.horario = horario;
 	}
 
-
-	public List<Tratamiento> getTratamientos() {
-		return tratamientos;
-	}
-
-
-	public void setTratamientos(List<Tratamiento> tratamientos) {
-		this.tratamientos = tratamientos;
-	}
+//
+//	public List<Tratamiento> getTratamientos() {
+//		return tratamientos;
+//	}
+//
+//
+//	public void setTratamientos(List<Tratamiento> tratamientos) {
+//		this.tratamientos = tratamientos;
+//	}
 
 
 	@Override

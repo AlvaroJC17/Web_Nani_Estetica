@@ -497,6 +497,8 @@ public class ServicioTurnos {
 		//Validamos que todos los valores vengan bien
 		validarGuardarTurno(provinciaString, nombreDelProfesional, fechaSeleccionada, horario, tratamientosSeleccionados);
 		
+		System.out.println("TRATAMIENTOS SElECCIONADOS: " + tratamientosSeleccionados);
+		
 		//Separamos el string de tratamientos
 		String [] tratamientosSeparados = tratamientosSeleccionados.split(",");
 		
@@ -522,8 +524,9 @@ public class ServicioTurnos {
 		}
 		
 		//Creamos la lista de tratamientos donde los vamos a guardar
-		List<Tratamiento> listaTratamientos = new ArrayList<>();
-		
+		//List<Tratamiento> listaTratamientos = new ArrayList<>();
+		List<String> tratamientosString = new ArrayList<>();
+		String tratamientoComleto = null;
 		//Recorremos el array de string de tratamientos, los cuales son puros id
 		for (String tratamientoId : tratamientosFiltradosList) {
 			//con los id buscamos los tratamientos
@@ -532,8 +535,10 @@ public class ServicioTurnos {
 				Tratamiento tratamientos = trataminetosEncontrados.get();
 				tratamientos.getNombreTratamientos();
 				tratamientos.getCostoTratamiento();
+				tratamientoComleto = tratamientos.getNombreTratamientos().getDisplayName().toString() + " " +"$"+tratamientos.getCostoTratamiento();
 				//agregamos los tratamientos encontrados a la lista de tratamientos
-				listaTratamientos.add(tratamientos);
+			//	listaTratamientos.add(tratamientos);
+				tratamientosString.add(tratamientoComleto);
 			}
 			
 		}
@@ -573,7 +578,8 @@ public class ServicioTurnos {
 		nuevoTurno.setFechaCreacion(fechaDeCreacionTurno);
 		nuevoTurno.setHorario(horario);
 		nuevoTurno.setEmail(email);
-		nuevoTurno.setTratamientos(listaTratamientos);
+		//nuevoTurno.setTratamientos(listaTratamientos);
+		nuevoTurno.setTratamientos(tratamientosString);
 		nuevoTurno.setDniCliente(dniCliente);
 		nuevoTurno.setMulta(FALSE);
 		nuevoTurno.setActivo(TRUE);
