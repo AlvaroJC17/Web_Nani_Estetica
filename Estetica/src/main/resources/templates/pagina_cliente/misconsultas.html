@@ -80,7 +80,7 @@
               <span class="text-black"> Fecha:</span>
               <span th:text="${#temporals.format(datosTurno.fecha, 'dd-MM-yyyy')}"></span> <!--Esta es la forma de formatear fechas con thymeleaf-->
               <span class="text-black">Tratamiento:</span>
-              <span th:each="tratamientosTurno : ${datosTurno.tratamientos}" th:text="${tratamientosTurno.nombreTratamientos.DisplayName}"></span>
+              <span th:each="tratamientosTurno : ${datosTurno.tratamientos}" th:text="${tratamientosTurno}"></span>
             </div>
             <p th:text="${datosTurno.consulta}" style="text-align: justify;" class="p-2"></p>
           </div>

@@ -92,7 +92,7 @@
 		  	  
 		  <div class="row mt-5">
 		 
-        <form id="formularioDiasLaborales" th:action="@{/actualizarDiaLaboral}" method="post" class="mb-3 col-lg-6 elemento-hover">
+        <form id="formularioDiasLaborales" th:action="@{/actualizarDiaLaboral}" method="post" class="mb-3 col-lg-6">
 			
 		 <div>
 			<div id="divSeleccionDias" style="display: none;" class="text-center">
@@ -124,7 +124,7 @@
 			
 			
 			<div id="divModificar" class="text-center">
-				<button type="button" class="bn632-hover bn26" onclick="habilitarEdicion()" >Modificar</button>
+				<button type="button" class="bn632-hover bn26" onclick="habilitarEdicion(), cancelarEdicion1(), cancelarEdicion2()" >Modificar</button>
 			</div>
 			
 			<div class="text-center d-flex justify-content-center">
@@ -183,7 +183,7 @@
 		 						</div>
         </form>
 		
-		<form id="formularioHorarioLaboral" th:action="@{actualizarHorarioLaboral}" method="post" class="mb-3 col-lg-6 elemento-hover">
+		<form id="formularioHorarioLaboral" th:action="@{actualizarHorarioLaboral}" method="post" class="mb-3 col-lg-6">
 			
 		 <div>
 			<div id="divHorasMinutos" style="display: none;" class="row">
@@ -242,7 +242,7 @@
 					</div>
 					
 					<div id="divModificar2" class="text-center">
-					<button type="button" class="bn632-hover bn26" onclick="habilitarEdicion2()" >Modificar</button>
+					<button type="button" class="bn632-hover bn26" onclick="habilitarEdicion2(), cancelarEdicion(), cancelarEdicion1()" >Modificar</button>
 					</div>
 								
 					<div class="text-center d-flex justify-content-center">
@@ -305,7 +305,7 @@
 		 		
 	   <div class="row">
 		
-		<form id="formularioTratamientos" th:action="@{actualizarTratamientos}" method="post" class="mb-3 col-lg-12 elemento-hover">
+		<form id="formularioTratamientos" th:action="@{actualizarTratamientos}" method="post" class="mb-3 col-lg-12">
 			
 		<div>
 			<div id="divSeleccionTratamientos", style="display: none;" class="row">
@@ -344,7 +344,7 @@
 				
 
 				<div id="divModificar1" class="text-center">
-					<button type="button" class="bn632-hover bn26" onclick="habilitarEdicion1()" >Modificar</button>
+					<button type="button" class="bn632-hover bn26" onclick="habilitarEdicion1(), cancelarEdicion(), cancelarEdicion2()" >Modificar</button>
 				</div>
 
 				<div class="text-center d-flex justify-content-center">

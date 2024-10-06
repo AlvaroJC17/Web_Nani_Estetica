@@ -690,7 +690,7 @@
 
                 <label for="tratamientoTurno" class="form-label texto-label mt-2">Tratamiento</label>
                 <input type="text" th:each="tratamiento : ${ultimosTresTurnos.tratamientos}"
-                  th:value="${#strings.toUpperCase(tratamiento.nombreTratamientos.displayName)}" class="form-control"
+                  th:value="${#strings.toUpperCase(tratamiento)}" class="form-control"
                   id="tratamientoTurno" disabled>
 
                 <label for="consultaTurno + ${iterStat.index}"

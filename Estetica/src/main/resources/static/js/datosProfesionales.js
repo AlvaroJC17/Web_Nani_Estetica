@@ -78,6 +78,7 @@ function actualizarCampoDias(listaId, campoDiasId) {
 
 // Función para habilitar la edición (mostrar elementos y habilitar selects) de los dias Laborales
 function habilitarEdicion() {
+	
 	// Mostrar y habilitar el select de días laborales
 	document.getElementById("divSeleccionDias").style.display = "block";
 	document.getElementById("selectDiasLaborales").disabled = false;
@@ -94,6 +95,8 @@ function habilitarEdicion() {
 
 	// Ocultar el botón "Modificar"
 	document.getElementById("divModificar").style.display = "none";
+	
+	
 }
 
 // Función para cancelar la edición (volver a ocultar y deshabilitar)
