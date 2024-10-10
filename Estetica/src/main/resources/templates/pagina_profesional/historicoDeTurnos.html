@@ -18,6 +18,26 @@
 </head>
 
 <script>
+        function autoSubmitAno() {
+            document.getElementById("formularioAnual").submit();
+        }
+		
+		function autoSubmitMes() {
+		           document.getElementById("formularioMensual").submit();
+		       }
+        
+        function autoSubmitDia() {
+            document.getElementById("formularioDiario").submit();
+        }
+        
+         function autoSubmitIntervalo() {
+            document.getElementById("formularioIntervalo").submit();
+        }
+        
+         
+    </script>
+
+<script>
     <!--Scrip para darle funcionalidad a la tabla y colocarla en español-->
     $(document).ready(function() {
         $('#myTable').DataTable({
@@ -85,8 +105,147 @@
   <main>
      <div class="">
       <h3>Histórico de turnos</h3>
-
+	  
+	<p class="mb-1 fs-4">Filtrar por año, mes o día</p>
+	  <div class="container-fluid d-flex flex-wrap">
+		
+		<form id="formularioAnual" class="me-2" th:action="@{/historicoDeTurnosAnual}" method="get">
+	  	  <label class="form-label texto-label mb-0 fs-6" for="anual">Año</label>
+	      <select onchange="autoSubmitAno()" aria-label="Default select example" class="form-select" id="anual" name="ano">
+	  			           <!-- Opciones de horas (puedes agregar más) -->
+						<option value=""  th:selected="${anoSeleccionado}" th:text="${anoSeleccionado == null ? 'Seleccione' : anoSeleccionado}"></option>  
+	  			        <option value="2024">2024</option>
+	  			        <option value="2025">2025</option>
+	  			        <option value="2026">2026</option>
+	  			        <option value="2027">2027</option>
+	  			        <option value="2028">2028</option>
+	  			        <option value="2029">2029</option>
+	  			        <option value="2030">2030</option>
+	  			        <option value="2031">2031</option>
+	  			        <option value="2032">2032</option>
+	  			        <option value="2033">2033</option>
+	  			        <option value="2034">2034</option>
+	  					<option value="2035">2035</option>
+	  					<option value="2036">2036</option>
+	  					<option value="2037">2037</option>
+	  					<option value="2038">2038</option>
+	  					<option value="2039">2039</option>
+						<option value="2040">2040</option>
+	  			       </select>
+					   
+					   <input hidden type="text"  name="seleccion" value="anual"></input>
+					   <input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input>
+					   <input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
+			</form>
+			
+			<form id="formularioMensual" class="me-2" th:action="@{/historicoDeTurnosMensual}" method="get">
+				<label class="form-label texto-label mb-0 fs-6" for="anual">Mes</label>
+				<select onchange="autoSubmitMes()" aria-label="Default select example" class="form-select" id="mes" name="mes" disabled>
+				<!-- Opciones de horas (puedes agregar más) -->
+					<option value=""  th:selected="${mesElegido}" th:text="${mesElegido == null ? 'Seleccione' : mesElegido}"></option>  
+					<option value="Enero_1">Enero</option>
+		            <option value="Febrero_2">Febrero</option>
+					<option value="Marzo_3">Marzo</option>
+					<option value="Abril_4">Abril</option>
+					<option value="Mayo_5">Mayo</option>
+					<option value="Junio_6">Junio</option>
+					<option value="Julio_7">Julio</option>
+					<option value="Agosto_8">Agosto</option>
+					<option value="Septiembre_9">Septiembre</option>
+					<option value="Octubre_10">Octubre</option>
+					<option value="Noviembre_11">Noviembre</option>
+					<option value="Diciembre_12">Diciembre</option>
+					</select>	
+					
+					<input hidden type="text"  name="seleccion" value="mensual"></input>
+					<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input>
+					<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
+					<input hidden type="text"  name="anoSeleccion" th:value="${anoSeleccionado}"></input>		
+			</form>
+				
+				
+					
+			<form id="formularioDiario" class="me-2" th:action="@{/historicoDeTurnosDiarios}" method="get">
+					<label class="form-label texto-label mb-0 fs-6" for="dia">Día</label>
+					<select onchange="autoSubmitDia()" aria-label="Default select example" class="form-select" id="dia" name="dia" disabled>
+					<!-- Opciones de horas (puedes agregar más) -->
+					<option value=""  th:selected="${diaSeleccionado}" th:text="${diaSeleccionado == null ? 'Seleccione' : diaSeleccionado}"></option>  
+					<option value="1">1</option>
+					<option value="2">2</option>
+					<option value="3">3</option>
+					<option value="4">4</option>
+					<option value="5">5</option>
+					<option value="6">6</option>
+					<option value="7">7</option>
+					<option value="8">8</option>
+					<option value="9">9</option>
+					<option value="10">10</option>
+					<option value="11">11</option>
+					<option value="12">12</option>
+					<option value="13">13</option>
+					<option value="14">14</option>
+					<option value="15">15</option>
+					<option value="16">16</option>
+					<option value="17">17</option>
+					<option value="18">18</option>
+					<option value="19">19</option>
+					<option value="20">20</option>
+					<option value="21">21</option>
+					<option value="22">22</option>
+					<option value="23">23</option>
+					<option value="24">24</option>
+					<option value="25">25</option>
+					<option value="26">26</option>
+					<option value="27">27</option>
+					<option value="28">28</option>
+					<option value="29">29</option>
+					<option value="30">30</option>
+					<option value="31">31</option>
+					</select>	
+					
+					<input hidden type="text"  name="seleccion" value="diario"></input>
+					<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input>
+					<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
+					<input hidden type="text"  name="anoSeleccion" th:value="${anoSeleccionado}"></input>
+					<input hidden type="text"  name="mesSeleccion" th:value="${mesSeleccionado}"></input>
+					<input hidden type="text"  name="nombreDelMes" th:value="${mesElegido}"></input>	
+			</form>
+			
+	  </div>
+	  
+				
+			<p class="mb-1 mt-4 fs-4">Filtrar por rango de fechas</p>	
+			<div class="container-fluid d-flex flex-wrap">
+				
+			<form id="formularioIntervalo" class="" th:action="@{/historicoDeTurnosPorFecha}" method="get">
+				
+				<div class="d-flex flex-wrap">
+					
+				<div class="me-3">
+				<label class="form-label texto-label mb-0 fs-6 ms-2" for="dia1">Fecha de inicio</label>
+				<input type="date" class="mb-0 form-control" name="dia1" id="dia1" onchange="habilitarFecha2()">
+				</div>
+						
+				<div class="">
+				<label class="form-label texto-label mb-0 fs-6 ms-2" for="dia1">Fecha de fin</label>
+				<input onchange="autoSubmitIntervalo()" type="date" class="mb-0 form-control" name="dia2" id="dia2" disabled>
+				</div>
+					
+				</div>
+				<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input>
+				<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
+		
+			</form>
+			</div>
+					
+					
+					
+					
+	  
+			
       <div class="container-fluid my-5">
+
+<p class="text-center fs-4 fw-medium" th:text="${tituloTabla}"></p>
 
 		<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
 															<thead>
@@ -237,6 +396,68 @@
     });
     /*]]>*/
 </script>
+
+<!--Script para habilitar el select de mes-->
+<script th:inline="javascript">
+	if(/*[[${activarSelectMes}]]*/ false){
+		/*<![CDATA[*/
+		  $(document).ready(function() {
+		      var activarSelectMes = /*[[${activarSelectMes}]]*/ true;
+			var selectMes = document.getElementById('mes');
+		      if (activarSelectMes) {
+				selectMes.disabled = false;
+		      }
+		  });
+		  /*]]>*/
+	}else{
+		cosole.log("No hay mes presente");
+	}
+  
+</script>
+
+<!--Script para habilitar el select de dia-->
+<script th:inline="javascript">
+    /*<![CDATA[*/
+    $(document).ready(function() {
+        var activarInputDia = /*[[${activarInputDia}]]*/ true;
+		var inputDia = document.getElementById('dia');
+        if (activarInputDia) {
+			inputDia.disabled = false;
+        }
+    });
+    /*]]>*/
+</script>	
+
+<!--Script para habilitar el select de fecha fin-->
+<script th:inline="javascript">
+	if(/*[[${activarSelectFechaFin}]]*/ false){
+		/*<![CDATA[*/
+		  $(document).ready(function() {
+		      var activarSelectFechaFin = /*[[${activarSelectFechaFin}]]*/ true;
+			var selectFechaFin = document.getElementById('dia2');
+		      if (activarSelectFechaFin) {
+				selectFechaFin.disabled = false;
+		      }
+		  });
+		  /*]]>*/
+	}else{
+		cosole.log("No hay fecha fin presente");
+	}
+  
+</script>	
+
+<script>
+       function habilitarFecha2() {
+           // Obtener el valor del primer input
+           const fecha1 = document.getElementById('dia1').value;
+           
+           // Si el usuario selecciona una fecha, se habilita el segundo input
+           if (fecha1) {
+               document.getElementById('dia2').disabled = false;
+           }
+       }
+   </script>		
+
   </main>
 
 

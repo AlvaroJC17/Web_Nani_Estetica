@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -189,20 +191,288 @@ public class ControladorTurnos {
 		
 	}
 	
-	//Controlador para visualizar el historico de turnos de un profesional
+	//Controlador para visualizar el historico de turnos de un profesional (Lista por dias)
+	@GetMapping("/historicoDeTurnosPorFecha")
+	public String historicoDeTurnosPorFecha(
+			@RequestParam String idProfesional,
+			@RequestParam String emailProfesional,
+			@RequestParam String dia1,
+			@RequestParam String dia2,
+			Model model) throws MiExcepcion {
+		
+		String mensaje = null;
+		String error = null;
+		Boolean activarSelectMes = false; //Mantenemos el select de mes apagado
+		Boolean activarInputDia = false; //Mantenemos el select de dias
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional); //Buscamos los datos del profesional para renderizar la pagina
+		List<Turnos> turnosDelProfesional = servicioTurnos.buscarTurnosPorProfesionalId(idProfesional); // Buscamos los turnos del profesional
+		List<Turnos> turnosPorFechas = new ArrayList<>(); //Creamos una nueva lista para guardar los turnos filtrados
+		
+		if (dia1 == null || dia1.isEmpty()) {
+			error = "La fecha de inicio no puede estar vacía";
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+		
+		if (dia2 == null || dia2.isEmpty()) {
+			error = "La fecha de fin no puede estar vacía";
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+		
+		LocalDate fechaSeleccionada1 = null; //Creamos las variables donde vamos a guardar las fechas parseadas obtenidas de la vista
+		LocalDate fechaSeleccionada2 = null; //Creamos las variables donde vamos a guardar las fechas parseadas obtenidas de la vista
+		
+		try {
+			fechaSeleccionada1 = servicioHorario.pasarFechaStringToLocalDate(dia1); //Parseamos la fecha a LocalDate
+			fechaSeleccionada2 = servicioHorario.pasarFechaStringToLocalDate(dia2); //Parseamos la fecha a LocalDate
+		} catch (MiExcepcion e) {
+			System.out.println("No se pudo parsear la fecha");
+			e.printStackTrace();
+		}
+		
+		if (fechaSeleccionada1.isAfter(fechaSeleccionada2)) {
+			error = "La fecha de inicio no puede ser posterior a la fecha de fin";
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+		
+		for (Turnos turnosIntervalo : turnosDelProfesional) { //Recorremos los turnos del profesional
+			LocalDate fechaDelTurno = turnosIntervalo.getFecha(); //Obtenemos las fechas de los turnos
+			
+			//Filtramos aquellos turnos que sean igual, a alguna de las dos fechas o esten dentro de su rango
+			if ((fechaDelTurno.isEqual(fechaSeleccionada1) || fechaDelTurno.isAfter(fechaSeleccionada1)) &&
+					(fechaDelTurno.isEqual(fechaSeleccionada2) || fechaDelTurno.isBefore(fechaSeleccionada2))) {
+				
+				turnosPorFechas.add(turnosIntervalo); //Guardamos los turnos que pasen el filtro en la nueva lista creada
+			}
+		}
+		
+		String fechaFormateadaParaMensaje1 = servicioHorario.pasarFechasLocalDateToString(fechaSeleccionada1);
+		String fechaFormateadaParaMensaje2 = servicioHorario.pasarFechasLocalDateToString(fechaSeleccionada2);
+		mensaje ="Turnos filtrados entre las fechas: [" + fechaFormateadaParaMensaje1 + " - " + fechaFormateadaParaMensaje2 + "]"; //Creamos el mensaje para mostrar en la cabecera de la tabla
+		
+		//Si la lista de los turnos filtrados esta vacia, mandamos un mensaje
+		if (turnosDelProfesional.isEmpty()) {
+			error = "No hay turnos disponibles entre las fechas seleccionadas";
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+		
+		//Pasamos los datos a la vista
+		
+		model.addAttribute("activarInputDia", activarInputDia);
+		model.addAttribute("activarSelectMes", activarSelectMes);
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("turnosDelProfesional", turnosPorFechas);
+		model.addAttribute("tituloTabla", mensaje);
+		return"/pagina_profesional/historicoDeTurnos";
+	}
+		
+		
+	//Controlador para visualizar el historico de turnos de un profesional (Lista por dias)
+	@GetMapping("/historicoDeTurnosDiarios")
+	public String historicoDeTurnosDiarios(
+			@RequestParam String idProfesional,
+			@RequestParam String emailProfesional,
+			@RequestParam String dia,
+			@RequestParam (required = false) String anoSeleccion,
+			@RequestParam (required = false) String mesSeleccion,
+			@RequestParam (required = false) String nombreDelMes,
+			Model model) {
+		
+		String mensaje = null;
+		String error = null;
+		Boolean activarSelectMes = true; //En este punto mantenemos ambos select habilitados
+		Boolean activarInputDia = true; //En este punto mantenemos ambos select habilitados
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional); //datos del profesional para renderizar la vista
+		List<Turnos> turnosDelProfesional = servicioTurnos.buscarTurnosPorProfesionalId(idProfesional); //todos los turnos del profesional
+		List<Turnos> turnosPorDias = new ArrayList<>(); //nueva lista de turnos donde se van a guardar los turnos filtrados
+		
+		int diaSeleccionado = Integer.parseInt(dia); //Pasamos el dia seleccionado a entero
+		int anoSeleccionado = Integer.parseInt(anoSeleccion); //Pasamos el año seleccionado a entero
+		int mesSeleccionado = Integer.parseInt(mesSeleccion); //Pasamos el mes seleccionado a entero
+		
+		//Recorremos los turnos del profesional
+		for (Turnos turnosDiarios : turnosDelProfesional) {
+			LocalDate fechaDelTurno = turnosDiarios.getFecha(); //Obtenemos las fechas de los turnos
+			
+			//Filtramos aquellos turnos que el dia, mes y año de cada turno coincida con el dia, mes y año seleccionado por el usuario
+			if (fechaDelTurno.getYear() == anoSeleccionado && fechaDelTurno.getMonthValue() == mesSeleccionado && fechaDelTurno.getDayOfMonth() == diaSeleccionado) {
+				turnosPorDias.add(turnosDiarios); //Los turnos que pasen el filtro se guardan en la nueva lista creada anteriormente
+			}
+		}
+		
+		//Si la nueva lista esta vacia porque ningun turno paso el filtro, lanzamos un error y mantenemos los select habilitados
+		if (turnosPorDias.isEmpty()) {
+			error = "No hay turnos disponibles en el día seleccionado";
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+			
+		mensaje ="Turnos filtrados a la fecha: " + dia + "/" + mesSeleccion + "/" + anoSeleccion; //Creamos el mensaje de la cabecera de la tabla		
+		
+		//Enviamos los datos a la vista
+		model.addAttribute("activarInputDia", activarInputDia);
+		model.addAttribute("activarSelectMes", activarSelectMes);
+		model.addAttribute("anoSeleccionado", anoSeleccion);
+		model.addAttribute("mesElegido", nombreDelMes);
+		model.addAttribute("mesSeleccionado", mesSeleccion);
+		model.addAttribute("diaSeleccionado", dia);
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("turnosDelProfesional", turnosPorDias);
+		model.addAttribute("tituloTabla", mensaje);
+		return"/pagina_profesional/historicoDeTurnos";
+		
+	}
+	
+	//Controlador para visualizar el historico de turnos de un profesional (Lista por mes)
+	@GetMapping("/historicoDeTurnosMensual")
+	public String historicoDeTurnosMensual(
+			@RequestParam String idProfesional,
+			@RequestParam String emailProfesional,
+			@RequestParam (required = false) String anoSeleccion,
+			@RequestParam (required = false) String mes,
+			Model model){
+		
+		String mensaje = null;
+		String error = null;
+		Boolean activarSelectMes = false; // mantenemos los select deshabilitados
+		Boolean activarInputDia = false; // mantenemos los select deshabilitados
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional); //datos del profesional para renderizar la vista
+		List<Turnos> turnosDelProfesional = servicioTurnos.buscarTurnosPorProfesionalId(idProfesional); // Lista general de turnos del profesional
+		List<Turnos> turnosPorMes = new ArrayList<>(); //Nueva lista donde se van a guardar los turnos filtrados por mes
+		
+		//Pasamos a entero el valor del año seleccionado por el usuario, esta variable viene desde un hidden input del html
+		int anoSeleccionado2 = Integer.parseInt(anoSeleccion); 
+		
+		//Debido a que cree el formato de la lista de meses de la siguiente manera nombreDelMEs_NumeroDelMes -> Enero_1.
+		//Debemos seperar el nombre del numero, esto lo hacemos usando el _ como separador
+		String[] MesNumeroString = mes.split("_"); 
+		String nombreDelMes = MesNumeroString[0].trim(); //nombre del mes ya separado
+		String numeroDelMes = MesNumeroString[1].trim(); //numero del mes ya separado en formato String
+		
+		int mesSeleccionado = Integer.parseInt(numeroDelMes); //Pasamos el numero del mes a entero
+		
+		for (Turnos turnosMensuales : turnosDelProfesional) { //Recorremos los turnos del profesional
+			LocalDate fechaDelTurno = turnosMensuales.getFecha(); //Obetnemos la fecha de cada turno
+			
+			//Filtramos que el año y mes del turno sean iguales al año y mes seleccionado por el usuario
+			if (fechaDelTurno.getYear() == anoSeleccionado2 && fechaDelTurno.getMonthValue() == mesSeleccionado) {
+				turnosPorMes.add(turnosMensuales); //Agregamos los turnos que pasen el filtro a la nueva lista creada anteriormente
+			}
+		}
+		
+		activarSelectMes = true; //activamos el select del mes
+		activarInputDia = true; //Activamos el select de los dias
+		
+		//Si ningun turno paso el filtro y la nueva lista permanece vacia, tiramos un error
+		//Y deshabilitamos el select de dias, pero mantenemos el select de meses habilitado
+		if (turnosPorMes.isEmpty()) {
+			error = "No hay turnos disponibles en el mes seleccionado";
+			activarInputDia = false;
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+			
+		mensaje ="Turnos filtrados a la fecha: " + numeroDelMes + "/" + anoSeleccion ; //Creamos el mensaje de la cabecera de la tabla
+		
+		//Pasamos todos los datos a la vista
+		model.addAttribute("activarInputDia", activarInputDia);
+		model.addAttribute("activarSelectMes", activarSelectMes);
+		model.addAttribute("anoSeleccionado", anoSeleccion);
+		model.addAttribute("mesSeleccionado", numeroDelMes);
+		model.addAttribute("mesElegido", nombreDelMes);
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("turnosDelProfesional", turnosPorMes);
+		model.addAttribute("tituloTabla", mensaje);
+		return"/pagina_profesional/historicoDeTurnos";
+	}
+	
+	//Controlador para visualizar el historico de turnos de un profesional (Lista por año)
+	@GetMapping("/historicoDeTurnosAnual")
+	public String historicoDeTurnosAnual(
+			@RequestParam String idProfesional,
+			@RequestParam String emailProfesional,
+			@RequestParam (required = false) String ano,
+			Model model) {
+		
+		String mensaje = null;
+		String error = null;
+		Boolean activarSelectMes = false; // mantenemos el select apagado
+		Boolean activarInputDia = false; //mantenemos el select apagado
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional); //datos del profesional para renderizar la vista
+		List<Turnos> turnosDelProfesional = servicioTurnos.buscarTurnosPorProfesionalId(idProfesional); //Lista general de turnos del profesional
+		List<Turnos> turnosPorAno = new ArrayList<>(); //Creamos la lista donde se van a guardar los turnos filtrados por año
+		
+		int anoSeleccionado = Integer.parseInt(ano); // Pasamos el valor de la variable recibida de la vista a enetero, en esta caso es el año seleccionado por el usuario
+		
+		//Recorremos los turnos del profesional
+		for (Turnos turnosAnuales : turnosDelProfesional) {
+			LocalDate fechaDelTurno = turnosAnuales.getFecha(); //Obetenos la fecha de todos los turnos
+			
+			if (fechaDelTurno.getYear() == anoSeleccionado ) { //Filtramos solo por aquellos turnos que tengan el mismo año que el año seleccionado
+				turnosPorAno.add(turnosAnuales); //Agregamos los turnos que pasen el filtro a la lista creada anteriormente
+			}
+		}
+		
+		activarSelectMes = true; //Activamos el select de los meses
+		
+		//Validamos que la lista creada para los turnos filtrados no este vacia, es decir validamos que se haya encontrado al menos un turno que cumple las condiciones
+		//del filtro usado dentro del for
+		//Si hay algun error, volvemos a deshabilitar el select de la seleccion de meses
+		if (turnosPorAno.isEmpty()) {
+			error = "No hay turnos disponibles en el año seleccionado";
+			activarSelectMes = false;
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+		}
+		
+		mensaje ="Turnos filtrados a la fecha: " + anoSeleccionado; //Creamos el mensaje a mostrar en el emcabezado de la tabla
+	
+		//Pasamos todos los datos a la vista
+		model.addAttribute("activarInputDia", activarInputDia);
+		model.addAttribute("activarSelectMes", activarSelectMes);
+		model.addAttribute("anoSeleccionado", ano);
+		model.addAttribute("datosProfesional", datosProfesional);
+		model.addAttribute("turnosDelProfesional", turnosPorAno);
+		model.addAttribute("tituloTabla", mensaje);
+		return"/pagina_profesional/historicoDeTurnos";
+	}
+	
+	//Controlador para visualizar el historico de turnos de un profesional (Lista vacía)
+	//Este metodo devuelve una lista vacia al entrar al apartado historico de turnos
 	@GetMapping("/historicoDeTurnos")
 	public String historicoDeTurnos(
 			@RequestParam String idProfesional,
 			@RequestParam String emailProfesional,
 			Model model) {
+				
+		String mensaje = null; // mensaje que se muestra en el emcabezado de la tabla
+		Boolean activarSelectMes = false; //mantenemos el select del mes apagado en esta instancia
+		Boolean activarInputDia = false; // mantenemos el select de los dias apagado en esta instancia
 		
-		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
-		List<Turnos> turnosDelProfesional = servicioTurnos.buscarTurnosPorProfesionalId(idProfesional);
+		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional); //Lista con los datos del profesional, para renderizar la pagina
+	
+		List<Turnos> listaSinTurnos = Collections.emptyList(); //Se crea la lista vacía que se va mostrar en la tabla inicial
+
+		mensaje = ""; //Se manda un mensaje vacío a la vista, porque la tabla tambien esta vacía
 		
+		//Pasamos los datos a la vista
+		model.addAttribute("activarInputDia", activarInputDia);
+		model.addAttribute("activarSelectMes", activarSelectMes);
 		model.addAttribute("datosProfesional", datosProfesional);
-		model.addAttribute("turnosDelProfesional", turnosDelProfesional);
+		model.addAttribute("turnosDelProfesional", listaSinTurnos);
+		model.addAttribute("tituloTabla", mensaje);
 		return"/pagina_profesional/historicoDeTurnos";
+		
 	}
+			    
+		
 	
 	//Controlador para cancelar o confirmar asistencia a los turnos por parte de un profesional
 	@PostMapping("/cancelarOrConfimarTurnoProfesional")

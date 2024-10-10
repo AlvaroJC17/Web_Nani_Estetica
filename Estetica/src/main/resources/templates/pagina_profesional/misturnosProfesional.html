@@ -84,6 +84,8 @@ tener el mismo ID-->
 			<button id="submitHistorico" class="bn632-hover bn26">Histórico de turnos</button>
 			<input hidden type="text" id="idProfesional" name="idProfesional" th:value="${datosProfesional.id}"></input>
 			<input hidden type="text" id="emailProfesional" name="emailProfesional" th:value="${datosProfesional.email}"></input>
+			<input hidden type="text" id="" name="seleccion" value="sinSeleccion"></input>
+			
 		</form>
 		
 		<form id="formularioTurnosFechas"  class="text-center" th:action="@{/turnosPorFecha}" method="get">
