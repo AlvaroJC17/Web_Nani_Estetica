@@ -56,6 +56,67 @@ public class ServicioTurnos {
 	@Autowired
 	ServicioEmail servicioEmail;
 	
+	public List<Integer> costoDeTurnosPorFecha(List<Turnos> listaDeTurnos) {
+	    
+	    List<Integer> valoresYCantidadesDeTurnos = new ArrayList<>();
+	    
+	    int montoDeTurnosAsistidos = 0;
+	    int montoDeTurnosPendientes = 0;
+	    int montoDeTurnosCancelados = 0;
+	    int montoDeTurnosMulta = 0;
+	    
+	    int cantidadTurnosAsistidos = 0;
+	    int cantidadTurnosPendientes = 0;
+	    int cantidadTurnosCancelados = 0;
+	    int cantidadTurnosMultas = 0;
+	    
+	    for (Turnos turnosCostos : listaDeTurnos) {
+	        // Calcular el monto de los tratamientos asociados al turno
+	        for (String tratamiento : turnosCostos.getTratamientos()) {
+	            String[] valorTurnos = tratamiento.split("\\$");
+	            String valorTurno = valorTurnos[1].trim();  // Obetenemos el precio
+	            int costoDelTurno = Integer.parseInt(valorTurno);
+	            
+	            switch (turnosCostos.getEstado()) {
+	                case ASISTIDO:
+	                    cantidadTurnosAsistidos++;
+	                    montoDeTurnosAsistidos += costoDelTurno;
+	                    break;
+	                
+	                case PENDIENTE:
+	                    cantidadTurnosPendientes++;
+	                    montoDeTurnosPendientes += costoDelTurno;
+	                    break;
+	                
+	                case CANCELADO:
+	                    if (turnosCostos.getMulta()) {
+	                        cantidadTurnosMultas++;
+	                        montoDeTurnosMulta += costoDelTurno;
+	                    } else {
+	                        cantidadTurnosCancelados++;
+	                        montoDeTurnosCancelados += costoDelTurno;
+	                    }
+	                    break;
+	            }
+	        }
+	    }
+	    
+	    // Añadir los montos de turnos a la lista
+	    valoresYCantidadesDeTurnos.add(montoDeTurnosAsistidos);
+	    valoresYCantidadesDeTurnos.add(montoDeTurnosPendientes);
+	    valoresYCantidadesDeTurnos.add(montoDeTurnosCancelados);
+	    valoresYCantidadesDeTurnos.add(montoDeTurnosMulta);
+	    
+	    // Añadir las cantidades de turnos a la lista
+	    valoresYCantidadesDeTurnos.add(cantidadTurnosAsistidos);
+	    valoresYCantidadesDeTurnos.add(cantidadTurnosPendientes);
+	    valoresYCantidadesDeTurnos.add(cantidadTurnosCancelados);
+	    valoresYCantidadesDeTurnos.add(cantidadTurnosMultas);
+	    
+	    return valoresYCantidadesDeTurnos;
+	}
+
+	
 	
 	public List<Turnos> buscarTurnosPorProfesionalIdAndFecha(String idProfesional, LocalDate fecha) throws MiExcepcion{
 		try {
@@ -496,8 +557,6 @@ public class ServicioTurnos {
 		
 		//Validamos que todos los valores vengan bien
 		validarGuardarTurno(provinciaString, nombreDelProfesional, fechaSeleccionada, horario, tratamientosSeleccionados);
-		
-		System.out.println("TRATAMIENTOS SElECCIONADOS: " + tratamientosSeleccionados);
 		
 		//Separamos el string de tratamientos
 		String [] tratamientosSeparados = tratamientosSeleccionados.split(",");

@@ -17,39 +17,6 @@
    <script src="https://cdn.datatables.net/plug-ins/2.1.0/i18n/es-ES.json"></script>
 </head>
 
-<script>
-        function autoSubmitAno() {
-            document.getElementById("formularioAnual").submit();
-        }
-		
-		function autoSubmitMes() {
-		           document.getElementById("formularioMensual").submit();
-		       }
-        
-        function autoSubmitDia() {
-            document.getElementById("formularioDiario").submit();
-        }
-        
-         function autoSubmitIntervalo() {
-            document.getElementById("formularioIntervalo").submit();
-        }
-        
-         
-    </script>
-
-<script>
-    <!--Scrip para darle funcionalidad a la tabla y colocarla en español-->
-    $(document).ready(function() {
-        $('#myTable').DataTable({
-            language: {
-                url: 'https://cdn.datatables.net/plug-ins/2.1.0/i18n/es-ES.json'
-            },
-            columnDefs: [
-                { orderable: false, targets: 0 } // Desactiva la ordenación para la columna del checkbox
-            ]
-        });
-    });
-    </script>
 
 <body class="body-interno"  th:each="datosProfesional : ${datosProfesional}">
 
@@ -238,15 +205,18 @@
 			</form>
 			</div>
 					
-					
-					
-					
-	  
 			
-      <div class="container-fluid my-5">
+ <div class="container-fluid my-5">
 
-<p class="text-center fs-4 fw-medium" th:text="${tituloTabla}"></p>
+<p class="text-center fs-4 fw-medium mb-4" th:text="${tituloTabla}"></p>
 
+<div class="d-flex justify-content-center">
+	<div class="text-center" th:if="${mostrarEstadisticas}">
+		<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-success bg-gradient text-white px-2">Se han encontrado <span class="fw-normal" th:text="${cantidadTotalTurnos}"></span> turnos</p>
+	</div>
+
+</div>
+		<!--tabla, su script esta dentro del archivo historicoDeTurnos.js-->
 		<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
 															<thead>
 																<tr class="">
@@ -311,17 +281,18 @@
 																</tr>    
 															</tbody>
 														</table>
-		
-          
-		
             </div>
             </div>
-   
-        
-
+				
+			<p th:if="${mostrarEstadisticas}" class="text-center text-center fs-4 fw-medium mb-4">Totales por tipos de turnos</p>
+														
+			<div th:if="${mostrarEstadisticas}" class="container-fluid w-50 mb-5">
+			  <canvas id="myChart"></canvas> <!--Aqui es donde se visualiza la grafica, su script esta dentro del archivo historicoDeTurnos.js-->
+			</div>
+		
     
-    					<!--Modal mensaje de exito al registrarse	-->
     					
+<!--Modal mensaje de exito al registrarse, su script esta dentro del archivo historicoDeTurnos.js	-->
     <div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
 	tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
 	th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
@@ -340,8 +311,8 @@
 		</div>
 	</div>
 	
-	<!--Modal mensajes de error-->
 		
+<!--Modal mensajes de error, su script esta dentro del archivo historicoDeTurnos.js-->
 		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
      th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
     <div class="modal-dialog">
@@ -359,106 +330,7 @@
     </div>
 </div>
 
-
-				<!--Script para modal de error-->
-				
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var showModalError = /*[[${showModalError}]]*/ false;
-        if (showModalError) {
-            $('#errorModal').modal('show');
-        }
-
-        $('#errorModal').on('hidden.bs.modal', function () {
-            $(this).remove();
-        });
-    });
-    /*]]>*/
-</script>
-	
-	
-	
-	
-	<!--Scrip para el modal de mensaje de exito-->
-			
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var showModalExito = /*[[${showModalExito}]]*/ false;
-        if (showModalExito) {
-            $('#exitoModal').modal('show');
-        }
-
-        $('#exitoModal').on('hidden.bs.modal', function () {
-            $(this).remove();
-        });
-    });
-    /*]]>*/
-</script>
-
-<!--Script para habilitar el select de mes-->
-<script th:inline="javascript">
-	if(/*[[${activarSelectMes}]]*/ false){
-		/*<![CDATA[*/
-		  $(document).ready(function() {
-		      var activarSelectMes = /*[[${activarSelectMes}]]*/ true;
-			var selectMes = document.getElementById('mes');
-		      if (activarSelectMes) {
-				selectMes.disabled = false;
-		      }
-		  });
-		  /*]]>*/
-	}else{
-		cosole.log("No hay mes presente");
-	}
-  
-</script>
-
-<!--Script para habilitar el select de dia-->
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var activarInputDia = /*[[${activarInputDia}]]*/ true;
-		var inputDia = document.getElementById('dia');
-        if (activarInputDia) {
-			inputDia.disabled = false;
-        }
-    });
-    /*]]>*/
-</script>	
-
-<!--Script para habilitar el select de fecha fin-->
-<script th:inline="javascript">
-	if(/*[[${activarSelectFechaFin}]]*/ false){
-		/*<![CDATA[*/
-		  $(document).ready(function() {
-		      var activarSelectFechaFin = /*[[${activarSelectFechaFin}]]*/ true;
-			var selectFechaFin = document.getElementById('dia2');
-		      if (activarSelectFechaFin) {
-				selectFechaFin.disabled = false;
-		      }
-		  });
-		  /*]]>*/
-	}else{
-		cosole.log("No hay fecha fin presente");
-	}
-  
-</script>	
-
-<script>
-       function habilitarFecha2() {
-           // Obtener el valor del primer input
-           const fecha1 = document.getElementById('dia1').value;
-           
-           // Si el usuario selecciona una fecha, se habilita el segundo input
-           if (fecha1) {
-               document.getElementById('dia2').disabled = false;
-           }
-       }
-   </script>		
-
-  </main>
+</main>
 
 
 
@@ -495,8 +367,6 @@
         </div>
       </div>
 	
-    
-	
     <div class="divfooter col-lg-6">
       <p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
 	  <iframe class="w-100 rounded rounded-2" 
@@ -504,14 +374,31 @@
 	     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
 	   </iframe>
     </div>
+	
   </footer>
 
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous"></script>
+ <!--Bloque script/thymeleaf para asignarles valores dinamicos a las variables que vamos a pasar al archivo historicoDeTurnos.js
+NoTA: dentro del archivo .js no podemos trabajar con las variables de thymeleaf por eso le asignamos cada valor a una variable
+acá dentro deñ html y luego pasamos esa variable al archivo .js-->
+<script th:inline="javascript">
+var showModalError = /*[[${showModalError}]]*/ false;
+var showModalExito = /*[[${showModalExito}]]*/ false;
+const varActivarSelectMes = /*[[${activarSelectMes}]]*/ true;
+const varActivarInputDia = /*[[${activarInputDia}]]*/ true;
+const varActivarSelectFechaFin = /*[[${activarSelectFechaFin}]]*/ false;
+const varMontoAsistidos = /*[[${montoDeTurnosAsistidos}]]*/ 0;
+const varMontoPendiente = /*[[${montoDeTurnosPendientes}]]*/ 0;
+const varMontoCancelado = /*[[${montoDeTurnosCancelados}]]*/ 0;
+const varMontoMulta = /*[[${montoDeTurnosMulta}]]*/ 0;	
+const varCantidadTotalTurnos = /*[[${cantidadTotalTurnos}]]*/ 0;
+</script>
 	
+	
+
 </body>
-<script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
-<script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.dataTables.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!--cdn de la grafica de totales-->
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script> <!--cdn para lo responsive de la tabla-->
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.dataTables.js"></script> <!--cdn de la tabla-->
+<script src="../js/historicoDeTurnos.js"></script> <!--Hoja de todos los scripts de la toda la pagina de historico de turnos-->
 </html>

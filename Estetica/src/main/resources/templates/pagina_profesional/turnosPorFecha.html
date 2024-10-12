@@ -153,7 +153,7 @@ tener el mismo ID-->
 			<div  th:each="turnosRemanentes, iterStat : ${turnosRemanentes}" class="ft-misturnos">
 			<div th:if="${turnosRemanentes.remanenteDias || turnosRemanentes.remanenteHoras || turnosRemanentes.remanenteTratamientos}">
 				<div class="bg-warning bg-gradient text-center text-white">Pendiente</div>
-				<div th:if="${turnosRemanentes.remanenteDias || turnosRemanentes.remanenteHoras || turnosRemanentes.remanenteTratamientos}" class="bg-secondary bg-gradient text-center text-white">Remanete</div>
+				<div th:if="${turnosRemanentes.remanenteDias || turnosRemanentes.remanenteHoras || turnosRemanentes.remanenteTratamientos}" class="bg-secondary bg-gradient text-center text-white">Remanente</div>
 					  
 					  <div th:unless="${#lists.isEmpty(turnosRemanentes)}">
 					  <form  th:action="@{/cancelarOrConfimarTurnoProfesional}" method="post">

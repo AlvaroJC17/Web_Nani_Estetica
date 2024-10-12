@@ -204,18 +204,21 @@ public class ControladorTurnos {
 		String error = null;
 		Boolean activarSelectMes = false; //Mantenemos el select de mes apagado
 		Boolean activarInputDia = false; //Mantenemos el select de dias
+		Boolean mostrarEstadisticas = true; //Boolean para habilitar o deshabilitar la grafica de estadisticas
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional); //Buscamos los datos del profesional para renderizar la pagina
 		List<Turnos> turnosDelProfesional = servicioTurnos.buscarTurnosPorProfesionalId(idProfesional); // Buscamos los turnos del profesional
 		List<Turnos> turnosPorFechas = new ArrayList<>(); //Creamos una nueva lista para guardar los turnos filtrados
 		
 		if (dia1 == null || dia1.isEmpty()) {
+			mostrarEstadisticas = false; // si se presente este error no mostramos la grafica
 			error = "La fecha de inicio no puede estar vacía";
 			model.addAttribute("error", error);
 			model.addAttribute("showModalError", true);
 		}
 		
 		if (dia2 == null || dia2.isEmpty()) {
+			mostrarEstadisticas = false; // si se presente este error no mostramos la grafica
 			error = "La fecha de fin no puede estar vacía";
 			model.addAttribute("error", error);
 			model.addAttribute("showModalError", true);
@@ -232,7 +235,9 @@ public class ControladorTurnos {
 			e.printStackTrace();
 		}
 		
+		//Validamos que la primera fecha que selecciona no es posterior a la segunda
 		if (fechaSeleccionada1.isAfter(fechaSeleccionada2)) {
+			mostrarEstadisticas = false; // si se presente este error no mostramos la grafica
 			error = "La fecha de inicio no puede ser posterior a la fecha de fin";
 			model.addAttribute("error", error);
 			model.addAttribute("showModalError", true);
@@ -251,17 +256,40 @@ public class ControladorTurnos {
 		
 		String fechaFormateadaParaMensaje1 = servicioHorario.pasarFechasLocalDateToString(fechaSeleccionada1);
 		String fechaFormateadaParaMensaje2 = servicioHorario.pasarFechasLocalDateToString(fechaSeleccionada2);
-		mensaje ="Turnos filtrados entre las fechas: [" + fechaFormateadaParaMensaje1 + " - " + fechaFormateadaParaMensaje2 + "]"; //Creamos el mensaje para mostrar en la cabecera de la tabla
+		
+		//Creamos una nueva lista donde vamos a guardar todos los totales de los turnos, como cantidad de turnos y los valores de cada turno encontrado
+		List<Integer> valoresTotalesTurno = new ArrayList<>(); 
+		
 		
 		//Si la lista de los turnos filtrados esta vacia, mandamos un mensaje
-		if (turnosDelProfesional.isEmpty()) {
+		if (turnosPorFechas.isEmpty()) {
+			mostrarEstadisticas = false; // si se presente este error no mostramos la grafica
 			error = "No hay turnos disponibles entre las fechas seleccionadas";
 			model.addAttribute("error", error);
 			model.addAttribute("showModalError", true);
 		}
 		
-		//Pasamos los datos a la vista
+		//Servicio para calcular todos los valores de los turnos, como cantidad y totales por cada tipo de turno
+		valoresTotalesTurno = servicioTurnos.costoDeTurnosPorFecha(turnosPorFechas);
 		
+		//Creamos la variable donde vamos a guardar el valor de la suma de la cantidad de turnos encontrados despues de filtralos
+		int cantidadTotalTurnos = 0;
+		cantidadTotalTurnos = valoresTotalesTurno.get(4) + valoresTotalesTurno.get(5) + valoresTotalesTurno.get(6) + valoresTotalesTurno.get(7);
+		
+		
+		mensaje ="Turnos filtrados entre las fechas: [" + fechaFormateadaParaMensaje1 + " - " + fechaFormateadaParaMensaje2 + "]"; //Creamos el mensaje para mostrar en la cabecera de la tabla
+		
+		//Pasamos los datos a la vista
+		model.addAttribute("cantidadTotalTurnos", cantidadTotalTurnos);
+		model.addAttribute("montoDeTurnosAsistidos", valoresTotalesTurno.get(0)); //Pasamos el valor del indice 0 de la lista de valores, el cual pertenece a turnos asistidos
+		model.addAttribute("montoDeTurnosPendientes", valoresTotalesTurno.get(1)); //Pasamos el valor del indice 1 de la lista de valores, el cual pertenece a turnos pendientes
+		model.addAttribute("montoDeTurnosCancelados", valoresTotalesTurno.get(2)); //Pasamos el valor del indice 2 de la lista de valores, el cual pertenece a turnos cancelados
+		model.addAttribute("montoDeTurnosMulta", valoresTotalesTurno.get(3)); //Pasamos el valor del indice 3 de la lista de valores, el cual pertenece a turnos con multa
+		model.addAttribute("cantidadTurnosAsistidos", valoresTotalesTurno.get(4)); //Pasamos el valor del indice 4 de la lista de valores, el cual pertenece a cantidad de turnos asistidos
+		model.addAttribute("cantidadTurnosPendientes", valoresTotalesTurno.get(5)); //Pasamos el valor del indice 5 de la lista de valores, el cual pertenece a cantidad de turnos pendientes
+		model.addAttribute("cantidadTurnosCancelados", valoresTotalesTurno.get(6)); //Pasamos el valor del indice 6 de la lista de valores, el cual pertenece a cantidad de turnos cancelados
+		model.addAttribute("cantidadTurnosMulta", valoresTotalesTurno.get(7)); //Pasamos el valor del indice 7 de la lista de valores, el cual pertenece a cantidad de turnos con multa
+		model.addAttribute("mostrarEstadisticas", mostrarEstadisticas); //Boolean que activa el mensaje de resultado de turnos encontrados y la grafica de estadisticas
 		model.addAttribute("activarInputDia", activarInputDia);
 		model.addAttribute("activarSelectMes", activarSelectMes);
 		model.addAttribute("datosProfesional", datosProfesional);
@@ -286,6 +314,7 @@ public class ControladorTurnos {
 		String error = null;
 		Boolean activarSelectMes = true; //En este punto mantenemos ambos select habilitados
 		Boolean activarInputDia = true; //En este punto mantenemos ambos select habilitados
+		Boolean mostrarEstadisticas = true; //Boolean para habilitar o deshabilitar la grafica de estadisticas
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional); //datos del profesional para renderizar la vista
 		List<Turnos> turnosDelProfesional = servicioTurnos.buscarTurnosPorProfesionalId(idProfesional); //todos los turnos del profesional
@@ -305,16 +334,37 @@ public class ControladorTurnos {
 			}
 		}
 		
+		//Creamos una nueva lista donde vamos a guardar todos los totales de los turnos, como cantidad de turnos y los valores de cada turno encontrado
+		List<Integer> valoresTotalesTurno = new ArrayList<>();
+		
 		//Si la nueva lista esta vacia porque ningun turno paso el filtro, lanzamos un error y mantenemos los select habilitados
 		if (turnosPorDias.isEmpty()) {
 			error = "No hay turnos disponibles en el día seleccionado";
+			mostrarEstadisticas = false; // si se presente este error no mostramos la grafica
 			model.addAttribute("error", error);
 			model.addAttribute("showModalError", true);
 		}
+		
+		//Servicio para calcular todos los valores de los turnos, como cantidad y totales por cada tipo de turno
+		valoresTotalesTurno = servicioTurnos.costoDeTurnosPorFecha(turnosPorDias);
+		
+		//Creamos la variable donde vamos a guardar el valor de la suma de la cantidad de turnos encontrados despues de filtralos
+		int cantidadTotalTurnos = 0;
+		cantidadTotalTurnos = valoresTotalesTurno.get(4) + valoresTotalesTurno.get(5) + valoresTotalesTurno.get(6) + valoresTotalesTurno.get(7);
 			
 		mensaje ="Turnos filtrados a la fecha: " + dia + "/" + mesSeleccion + "/" + anoSeleccion; //Creamos el mensaje de la cabecera de la tabla		
 		
 		//Enviamos los datos a la vista
+		model.addAttribute("cantidadTotalTurnos", cantidadTotalTurnos);
+		model.addAttribute("montoDeTurnosAsistidos", valoresTotalesTurno.get(0));
+		model.addAttribute("montoDeTurnosPendientes", valoresTotalesTurno.get(1));
+		model.addAttribute("montoDeTurnosCancelados", valoresTotalesTurno.get(2));
+		model.addAttribute("montoDeTurnosMulta", valoresTotalesTurno.get(3));
+		model.addAttribute("cantidadTurnosAsistidos", valoresTotalesTurno.get(4));
+		model.addAttribute("cantidadTurnosPendientes", valoresTotalesTurno.get(5));
+		model.addAttribute("cantidadTurnosCancelados", valoresTotalesTurno.get(6));
+		model.addAttribute("cantidadTurnosMulta", valoresTotalesTurno.get(7));
+		model.addAttribute("mostrarEstadisticas", mostrarEstadisticas);
 		model.addAttribute("activarInputDia", activarInputDia);
 		model.addAttribute("activarSelectMes", activarSelectMes);
 		model.addAttribute("anoSeleccionado", anoSeleccion);
@@ -341,6 +391,7 @@ public class ControladorTurnos {
 		String error = null;
 		Boolean activarSelectMes = false; // mantenemos los select deshabilitados
 		Boolean activarInputDia = false; // mantenemos los select deshabilitados
+		Boolean mostrarEstadisticas = true; //Boolean para habilitar o deshabilitar la grafica de estadisticas
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional); //datos del profesional para renderizar la vista
 		List<Turnos> turnosDelProfesional = servicioTurnos.buscarTurnosPorProfesionalId(idProfesional); // Lista general de turnos del profesional
@@ -369,18 +420,39 @@ public class ControladorTurnos {
 		activarSelectMes = true; //activamos el select del mes
 		activarInputDia = true; //Activamos el select de los dias
 		
+		//Creamos una nueva lista donde vamos a guardar todos los totales de los turnos, como cantidad de turnos y los valores de cada turno encontrado
+		List<Integer> valoresTotalesTurno = new ArrayList<>();
+		
 		//Si ningun turno paso el filtro y la nueva lista permanece vacia, tiramos un error
 		//Y deshabilitamos el select de dias, pero mantenemos el select de meses habilitado
 		if (turnosPorMes.isEmpty()) {
+			mostrarEstadisticas = false; // si se presente este error no mostramos la grafica
 			error = "No hay turnos disponibles en el mes seleccionado";
 			activarInputDia = false;
 			model.addAttribute("error", error);
 			model.addAttribute("showModalError", true);
 		}
+		
+		//Servicio para calcular todos los valores de los turnos, como cantidad y totales por cada tipo de turno
+		valoresTotalesTurno = servicioTurnos.costoDeTurnosPorFecha(turnosPorMes);
+		
+		//Creamos la variable donde vamos a guardar el valor de la suma de la cantidad de turnos encontrados despues de filtralos
+		int cantidadTotalTurnos = 0;
+		cantidadTotalTurnos = valoresTotalesTurno.get(4) + valoresTotalesTurno.get(5) + valoresTotalesTurno.get(6) + valoresTotalesTurno.get(7);
 			
 		mensaje ="Turnos filtrados a la fecha: " + numeroDelMes + "/" + anoSeleccion ; //Creamos el mensaje de la cabecera de la tabla
 		
 		//Pasamos todos los datos a la vista
+		model.addAttribute("cantidadTotalTurnos", cantidadTotalTurnos);
+		model.addAttribute("montoDeTurnosAsistidos", valoresTotalesTurno.get(0));
+		model.addAttribute("montoDeTurnosPendientes", valoresTotalesTurno.get(1));
+		model.addAttribute("montoDeTurnosCancelados", valoresTotalesTurno.get(2));
+		model.addAttribute("montoDeTurnosMulta", valoresTotalesTurno.get(3));
+		model.addAttribute("cantidadTurnosAsistidos", valoresTotalesTurno.get(4));
+		model.addAttribute("cantidadTurnosPendientes", valoresTotalesTurno.get(5));
+		model.addAttribute("cantidadTurnosCancelados", valoresTotalesTurno.get(6));
+		model.addAttribute("cantidadTurnosMulta", valoresTotalesTurno.get(7));
+		model.addAttribute("mostrarEstadisticas", mostrarEstadisticas);
 		model.addAttribute("activarInputDia", activarInputDia);
 		model.addAttribute("activarSelectMes", activarSelectMes);
 		model.addAttribute("anoSeleccionado", anoSeleccion);
@@ -404,6 +476,7 @@ public class ControladorTurnos {
 		String error = null;
 		Boolean activarSelectMes = false; // mantenemos el select apagado
 		Boolean activarInputDia = false; //mantenemos el select apagado
+		Boolean mostrarEstadisticas = true; //Boolean para habilitar o deshabilitar la grafica de estadisticas
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional); //datos del profesional para renderizar la vista
 		List<Turnos> turnosDelProfesional = servicioTurnos.buscarTurnosPorProfesionalId(idProfesional); //Lista general de turnos del profesional
@@ -422,19 +495,40 @@ public class ControladorTurnos {
 		
 		activarSelectMes = true; //Activamos el select de los meses
 		
+		//Creamos una nueva lista donde vamos a guardar todos los totales de los turnos, como cantidad de turnos y los valores de cada turno encontrado
+		List<Integer> valoresTotalesTurno = new ArrayList<>();
+		
 		//Validamos que la lista creada para los turnos filtrados no este vacia, es decir validamos que se haya encontrado al menos un turno que cumple las condiciones
 		//del filtro usado dentro del for
 		//Si hay algun error, volvemos a deshabilitar el select de la seleccion de meses
 		if (turnosPorAno.isEmpty()) {
+			mostrarEstadisticas = false; // si se presente este error no mostramos la grafica
 			error = "No hay turnos disponibles en el año seleccionado";
 			activarSelectMes = false;
 			model.addAttribute("error", error);
 			model.addAttribute("showModalError", true);
 		}
 		
+		//Servicio para calcular todos los valores de los turnos, como cantidad y totales por cada tipo de turno
+		valoresTotalesTurno = servicioTurnos.costoDeTurnosPorFecha(turnosPorAno);
+		
+		//Creamos la variable donde vamos a guardar el valor de la suma de la cantidad de turnos encontrados despues de filtralos
+		int cantidadTotalTurnos = 0;
+		cantidadTotalTurnos = valoresTotalesTurno.get(4) + valoresTotalesTurno.get(5) + valoresTotalesTurno.get(6) + valoresTotalesTurno.get(7);
+		
 		mensaje ="Turnos filtrados a la fecha: " + anoSeleccionado; //Creamos el mensaje a mostrar en el emcabezado de la tabla
 	
 		//Pasamos todos los datos a la vista
+		model.addAttribute("cantidadTotalTurnos", cantidadTotalTurnos);
+		model.addAttribute("montoDeTurnosAsistidos", valoresTotalesTurno.get(0));
+		model.addAttribute("montoDeTurnosPendientes", valoresTotalesTurno.get(1));
+		model.addAttribute("montoDeTurnosCancelados", valoresTotalesTurno.get(2));
+		model.addAttribute("montoDeTurnosMulta", valoresTotalesTurno.get(3));
+		model.addAttribute("cantidadTurnosAsistidos", valoresTotalesTurno.get(4));
+		model.addAttribute("cantidadTurnosPendientes", valoresTotalesTurno.get(5));
+		model.addAttribute("cantidadTurnosCancelados", valoresTotalesTurno.get(6));
+		model.addAttribute("cantidadTurnosMulta", valoresTotalesTurno.get(7));
+		model.addAttribute("mostrarEstadisticas", mostrarEstadisticas);
 		model.addAttribute("activarInputDia", activarInputDia);
 		model.addAttribute("activarSelectMes", activarSelectMes);
 		model.addAttribute("anoSeleccionado", ano);
@@ -443,6 +537,7 @@ public class ControladorTurnos {
 		model.addAttribute("tituloTabla", mensaje);
 		return"/pagina_profesional/historicoDeTurnos";
 	}
+	
 	
 	//Controlador para visualizar el historico de turnos de un profesional (Lista vacía)
 	//Este metodo devuelve una lista vacia al entrar al apartado historico de turnos
@@ -463,6 +558,7 @@ public class ControladorTurnos {
 		mensaje = ""; //Se manda un mensaje vacío a la vista, porque la tabla tambien esta vacía
 		
 		//Pasamos los datos a la vista
+		model.addAttribute("mostrarEstadisticas", false);
 		model.addAttribute("activarInputDia", activarInputDia);
 		model.addAttribute("activarSelectMes", activarSelectMes);
 		model.addAttribute("datosProfesional", datosProfesional);
