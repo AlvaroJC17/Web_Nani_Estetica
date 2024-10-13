@@ -14,102 +14,6 @@
 	<link rel="stylesheet" href="../css/styles.css">
 	<title>completarDatosProfesional</title>
 
-  <script>
-	
-	function autoSubmitTratamiento() {
-	           document.getElementById("formularioTratamiento").submit();
-	       }
-
- //   <!--Script para la seleccion de especialidad, tratamientos y dias de la semana-->
-
-    function agregarOpcion(selectId, listaId, campoOpcionesId) {
-        const select = document.getElementById(selectId);
-        const selectedOption = select.options[select.selectedIndex].text;
-        const lista = document.getElementById(listaId);
-
-        if (!Array.from(lista.options).some(option => option.value === selectedOption)) {
-            const optionElement = document.createElement('option');
-            optionElement.value = selectedOption;
-            optionElement.text = selectedOption;
-            lista.add(optionElement);
-        }
-
-        actualizarCampoOpciones(listaId, campoOpcionesId);
-    }
-
-    function actualizarCampoOpciones(listaId, campoOpcionesId) {
-        const lista = document.getElementById(listaId);
-        const opcionesSeleccionadas = Array.from(lista.options).map(option => option.value);
-        document.getElementById(campoOpcionesId).value = opcionesSeleccionadas.join(',');
-    }
-
-    function eliminarOpcion(listaId, campoOpcionesId) {
-        const lista = document.getElementById(listaId);
-        lista.remove(lista.selectedIndex);
-        actualizarCampoOpciones(listaId, campoOpcionesId);
-    }
-
-
-   // <!--Scrip para la seleccion de horarios-->
-
-    function agregarHorario() {
-            const horas = document.getElementById('horas').value;
-            const minutos = document.getElementById('minutos').value;
-            const horario = horas + ':' + minutos;
-            const lista = document.getElementById('listaHorarios');
-
-            if (!Array.from(lista.options).some(option => option.value === horario)) {
-                const optionElement = document.createElement('option');
-                optionElement.value = horario;
-                optionElement.text = horario;
-                lista.add(optionElement);
-            }
-
-            actualizarCampoHorarios();
-        }
-
-        function actualizarCampoHorarios() {
-            const lista = document.getElementById('listaHorarios');
-            const horariosSeleccionados = Array.from(lista.options).map(option => option.value);
-            document.getElementById('horariosSeleccionados').value = horariosSeleccionados.join(',');
-        }
-
-        function eliminarHorario() {
-            const lista = document.getElementById('listaHorarios');
-            lista.remove(lista.selectedIndex);
-            actualizarCampoHorarios();
-        }
-
-     //   <!--Scrip para la seleccion de tratamientos-->
-     
-        function agregarTratamiento() {
-            const tratamiento = document.getElementById('tratamiento').value;
-            const costo = document.getElementById('costo').value;
-            const tratamientoCosto = tratamiento + ' - $' + costo;
-            const lista = document.getElementById('listaTratamientos');
-
-            if (!Array.from(lista.options).some(option => option.value === tratamientoCosto)) {
-                const optionElement = document.createElement('option');
-                optionElement.value = tratamientoCosto;
-                optionElement.text = tratamientoCosto;
-                lista.add(optionElement);
-            }
-
-            actualizarCampoTratamientos();
-        }
-
-        function actualizarCampoTratamientos() {
-            const lista = document.getElementById('listaTratamientos');
-            const tratamientosSeleccionados = Array.from(lista.options).map(option => option.value);
-            document.getElementById('tratamientosSeleccionados').value = tratamientosSeleccionados.join(',');
-        }
-
-        function eliminarTratamiento() {
-            const lista = document.getElementById('listaTratamientos');
-            lista.remove(lista.selectedIndex);
-            actualizarCampoTratamientos();
-        }
-</script>
 </head>
 
 <body class="">
@@ -228,8 +132,8 @@
 		</div>
 																
 		
-		<!--Modal mensajes de error-->
 		
+<!--Modal mensajes de error, el script esta en el archivo completarDatosProfesional.js-->
 		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
      th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
     <div class="modal-dialog">
@@ -247,21 +151,8 @@
     </div>
 </div>
 
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var showModalError = /*[[${showModalError}]]*/ false;
-        if (showModalError) {
-            $('#errorModal').modal('show');
-        }
 
-        $('#errorModal').on('hidden.bs.modal', function () {
-            $(this).remove();
-        });
-    });
-    /*]]>*/
-</script>
-	</main>
+</main>
 
 
 
@@ -310,9 +201,15 @@
 		</div>
 	</footer>
 
-	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-		integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-		crossorigin="anonymous"></script>
+<!--Bloque script/thymeleaf para asignarles valores dinamicos a las variables que vamos a pasar al archivo historicoDeTurnos.js
+NoTA: dentro del archivo .js no podemos trabajar con las variables de thymeleaf por eso le asignamos cada valor a una variable
+acá dentro deñ html y luego pasamos esa variable al archivo .js-->
+<script th:inline="javascript">
+var showModalError = /*[[${showModalError}]]*/ false;
+var showModalExito = /*[[${showModalExito}]]*/ false;
+</script>
+	
 </body>
-
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="../js/completarDatosProfesional.js"></script> <!--Hoja de todos los scripts de la toda la pagina de completarDatosProfesional-->
 </html>

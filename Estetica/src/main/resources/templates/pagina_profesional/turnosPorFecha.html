@@ -186,86 +186,88 @@ tener el mismo ID-->
 					</div>
 
 					
-					 <!-- Modal Cancelar turno -->
-							           			<!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
-							  						<div class="modal fade" th:id="'staticBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
-							  							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-							  							<div class="modal-dialog">
-							  								<div style="background-color: #ebdf9d;" class="modal-content">
-							  									<div class="modal-header d-block  text-center border border-0">
-							  										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
-							  										<h1 class="modal-title fs-5 fw-bold" id="staticBackdropLabel">
-							  											Cancelación de Turno</h1>
-							  									</div>
-							  									<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
-							  										<span class="fw-bold">Estimado Usuario,</span><br><br>
-							  										
-							  										Por favor, verifica cuidadosamente el turno que deseas cancelar. Una vez cancelado no se podrá
-																	revertir la acción. Los turnos cancelados por los usuarios con un rol de profesional no generan
-																	multas al cliente, pero elimian ese horario de la lista de horas disponibles para esa fecha
-																	. El sistema se encarga automaticamente de generar multas a los clientes que no
-																	se presenten al turno en la fecha y hora seleccionada. <br><br>
-																	
-							  										<br>
-							  										<span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
-							  									</div>
-							  									<div class="modal-footer border border-0">
-							  										<button type="button" class="btn btn-danger"
-							  											data-bs-dismiss="modal">Cerrar</button>
-							  										<a href="">
-							  											<!--Este boton es el que hace el llamado al metodo-->
-							  											<button type="submit" name="accionDelBoton" value="cancelarTurno"  class="btn btn-primary">Aceptar</button>
-							  												
-							  										</a>
-							  									</div>
-							  								</div>
-							  							</div>
-							  						</div>
+<!-- Modal Cancelar turno -->
+<!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
+<div class="modal fade" th:id="'staticBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+<div class="modal-dialog">
+	<div style="background-color: #ebdf9d;" class="modal-content">
+		<div class="modal-header d-block  text-center border border-0">
+			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+			<h1 class="modal-title fs-5 fw-bold" id="staticBackdropLabel">
+				Cancelación de Turno</h1>
+		</div>
+		<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+			<span class="fw-bold">Estimado Usuario,</span><br><br>
+			
+			Por favor, verifica cuidadosamente el turno que deseas cancelar. Una vez cancelado no se podrá
+		  revertir la acción. Los turnos cancelados por los usuarios con un rol de profesional no generan
+		  multas al cliente, pero elimian ese horario de la lista de horas disponibles para esa fecha
+		  . El sistema se encarga automaticamente de generar multas a los clientes que no
+		  se presenten al turno en la fecha y hora seleccionada. <br><br>
+		  
+			<br>
+			<span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
+		</div>
+		<div class="modal-footer border border-0">
+			<button type="button" class="btn btn-danger"
+				data-bs-dismiss="modal">Cerrar</button>
+			<a href="">
+				<!--Este boton es el que hace el llamado al metodo-->
+				<button type="submit" name="accionDelBoton" value="cancelarTurno"  class="btn btn-primary">Aceptar</button>
+					
+			</a>
+		</div>
+	</div>
+</div>
+</div>
+ 
 
-					<!-- Modal Confirmar turno -->
-					<div class="modal fade" th:id="'confirmBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
-					tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
-					<div class="modal-dialog">
-					  <div style="background-color: #ebdf9d;" class="modal-content">
-						<div class="modal-header d-block text-center border border-0">
-						  <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
-						  <h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel">Confirmación de Turno</h1>
-						</div>
-						<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
-						  <span class="fw-bold">Estimado Usuario,</span><br><br>
-						  Estás a punto de confirmar la asistencia del turno. Por favor, revisa todos los detalles antes de proceder. 
-						  Una vez confirmado, no podrás deshacer los cambios.
-						  <br><br>
-						  <span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la confirmación?</span>
-						</div>
-						<div class="modal-footer border border-0">
-						  <button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-						  <a href="">
-							<!-- Botón que llama al método para aceptar la confirmación -->
-							<button type="submit" name="accionDelBoton" value="confirmarTurno" class="btn btn-primary">Aceptar</button>
-						  </a>
-						</div>
-					  </div>
-					</div>
-					</div>
-						
-							  <input hidden type="text" id="email" name="emailProfesional" th:value="${datosProfesional.email}"></input>
-							  <input hidden type="text" id="emailCliente" name="emailCliente" th:value="${turnosRemanentes.email}"></input>
-							  <input hidden type="text" id="fecha" name="fecha" th:value="${turnosRemanentes.fecha}"></input>
-							  <input hidden type="text" id="horario" name="horario" th:value="${turnosRemanentes.horario}"></input>
-							  <input hidden type="text" id="idTurno" name="idTurno" th:value="${turnosRemanentes.id}"></input>
-							  <input hidden type="text" id="idProfesional" name="idProfesional" th:value="${turnosRemanentes.profesional.id}"></input>
-							  <input hidden type="text" id="idCliente" name="idCliente" th:value="${turnosRemanentes.cliente.id}"></input>
-						</form>
-						</div>
-						</div>
-						</div>
-			</div>
+<!-- Modal Confirmar turno -->
+<div class="modal fade" th:id="'confirmBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
+<div class="modal-dialog">
+  <div style="background-color: #ebdf9d;" class="modal-content">
+	<div class="modal-header d-block text-center border border-0">
+	  <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
+	  <h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel">Confirmación de Turno</h1>
+	</div>
+	<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+	  <span class="fw-bold">Estimado Usuario,</span><br><br>
+	  Estás a punto de confirmar la asistencia del turno. Por favor, revisa todos los detalles antes de proceder. 
+	  Una vez confirmado, no podrás deshacer los cambios.
+	  <br><br>
+	  <span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la confirmación?</span>
+	</div>
+	<div class="modal-footer border border-0">
+	  <button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+	  <a href="">
+		<!-- Botón que llama al método para aceptar la confirmación -->
+		<button type="submit" name="accionDelBoton" value="confirmarTurno" class="btn btn-primary">Aceptar</button>
+	  </a>
+	</div>
+  </div>
+</div>
+</div>
+	
+		  <input hidden type="text" id="email" name="emailProfesional" th:value="${datosProfesional.email}"></input>
+		  <input hidden type="text" id="emailCliente" name="emailCliente" th:value="${turnosRemanentes.email}"></input>
+		  <input hidden type="text" id="fecha" name="fecha" th:value="${turnosRemanentes.fecha}"></input>
+		  <input hidden type="text" id="horario" name="horario" th:value="${turnosRemanentes.horario}"></input>
+		  <input hidden type="text" id="idTurno" name="idTurno" th:value="${turnosRemanentes.id}"></input>
+		  <input hidden type="text" id="idProfesional" name="idProfesional" th:value="${turnosRemanentes.profesional.id}"></input>
+		  <input hidden type="text" id="idCliente" name="idCliente" th:value="${turnosRemanentes.cliente.id}"></input>
+	</form>
+	</div>
+	</div>
+	</div>
+</div>
+ 
 						
 						
 	
-		<ul class="ps-0">
-			<p class="fs-1">Turnos por hora</p>
+<ul class="ps-0">
+	<p class="fs-1">Turnos por hora</p>
 		    <!-- Iterar sobre las entradas del Map -->
 		    <li class="border-success mt-2" style="border-top: 5px solid; list-style-type: none;" th:each="entry, iterStat : ${turnosPorHorarioLaboral}">
 				
@@ -296,221 +298,208 @@ tener el mismo ID-->
 		        <!-- Imprime la clave del Map, que es el horario -->
 		        <div class="fw-medium fs-4" >Hora: <span class="fw-medium fs-4 col-md-1 ps-1" th:text="${entry.key}"></span> 
 				</div> 
+			</div>
+			<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
+			<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input>
+			<input hidden type="text"  name="horaSeleccionada" th:value="${entry.key}"></input>
+			<input hidden type="text"  name="fechaSeleccionada" th:value="${fechaSeleccionada}"></input>
+			
+			
 				
 				
 				   
-				</div>
 				
-				<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
-				<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input>
-				<input hidden type="text"  name="horaSeleccionada" th:value="${entry.key}"></input>
-				<input hidden type="text"  name="fechaSeleccionada" th:value="${fechaSeleccionada}"></input>
-				
-				<!-- Modal Cancelar horario -->
-					           			<!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
-					  						<div class="modal fade" th:id="'staticBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
-					  							tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-					  							<div class="modal-dialog">
-					  								<div style="background-color: #ebdf9d;" class="modal-content">
-					  									<div class="modal-header d-block  text-center border border-0">
-					  										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
-					  										<h1 class="modal-title fs-5 fw-bold" id="staticBackdropLabel">
-					  											Deshabilitar horario</h1>
-					  									</div>
-					  									<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
-					  										<span class="fw-bold">Estimado Usuario,</span><br><br>
-					  										
-															Estás a punto de deshabilitar el horario seleccionado. Esto impedirá que los clientes puedan reservar turnos 
-															en ese horario para la fecha seleccionada. Ten en cuenta que si el horario tiene turnos pendientes, estos serán
-															cancelados automáticamente, y se enviará un email a los clientes afectados para notificarles. Esta acción no
-															generará multas para los clientes. Una vez que presiones "Aceptar", no podrás revertir esta acción, así que por 
-															favor, verifica bien antes de continuar. Si no estás seguro, puedes presionar "Cancelar" para abortar la operación.
+<!-- Modal Cancelar horario -->
+<!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
+   <div class="modal fade" th:id="'staticBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+	   tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	   <div class="modal-dialog">
+		   <div style="background-color: #ebdf9d;" class="modal-content">
+			   <div class="modal-header d-block  text-center border border-0">
+				   <img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+				   <h1 class="modal-title fs-5 fw-bold" id="staticBackdropLabel">
+					   Deshabilitar horario</h1>
+			   </div>
+			   <div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+				   <span class="fw-bold">Estimado Usuario,</span><br><br>
+				   
+				 Estás a punto de deshabilitar el horario seleccionado. Esto impedirá que los clientes puedan reservar turnos 
+				 en ese horario para la fecha seleccionada. Ten en cuenta que si el horario tiene turnos pendientes, estos serán
+				 cancelados automáticamente, y se enviará un email a los clientes afectados para notificarles. Esta acción no
+				 generará multas para los clientes. Una vez que presiones "Aceptar", no podrás revertir esta acción, así que por 
+				 favor, verifica bien antes de continuar. Si no estás seguro, puedes presionar "Cancelar" para abortar la operación.
 
 
-					  										<br><br>
-					  										<span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la deshabilitación?</span>
-					  									</div>
-					  									<div class="modal-footer border border-0">
-					  										<button type="button" class="btn btn-danger"
-					  											data-bs-dismiss="modal">Cerrar</button>
-					  										<a href="">
-					  											<!--Este boton es el que hace el llamado al metodo-->
-					  											<button type="submit" name="accionDelBoton" value="cancelarTurno"  class="btn btn-primary">Aceptar</button>
-					  												
-					  										</a>
-					  									</div>
-					  								</div>
-					  							</div>
-					  						</div>
-				</form>
+				   <br><br>
+				   <span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la deshabilitación?</span>
+			   </div>
+			   <div class="modal-footer border border-0">
+				   <button type="button" class="btn btn-danger"
+					   data-bs-dismiss="modal">Cerrar</button>
+				   <a href="">
+					   <!--Este boton es el que hace el llamado al metodo-->
+					   <button type="submit" name="accionDelBoton" value="cancelarTurno"  class="btn btn-primary">Aceptar</button>
+						   
+				   </a>
+			   </div>
+		   </div>
+	   </div>
+   </div>
+</form>
 
-				
+<div class="d-flex flex-wrap justify-content-center">
+	<div class="text-center" th:if="${#lists.isEmpty(entry.value)}">
+	  <p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-danger bg-gradient text-white px-2">No tiene turnos en este horario</p>
+	</div>
+	
+	<div class="ft-misturnos" th:each="turno : ${entry.value}">
+	
+	  <div th:if="${turno.estado.toString} == 'ASISTIDO'" class="bg-success gb-gradient text-center text-white">
+			 Asistido
+		 </div>
+		 
+		 <!-- Condición para estado 'Cancelado' -->
+		 <div th:if="${turno.estado.toString == 'CANCELADO' && !turno.multa}" class="bg-black gb-gradient text-center text-white">
+			 Cancelado
+		 </div>
 
-				
-				<div class="d-flex flex-wrap justify-content-center">
-					
-					
-				
-								  <div class="text-center" th:if="${#lists.isEmpty(entry.value)}">
-									<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-danger bg-gradient text-white px-2">No tiene turnos en este horario</p>
-								  </div>
-								  
-								  <div class="ft-misturnos" th:each="turno : ${entry.value}">
-								  
-									<div th:if="${turno.estado.toString} == 'ASISTIDO'" class="bg-success gb-gradient text-center text-white">
-									       Asistido
-									   </div>
-									   
-									   <!-- Condición para estado 'Cancelado' -->
-									   <div th:if="${turno.estado.toString == 'CANCELADO' && !turno.multa}" class="bg-black gb-gradient text-center text-white">
-									       Cancelado
-									   </div>
-
-									   <div th:if="${turno.estado.toString == 'CANCELADO' && turno.multa}" class="bg-danger gb-gradient text-center text-white">
-									       Cancelado
-									   </div>
-									   
-									   <!-- Condición para estado 'Pendiente' -->
-									   <div th:if="${turno.estado.toString} == 'PENDIENTE'" class="bg-warning gb-gradient text-center text-white">
-									       Pendiente
-									   </div>
-									   
-									   <div th:if="${turno.remanenteDias || turno.remanenteHoras || turno.remanenteTratamientos}" class="bg-secondary gb-gradient text-center text-white">
-									 	    Remanente
-									   </div>
-								  		  
-								  <div th:unless="${#lists.isEmpty(entry.value)}">
-								   <ul class="ps-2 me-2 mt-3" >
-								   <li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turno.id, turno.id.length() - 12)}"></p> </li>
-								   <li class="list-unstyled d-flex"><strong>Cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.cliente.nombre + ' ' + turno.cliente.apellido}"></p> </li>
-								   <li class="list-unstyled d-flex"><strong>Dni cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.dni}"></p> </li>
-								   <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turno.fecha, 'dd-MM-yyyy')}"></p> </li>
-								   <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.horario}"></p> </li>
-								   <li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turno.fechaCreacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
-								   <li th:if="${turno.fechaCancelacion}" class="list-unstyled d-flex"><strong>Fecha de cancelación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turno.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
-								   <span><strong>Tratamientos:</strong></span>
-								   <ul class="pb-3" style="list-style-type: disc;">
-								   <li th:each="tratamientoAsistido : ${turno.tratamientos}">
-								   <span th:text="${tratamientoAsistido}"></span>
-								   </li>
-								   </ul>
-								   </ul>
-								   <div th:if="${turno.multa}" class="bg-danger gb-gradient text-center text-white">
-								   	 ESTE TURNO POSEE UNA MULTA
-								   </div>
-								   
-								   <form th:action="@{/cancelarOrConfimarTurnoProfesional}" method="post">
-									
-								   <!--Estos botones solo hacen el llamado al modal-->
-								   <div th:if="${turno.activo}" class="row justify-content-center align-items-center">
-
-								   	<!-- Botón para confirmar turno -->
-								   	<button style="width: 130px; margin: 7px 7px 12px 7px;" type="button" class="col-md-3 bn632-hover bn26 confirmar" data-bs-toggle="modal" th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}">Confirmar</button>
-
-								   	<!-- Botón para cancelar turno -->
-								   	<button style="width: 130px; margin: 7px 7px 12px 7px;" type="button" class="col-md-3 bn632-hover bn26 cancelar" data-bs-toggle="modal" th:attr="data-bs-target='#cancelBackdrop' + ${iterStat.index}">Cancelar</button>
-								   							   	
-								   	</div>
-																
-
-								 <!-- Modal Cancelar turno -->
-							<!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
-																		  						<div class="modal fade" th:id="'cancelBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
-																		  							tabindex="-1" aria-labelledby="cancelBackdropLabel" aria-hidden="true">
-																		  							<div class="modal-dialog">
-																		  								<div style="background-color: #ebdf9d;" class="modal-content">
-																		  									<div class="modal-header d-block  text-center border border-0">
-																		  										<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
-																		  										<h1 class="modal-title fs-5 fw-bold" id="cancelBackdropLabel">
-																		  											Cancelación de Turno</h1>
-																		  									</div>
-																		  									<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
-																		  										<span class="fw-bold">Estimado Usuario,</span><br><br>
-																		  										
-																		  										Por favor, verifica cuidadosamente el turno que deseas cancelar. Una vez cancelado no se podrá
-																												revertir la acción. Los turnos cancelados por los usuarios con un rol de profesional no generan
-																												multas al cliente, pero elimian ese horario de la lista de horas disponibles para esa fecha
-																												. El sistema se encarga automaticamente de generar multas a los clientes que no
-																												se presenten al turno en la fecha y hora seleccionada. <br><br>
-																												
-																		  										<br>
-																		  										<span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
-																		  									</div>
-																		  									<div class="modal-footer border border-0">
-																		  										<button type="button" class="btn btn-danger"
-																		  											data-bs-dismiss="modal">Cerrar</button>
-																		  										<a href="">
-																		  											<!--Este boton es el que hace el llamado al metodo-->
-																		  											<button type="submit" name="accionDelBoton" value="cancelarTurno"  class="btn btn-primary">Aceptar</button>
-																		  												
-																		  										</a>
-																		  									</div>
-																		  								</div>
-																		  							</div>
-																		  						</div>
-
-																<!-- Modal Confirmar turno -->
-																<div class="modal fade" th:id="'confirmBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
-																tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
-																<div class="modal-dialog">
-																  <div style="background-color: #ebdf9d;" class="modal-content">
-																	<div class="modal-header d-block text-center border border-0">
-																	  <img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
-																	  <h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel">Confirmación de Turno</h1>
-																	</div>
-																	<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
-																	  <span class="fw-bold">Estimado Usuario,</span><br><br>
-																	  Estás a punto de confirmar la asistencia del turno. Por favor, revisa todos los detalles antes de proceder. 
-																	  Una vez confirmado, no podrás deshacer los cambios.
-																	  <br>
-																	  <br>
-																	  <span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la confirmación?</span>
-																	</div>
-																	<div class="modal-footer border border-0">
-																	  <button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
-																	  <a href="">
-																		<!-- Botón que llama al método para aceptar la confirmación -->
-																		<button type="submit" name="accionDelBoton" value="confirmarTurno" class="btn btn-primary">Aceptar</button>
-																	  </a>
-																	</div>
-																  </div>
-																</div>
-																</div>
-																			
-																				  <input hidden type="text" id="email" name="emailProfesional" th:value="${datosProfesional.email}"></input>
-																				  <input hidden type="text" id="emailCliente" name="emailCliente" th:value="${turno.email}"></input>
-																				  <input hidden type="text" id="fecha" name="fecha" th:value="${turno.fecha}"></input>
-																				  <input hidden type="text" id="horario" name="horario" th:value="${turno.horario}"></input>
-																				  <input hidden type="text" id="idTurno" name="idTurno" th:value="${turno.id}"></input>
-																				  <input hidden type="text" id="idProfesional" name="idProfesional" th:value="${turno.profesional.id}"></input>
-																				  <input hidden type="text" id="idCliente" name="idCliente" th:value="${turno.cliente.id}"></input>
-																				  </form>
-								   
-								  </div>
-								   </div>
-								   </div>
-		   				 </li>
-					</ul>
-	       				 </div>			
-           				 </div>
-           				 </div>
-
-
-						
-		
-
-
-
-			
+		 <div th:if="${turno.estado.toString == 'CANCELADO' && turno.multa}" class="bg-danger gb-gradient text-center text-white">
+			 Cancelado
+		 </div>
+		 
+		 <!-- Condición para estado 'Pendiente' -->
+		 <div th:if="${turno.estado.toString} == 'PENDIENTE'" class="bg-warning gb-gradient text-center text-white">
+			 Pendiente
+		 </div>
+		 
+		 <div th:if="${turno.remanenteDias || turno.remanenteHoras || turno.remanenteTratamientos}" class="bg-secondary gb-gradient text-center text-white">
+			   Remanente
+		 </div>
 			  
-          
-		
-   
-        
+	<div th:unless="${#lists.isEmpty(entry.value)}">
+	 <ul class="ps-2 me-2 mt-3" >
+	 <li class="list-unstyled d-flex"><strong>Id del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#strings.substring(turno.id, turno.id.length() - 12)}"></p> </li>
+	 <li class="list-unstyled d-flex"><strong>Cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.cliente.nombre + ' ' + turno.cliente.apellido}"></p> </li>
+	 <li class="list-unstyled d-flex"><strong>Dni cliente:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.dni}"></p> </li>
+	 <li class="list-unstyled d-flex"><strong>Fecha del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turno.fecha, 'dd-MM-yyyy')}"></p> </li>
+	 <li class="list-unstyled d-flex"><strong>Hora del turno:</strong>&nbsp <p class="m-0 p-0" th:text="${turno.horario}"></p> </li>
+	 <li class="list-unstyled d-flex"><strong>Fecha de creación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turno.fechaCreacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
+	 <li th:if="${turno.fechaCancelacion}" class="list-unstyled d-flex"><strong>Fecha de cancelación:</strong>&nbsp <p class="m-0 p-0" th:text="${#temporals.format(turno.fechaCancelacion, 'dd-MM-yyyy HH:mm')}"></p> </li>
+	 <span><strong>Tratamientos:</strong></span>
+	 <ul class="pb-3" style="list-style-type: disc;">
+	 <li th:each="tratamientoAsistido : ${turno.tratamientos}">
+	 <span th:text="${tratamientoAsistido}"></span>
+	 </li>
+	 </ul>
+	 </ul>
+	 <div th:if="${turno.multa}" class="bg-danger gb-gradient text-center text-white">
+		  ESTE TURNO POSEE UNA MULTA
+	 </div>
+	 
+	 <form th:action="@{/cancelarOrConfimarTurnoProfesional}" method="post">
+	  
+	 <!--Estos botones solo hacen el llamado al modal-->
+	 <div th:if="${turno.activo}" class="row justify-content-center align-items-center">
 
-    
-    					<!--Modal mensaje de exito al registrarse	-->
-    					
+		 <!-- Botón para confirmar turno -->
+		 <button style="width: 130px; margin: 7px 7px 12px 7px;" type="button" class="col-md-3 bn632-hover bn26 confirmar" data-bs-toggle="modal" th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}">Confirmar</button>
+
+		 <!-- Botón para cancelar turno -->
+		 <button style="width: 130px; margin: 7px 7px 12px 7px;" type="button" class="col-md-3 bn632-hover bn26 cancelar" data-bs-toggle="modal" th:attr="data-bs-target='#cancelBackdrop' + ${iterStat.index}">Cancelar</button>
+										
+		 </div>
+
+ 
+<!-- Modal Cancelar turno -->
+<!-- se crea id unico al sumar la palabra staticBackdrop + iterStat.index que es la posicion de iteracion de este modal -->
+
+				
+					
+					
+<div class="modal fade" th:id="'cancelBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+tabindex="-1" aria-labelledby="cancelBackdropLabel" aria-hidden="true">
+<div class="modal-dialog">
+	<div style="background-color: #ebdf9d;" class="modal-content">
+		<div class="modal-header d-block  text-center border border-0">
+			<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+			<h1 class="modal-title fs-5 fw-bold" id="cancelBackdropLabel">
+				Cancelación de Turno</h1>
+		</div>
+		<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+			<span class="fw-bold">Estimado Usuario,</span><br><br>
+			
+			Por favor, verifica cuidadosamente el turno que deseas cancelar. Una vez cancelado no se podrá
+		  revertir la acción. Los turnos cancelados por los usuarios con un rol de profesional no generan
+		  multas al cliente, pero elimian ese horario de la lista de horas disponibles para esa fecha
+		  . El sistema se encarga automaticamente de generar multas a los clientes que no
+		  se presenten al turno en la fecha y hora seleccionada. <br><br>
+		  
+			<br>
+			<span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la cancelación?</span>
+		</div>
+		<div class="modal-footer border border-0">
+			<button type="button" class="btn btn-danger"
+				data-bs-dismiss="modal">Cerrar</button>
+			<a href="">
+				<!--Este boton es el que hace el llamado al metodo-->
+				<button type="submit" name="accionDelBoton" value="cancelarTurno"  class="btn btn-primary">Aceptar</button>
+					
+			</a>
+		</div>
+	</div>
+</div>
+</div>
+
+
+
+<!-- Modal Confirmar turno -->
+<div class="modal fade" th:id="'confirmBackdrop' + ${iterStat.index}" data-bs-backdrop="static" data-bs-keyboard="false"
+tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div style="background-color: #ebdf9d;" class="modal-content">
+<div class="modal-header d-block text-center border border-0">
+<img src="../imagenes/icons8-emoji-de-aprobacion-48.png" alt="">
+<h1 class="modal-title fs-5 fw-bold" id="confirmBackdropLabel">Confirmación de Turno</h1>
+</div>
+<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+<span class="fw-bold">Estimado Usuario,</span><br><br>
+Estás a punto de confirmar la asistencia del turno. Por favor, revisa todos los detalles antes de proceder. 
+Una vez confirmado, no podrás deshacer los cambios.
+<br>
+<br>
+<span class="fs-6 fw-bold">¿Estás seguro de que deseas proceder con la confirmación?</span>
+</div>
+<div class="modal-footer border border-0">
+<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+<a href="">
+<!-- Botón que llama al método para aceptar la confirmación -->
+<button type="submit" name="accionDelBoton" value="confirmarTurno" class="btn btn-primary">Aceptar</button>
+</a>
+</div>
+</div>
+</div>
+</div>
+  
+		<input hidden type="text" id="email" name="emailProfesional" th:value="${datosProfesional.email}"></input>
+		<input hidden type="text" id="emailCliente" name="emailCliente" th:value="${turno.email}"></input>
+		<input hidden type="text" id="fecha" name="fecha" th:value="${turno.fecha}"></input>
+		<input hidden type="text" id="horario" name="horario" th:value="${turno.horario}"></input>
+		<input hidden type="text" id="idTurno" name="idTurno" th:value="${turno.id}"></input>
+		<input hidden type="text" id="idProfesional" name="idProfesional" th:value="${turno.profesional.id}"></input>
+		<input hidden type="text" id="idCliente" name="idCliente" th:value="${turno.cliente.id}"></input>
+		</form>
+
+</div>
+</div>
+</div>
+</li>
+</ul>
+</div>			
+</div>
+</div>
+				
+
+<!--Modal mensaje de exito al registrarse, el script esta en el archivo turnosPorFecha.js	-->
     <div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
 	tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
 	th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
@@ -529,8 +518,8 @@ tener el mismo ID-->
 		</div>
 	</div>
 	
-	<!--Modal mensajes de error-->
 		
+	<!--Modal mensajes de error, el script esta en el archivo turnosPorFecha.js-->
 		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
      th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
     <div class="modal-dialog">
@@ -547,169 +536,62 @@ tener el mismo ID-->
         </div>
     </div>
 </div>
+</main>
 
+<footer class="d-flex row p-0">
+	<div class="divfooter col-lg-6 mb-3">
+	  <p class="mb-3 text-center titulos-footer">CONTACTOS</p>
+	  <div class="mb-4">
+		<p class="mb-0 text-center"><img class="iconos" src="/imagenes/icons8-gps-50.png" alt="">Rivadavia 730,
+		  B1625 Belén de Escobar</p>
+		<p class="text-center mt-0">Provincia de Buenos Aires</p>
+	  </div>
+	  <div class="mb-4 text-center">
+		<p><img class="iconos" src="/imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)5744-2608</p>
+	  </div>
+	  <div class="mb-4 text-center">
+		<p><img class="iconos" src="/imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)5744-2608</p>
+	  </div>
+	  <div class="mb-4 text-center">
+		<p class=""><img class="iconos pe-1" src="/imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+	  </div>
+	  <div class="text-center iconos3 mt-5 pb-4">
+		<div class="">
+		  <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
+		</div>
+		<div>
+		  <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+		</div>
+		<div>
+		  <a class="link" href="#"> <img class=" iconos2" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
+		</div>
+		<div>
+		  <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+		</div>
+	  </div>
+	</div>
+  
+  
+  
+  <div class="divfooter col-lg-6">
+	<p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
+	<iframe class="w-100 rounded rounded-2" 
+	   src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
+	   width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+	 </iframe>
+  </div>
+  
+</footer>
 
-				<!--Script para modal de error-->
-				
+<!--Bloque script/thymeleaf para asignarles valores dinamicos a las variables que vamos a pasar al archivo historicoDeTurnos.js
+NoTA: dentro del archivo .js no podemos trabajar con las variables de thymeleaf por eso le asignamos cada valor a una variable
+acá dentro deñ html y luego pasamos esa variable al archivo .js-->
 <script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var showModalError = /*[[${showModalError}]]*/ false;
-        if (showModalError) {
-            $('#errorModal').modal('show');
-        }
-
-        $('#errorModal').on('hidden.bs.modal', function () {
-            $(this).remove();
-        });
-    });
-    /*]]>*/
+var showModalError = /*[[${showModalError}]]*/ false;
+var showModalExito = /*[[${showModalExito}]]*/ false;
 </script>
-	
-	
-	
-	
-	<!--Scrip para el modal de mensaje de exito-->
-			
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var showModalExito = /*[[${showModalExito}]]*/ false;
-        if (showModalExito) {
-            $('#exitoModal').modal('show');
-        }
-
-        $('#exitoModal').on('hidden.bs.modal', function () {
-            $(this).remove();
-        });
-    });
-    /*]]>*/
-</script>
-  </main>
-
-
-
-  <footer class="d-flex row p-0">
-      <div class="divfooter col-lg-6 mb-3">
-        <p class="mb-3 text-center titulos-footer">CONTACTOS</p>
-        <div class="mb-4">
-          <p class="mb-0 text-center"><img class="iconos" src="/imagenes/icons8-gps-50.png" alt="">Rivadavia 730,
-            B1625 Belén de Escobar</p>
-          <p class="text-center mt-0">Provincia de Buenos Aires</p>
-        </div>
-        <div class="mb-4 text-center">
-          <p><img class="iconos" src="/imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)5744-2608</p>
-        </div>
-        <div class="mb-4 text-center">
-          <p><img class="iconos" src="/imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)5744-2608</p>
-        </div>
-        <div class="mb-4 text-center">
-          <p class=""><img class="iconos pe-1" src="/imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
-        </div>
-        <div class="text-center iconos3 mt-5 pb-4">
-          <div class="">
-            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
-          </div>
-          <div>
-            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a>
-          </div>
-          <div>
-            <a class="link" href="#"> <img class=" iconos2" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
-          </div>
-          <div>
-            <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
-          </div>
-        </div>
-      </div>
-	
-    
-	
-    <div class="divfooter col-lg-6">
-      <p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
-	  <iframe class="w-100 rounded rounded-2" 
-	     src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
-	     width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
-	   </iframe>
-    </div>
-  </footer>
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous"></script>
-	
-	<script>
-		//script para deshabilitar el formulario cuando se ejecute el submit para Historico de turnos
-								  										
-	document.addEventListener("DOMContentLoaded", function() {
-	var formularioBuscar = document.getElementById('formularioBuscar');
-	var botonsubmitBuscar = document.getElementById('botonBuscar');
-
-	formularioBuscar.addEventListener('submit', function(event) {
-	// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
-	setTimeout(function() {
-	botonsubmitBuscar.disabled = true;
-	botonsubmitBuscar.classList.add("enviar");
-	// Rehabilitar el botón después de 5 segundos
-	setTimeout(function() {
-	botonsubmitBuscar.disabled = false;
-	botonsubmitBuscar.classList.remove("enviar");
-	}, 5000);
-	}, 0);
-	});
-	});
-	
-	
-	
-	//script para deshabilitar el formulario cuando se ejecute el submit para Historico de turnos
-							  										
-							  			document.addEventListener("DOMContentLoaded", function() {
-							  			var formularioDeshabilitarFecha = document.getElementById('formularioDeshabilitarFecha');
-							  			var botonDeshabilitarFecha = document.getElementById('botonDeshabilitarFecha');
-
-							  			formularioDeshabilitarFecha.addEventListener('submit', function(event) {
-							  			// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
-							  			setTimeout(function() {
-							  			botonDeshabilitarFecha.disabled = true;
-										botonDeshabilitarFecha.classList.remove("cancelar");
-							  			botonDeshabilitarFecha.classList.add("enviar");
-							  			// Rehabilitar el botón después de 5 segundos
-							  			setTimeout(function() {
-							  			botonDeshabilitarFecha.disabled = false;
-							  			botonDeshabilitarFecha.classList.remove("enviar");
-										botonDeshabilitarFecha.classList.add("cancelar");
-							  					}, 5000);
-							  					}, 0);
-							  				});
-							  			});
-			
-										
-										
-										
-										//script para deshabilitar el formulario cuando se ejecute el submit para Historico de turnos
-																  										
-										document.addEventListener("DOMContentLoaded", function() {
-																	  			var formularioDeshabilitarHora = document.getElementById('formularioDeshabilitarHora');
-																	  			var botonDeshabilitarHora = document.getElementById('botonDeshabilitarHora');
-
-																	  			formularioDeshabilitarHora.addEventListener('submit', function(event) {
-																	  			// Usar setTimeout con tiempo 0 para deshabilitar el botón justo después de que el formulario haya iniciado el envío
-																	  			setTimeout(function() {
-																	  			botonDeshabilitarHora.disabled = true;
-																				botonDeshabilitarHora.classList.remove("cancelar");
-																	  			botonDeshabilitarHora.classList.add("enviar");
-																	  			// Rehabilitar el botón después de 5 segundos
-																	  			setTimeout(function() {
-																	  			botonDeshabilitarHora.disabled = false;
-																	  			botonDeshabilitarHora.classList.remove("enviar");
-																				botonDeshabilitarHora.classList.add("cancelar");
-																	  					}, 5000);
-																	  					}, 0);
-																	  				});
-																	  			});
-												
-				
-	</script>
 	
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="../js/turnosPorFecha.js"></script> <!--Hoja de todos los scripts de la toda la pagina de historico de turnos-->
 </html>
