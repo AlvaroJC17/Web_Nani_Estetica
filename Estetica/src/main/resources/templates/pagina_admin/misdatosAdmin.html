@@ -12,8 +12,9 @@
         <link rel="stylesheet" href="../css/styles.css">
         <title>Datos Admin</title>
       </head>
+
+<!--usea el bucle en el body para que los datos esten disponibles para todos los enlaces de la pag-->
 <body class="body-interno" th:each="datosAdmin : ${datosAdmin}"> <!--La variable datosAdmin viene del metodo misdatosAdmin,-->
-																	   <!--usea el bucle en el body para que los datos esten disponibles para todos los enlaces de la pag-->
 
  <!--Boton flotante de ws-->
  <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
@@ -50,66 +51,101 @@
   </nav>
 
   <main class="main-interno">
-    <h3 class="">Datos personales</h3>
-    <section class=" section-misdatos">
-      <div class="container-fluid form-misdatos ">
-         
-        <form th:action="@{/actualizarDatosAdmin}" method="post">
-          <div class="row">
-          <div class="mb-3 col-lg-4">
-            <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.nombre)}" class="form-control" id="nombre" placeholder="Nombre" disabled >
-          </div>
-          <div class="mb-3 col-lg-4">
-            <label for="apellido" class="form-label texto-label">Apellido</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.apellido)}" class="form-control" id="apellido" placeholder="Apellido" disabled >
-          </div>
-          <div class="mb-3 col-lg-4">
-            <label for="dni" class="form-label texto-label">DNI</label>
-            <input type="number" th:value="${#strings.toUpperCase(datosAdmin.dni)}" class="form-control" id="dni" placeholder="123456789" disabled >
-          </div>
-        </div>
-        <div class="row">
-          <div class="mb-3 col-lg-6 ">
-            <label for="nacimiento" class="form-label texto-label">Fecha Nacimiento</label>
-            <input type="date" th:value="${#strings.toUpperCase(datosAdmin.fechaNacimiento)}" class="form-control" id="nacimiento" placeholder="Fecha Nacimineto" disabled>
-          </div>
-          <div class="mb-3 col-lg-6 ">
-            <label for="edad" class="form-label texto-label">Ocupación</label>
-            <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosAdmin.ocupacion)}" class="form-control" id="edad" placeholder="">
-          </div>
-        </div>
-        <div class="row">
-          <div class="mb-3 col-lg-6">
-            <label for="email" class="form-label texto-label">Email</label>
-            <input type="email" name="email" th:value="${#strings.toUpperCase(datosAdmin.email)}" class="form-control" id="email" placeholder="">
-          </div>
-          <div class="mb-3 col-lg-6">
-            <label for="direccion" class="form-label texto-label">Direccion</label>
-            <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosAdmin.domicilio)}" class="form-control" id="direccion" placeholder="">
-          </div>
-        </div>
-        <div class="row ">
-          <div class="mb-3 col-lg-6">
-            <label for="sexo" class="form-label texto-label">Sexo</label>
-            <input type="text" name="sexo" th:value="${#strings.toUpperCase(datosAdmin.sexo)}" class="form-control" id="sexo" placeholder="">
-          </div>
-          <div class="mb-3 col-lg-6">
-            <label for="telefono" class="form-label texto-label">Telefono</label>
-            <input type="text" name="telefono" th:value="${#strings.toUpperCase(datosAdmin.telefono)}" class="form-control" id="telefono" placeholder="">
-          </div>
-        </div>
-        <input type="hidden" th:value="${datosAdmin.id}" class="form-control" name="idAdmin" id="idAdmin"> <!--input oculto para enviar el id del admin al controlador actualizarDatosAdmin-->
+	<h3 class="">Datos personales</h3>
+	    <section class=" section-misdatos">
+	      <div class="container-fluid form-misdatos ">
+	          <div class="row">
+	          <div class="mb-3 col-lg-4">
+	            <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
+	            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.nombre)}"  class="form-control" id="nombre" placeholder="" disabled >
+	          </div>
+	          <div class="mb-3 col-lg-4">
+	            <label for="apellido" class="form-label texto-label">Apellido</label>
+	            <input type="text" th:value="${#strings.toUpperCase(datosAdmin.apellido)}" class="form-control" id="apellido" placeholder="" disabled >
+	          </div>
+	          <div class="mb-3 col-lg-4">
+	            <label for="dni" class="form-label texto-label">DNI</label>
+	            <input type="number" th:value="${#strings.toUpperCase(datosAdmin.dni)}" class="form-control" id="dni" placeholder="" disabled >
+	          </div>
+	        </div>
+	        <div class="row">
+	          <div class="mb-3 col-lg-6 ">
+	            <label for="nacimiento" class="form-label texto-label">Fecha Nacimiento</label>
+	            <input type="date" th:value="${#strings.toUpperCase(datosAdmin.fechaNacimiento)}"  class="form-control" id="nacimiento" placeholder="" disabled>
+	          </div>
+	          <div class="mb-3 col-lg-6 ">
+				<label for="email" class="form-label texto-label">Email</label>
+	            <input type="email" name="email" th:value="${#strings.toUpperCase(datosAdmin.email)}" class="form-control" id="email" placeholder="" disabled>
+	          </div>
+	        </div>
+	        
+	        
+
+	        <form id="formularioActualizarAdmin" th:action="@{/actualizarDatosAdmin}" method="post">
+	        <div class="row">
+	          <div class="mb-3 col-lg-6">
+				<label for="ocupacion" class="form-label texto-label">Ocupación</label>
+	            <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosAdmin.ocupacion)}" class="form-control" id="ocupacion" disabled>
+	          </div>
+	          <div class="mb-3 col-lg-6">
+	            <label for="domicilio" class="form-label texto-label">Dirección</label>
+	            <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosAdmin.domicilio)}" class="form-control" id="domicilio" disabled>
+	          </div>
+	        </div>
+	        <div class="row ">
+	          <div class="mb-3 col-lg-6">
+	            <label for="sexo" class="form-label texto-label">Sexo</label>
+	            <select  name="sexo" class="form-select" id="sexo" aria-label="Default select example" disabled>
+	            <option value=""  th:selected="${datosAdmin.sexo}" th:text="${datosAdmin.sexo}"></option>
+	            <option th:each="sexo : ${sexos}" th:value="${sexo.name()}" th:text="${sexo.name()}"></option>
+	            </select>
+	          </div>
+	          <div class="mb-3 col-lg-6">
+	            <label for="telefono" class="form-label texto-label">Teléfono</label>
+	            <input type="text" name="telefono" th:value="${#strings.toUpperCase(datosAdmin.telefono)}" class="form-control" id="telefono" disabled>
+	          </div>
+	        </div>
+	        
+	        <input type="hidden" th:value="${datosAdmin.id}" class="form-control" name="idAdmin" id="idAdmin"> <!--input oculto para enviar el id del cliente al controlador actualizarDatosCliente-->
+	        <input type="hidden" th:value="${datosAdmin.email}" class="form-control" name="email" id="email">
+		 
+	        <div class="boton-de-registro mt-4  text-center">
+			  <button id="botonHabilitar"  type="button" class="bn632-hover bn26">Habilitar/Deshabilitar</button>
+	          <button data-bs-target='#confirmar' data-bs-toggle="modal" id="botonGuardar" type="button" class="bn632-hover bn26 enviar" disabled>Guardar</button>
+	        </div>
+			
+			<!-- Modal Confirmar modificacion de formulario -->
+							<div class="modal fade" id='confirmar' data-bs-backdrop="static" data-bs-keyboard="false"
+							tabindex="-1" aria-labelledby="confirmarLabel" aria-hidden="true">
+							<div class="modal-dialog">
+							<div style="background-color: #ebdf9d;" class="modal-content">
+							<div class="modal-header d-block text-center border border-0">
+							<h1 class="modal-title fs-5 fw-bold" id="confirmarLabel"></h1>
+							</div>
+							<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+									  		
+							<p class="text-center fs-5 fw-mediun">¿Estas seguro de modificar estos datos?</p>
+									  		
+									  		
+							</div>
+							<div class="modal-footer border border-0">
+							<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+							<a href="">
+							<!-- Botón que llama al método para aceptar la confirmación -->
+							<button  type="submit"  class="btn btn-primary">Aceptar</button>
+							</a>
+							</div>
+							</div>
+							</div>
+							</div>
+	        </form>
+	      </div>
+	    </section>
+											  		
         
-        <div class="boton-de-registro mt-4  text-center">
-          <a href="#"><button class="bn632-hover bn26">Guardar</button></a>
-        </div>
-        </form>
-      </div>
-    </section>
-    
-    <!--Modal mensaje de exito misDatosCliente	-->
+   
 	
+<!--Modal mensaje de exito misDatosCliente, el script esta en el archivo misdatosAdmin.js	-->
 	<div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
 	tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
 	th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
@@ -128,8 +164,8 @@
 		</div>
 	</div>
 	
-	<!--Modal mensajes de error-->
 		
+<!--Modal mensajes de error, el script esta en el archivo misdatosAdmin.js-->
 		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
      th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
     <div class="modal-dialog">
@@ -147,39 +183,7 @@
     </div>
 </div>
 
-				<!--Script para modal de exito-->
-	
-	<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var showModalExito = /*[[${showModalExito}]]*/ false;
-        if (showModalExito) {
-            $('#exitoModal').modal('show');
-        }
-
-        $('#exitoModal').on('hidden.bs.modal', function () {
-            $(this).remove();
-        });
-    });
-    /*]]>*/
-</script>
-
-				<!--Script para modal de error-->
 				
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var showModalError = /*[[${showModalError}]]*/ false;
-        if (showModalError) {
-            $('#errorModal').modal('show');
-        }
-
-        $('#errorModal').on('hidden.bs.modal', function () {
-            $(this).remove();
-        });
-    });
-    /*]]>*/
-</script>
   </main>
 
     
@@ -226,8 +230,15 @@
     </div>
   </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous"></script>
+<!--Bloque script/thymeleaf para asignarles valores dinamicos a las variables que vamos a pasar al archivo historicoDeTurnos.js
+NoTA: dentro del archivo .js no podemos trabajar con las variables de thymeleaf por eso le asignamos cada valor a una variable
+acá dentro deñ html y luego pasamos esa variable al archivo .js-->
+<script th:inline="javascript">
+var showModalError = /*[[${showModalError}]]*/ false;
+var showModalExito = /*[[${showModalExito}]]*/ false;
+</script>
+   
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="../js/misdatosAdmin.js"></script> <!--Hoja de todos los scripts de la toda la pagina de historico de turnos-->
 </html>

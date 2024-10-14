@@ -62,7 +62,6 @@
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
 		
-        <form id="formularioDatosPersonales" th:action="@{/actualizarDatosProfesional}" method="post">
           <div class="row">
           <div class="mb-3 col-lg-4">
             <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
@@ -79,49 +78,55 @@
         </div>
         <div class="row">
           <div class="mb-3 col-lg-4 ">
-            <label for="matricula" class="form-label texto-label">Matricula</label>
+            <label for="matricula" class="form-label texto-label">Matrícula</label>
             <input type="text" th:value="${#strings.toUpperCase(datosProfesional.matricula)}" class="form-control" id="matricula" placeholder="" disabled>
           </div>
-			  
+			
+		  <div class="mb-3 col-lg-4 ">
+		      <label for="fechaNacimiento" class="form-label texto-label">Fecha Nacimiento</label>
+		      <input type="text" th:value="${#temporals.format(fechaNacimientoLocalDate, 'dd-MM-yyyy')}" class="form-control" id="fechaNacimiento" placeholder="" disabled>
+		  </div>  
+		  
 		  <div class="mb-3 col-lg-4">
-		             <label for="email" class="form-label texto-label">Email</label>
-		             <input type="email" name="email" th:value="${#strings.toUpperCase(datosProfesional.email)}" class="form-control" id="email" placeholder="" disabled>
-		           </div>
-          
-          <div class="mb-3 col-lg-4 ">
-            <label for="fechaNacimiento" class="form-label texto-label">Fecha Nacimiento</label>
-            <input type="text" th:value="${#temporals.format(fechaNacimientoLocalDate, 'dd-MM-yyyy')}" class="form-control" id="fechaNacimiento" placeholder="" disabled>
-          </div>
+		     <label for="email" class="form-label texto-label">Email</label>
+		     <input type="email" name="email" th:value="${#strings.toUpperCase(datosProfesional.email)}" class="form-control" id="email" placeholder="" disabled>
+		 </div>
         </div>
-        <div class="row">
+          
          
-			<div class="mb-3 col-lg-6">
-			             <label for="telefono" class="form-label texto-label">Telefono</label>
-			           <input type="text" name="telefono" th:value="${#strings.toUpperCase(datosProfesional.telefono)}" class="form-control" id="telefono" disabled>
-			         </div>
+         
+        <form id="formularioDatosPersonales" th:action="@{/actualizarDatosProfesional}" method="post">
 			
+        <div class="row">
+		<div class="mb-3 col-lg-6">
+		<label for="domicilio" class="form-label texto-label">Dirección</label>
+		<input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosProfesional.domicilio)}" class="form-control" id="domicilio" disabled>
+		</div>
 			
-          <div class="mb-3 col-lg-6">
-            <label for="sexo" class="form-label texto-label">Sexo</label>
-            <input type="text" name="sexo" th:value="${#strings.toUpperCase(datosProfesional.sexo)}" class="form-control" id="sexo" disabled>
-          </div>
+		<div class="mb-3 col-lg-6">
+		            <label for="sexo" class="form-label texto-label">Sexo</label>
+		            <select  name="sexo" class="form-select" id="sexo" aria-label="Default select example" disabled>
+		            <option value=""  th:selected="${datosProfesional.sexo}" th:text="${datosProfesional.sexo}"></option>
+		            <option th:each="sexo : ${sexos}" th:value="${sexo.name()}" th:text="${sexo.name()}"></option>
+		            </select>
+		          </div>
         </div>
           
         <div class="row ">
-          <div class="mb-3 col-lg-6">
-           <label for="domicilio" class="form-label texto-label">Direccion</label>
-            <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosProfesional.domicilio)}" class="form-control" id="domicilio" disabled>
-          </div>
-         
+			<div class="mb-3 col-lg-6">
+			<label for="telefono" class="form-label texto-label">Teléfono</label>
+			<input type="text" name="telefono" th:value="${#strings.toUpperCase(datosProfesional.telefono)}" class="form-control" id="telefono" disabled>
+			</div>
         </div>
+         
        
        <input type="hidden" th:value="${datosProfesional.id}" class="form-control" name="idProfesional" id="idProfesional"> <!--input oculto para enviar el id del profesional al controlador actualizarDatosProfesional-->
        <input type="hidden" th:value="${datosProfesional.email}" class="form-control" name="email" id="email">
        
 	   <div class="boton-de-registro mt-4  text-center">
 	   	  <button id="botonHabilitar"  type="button" class="bn632-hover bn26">Habilitar/Deshabilitar</button>
-	            <button data-bs-target='#confirmar' data-bs-toggle="modal" id="botonGuardar" type="button" class="bn632-hover bn26 enviar" disabled>Guardar</button>
-	          </div>
+	      <button data-bs-target='#confirmar' data-bs-toggle="modal" id="botonGuardar" type="button" class="bn632-hover bn26 enviar" disabled>Guardar</button>
+	   </div>
 	   	
 	   	<!-- Modal Confirmar modificacion de formulario, es un modal comun, no necesita script -->
 	   					<div class="modal fade" id='confirmar' data-bs-backdrop="static" data-bs-keyboard="false"

@@ -94,12 +94,6 @@ tener el mismo ID-->
 			<input hidden type="text" id="emailProfesional" name="emailProfesional" th:value="${datosProfesional.email}"></input>
 		</form>
 		
-		<form id="formularioResumenTurnos"  class="text-center" th:action="@{/yt}" method="get">
-			<button id="submitResumen" class="bn632-hover bn26">Resumen de turnos</button>
-			<input hidden type="text" id="idProfesional" name="idProfesional" th:value="${datosProfesional.id}"></input>
-			<input hidden type="text" id="emailProfesional" name="emailProfesional" th:value="${datosProfesional.email}"></input>
-		</form>
-		
 		</div>
 			
 		<p style="border-bottom: solid 5px;" class="fs-4 border-warning mt-5">Turnos activos desde el <span th:text="${fechaActualProximosTurnos}"></span>

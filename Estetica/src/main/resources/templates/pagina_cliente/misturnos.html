@@ -258,8 +258,8 @@ tener el mismo ID-->
         
 
     
-    					<!--Modal mensaje de exito al registrarse	-->
     					
+<!--Modal mensaje de exito, el script esta en el archivo de misturnos.js	-->
     <div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false"
 	tabindex="-1" aria-labelledby="exitoModalLabel" aria-hidden="true"
 	th:classappend="${showModalExito} ? 'show d-block' : ''" th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
@@ -278,8 +278,8 @@ tener el mismo ID-->
 		</div>
 	</div>
 	
-	<!--Modal mensajes de error-->
 		
+<!--Modal mensajes de error, el script esta en el archivo de misturnos.js-->
 		<div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
      th:classappend="${showModalError} ? 'show d-block' : ''" th:style="${showModalError} ? 'display: block;' : 'display: none;'">
     <div class="modal-dialog">
@@ -298,42 +298,7 @@ tener el mismo ID-->
 </div>
 
 
-				<!--Script para modal de error-->
 				
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var showModalError = /*[[${showModalError}]]*/ false;
-        if (showModalError) {
-            $('#errorModal').modal('show');
-        }
-
-        $('#errorModal').on('hidden.bs.modal', function () {
-            $(this).remove();
-        });
-    });
-    /*]]>*/
-</script>
-	
-	
-	
-	
-	<!--Scrip para el modal de mensaje de exito-->
-			
-<script th:inline="javascript">
-    /*<![CDATA[*/
-    $(document).ready(function() {
-        var showModalExito = /*[[${showModalExito}]]*/ false;
-        if (showModalExito) {
-            $('#exitoModal').modal('show');
-        }
-
-        $('#exitoModal').on('hidden.bs.modal', function () {
-            $(this).remove();
-        });
-    });
-    /*]]>*/
-</script>
   </main>
 
 
@@ -382,9 +347,16 @@ tener el mismo ID-->
     </div>
   </footer>
 
+<!--Bloque script/thymeleaf para asignarles valores dinamicos a las variables que vamos a pasar al archivo historicoDeTurnos.js
+NoTA: dentro del archivo .js no podemos trabajar con las variables de thymeleaf por eso le asignamos cada valor a una variable
+acá dentro deñ html y luego pasamos esa variable al archivo .js-->
+<script th:inline="javascript">
+var showModalError = /*[[${showModalError}]]*/ false;
+var showModalExito = /*[[${showModalExito}]]*/ false;
+</script> 
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-    crossorigin="anonymous"></script>
+
 </body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="../js/misturnos.js"></script> <!--Hoja de todos los scripts de la toda la pagina de misturnos-->
 </html>

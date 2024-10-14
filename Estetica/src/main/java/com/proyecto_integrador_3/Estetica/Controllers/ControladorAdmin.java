@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -65,6 +66,7 @@ public class ControladorAdmin {
 		
 		List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("datosAdmin", datosPersonaUsuario);
+		model.addAttribute("sexos", Sexo.values());
 		model.addAttribute("exito", exito);
 		model.addAttribute("error", error);
 		return "/pagina_admin/misdatosAdmin";	
@@ -457,8 +459,15 @@ public class ControladorAdmin {
 			//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
 			servicioAdmin.modificarAdmin(idAdmin, ocupacion, email, admin.getEmail().toUpperCase(), domicilio, sexo, telefono );
 			List <Usuario> datosAdminActualizados = servicioUsuario.buscarPorEmail(email);
+			
+			LocalDate fechaNacimiento = null;
+			for (Usuario adminFechaNacimiento : datosAdminActualizados) {
+				fechaNacimiento = adminFechaNacimiento.getFechaNacimiento();
+			}
+			
 			String exito = "Datos actualizados correctamente";
 			model.addAttribute("datosAdmin",datosAdminActualizados);
+			model.addAttribute("fechaNacimientoLocalDate", fechaNacimiento);
 			model.addAttribute("exito",exito);
 			model.addAttribute("showModalExito", true);
 			return "/pagina_admin/misdatosAdmin"; //si todo sale bien redireccionamos al metodo misdatosAdmin con el mail actualizado y un mensaje de exito 

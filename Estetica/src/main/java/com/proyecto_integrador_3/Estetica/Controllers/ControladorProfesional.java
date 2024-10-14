@@ -28,6 +28,7 @@ import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
+import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
 import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
@@ -597,11 +598,11 @@ public class ControladorProfesional {
 		
 		for (Usuario profesional : datosProfesional) {
 			fechaNacimiento = profesional.getFechaNacimiento();
-			System.out.println("Fecha de nacimiento: " + fechaNacimiento);
 		}
 	
 		model.addAttribute("datosProfesional", datosProfesional);
 		model.addAttribute("fechaNacimientoLocalDate", fechaNacimiento);
+		model.addAttribute("sexos", Sexo.values());
 		return "/pagina_profesional/misdatosProfesional";	
 	}
 	
@@ -928,8 +929,15 @@ public class ControladorProfesional {
 			//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
 			servicioProfesional.modificarProfesional(idProfesional, email, profesional.getEmail().toUpperCase(), domicilio, sexo, telefono );
 			List <Usuario> datosProfesionalActualizado = servicioUsuario.buscarPorEmail(email);
+			
+			LocalDate fechaNacimiento = null;
+			for (Usuario profesionalFechaNacimiento : datosProfesional) {
+				fechaNacimiento = profesionalFechaNacimiento.getFechaNacimiento();
+			}
+			
 			String exito = "Datos actualizados correctamente";
 			model.addAttribute("datosProfesional",datosProfesionalActualizado);
+			model.addAttribute("fechaNacimientoLocalDate", fechaNacimiento);
 			model.addAttribute("exito",exito);
 			model.addAttribute("showModalExito", true);
 			return "/pagina_profesional/misdatosProfesional"; //si todo sale bien redireccionamos al metodo misdatosProfesional con el mail actualizado y un mensaje de exito
