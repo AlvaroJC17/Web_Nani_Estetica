@@ -1,4 +1,6 @@
 
+console.log("Prueba de entrada");
+
 /*Script para el modal de existos*/
 $(document).ready(function() {
        if (showModalExito) {
@@ -109,13 +111,13 @@ function autoSubmitAno() {
 			    type: 'doughnut',
 			    data: {
 					labels: [
-					   'Turnos asistidos: ' + '$' + varMontoAsistidos,
-					   'Turnos pendientes: ' + '$' + varMontoPendiente,
-					   'Turnos cancelados: ' + '$' + varMontoCancelado,
-					   'Turnos multas: ' + '$' + varMontoMulta
+					  cantidadTurnosAsistidos + ' TURNOS ASISTIDOS' ,
+					  cantidadTurnosPendientes + ' TURNOS PENDIENTES',
+					  cantidadTurnosCancelados + ' TURNOS CANCELADOS',
+					  cantidadTurnosMulta +  ' TURNOS CANCELADOS CON MULTA' 
 					 ],
 					 datasets: [{
-					   label: 'Monto total $',
+					   label: 'MONTO TOTAL  $',
 					   data: [varMontoAsistidos, varMontoPendiente, varMontoCancelado, varMontoMulta],
 					   backgroundColor: [
 					     'rgb(54, 162, 235)',
@@ -128,4 +130,5 @@ function autoSubmitAno() {
 			    },
 			    
 			  });
+			  
 		

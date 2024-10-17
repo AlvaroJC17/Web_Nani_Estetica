@@ -903,19 +903,38 @@ public class ControladorCliente {
 			@RequestParam String idCliente,
 			Model modelo) {
 		
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		
+		//Buscamos los turnos por el id del cliente y que tengan estado asistido
 		List<Turnos> ultimosTurnosCliente = servicioTurnos.buscarTurnosPorClienteAndoEstadoDelTurno(idCliente, EstadoDelTurno.ASISTIDO);
+		
+		//Creamos la lista donde vamos a guardar los turnos filtrados
+		List<Turnos> turnosConRecomendaciones = new ArrayList<>();
+		
+		//Recorremo la lista de turnos asistidos
+		for (Turnos turnos : ultimosTurnosCliente) {
+			//Filtramos por aquellos turnos que tengan contenido en su campo de consulta
+			if (turnos.getConsulta() != null && !turnos.getConsulta().isEmpty()) {
+				turnosConRecomendaciones.add(turnos); //los turnos que pasen el filtro, se guardan en la lista creada anteriormente
+			}
+		}
+		
+		//Creamos la lista donde se va a ir guardando los ultimos tres turnos encontrados
 		List<Turnos> tresUltimosTurnos = new ArrayList<>();
-		int size = ultimosTurnosCliente.size();
-		if (size >= 3) {
-		    tresUltimosTurnos = ultimosTurnosCliente.subList(size - 3, size);
+		
+		//Obetenemos el numero de elemento de la lista
+		int size = turnosConRecomendaciones.size();
+		
+		if (size >= 3) { //Si es mayor o igual a 3, solo guardamos los tres ultimos turnos de la lista turnosConRecomendaciones
+		    tresUltimosTurnos = turnosConRecomendaciones.subList(size - 3, size);
 		} else {
-		    tresUltimosTurnos = ultimosTurnosCliente; // Si hay menos de 3 elementos, tomamos todos
+		    tresUltimosTurnos = turnosConRecomendaciones; // Si hay menos de 3 elementos, tomamos todos
 		}
 		
 		LocalDateTime fechaPrueba = LocalDateTime.now();
 		
+		//Pasamos los datos a la vista
 		modelo.addAttribute("email", email);
 		modelo.addAttribute("datosDelTurno", tresUltimosTurnos);
 		modelo.addAttribute("fechaPrueba", fechaPrueba);

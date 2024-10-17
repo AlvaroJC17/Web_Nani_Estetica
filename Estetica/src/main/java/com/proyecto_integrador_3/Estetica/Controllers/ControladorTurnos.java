@@ -71,7 +71,8 @@ public class ControladorTurnos {
 		
 				
 		LocalDate fechaDelTurno = null;
-		Boolean mostrarBotonesDeshabilitar = true;
+		Boolean mostrarBotonesDeshabilitar = true; //Variable booleana para activar o deshabilitar los botones de la pagina
+		Boolean deshabilitarBotones = false; //variable booleana que uso para mostrar o no el mensaje de horario no dispible en todas las horas cuando de deshabilita un fecha completa
 		LocalDate fechaActual = LocalDate.now();
 		LocalTime horaActual = LocalTime.now();
 		
@@ -87,6 +88,7 @@ public class ControladorTurnos {
 		  if (servicioHorario.fechaYaPaso(fechaDelTurno)) {
 			  mostrarBotonesDeshabilitar = false;
 		  }else if(servicioHorario.compararFechaConFechaDeshabilitada(fechaDelTurno, idProfesional)) {
+			  deshabilitarBotones = true;
 			  mostrarBotonesDeshabilitar = false;
 		  }else if(servicioHorario.esFinDeSemana(fechaDelTurno) && !servicioHorario.fechaYaPaso(fechaDelTurno)) {
 			  error = "No trabajamos los domingos";
@@ -170,6 +172,7 @@ public class ControladorTurnos {
 		
 		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
 		model.addAttribute("fechaSeleccionada", fechaFormateada);
+		model.addAttribute("deshabilitarBotones", deshabilitarBotones);
 		model.addAttribute("fechaFormatoLocalDate", fechaDelTurno);
 		model.addAttribute("turnosDisponiblesPorFecha", turnosPorFecha);
 		model.addAttribute("turnosPorHorarioLaboral", turnosPorHorarioLaboralOrdenado);

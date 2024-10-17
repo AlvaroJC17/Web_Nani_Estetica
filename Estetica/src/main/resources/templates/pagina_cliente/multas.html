@@ -76,7 +76,7 @@
             <li> <span class="fw-bold">Profesional:</span> <span th:text="${turnosConNombreProfesional[turnoConMulta.id]}"></span></li>
             <li> <span class="fw-bold">Fecha:</span> <span th:text="${turnoConMulta.fecha}"></span></li>
             <li> <span class="fw-bold">Hora:</span> <span th:text="${turnoConMulta.horario}"></span></li>
-            <li th:each="tratamiento : ${turnoConMulta.tratamientos}"> <span class="fw-bold">Tratamiento:</span> <span th:text="${tratamiento.nombreTratamientos.DisplayName}"></span></li>
+            <li th:each="tratamiento : ${turnoConMulta.tratamientos}"> <span class="fw-bold">Tratamiento:</span> <span th:text="${tratamiento}"></span></li>
         	<li> <span class="fw-bold">Costo de la multa:</span> <span th:text="'$' + ${turnoConMulta.costoMulta}"></span></li>
         </ul>
 	   </div>

@@ -281,7 +281,7 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 
 					    <!-- Mensaje de "HORARIO DESHABILITADO" solo si el horario no está marcado como no disponible -->
 					    <div class="text-danger fw-bold px-1 mt-2 fs-6 text-star" 
-					        th:if="${!mapaHorarioNoDisponible.contains(entry.key) && horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar == true}">
+					        th:if="${!mapaHorarioNoDisponible.contains(entry.key) && horariosDeshabilitados.contains(entry.key) && mostrarBotonesDeshabilitar == true || deshabilitarBotones}">
 					        HORARIO DESHABILITADO
 					    </div>
 
