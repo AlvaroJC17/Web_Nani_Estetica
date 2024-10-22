@@ -561,10 +561,7 @@ public class ServicioProfesional {
 		}
 		
 	    
-	    //este me sirve
-	    public List<Persona> buscarPacienteByRolAndDni(String dni, Rol rol){
-	    	return repositorioPersona.buscarPacientePorRolYDni(rol, dni);
-	    }
+	   
 	    
 	    public List<Persona> buscarProfesionaByRolAndProvincis(Rol rol, Provincias provincias){
 	    	return repositorioPersona.buscarNombreApellidoPorRolYProvincia(rol, provincias);
@@ -572,17 +569,6 @@ public class ServicioProfesional {
 	    
 	    public List<Persona> buscarProfesionaByRolAndProvinciasYActivo(Rol rol, Provincias provincias, Boolean activo){
 	    	return repositorioPersona.buscarNombreApellidoPorRolProvinciaYActivo(rol, provincias, activo);
-	    }
-	    
-	
-	    //Este me sirve
-		public List <Persona> buscarPacienteByRolAndEmail2(String email, Rol rol){
-	    	return repositorioPersona.buscarPacientePorRolYEmail(rol, email);
-	    }
-		
-		// este me sirve
-		public List <Persona> buscarPacienteByRolAndNombre(String nombre, Rol rol){
-	    	return repositorioPersona.buscarPacientePorRolYNombre(rol, nombre);
 	    }
 		
 		public List<Profesional> listarTodos() {

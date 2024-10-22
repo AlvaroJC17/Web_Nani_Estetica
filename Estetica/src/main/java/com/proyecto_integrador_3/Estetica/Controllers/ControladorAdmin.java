@@ -81,31 +81,31 @@ public class ControladorAdmin {
 	}
 	
 	
-	@PostMapping("/guardarDatosAdmin")
-	public String guardarDatosAdmin(
-			@RequestParam String sexo,
-			@RequestParam String telefono,
-			@RequestParam String direccion,
-			@RequestParam String ocupacion,
-			@RequestParam String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
-			ModelMap model) throws MiExcepcion {
-		
-		try {
-			//Guardamos los datos del form que lleno el nuevo admin
-			servicioAdmin.registrarAdmin(emailUsuario, ocupacion, direccion, telefono, sexo);	
-		} catch (MiExcepcion e) {
-			System.out.println(e.getMessage());
-			model.put("error", e.getMessage());
-			model.addAttribute("sexo", sexo);
-			model.addAttribute("telefono", telefono);
-			model.addAttribute("direccion", direccion);
-			model.addAttribute("ocupacion", ocupacion);
-			model.addAttribute("emailUsuario", emailUsuario);
-			model.addAttribute("showModalError", true);
-			return "/pagina_admin/completarDatosAdmin";
-		}
-		return "redirect:/homeAdmin?email=" + emailUsuario; //redirecionamos al metodo homeAdmin enviando la varibale mail
-	}
+//	@PostMapping("/guardarDatosAdmin")
+//	public String guardarDatosAdmin(
+//			@RequestParam String sexo,
+//			@RequestParam String telefono,
+//			@RequestParam String direccion,
+//			@RequestParam String ocupacion,
+//			@RequestParam String emailUsuario, //Esta valor viene del input oculto de la hoja completarDatos, que a su vez viene del meotodo Login en ControladorPagina
+//			ModelMap model) throws MiExcepcion {
+//		
+//		try {
+//			//Guardamos los datos del form que lleno el nuevo admin
+//			servicioAdmin.registrarAdmin(emailUsuario, ocupacion, direccion, telefono, sexo);	
+//		} catch (MiExcepcion e) {
+//			System.out.println(e.getMessage());
+//			model.put("error", e.getMessage());
+//			model.addAttribute("sexo", sexo);
+//			model.addAttribute("telefono", telefono);
+//			model.addAttribute("direccion", direccion);
+//			model.addAttribute("ocupacion", ocupacion);
+//			model.addAttribute("emailUsuario", emailUsuario);
+//			model.addAttribute("showModalError", true);
+//			return "/pagina_admin/completarDatosAdmin";
+//		}
+//		return "redirect:/homeAdmin?email=" + emailUsuario; //redirecionamos al metodo homeAdmin enviando la varibale mail
+//	}
 			
 	
 	

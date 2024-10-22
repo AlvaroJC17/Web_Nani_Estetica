@@ -134,6 +134,14 @@ public class ServicioTurnos {
 		}
 	}
 	
+	public List <Turnos> buscarPorIdClienteAndMulta(String idCliente) throws MiExcepcion{
+		try {
+			return repositorioTurnos.findByClienteIdAndActivoFalseAndMultaTrue(idCliente);
+		} catch (Exception e) {
+			throw new MiExcepcion("No se encontraron turnos");
+		}
+	}
+	
 	public List<Turnos> buscarTurnosPorProfesionalAndClienteAndEstadoDelTurno(String idProfesional, String idCliente, EstadoDelTurno estado){
 	
 		return repositorioTurnos.findByProfesionalIdAndClienteIdAndEstadoOrderByFechaCreacion(idProfesional, idCliente, estado);
@@ -250,6 +258,15 @@ public class ServicioTurnos {
 			throw new MiExcepcion("Error al conectar con el servidor " + e);
 		}
 	}
+	
+	//Busca los turnos por id en orden ascendente
+		public List<Turnos> turnosActivosPorIdClienteFechaAsc(String idCliente) throws MiExcepcion {
+			try {
+				return repositorioTurnos.findByActivoTrueAndClienteIdOrderByFechaAsc(idCliente);
+			} catch (Exception e) {
+				throw new MiExcepcion("Error al conectar con el servidor " + e);
+			}
+		}
 			
 
 	//busca los turnos en orden de mas viejo a mas nuevo y cuando el tamaño de los turnos del usuario

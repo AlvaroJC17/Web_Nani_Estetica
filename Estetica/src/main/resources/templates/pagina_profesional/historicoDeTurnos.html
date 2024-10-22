@@ -44,7 +44,7 @@
             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
           </li>
 		  <li class="nav-item">
-		             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Datos personales</a>
+		             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis datos</a>
 		           </li>
 		  	  <li class="nav-item">
 		  	     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
@@ -257,7 +257,7 @@
 																	<td class="text-center" th:text="${#strings.toLowerCase(turnosDelProfesional.profesional.apellido)}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.activo ? 'SI' : 'NO'}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.estado}"></td>
-																	<td class="text-center" th:text="${turnosDelProfesional.fecha}"></td>
+																	<td class="text-center" th:text="${#temporals.format(turnosDelProfesional.fecha, 'dd-MM-yyyy')}"></td>
 																	<td class="text-center" th:text="${turnosDelProfesional.horario}"></td>																
 																	<td class="text-center" >
 																		<span th:each="tratamientos : ${turnosDelProfesional.tratamientos}">

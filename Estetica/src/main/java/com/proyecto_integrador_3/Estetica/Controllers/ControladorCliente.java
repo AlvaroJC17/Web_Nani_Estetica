@@ -112,7 +112,7 @@ public class ControladorCliente {
 			//Buscamos el nombre del profesional asociado a ese turno para pasarlo al email de confirmacion
 
 			
-			Persona buscarDatosProfesional = servicioPersona.buscarDatosPersona(idProfesional);
+			Persona buscarDatosProfesional = servicioPersona.buscarDatosPersonaPorId(idProfesional);
 			
 			String nombreCompletoProfesional = null;
 			nombreCompletoProfesional = buscarDatosProfesional.getApellido() + " " + buscarDatosProfesional.getNombre();

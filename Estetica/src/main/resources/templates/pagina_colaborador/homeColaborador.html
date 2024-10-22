@@ -8,100 +8,92 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-  <link rel="stylesheet" href="./css/styles.css">
-  <title>Home Profesional</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <title>Home Colaborador</title>
 </head>
 
-<body class="body-interno"  th:each="datosProfesional : ${datosProfesional}">
+<body class="body-interno"  th:each="datosColaborador : ${datosColaborador}">
 
 	<!--Boton flotante de ws-->
 	 <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
 	   <i class="fa-brands fa-whatsapp"></i>
 	 </a>
   
-<nav>
-  <div class="navbar navbar1 navbar-expand-md">
-    <div class="container-fluid navbar2">
-      <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
-        aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      
-      <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-        <a th:href="@{/homeProfesional(email=${datosProfesional.email})}">
-          <div class="imagen-logo ajuste-texto-menu">
-            <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
-          </div>
-        </a>
-        <ul class="navbar-nav navbar4 container-fluid p-0">
+  <nav>
+    <div class="navbar navbar1 navbar-expand-md">
+      <div class="container-fluid navbar2">
+        <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01"
+          aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+          <a th:href="@{/homeColaborador(emailColaborador=${datosColaborador.email})}">
+            <div class="imagen-logo ajuste-texto-menu">
+              <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
+            </div>
+          </a>
+          <ul class="navbar-nav navbar4 container-fluid p-0">
 			<li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis datos</a>
-          </li>
-		  <li class="nav-item">
-		     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
-		   </li>
-          <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
-          </li>
-        </ul>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/homeColaborador(emailColaborador=${datosColaborador.email})}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosColaborador(emailColaborador=${datosColaborador.email})}">Mis datos</a> <!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultosColaborador(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">Clientes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">Profesionales</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">Turnos</a>
+            </li> 
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
+            </li>
+          </ul>
+        </div>
       </div>
-      
-      
     </div>
-  </div>
-</nav>
+  </nav>
 
 <main class="">
   <div class="main-interno">
-    <h3 th:text="'Hola, ' + ${datosProfesional.nombre}"></h3>
+    <h3 th:text="'Hola, ' + ${datosColaborador.nombre}"></h3>
   <div class=" container">
-	  
-	  
       <div class="  ft">
-        <a th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">
+        <a th:href="@{/misdatosColaborador(emailColaborador=${datosColaborador.email})}"> <!--Le pasamos el dato email a la pagian misdatosCliente, especificamente al metodo misdatosCliente en el controlador cliente-->
           <div class="d-flex justify-content-center align-items-center">
-            <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
+            <img class="iconos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Mis datos</p>
           </div>
         </a>
       </div>
-	  
-	  <div class="  ft">
-	         <a th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">
-	           <div class="d-flex justify-content-center align-items-center">
-	             <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
-	             <p class="texto-tarjetas-main-home ms-1 hover">Datos profesionales</p>
-	           </div>
-	         </a>
-	       </div>
-
-       <div class="  ft">
-        <a th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">
+      <div class=" ft ">
+        <a th:href="@{/listarPacientesOcultosColaborador(emailColaborador=${datosColaborador.email}, idCliente=${datosColaborador.id})}">
           <div class="d-flex justify-content-center align-items-center">
-            <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
+            <img class="iconos" src="../imagenes/icons8-más-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Clientes</p>
           </div>
         </a>
       </div>
-
-       <div class="  ft">
-        <a th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">
+      <div class=" ft">
+        <a th:href="@{/misturnos(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
           <div class="d-flex justify-content-center align-items-center">
-            <img class="iconos" src="./imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
-            <p class="texto-tarjetas-main-home ms-1 hover">Turnos</p>
+            <img class="iconos" src="../imagenes/icons8-calendario-50.png" alt="">
+            <p class="texto-tarjetas-main-home ms-1 hover">Profesionales</p>
           </div>
         </a>
       </div>
-      
+
+      <div class=" ft">
+        <a  th:href="@{/misconsultas(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
+          <div class="d-flex justify-content-center align-items-center">
+          <img class="iconos" src="../imagenes/icons8-boleta-de-calificaciones-50.png" alt="">
+          <p class="texto-tarjetas-main-home ms-1 hover">Turnos</p>
+        </div>
+        </a>
+      </div> 
 </div>
 </div>
   </main>
@@ -138,8 +130,9 @@
           </div>
         </div>
       </div>
-  
-  
+	
+   
+	
     <div class="divfooter col-lg-6">
       <p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
 	  <iframe class="w-100 rounded rounded-2" 
@@ -149,6 +142,8 @@
     </div>
   </footer>
 
+
+  
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </html>

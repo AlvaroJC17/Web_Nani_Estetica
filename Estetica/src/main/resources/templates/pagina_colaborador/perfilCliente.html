@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/c81a1e63cb.js" crossorigin="anonymous"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <title>Datos cliente</title>
+  <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.css" />
+  <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.css">
+  <script src="https://cdn.datatables.net/2.1.0/js/dataTables.js"></script>
+  <script src="https://cdn.datatables.net/plug-ins/2.1.0/i18n/es-ES.json"></script>
+
+</head>
+
+<body class="body-misdatos" th:each="datosColaborador : ${datosColaborador}">
+
+  <!--Boton flotante de ws-->
+  <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
+    <i class="fa-brands fa-whatsapp"></i>
+  </a>
+
+  <nav>
+    <div class="navbar navbar1 navbar-expand-md">
+      <div class="container-fluid navbar2">
+        <button class="navbar-toggler mb-2" type="button" data-bs-toggle="collapse"
+          data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false"
+          aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
+          <a th:href="@{/homeColaborador(emailColaborador=${datosColaborador.email})}">
+            <div class="imagen-logo ajuste-texto-menu">
+              <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
+            </div>
+          </a>
+          <ul class="navbar-nav navbar4 container-fluid p-0">
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu"
+                th:href="@{/homeColaborador(emailColaborador=${datosColaborador.email})}">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu"
+                th:href="@{/misdatosColaborador(emailColaborador=${datosColaborador.email})}">Mis datos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu"
+                th:href="@{/listarPacientesOcultosColaborador(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">Clientes</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link py-1 ajuste-texto-menu"
+                th:href="@{/listarPacientesOcultos(emailColaborador=${datosColaborador.email})}">Profesionales</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu"
+                th:href="@{/misturnosProfesional(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">Turnos</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main class="">
+    <h3 class="">Datos personales</h3>
+    <section class="">
+      <div class="">
+
+        <div th:each="datosCliente : ${datosCliente}">
+          <div class="row">
+            <div class="mb-3 col-lg-4">
+              <label for="nombre" class="form-label texto-label" disabled>Nombre</label>
+              <input type="text" th:value="${#strings.toUpperCase(datosCliente.nombre)}" class="form-control"
+                id="nombre" placeholder="" disabled>
+            </div>
+            <div class="mb-3 col-lg-4">
+              <label for="apellido" class="form-label texto-label">Apellido</label>
+              <input type="text" th:value="${#strings.toUpperCase(datosCliente.apellido)}" class="form-control"
+                id="apellido" placeholder="" disabled>
+            </div>
+            <div class="mb-3 col-lg-4">
+              <label for="idpaciente" class="form-label texto-label">ID Cliente</label>
+              <input type="text" th:value="${datosCliente.id}"
+                class="form-control" id="idpaciente" placeholder="" disabled>
+            </div>
+          </div>
+          <div class="row">
+            <div class="mb-3 col-lg-4">
+              <label for="dni" class="form-label texto-label">DNI</label>
+              <input type="number" th:value="${#strings.toUpperCase(datosCliente.dni)}" class="form-control" id="dni"
+                placeholder="" disabled>
+            </div>
+            <div class="mb-3 col-lg-4 ">
+              <label for="fechaAltaFormateada" class="form-label texto-label">Fecha de alta</label>
+              <input type="text" th:value="${#temporals.format(datosCliente.fechaCreacion, 'dd-MM-yyyy')}" class="form-control"
+                id="fechaAltaFormateada" placeholder="" disabled>
+            </div>
+            <div class="mb-3 col-lg-4 ">
+              <label for="nacimiento" class="form-label texto-label">Fecha nacimiento</label>
+              <input type="date" th:value="${#strings.toUpperCase(datosCliente.fechaNacimiento)}" class="form-control"
+                id="nacimiento" placeholder="" disabled>
+            </div>
+          </div>
+          <div class="row">
+            <div class="mb-3 col-lg-4">
+              <label for="email" class="form-label texto-label">Email</label>
+              <input type="email" name="email" th:value="${#strings.toUpperCase(datosCliente.email)}"
+                class="form-control" id="email" placeholder="" disabled>
+            </div>
+            <div class="mb-3 col-lg-4 ">
+              <label for="ocupacion" class="form-label texto-label">Ocupación</label>
+              <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosCliente.ocupacion)}"
+                class="form-control" id="ocupacion" placeholder="" disabled>
+            </div>
+            <div class="mb-3 col-lg-4">
+              <label for="domicilio" class="form-label texto-label">Dirección</label>
+              <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosCliente.domicilio)}"
+                class="form-control" id="domicilio" placeholder="" disabled>
+            </div>
+          </div>
+          <div class="row ">
+            <div class="mb-3 col-lg-6">
+              <label for="sexo" class="form-label texto-label">Sexo</label>
+              <input type="text" name="sexo" th:value="${#strings.toUpperCase(datosCliente.sexo)}" class="form-control"
+                id="sexo" placeholder="" disabled>
+            </div>
+            <div class="mb-3 col-lg-6">
+              <label for="telefono" class="form-label texto-label">Teléfono</label>
+              <input type="text" name="telefono" th:value="${#strings.toUpperCase(datosCliente.telefono)}"
+                class="form-control" id="telefono" placeholder="" disabled>
+            </div>
+          </div>
+
+						
+					<div class="row">
+					<div class="col-md-6">
+						<label for="" class="form-label texto-label">Estado</label>
+						<input th:if="${datosCliente.activo}" type="text" name="" value="ACTIVO"
+						class="form-control bg-success bg-gradient text-center text-white" id=""  disabled>
+						<input th:unless="${datosCliente.activo}" type="text" name="" value="INACTIVO"
+						class="form-control bg-danger bg-gradient text-center text-white" id=""  disabled>
+					</div>
+					
+					<div class="col-md-4 text-center">
+						
+					<form th:action="@{/bajaUsuario}" method="post">
+							<button type="button" th:if="${datosCliente.activo}" style="margin-top: 24px;" class="bn632-hover bn26 cancelar mx-0 mb-0" data-bs-target='#confirmar' data-bs-toggle="modal">Bloquear</button>
+							<input type="hidden" th:value="${datosCliente.activo}" class="form-control" name="clienteActivo">
+							<input type="hidden" th:value="${datosCliente.email}" class="form-control" name="emailCliente">
+							<input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente">
+							<input type="hidden" th:value="${datosColaborador.email}" class="form-control" name="emailColaborador">
+							<input type="hidden" th:value="${datosColaborador.id}" class="form-control" name="idColaborador">
+						
+							
+					<!-- Modal Confirmar 2 modificacion para bloquear o desbloquear un cliente -->
+						<div class="modal fade" id='confirmar' data-bs-backdrop="static" data-bs-keyboard="false"
+						tabindex="-1" aria-labelledby="confirmarLabel" aria-hidden="true">
+						<div class="modal-dialog">
+						<div style="background-color: #ebdf9d;" class="modal-content">
+						<div class="modal-header d-block text-center border border-0">
+						<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+						<h1 class="modal-title fs-6 fw-bold mt-4" id="confirmarLabel">Estimado usuario</h1>
+						</div>
+						<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+						<p class="text-center fs-6 fw-mediun">¿Estas seguro de dar de baja al usuario?</p>
+						</div>
+						<div class="modal-footer border border-0">
+						<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+						<!-- Botón que llama al método para aceptar la confirmación -->
+						<button  type="submit"  class="btn btn-primary">Aceptar</button>
+						</div>
+						</div>
+						</div>
+						</div>	
+					</form>
+																						  		
+					<form th:action="@{/altaUsuario}" method="post">
+						<button type="button" th:if="${datosCliente.activo == false}" class="bn632-hover bn26" data-bs-target='#confirmar2' data-bs-toggle="modal">Desbloquear</button>
+						<input type="hidden" th:value="${datosCliente.activo}" class="form-control" name="clienteActivo">
+						<input type="hidden" th:value="${datosCliente.email}" class="form-control" name="emailCliente">
+						<input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente">
+						<input type="hidden" th:value="${datosColaborador.email}" class="form-control" name="emailColaborador">
+						<input type="hidden" th:value="${datosColaborador.id}" class="form-control" name="idColaborador">
+																						  		
+							<!-- Modal Confirmar modificacion para bloquear o desbloquear un cliente -->
+																								  				
+						<div class="modal fade" id='confirmar2' data-bs-backdrop="static" data-bs-keyboard="false"
+						tabindex="-1" aria-labelledby="confirmarLabel2" aria-hidden="true">
+						<div class="modal-dialog">
+						<div style="background-color: #ebdf9d;" class="modal-content">
+						<div class="modal-header d-block text-center border border-0">
+						<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+						<h1 class="modal-title fs-6 fw-bold mt-4" id="confirmarLabel2">Estimado usuario</h1>
+						</div>
+						<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+						<p class="text-center fs-6 fw-mediun">¿Estas seguro de dar de alta al usuario?</p>
+						</div>
+						<div class="modal-footer border border-0">
+						<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+						<!-- Botón que llama al método para aceptar la confirmación -->
+						<button  type="submit"  class="btn btn-primary">Aceptar</button>
+						</div>
+						</div>
+						</div>
+						</div>
+					</form>
+					</div>
+					</div>
+																														  		
+																														  		
+				<form class="row" th:action="@{/quitarMultasCliente}" method="post">
+					<div class="col-md-6">
+						<label for="" class="form-label texto-label">Multas</label>
+						<input th:if="${datosCliente.multa}" type="text" name="multa" value="TIENE MULTAS"
+						class="form-control bg-danger bg-gradient text-center text-white" id="" disabled>
+						<input th:unless="${datosCliente.multa}" type="text" name="multa" value="NO TIENE MULTAS"
+						class="form-control bg-success bg-gradient text-center text-white" id="" disabled>
+					</div>
+					
+					<div class="col-md-4 text-center">
+					<button type="button" th:if="${datosCliente.multa}" style="margin-top: 24px;" class="bn632-hover bn26 mx-0 mb-0" data-bs-target='#confirmarMulta' data-bs-toggle="modal">Blanquear</button>
+					<button type="button" th:unless="${datosCliente.multa}" style="margin-top: 24px;" class="bn632-hover bn26 enviar mx-0 mb-0" disabled>Blanquear</button>
+					</div>
+					
+					<input type="hidden" th:value="${datosCliente.multa}" class="form-control" name="clienteMulta">
+					<input type="hidden" th:value="${datosCliente.activo}" class="form-control" name="clienteActivo">
+					<input type="hidden" th:value="${datosCliente.email}" class="form-control" name="emailCliente">
+					<input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente">
+					<input type="hidden" th:value="${datosColaborador.email}" class="form-control" name="emailColaborador">
+					<input type="hidden" th:value="${datosColaborador.id}" class="form-control" name="idColaborador">
+					
+					
+					<!-- Modal Confirmar modificacion para quitar multa a un cliente -->
+					<div class="modal fade" id='confirmarMulta' data-bs-backdrop="static" data-bs-keyboard="false"
+					tabindex="-1" aria-labelledby="confirmarLabelMulta" aria-hidden="true">
+					<div class="modal-dialog">
+					<div style="background-color: #ebdf9d;" class="modal-content">
+					<div class="modal-header d-block text-center border border-0">
+					<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+					<h1 class="modal-title fs-6 fw-bold mt-4" id="confirmarLabelMulta">Estimado usuario</h1>
+					</div>
+					<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+					<p class="text-center fs-6 fw-mediun">¿Estas seguro de continuar con esta modificación?</p>																			  		
+					</div>
+					<div class="modal-footer border border-0">
+					<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+					<!-- Botón que llama al método para aceptar la confirmación -->
+					<button  type="submit"  class="btn btn-primary">Aceptar</button>
+					</div>
+					</div>
+					</div>
+					</div>
+				</form>	
+        </div>
+      </div>
+    </section>
+					           
+					
+<h3 class="fs-1 text-center mt-5">Turnos activos</h3>
+<section>
+	<div class="container-fluid">
+								<table id="myTable2" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
+									<thead>
+										<tr class="">
+											<th class="text-center">Seleccione:</th>
+											<th class="text-center">ID Turno:</th>
+											<th class="text-center">Activo:</th>
+											<th class="text-center">Estado:</th>
+											<th class="text-center">Fecha:</th>
+											<th class="text-center">Hora:</th>
+											<th class="text-center">Profesional:</th>
+											<th class="text-center">Tratamiento:</th>
+										</tr>
+									</thead>
+									
+									<tbody>
+										<!--El valor de la variable para el each viene del metodo listarUsuariosVisibles-->
+										<tr class="" th:each="turno : ${buscarTurnosCliente}"> 
+											<td class="text-center">
+												<div class="">
+													<input class="form-check-input" type="radio" name="idTurno" th:value="${turno.id}">
+												</div>
+											</td>  
+											<td class="text-center" th:text="${#strings.substring(turno.id, turno.id.length() - 12)}"></td>
+											<td class="text-center" th:text="${turno.activo ? 'SI' : 'NO'}"></td>
+											<td class="text-center" th:text="${turno.estado}"></td>
+											<td class="text-center" th:text="${#temporals.format(turno.fecha, 'dd-MM-yyyy')}"></td>
+											<td class="text-center" th:text="${turno.horario}"></td>
+											<td class="text-center" th:text="${turno.profesional.nombre + ' ' + turno.profesional.apellido}"></td>																	
+											<td class="text-center" >
+											<span th:each="tratamientos : ${turno.tratamientos}">
+											<ul style="list-style: none;">
+													<li th:text="${tratamientos}"></li>
+											</ul>
+											</span>
+											</td>
+										</tr>    
+									</tbody>
+								</table>
+								<div class="text-center">
+								<button type="button" class="bn632-hover bn26 cancelar mx-0">Cancelar turno</button>									
+								</div>
+							</div>
+</section>
+
+   
+<h3 class="fs-1 text-center mt-5">Turnos con multa</h3> 
+<section>
+	<div class="container-fluid">
+									<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
+										<thead>
+											<tr class="">
+												<th class="text-center">ID Turno:</th>
+												<th class="text-center">Activo:</th>
+												<th class="text-center">Estado:</th>
+												<th class="text-center">Multa:</th>
+												<th class="text-center">Costo multa:</th>
+												<th class="text-center">Fecha:</th>
+												<th class="text-center">Hora:</th>
+												<th class="text-center">Profesional:</th>
+												<th class="text-center">Tratamiento:</th>
+											</tr>
+										</thead>
+										
+										<tbody>
+											<!--El valor de la variable para el each viene del metodo listarUsuariosVisibles-->
+											<tr class="" th:each="turnoMulta : ${tunosConMulta}">
+												<td class="text-center" th:text="${#strings.substring(turnoMulta.id, turnoMulta.id.length() - 12)}"></td>
+												<td class="text-center" th:text="${turnoMulta.activo ? 'SI' : 'NO'}"></td>
+												<td class="text-center" th:text="${turnoMulta.estado}"></td>
+												<td class="text-center" th:text="${turnoMulta.multa ? 'SI' : 'NO'}"></td>
+												<td class="text-center">Agregar</td>
+												<td class="text-center" th:text="${#temporals.format(turnoMulta.fecha, 'dd-MM-yyyy')}"></td>
+												<td class="text-center" th:text="${turnoMulta.horario}"></td>
+												<td class="text-center" th:text="${turnoMulta.profesional.nombre + ' ' + turnoMulta.profesional.apellido}"></td>																	
+												<td class="text-center" >
+												<span th:each="tratamientosMulta : ${turnoMulta.tratamientos}">
+												<ul style="list-style: none;">
+														<li th:text="${tratamientosMulta}"></li>
+												</ul>
+												</span>
+												</td>
+											</tr> 
+										</tbody>
+									</table>
+											<p>Total costo multas: agregar</p>   
+								</div>
+</section>
+
+<!--Modal mensaje de exito misDatosCliente, el script esta en el archivo datosPersonalesPaciente.js	-->
+    <div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="exitoModalLabel" aria-hidden="true" th:classappend="${showModalExito} ? 'show d-block' : ''"
+      th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
+      <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+          <div class="modal-header border border-0 d-flex justify-content-center">
+            <img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif"
+              alt="imagen de aprobado">
+          </div>
+          <div class="modal-body text-black lh-sm">
+            <p class="text-center" th:utext="${exito}"></p>
+          </div>
+          <div class="modal-footer border border-0">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+<!--Modal mensajes de error, el script esta en el archivo datosPersonalesPaciente.js-->
+    <div class="modal fade" id="errorModal" tabindex="-1" aria-labelledby="errorModalLabel" aria-hidden="true"
+      th:classappend="${showModalError} ? 'show d-block' : ''"
+      th:style="${showModalError} ? 'display: block;' : 'display: none;'">
+      <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+          <div class="modal-header border border-0 d-flex justify-content-center ">
+            <img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+          </div>
+          <div class="modal-body text-black lh-sm">
+            <p class="text-center" th:utext="${error}"></p>
+          </div>
+          <div class="modal-footer border border-0">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+
+  <footer class="d-flex row p-0">
+    <div class="divfooter col-lg-6 mb-3">
+      <p class="mb-3 text-center titulos-footer">CONTACTOS</p>
+      <div class="mb-4">
+        <p class="mb-0 text-center"><img class="iconos" src="/imagenes/icons8-gps-50.png" alt="">Rivadavia 730,
+          B1625 Belén de Escobar</p>
+        <p class="text-center mt-0">Provincia de Buenos Aires</p>
+      </div>
+      <div class="mb-4 text-center">
+        <p><img class="iconos" src="/imagenes/icons8-teléfono-celular-50.png" alt="">+54 (11)5744-2608</p>
+      </div>
+      <div class="mb-4 text-center">
+        <p><img class="iconos" src="/imagenes/icons8-whatsapp-50negro.png" alt="">+54 (11)5744-2608</p>
+      </div>
+      <div class="mb-4 text-center">
+        <p class=""><img class="iconos pe-1" src="/imagenes/icons8-correo-50.png" alt="">estoesunaprueba@gmail.com</p>
+      </div>
+      <div class="text-center iconos3 mt-5 pb-4">
+        <div class="">
+          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-instagram-50 black.png" alt=""></a>
+        </div>
+        <div>
+          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-tik-tok-50 black.png" alt=""></a>
+        </div>
+        <div>
+          <a class="link" href="#"> <img class=" iconos2" src="/imagenes/icons8-facebook-50 black.png" alt=""></a>
+        </div>
+        <div>
+          <a class="link" href="#"><img class=" iconos2" src="/imagenes/icons8-youtube-play-50 black.png" alt=""></a>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="divfooter col-lg-6">
+      <p class=" text-center mb-4 titulos-footer">UBICACIÓN</p>
+      <iframe class="w-100 rounded rounded-2"
+        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3294.081216388164!2d-58.80112362527934!3d-34.3484110440581!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x95bb61bb0df3ff2f%3A0xd3ede6174bb9f023!2sGMP%2C%20Rivadavia%20730%2C%20B1625%20Bel%C3%A9n%20de%20Escobar%2C%20Provincia%20de%20Buenos%20Aires!5e0!3m2!1ses!2sar!4v1722992578537!5m2!1ses!2sar"
+        width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade">
+      </iframe>
+    </div>
+  </footer>
+
+<!--Bloque script/thymeleaf para asignarles valores dinamicos a las variables que vamos a pasar al archivo historicoDeTurnos.js
+NoTA: dentro del archivo .js no podemos trabajar con las variables de thymeleaf por eso le asignamos cada valor a una variable
+acá dentro deñ html y luego pasamos esa variable al archivo .js-->
+<script th:inline="javascript">
+var showModalError = /*[[${showModalError}]]*/ false;
+var showModalExito = /*[[${showModalExito}]]*/ false;
+</script>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/dataTables.responsive.js"></script>
+<script src="https://cdn.datatables.net/responsive/3.0.2/js/responsive.dataTables.js"></script>
+<script src="../js/perfilCliente.js"></script>
+</html>

@@ -20,6 +20,22 @@ public class ServicioPersona {
 	@Autowired
 	public RepositorioPersona repositorioPersona;
 	
+	
+	// Lo uso
+	public List <Persona> buscarPacienteByRolAndNombre(String nombre, Rol rol){
+		return repositorioPersona.buscarPacientePorRolYNombre(rol, nombre);
+	}
+	
+	 //Lo uso
+    public List<Persona> buscarPacienteByRolAndDni(String dni, Rol rol){
+    	return repositorioPersona.buscarPacientePorRolYDni(rol, dni);
+    }
+    
+    //Lo uso
+	public List <Persona> buscarPacienteByRolAndEmail2(String email, Rol rol){
+    	return repositorioPersona.buscarPacientePorRolYEmail(rol, email);
+    }
+	
 	@Transactional
 	public Optional<Persona> buscarPersonaPorEmailOptional(String emailUsuario) throws MiExcepcion{
 		
@@ -31,13 +47,23 @@ public class ServicioPersona {
 		}
 	}
 			
-	public Persona buscarDatosPersona(String idPersona) throws MiExcepcion {
+	public Persona buscarDatosPersonaPorId(String idPersona) throws MiExcepcion {
 		Optional<Persona> buscarPersona = repositorioPersona.findById(idPersona);
 		if (buscarPersona.isPresent()) {
 			Persona datosDePersona = buscarPersona.get();
 			return datosDePersona;
 		}else {
 			throw new MiExcepcion("No se encontro al profesional");
+		}
+	}
+	
+	public Persona buscarDatosPersonaPorEmail(String emailPersona) throws MiExcepcion {
+		Optional<Persona> buscarPersona = repositorioPersona.findById(emailPersona);
+		if (buscarPersona.isPresent()) {
+			Persona datosDePersona = buscarPersona.get();
+			return datosDePersona;
+		}else {
+			throw new MiExcepcion("No se encontro a la persona");
 		}
 	}
 		

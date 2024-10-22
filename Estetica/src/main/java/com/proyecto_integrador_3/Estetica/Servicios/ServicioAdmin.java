@@ -53,10 +53,9 @@ public class ServicioAdmin {
 	}
 	
 	@Transactional
-	public void registrarAdmin(String email, String ocupacion,
-			String direccion, String telefono, String sexo) throws MiExcepcion {
+	public void registrarAdmin(String email) throws MiExcepcion {
 		
-		validarDatosAdmin(sexo, telefono, direccion, ocupacion);
+		//validarDatosAdmin(sexo, telefono, direccion, ocupacion); //No lo validamos de vuelta porque ya se valida el registrar el cliente
 
 		try {
 		Optional <Usuario> datosUsuario = servicioUsuario.buscarPorEmailOptional(email);
@@ -67,18 +66,25 @@ public class ServicioAdmin {
 			String nombrePersona = null;
 			String apellidoPersona = null;
 			String dniPersona = null;
+			String telefono = null;
+			String domicilio = null;
+			String ocupacion = null;
+			Sexo sexo = null;
 			LocalDate fechaNacimientoPerson = null;
+			
+			//Con el email buscamos todos los datos que pertenecen a la clase persona para registrar al admin
 			Optional <Persona> datosPersona = repositorioPersona.buscarPorEmailOptional(email);
 			if (datosPersona.isPresent()) {
 				Persona datosPersonalesPersona = datosPersona.get();
 				nombrePersona = datosPersonalesPersona.getNombre();
 				apellidoPersona = datosPersonalesPersona.getApellido();
 				dniPersona = datosPersonalesPersona.getDni();
+				telefono = datosPersonalesPersona.getTelefono();
+				domicilio = datosPersonalesPersona.getDomicilio();
+				ocupacion = datosPersonalesPersona.getOcupacion();
 				fechaNacimientoPerson = datosPersonalesPersona.getFechaNacimiento();
+				sexo = datosPersonalesPersona.getSexo();
 			}
-		
-			Sexo nuevoSexo = null;
-			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
 			
 			Admin nuevo_admin = new Admin();
 			nuevo_admin.setEmail(email.trim());
@@ -92,9 +98,9 @@ public class ServicioAdmin {
 			nuevo_admin.setNombre(nombrePersona);
 			nuevo_admin.setApellido(apellidoPersona);
 			nuevo_admin.setTelefono(telefono.trim());
-			nuevo_admin.setDomicilio(direccion.trim());
+			nuevo_admin.setDomicilio(domicilio.trim());
 			nuevo_admin.setFechaNacimiento(fechaNacimientoPerson);
-			nuevo_admin.setSexo(nuevoSexo);
+			nuevo_admin.setSexo(sexo);
 			nuevo_admin.setOcupacion(ocupacion.trim());
 			repositorioAdmin.save(nuevo_admin);
 			repositorioUsuario.delete(datosDelUsuario);

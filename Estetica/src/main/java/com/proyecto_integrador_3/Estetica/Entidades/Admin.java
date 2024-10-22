@@ -24,8 +24,8 @@ public class Admin extends Persona implements Serializable {
 			 String domicilio, String telefono) {
 		super(id, tokens, dni, contrasena, email, rol, activo, ValidacionForm, nombre, apellido, ocupacion, sexo, fechaNacimiento,  emailValidado,
 				fechaCreacion, intentosValidacion, bloqueoValidacion, horaDeBloqueoValidacion, intentosLogin, bloqueoLogin, horaBloqueoLogin, domicilio, telefono);
-		
 	}
+		
 	
 	public Admin(String id, String contrasena, String email, Rol rol, Boolean activo, String nombre, String apellido) {
 		super(id, contrasena, email, rol, activo, nombre, apellido);

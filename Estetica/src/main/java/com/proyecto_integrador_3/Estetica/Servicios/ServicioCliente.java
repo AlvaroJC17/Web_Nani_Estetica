@@ -17,12 +17,14 @@ import org.springframework.stereotype.Service;
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
+import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 
 import jakarta.transaction.Transactional;
@@ -36,6 +38,14 @@ public class ServicioCliente {
 	@Autowired
 	private RepositorioUsuario repositorioUsuario;
 	
+	@Autowired
+	private RepositorioCodigoDeVerificacion repositorioCodigoDeVerificacion;
+	
+	@Autowired
+	public RepositorioTurnos repositorioTurnos;
+	
+	@Autowired
+	private RepositorioPersona repositorioPersona;
 	
 	@Autowired
 	private ServicioUsuario servicioUsuario;
@@ -44,12 +54,37 @@ public class ServicioCliente {
 	private ServicioCodigoDeVerificacion servicioCodigoDeVerificacion;
 	
 	@Autowired
-	private RepositorioPersona repositorioPersona;
-	
-	@Autowired
-	private RepositorioCodigoDeVerificacion repositorioCodigoDeVerificacion;
+	public ServicioTurnos servicioTurnos;
 	
 	
+
+	
+
+	
+	  @Transactional
+	  public void quitarMultasCliente(String idCliente) throws MiExcepcion {
+		  
+		  try {
+			  
+			  Cliente cliente = buscarDatosCliente(idCliente);
+			  if (cliente.getMulta()) {
+				cliente.setMulta(FALSE);
+				repositorioCliente.save(cliente);
+			}
+			  
+			  List<Turnos> tunosConMulta = servicioTurnos.buscarPorIdClienteAndMulta(idCliente);
+			  for (Turnos turnos : tunosConMulta) {
+				if (turnos.getMulta()) {
+					turnos.setMulta(FALSE);
+					repositorioTurnos.save(turnos);
+				}
+			}
+			  	  
+		} catch (Exception e) {
+			throw new MiExcepcion("No se pudo quitar la multa del cliente");
+		}
+		  
+	  }
 	
 	public List <Cliente> buscarPacientePorId(String idCliente) throws MiExcepcion{
 		try {

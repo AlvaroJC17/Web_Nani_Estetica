@@ -48,6 +48,8 @@ public interface RepositorioTurnos extends JpaRepository<Turnos, String> {
 	
 	List<Turnos> findByEmailOrderByFechaAsc(String email);
 	
+	List<Turnos> findByActivoTrueAndClienteIdOrderByFechaAsc(String idCliente);
+	
 	List<Turnos> findByEmailAndActivoOrderByFechaAsc(String email, Boolean activo);
 	
 	List<Turnos> findByProfesionalAndFecha(Profesional profesional, LocalDate fecha);

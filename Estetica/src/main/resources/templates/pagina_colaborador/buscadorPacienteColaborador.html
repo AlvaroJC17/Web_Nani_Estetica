@@ -20,7 +20,7 @@
 </head>
 
 
-<body class="body-interno"  th:each="datosProfesional : ${datosProfesional}">
+<body class="body-interno"  th:each="datosColaborador : ${datosColaborador}">
 
 	<!--Boton flotante de ws-->
 	 <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
@@ -36,26 +36,26 @@
       </button>
       
       <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-        <a th:href="@{/homeProfesional(email=${datosProfesional.email})}">
+        <a th:href="@{/homeColaborador(emailColaborador=${datosColaborador.email})}">
           <div class="imagen-logo ajuste-texto-menu">
             <img src="./imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
           </div>
         </a>
         <ul class="navbar-nav navbar4 container-fluid p-0">
 			<li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeColaborador(emailColaborador=${datosColaborador.email})}">Home</a>
           </li>
 		  <li class="nav-item">
-		             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis datos</a>
+		             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosColaborador(emailColaborador=${datosColaborador.email})}">Mis datos</a>
 		           </li>
 		  	  <li class="nav-item">
-		  	     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
+		  	     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultosColaborador(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">Clientes</a>
 		  	   </li>
           <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misturnos(email=${datosColaborador.email})}">Profesionales</a>
           </li>
           <li class="nav-item">
-         <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
+         <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">Turnos</a>
           </li>
           <li class="nav-item">
             <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar Sesion</a>
@@ -79,10 +79,10 @@
 
 					<div class="">
 						<div class="mb-3">
-							<form id="formularioBuscador" th:action="@{/buscadorPacientes}" method="post">
+							<form id="formularioBuscador" th:action="@{/buscadorPacientesColaborador}" method="post">
 								<div>
 									<input  type="text" class="form-control mb-3" id="dato" name="dato" placeholder="Buscar por nombre o DNI">
-									<input  type="hidden" id="email" name="email" th:value="${datosProfesional.email}"></input>
+									<input  type="hidden" id="email" name="emailColaborador" th:value="${datosColaborador.email}"></input>
 									<!--Obtenemos el valor de la variable usuariosEmail del metodo listarUsuariosOcultos que a su vez la obtenemos de la pagina homeAdmin y darle al boton buscar la pasa al metod buscarPorDni-->
 								</div>
 								<div class="mt-5 text-center">
@@ -95,7 +95,7 @@
 				</section>
 								
 			<section th:if="${usuarios}">
-				<form id="formularioTabla" class="alinear-tabla" th:action="@{/buscarDatosPersonalesPaciente}" method="post">
+				<form id="formularioTabla" class="alinear-tabla" th:action="@{/datosPersonalesPacienteColaborador}" method="post">
 					
 					<div class="container-fluid">
 												<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
@@ -140,9 +140,9 @@
 					<div class="text-center">
 							<button id="submitVerPerfil" type="submit" class="bn632-hover bn26">Ver perfil</button>
 						</div>
-						<input hidden type="text"  name="emailProfesional" th:value="${datosProfesional.email}"></input> <!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
+						<input hidden type="text"  name="emailColaborador" th:value="${datosColaborador.email}"></input> <!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
 						<input hidden type="text"  name="dato" th:value="${dato}"></input>
-						<input hidden type="text"  name="idProfesional" th:value="${datosProfesional.id}"></input>
+						<input hidden type="text"  name="idColaborador" th:value="${datosColaborador.id}"></input>
 				</form>
 			</section>
 		</div>

@@ -10,11 +10,11 @@
    		<script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
         <link rel="stylesheet" href="../css/styles.css">
-        <title>Datos Cliente</title>
+        <title>Datos Colaborador</title>
       </head>
 
 <!--usea el bucle en el body para que los datos esten disponibles para todos los enlaces de la pag-->
-<body onload="actualizarParrafo(prueba)" class="body-misdatos " th:each="datosCliente : ${datosCliente}"> <!--La variable datosCliente viene del metodo misdatosCliente,-->
+<body class="body-misdatos " th:each="datosColaborador : ${datosColaborador}"> <!--La variable datosCliente viene del metodo misdatosCliente,-->
 																	   
  <!--Boton flotante de ws-->
  <a href="https://wa.me/541157442608?text=Nani estética" target="_blank" class="boton-flotante">
@@ -29,26 +29,26 @@
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse navbarlogo" id="navbarTogglerDemo01">
-          <a th:href="@{/homeCliente(email=${datosCliente.email})}"> <!--Al presionar la imagen del logo le vuelvo a mandar el mail a la pagina home para que vuelva a cargar con el dato del nombre-->
+          <a th:href="@{/homeColaborador(emailColaborador=${datosColaborador.email})}"> <!--Al presionar la imagen del logo le vuelvo a mandar el mail a la pagina home para que vuelva a cargar con el dato del nombre-->
             <div class="imagen-logo ajuste-texto-menu">
               <img src="../imagenes/Nani-removebg-preview.png" class=" img-logo-nav" alt="">
             </div>
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
 			<li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeCliente(email=${datosCliente.email})}">Home</a> <!--Le mando el mail al metodo homeCliente para que cargue con todo los datos-->
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeColaborador(emailColaborador=${datosColaborador.email})}">Home</a> <!--Le mando el mail al metodo homeCliente para que cargue con todo los datos-->
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis datos</a> <!--Le mando el mail al metodo misdatosCLiente para que cargue con todo los datos-->
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosColaborador(emailColaborador=${datosColaborador.email})}">Mis datos</a> <!--Le mando el mail al metodo misdatosCLiente para que cargue con todo los datos-->
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/tratamientos(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Solicitar turno</a>
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultosColaborador(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">Clientes</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis turnos</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnos(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">Profesionales</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis consultas</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misconsultas(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">Turnos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/index}">Cerrar sesion</a>
@@ -69,57 +69,57 @@
           <div class="row">
           <div class="mb-3 col-lg-4">
             <label for="nombre" class="form-label texto-label" disabled >Nombre</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosCliente.nombre)}"  class="form-control" id="nombre" placeholder="" disabled >
+            <input type="text" th:value="${#strings.toUpperCase(datosColaborador.nombre)}"  class="form-control" id="nombre" placeholder="" disabled >
           </div>
           <div class="mb-3 col-lg-4">
             <label for="apellido" class="form-label texto-label">Apellido</label>
-            <input type="text" th:value="${#strings.toUpperCase(datosCliente.apellido)}" class="form-control" id="apellido" placeholder="" disabled >
+            <input type="text" th:value="${#strings.toUpperCase(datosColaborador.apellido)}" class="form-control" id="apellido" placeholder="" disabled >
           </div>
           <div class="mb-3 col-lg-4">
             <label for="dni" class="form-label texto-label">DNI</label>
-            <input type="number" th:value="${#strings.toUpperCase(datosCliente.dni)}" class="form-control" id="dni" placeholder="" disabled >
+            <input type="number" th:value="${#strings.toUpperCase(datosColaborador.dni)}" class="form-control" id="dni" placeholder="" disabled >
           </div>
         </div>
         <div class="row">
           <div class="mb-3 col-lg-6 ">
             <label for="nacimiento" class="form-label texto-label">Fecha Nacimiento</label>
-            <input type="date" th:value="${#strings.toUpperCase(datosCliente.fechaNacimiento)}"  class="form-control" id="nacimiento" placeholder="" disabled>
+            <input type="date" th:value="${#strings.toUpperCase(datosColaborador.fechaNacimiento)}"  class="form-control" id="nacimiento" placeholder="" disabled>
           </div>
           <div class="mb-3 col-lg-6 ">
 			<label for="email" class="form-label texto-label">Email</label>
-            <input type="email" name="email" th:value="${#strings.toUpperCase(datosCliente.email)}" class="form-control" id="email" placeholder="" disabled>
+            <input type="email" name="email" th:value="${#strings.toUpperCase(datosColaborador.email)}" class="form-control" id="email" placeholder="" disabled>
           </div>
         </div>
         
         
 
-        <form id="formularioActualizarCliente" th:action="@{/actualizarDatosCliente}" method="post">
+        <form id="formularioActualizarColaborador" th:action="@{/actualizarDatosColaborador}" method="post">
         <div class="row">
           <div class="mb-3 col-lg-6">
 			<label for="ocupacion" class="form-label texto-label">Ocupación</label>
-            <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosCliente.ocupacion)}" class="form-control" id="ocupacion" disabled>
+            <input type="text" name="ocupacion" th:value="${#strings.toUpperCase(datosColaborador.ocupacion)}" class="form-control" id="ocupacion" disabled>
           </div>
           <div class="mb-3 col-lg-6">
             <label for="domicilio" class="form-label texto-label">Dirección</label>
-            <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosCliente.domicilio)}" class="form-control" id="domicilio" disabled>
+            <input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosColaborador.domicilio)}" class="form-control" id="domicilio" disabled>
           </div>
         </div>
         <div class="row ">
           <div class="mb-3 col-lg-6">
             <label for="sexo" class="form-label texto-label">Sexo</label>
             <select  name="sexo" class="form-select" id="sexo" aria-label="Default select example" disabled>
-            <option value=""  th:selected="${datosCliente.sexo}" th:text="${datosCliente.sexo}"></option>
+            <option value=""  th:selected="${datosColaborador.sexo}" th:text="${datosColaborador.sexo}"></option>
             <option th:each="sexo : ${sexos}" th:value="${sexo.name()}" th:text="${sexo.name()}"></option>
             </select>
           </div>
           <div class="mb-3 col-lg-6">
             <label for="telefono" class="form-label texto-label">Teléfono</label>
-            <input type="text" name="telefono" th:value="${#strings.toUpperCase(datosCliente.telefono)}" class="form-control" id="telefono" disabled>
+            <input type="text" name="telefono" th:value="${#strings.toUpperCase(datosColaborador.telefono)}" class="form-control" id="telefono" disabled>
           </div>
         </div>
         
-        <input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente" id="idCliente"> <!--input oculto para enviar el id del cliente al controlador actualizarDatosCliente-->
-        <input type="hidden" th:value="${datosCliente.email}" class="form-control" name="email" id="email">
+        <input type="hidden" th:value="${datosColaborador.id}" class="form-control" name="idColaborador"> <!--input oculto para enviar el id del cliente al controlador actualizarDatosCliente-->
+        <input type="hidden" th:value="${datosColaborador.email}" class="form-control" name="emailColaborador">
 	 
         <div class="boton-de-registro mt-4  text-center">
 		  <button id="botonHabilitar"  type="button" class="bn632-hover bn26">Habilitar/Deshabilitar</button>
@@ -136,7 +136,7 @@
 						<h1 class="modal-title fs-6 fw-bold mt-4" id="confirmNotasLabel">Estimado usuario</h1>
 						</div>
 						<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
-																							  		
+								  		
 						<p class="text-center fs-6 fw-mediun">¿Estas seguro de modificar estos datos?</p>
 								  		
 								  		
@@ -255,5 +255,5 @@ var showModalExito = /*[[${showModalExito}]]*/ false;
 	
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-<script src="../js/misDatosCliente.js"></script> <!--Hoja de todos los scripts de la toda la pagina de misDatosCliente-->
+<script src="../js/misDatosColaborador.js"></script> <!--Hoja de todos los scripts de la toda la pagina de misDatosCliente-->
 </html>

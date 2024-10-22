@@ -117,10 +117,6 @@
 				
 			<section th:if="${usuarios}">
 				<form class="alinear-tabla" th:action="@{/modificarUsuario}" method="post">
-					<input hidden type="text" id="emailAdministrador" name="emailAdministrador"
-						th:value="${usuariosEmail}"></input> 					<!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
-						<input hidden type="text" id="dato" name="dato" th:value="${dato}"></input> <!--El valor de la variable viene de buscarDNIoNombre y va hacia modificarUsuario y a su vez va mensajeErrorNoId-->
-
 						<div class="container-fluid">
 							<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
 								<thead>
@@ -165,6 +161,7 @@
 								<!--Enviamos el valor del rol con el name nuevoRol al metodo modificarUsuario-->
 								<option selected>Mofidicar rol</option>
 								<option value="ADMIN">Admin</option>
+								<option value="COLABORADOR">Colaborador</option>
 								<option value="PROFESIONAL">Profesional</option>
 								<option value="CLIENTE">Cliente</option>
 							</select>
@@ -319,6 +316,9 @@
 						</div>
 
 					</div>
+					
+					<input hidden type="text" id="emailAdministrador" name="emailAdministrador" th:value="${usuariosEmail}"></input> <!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
+					<input hidden type="text" id="dato" name="dato" th:value="${dato}"></input> <!--El valor de la variable viene de buscarDNIoNombre y va hacia modificarUsuario y a su vez va mensajeErrorNoId-->
 				</form>
 			</section>
 		</div>

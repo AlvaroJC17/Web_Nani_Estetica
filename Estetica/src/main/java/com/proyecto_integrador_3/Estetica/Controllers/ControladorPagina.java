@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
+import com.proyecto_integrador_3.Estetica.Entidades.Colaborador;
 import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
+import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.TokenUsuario;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
@@ -28,9 +30,12 @@ import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioToken;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioAdmin;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCodigoDeVerificacion;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioColaborador;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioEmail;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioToken;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioUsuario;
@@ -51,10 +56,16 @@ public class ControladorPagina {
 	public ServicioUsuario servicioUsuario;
 	
 	@Autowired
+	public ServicioColaborador servicioColaborador;
+	
+	@Autowired
 	public ServicioCodigoDeVerificacion servicioCodigoDeVerificacion;
 	
 	@Autowired
 	public ServicioEmail servicioEmail;
+	
+	@Autowired
+	public ServicioAdmin servicioAdmin;
 	
 	@Autowired
 	ServicioToken servicioToken;
@@ -64,6 +75,9 @@ public class ControladorPagina {
 	
 	@Autowired
 	ServicioTurnos servicioTurnos;
+	
+	@Autowired
+	public ServicioPersona servicioPersona;
 	
 	
 	@GetMapping("/login")
@@ -426,6 +440,7 @@ public class ControladorPagina {
 			//Validamos con el mail ingresado si el usuario existe en la base de datos
 			// Si existe entonces le buscamos todos los valores de las variables mostradas abajo
 			Usuario usuario;
+			String idUsuario = null;
 			String emailUsuario = null;
 			String passwordRegistrado = null;
 			Boolean activo;
@@ -435,6 +450,7 @@ public class ControladorPagina {
 		     if (usuarioOptional.isPresent()) {		    	 
 		         usuario = usuarioOptional.get(); //con el metodo get, asociamos al usuario encontrado a la variable usuario y asi poder acceder a sus atributos
 		         emailUsuario = usuario.getEmail();
+		         idUsuario = usuario.getId();
 		         passwordRegistrado = usuario.getContrasena();
 		         activo = usuario.getActivo();
 		         validarForm = usuario.getValidacionForm();
@@ -471,26 +487,51 @@ public class ControladorPagina {
 		        		  
 		        		  //Buscamos los datos pertenecientes a ese email en la tabla de persona y los pasamos a homeAdmin
 		        		  //Dependiendo si es admin, profesional o cliente lo direccionamos a su respectivo home
-		        		  List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(emailUsuario);
-				             if ("ADMIN".equals(rol.toString())) {
-				            	 if (validarForm) {
+		        		  List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(emailUsuario);			            
+				             
+				           //Tratar de sacar los validacion form de todos los usuarios, menos del cliente, que es el primer que llena todo sus datos
+				        	  //Cmaboar rl validacionform por registrado, y evitar ese paso de llenar datos repetidos cuando se le cambia un rol a un usuario
+				        	 switch (rol.toString()) {
+							
+				        	 case "ADMIN":
+				        		 if (validarForm) {
 				            		 modelo.addAttribute("datosAdmin", datosPersonaUsuario);
 				            		 return "pagina_admin/homeAdmin";
 				            	 }else if(!validarForm) {
-				            		 modelo.addAttribute("emailUsuario", emailUsuario);
-				            		 return "pagina_admin/completarDatosAdmin";
+				            		 
+				            		 //Usamos el servicio para registrar un nuevo admin
+				            		 servicioAdmin.registrarAdmin(emailUsuario);
+				            		 
+				            		 //Buscamos los datos del nuevo usuario registrado
+				            		 List <Usuario> datosPersonaUsuarioAdmin = servicioUsuario.buscarPorEmail(emailUsuario);
+				            		 
+				            		 //Lo pasamos a la vista
+				            		 modelo.addAttribute("datosAdmin", datosPersonaUsuarioAdmin);
+				            		 return "pagina_admin/homeAdmin";
 				            	 }
-				             } else if ("CLIENTE".equals(rol.toString())) {
-				            	 if (validarForm) {
-				            		 modelo.addAttribute("datosCliente", datosPersonaUsuario);
-				            		 servicioTurnos.actualizarTurnosAntiguos(emailUsuario); //validamos si el cliente tiene turnos vencidos antes de enviarlo a su home
-				            		 return "pagina_cliente/homeCliente";
-				            	 }else if(!validarForm) {
-				            		 modelo.addAttribute("emailUsuario", emailUsuario); //Esta variable envia el email en un input oculto hacia el metodo guardarDatosPersona
-				            		 return "pagina_cliente/completarDatosCliente";
+				        		 break;
+								
+							case "COLABORADOR":
+								 if (validarForm) {
+				            		 modelo.addAttribute("datosColaborador", datosPersonaUsuario);
+				            		 return "pagina_colaborador/homeColaborador";
+				            		 
+								 }else if(!validarForm) { //Este boolean indica si el usuario esta registrado
+				            		 
+									 //Usamos el servicio para registrar a un nuevo colaborador
+				            		 servicioColaborador.registrarColaborador(emailUsuario);
+				            		 
+				            		 //Obtenemos los datos del nuevo usuario registrado
+				            		 List <Usuario> datosPersonaUsuarioColaborador = servicioUsuario.buscarPorEmail(emailUsuario);
+				            		 
+				            		 //Lo pasamos a la vista
+				            		 modelo.addAttribute("datosColaborador", datosPersonaUsuarioColaborador);
+				            		 return "pagina_colaborador/homeColaborador";
 				            	 }
-				             } else if ("PROFESIONAL".equals(rol.toString())) {				            	 
-				            	 if (validarForm) {
+								 break;
+				            		 																
+							case "PROFESIONAL":
+								if (validarForm) {
 				            		 modelo.addAttribute("datosProfesional", datosPersonaUsuario);
 				            		 return "pagina_profesional/homeProfesional";
 				            	 }else if(!validarForm) {
@@ -502,8 +543,25 @@ public class ControladorPagina {
 				            		 modelo.addAttribute("DiasDeLaSemana", DiasDeLaSemana.values());
 				            		 return "pagina_profesional/completarDatosProfesional";
 				            	 }
-				             }
+								break;
+									
+							case "CLIENTE":
+								 if (validarForm) {
+				            		 modelo.addAttribute("datosCliente", datosPersonaUsuario);
+				            		 servicioTurnos.actualizarTurnosAntiguos(emailUsuario); //validamos si el cliente tiene turnos vencidos antes de enviarlo a su home
+				            		 return "pagina_cliente/homeCliente";
+				            	 }else if(!validarForm) {
+				            		 modelo.addAttribute("emailUsuario", emailUsuario); //Esta variable envia el email en un input oculto hacia el metodo guardarDatosPersona
+				            		 return "pagina_cliente/completarDatosCliente";
+				            	 }
+								break;
+								
+							default:
+								break;
+							} 
+				             
 		        	  }
+		        	  
 		        	  //En caso que la contraseña ingresada no sea igual a la guardada, tiramos exta excepcion con un mensaje
 		         } catch (MiExcepcion e) {
 		        	 int intentosLogin = servicioUsuario.validarIntentosLogin(emailUsuario);

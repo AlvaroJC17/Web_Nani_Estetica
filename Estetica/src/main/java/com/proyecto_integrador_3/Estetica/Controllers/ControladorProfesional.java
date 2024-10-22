@@ -37,6 +37,7 @@ import com.proyecto_integrador_3.Estetica.Repository.RepositorioProfesional;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTratamiento;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
@@ -62,6 +63,9 @@ public class ControladorProfesional {
 	
 	@Autowired
 	public ServicioTratamiento servicioTratamiento;
+	
+	@Autowired
+	public ServicioPersona servicioPersona;
 	
 	@Autowired
 	public RepositorioProfesional repositorioProfesional;
@@ -429,9 +433,9 @@ public class ControladorProfesional {
 		//realizo. La variable dato es la misma del metodo /buscadorPaciente
 		if (idCliente == null || idCliente.isEmpty()) {
 			String datoSinEspacios = dato.trim();
-			List<Persona> pacienteDni = servicioProfesional.buscarPacienteByRolAndDni(datoSinEspacios, Rol.CLIENTE);
-			List<Persona> pacienteNombre = servicioProfesional.buscarPacienteByRolAndNombre(datoSinEspacios, Rol.CLIENTE);
-			List<Persona> pacienteEmail = servicioProfesional.buscarPacienteByRolAndEmail2(datoSinEspacios, Rol.CLIENTE);
+			List<Persona> pacienteDni = servicioPersona.buscarPacienteByRolAndDni(datoSinEspacios, Rol.CLIENTE);
+			List<Persona> pacienteNombre = servicioPersona.buscarPacienteByRolAndNombre(datoSinEspacios, Rol.CLIENTE);
+			List<Persona> pacienteEmail = servicioPersona.buscarPacienteByRolAndEmail2(datoSinEspacios, Rol.CLIENTE);
 			List<Persona> datosPaciente = null;
 			// En este codigo buscamos asignarle el valor de la lista que no venga vacia a una variable general llamada datosPaciente
 			if (!pacienteDni.isEmpty()) {
@@ -547,9 +551,9 @@ public class ControladorProfesional {
 		}
 		// Si cumple las condiciones para pasar los condicionales de arriba, entonces
 		//usamos el valor de dato, segun corresponda
-		List<Persona> pacienteDni = servicioProfesional.buscarPacienteByRolAndDni(datoSinEspacios, Rol.CLIENTE);
-		List<Persona> pacienteNombre = servicioProfesional.buscarPacienteByRolAndNombre(datoSinEspacios, Rol.CLIENTE);
-		List<Persona> pacienteEmail = servicioProfesional.buscarPacienteByRolAndEmail2(datoSinEspacios, Rol.CLIENTE);
+		List<Persona> pacienteDni = servicioPersona.buscarPacienteByRolAndDni(datoSinEspacios, Rol.CLIENTE);
+		List<Persona> pacienteNombre = servicioPersona.buscarPacienteByRolAndNombre(datoSinEspacios, Rol.CLIENTE);
+		List<Persona> pacienteEmail = servicioPersona.buscarPacienteByRolAndEmail2(datoSinEspacios, Rol.CLIENTE);
 		
 		//Validamos que alguna de las listas de arriba encontro un resultado, esto implica que si
 		//encontro resultado entonces el usuario que encontro tiene rol de cliente
@@ -557,11 +561,10 @@ public class ControladorProfesional {
 		// y con esta validacion mandamos un mensaje de error al usuario profesional
 		if (pacienteDni.isEmpty() && pacienteNombre.isEmpty() && pacienteEmail.isEmpty()) {
 			error = "Los datos ingresador no pertenecen a un paciente o el paciente no se encuentra registrado";
-			//model.addAttribute("usuariosEmail", email);
 			model.addAttribute("datosProfesional", datosProfesional);
-				model.addAttribute("error", error);
-				model.addAttribute("showModalError", true);
-				return "/pagina_profesional/buscadorPaciente";
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+			return "/pagina_profesional/buscadorPaciente";
 		}
 		
 		//Asignamos el valor de la lista que no venga vacia a la variable datosPaciente
