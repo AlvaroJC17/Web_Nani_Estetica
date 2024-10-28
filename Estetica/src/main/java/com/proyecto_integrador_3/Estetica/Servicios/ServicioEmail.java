@@ -199,16 +199,14 @@ public class ServicioEmail {
 		                cause = cause.getCause();
 		            }
 		            // Si no es una SocketException, lanzar una excepción genérica
-		            throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado Cliente,</span><br><br>"
-	                		+ "<span class='fs-6'> Ha ocurrido un error al enviar el email de confimación del turno generado, pero no te preocupes"
+		            throw new MiExcepcion("<span class='fs-6'> Ha ocurrido un error al enviar el email de confimación del turno generado, pero no te preocupes"
 	                		+ "que igualmente el turno fue generado con exito y podrás visualizarlo en la pestaña de Mis Turnos sin ningún problema<br>"
 	                		+ "Te pedimos disculpas por las molestias ocacionadas");
 		        } catch (Exception e) {
 		            System.err.println("Exception class: " + e.getClass().getName());
 		            System.err.println("Exception message: " + e.getMessage());
 		            e.printStackTrace();
-		            throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado Cliente,</span><br><br>"
-	                		+ "<span class='fs-6'> Ha ocurrido un error al enviar el email de confimación del turno generado, pero no te preocupes"
+		            throw new MiExcepcion("<span class='fs-6'> Ha ocurrido un error al enviar el email de confimación del turno generado, pero no te preocupes"
 	                		+ "que igualmente el turno fue generado con exito y podrás visualizarlo en la pestaña de Mis Turnos sin ningún problema<br>"
 	                		+ "Te pedimos disculpas por las molestias ocacionadas");
 		        }

@@ -42,11 +42,16 @@ public interface RepositorioTurnos extends JpaRepository<Turnos, String> {
 	//Buscamos turnos por el estado, si estan activos, si tienen multas por el email del cliente y los ordenamos por la fecha de creacion del turno
 	List<Turnos> findByEstadoAndActivoAndMultaAndEmailOrderByFechaCreacion(EstadoDelTurno estado, Boolean activo, Boolean multa, String email);
 	
+	//Buscamos turnos por el estado, si estan activos, si tienen multas por el email del cliente y los ordenamos por la fecha de creacion del turno
+	List<Turnos> findByEstadoAndActivoAndMultaAndClienteIdOrderByFechaCreacion(EstadoDelTurno estado, Boolean activo, Boolean multa, String idCliente);
+	
 	List<Turnos> findByEstadoAndActivoAndMultaAndProfesionalIdOrderByFechaCreacion(EstadoDelTurno estado, Boolean activo, Boolean multa, String idProfesional);
 	
 	List<Turnos> findByActivoAndEmail(Boolean activo, String email);
 	
 	List<Turnos> findByEmailOrderByFechaAsc(String email);
+	
+	List<Turnos> findByClienteIdOrderByFechaAsc(String idCliente);
 	
 	List<Turnos> findByActivoTrueAndClienteIdOrderByFechaAsc(String idCliente);
 	

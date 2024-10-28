@@ -72,19 +72,39 @@
       <div class=" ft ">
         <a th:href="@{/listarPacientesOcultosColaborador(emailColaborador=${datosColaborador.email}, idCliente=${datosColaborador.id})}">
           <div class="d-flex justify-content-center align-items-center">
-            <img class="iconos" src="../imagenes/icons8-más-50.png" alt="">
+            <img class="iconos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
             <p class="texto-tarjetas-main-home ms-1 hover">Clientes</p>
           </div>
         </a>
       </div>
-      <div class=" ft">
-        <a th:href="@{/misturnos(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
-          <div class="d-flex justify-content-center align-items-center">
-            <img class="iconos" src="../imagenes/icons8-calendario-50.png" alt="">
-            <p class="texto-tarjetas-main-home ms-1 hover">Profesionales</p>
-          </div>
-        </a>
-      </div>
+	  
+	  <div class=" ft">
+	          <a th:href="@{/misturnos(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
+	            <div class="d-flex justify-content-center align-items-center">
+	              <img class="iconos" src="../imagenes/icons8-tarjeta-de-identificación-50.png" alt="">
+	              <p class="texto-tarjetas-main-home ms-1 hover">Profesionales</p>
+	            </div>
+	          </a>
+	        </div>
+	  
+	  <div class=" ft">
+	      <a  th:href="@{/misconsultas(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
+	      <div class="d-flex justify-content-center align-items-center">
+	      <img class="iconos" src="../imagenes/icons8-más-50.png" alt="">
+	      <p class="texto-tarjetas-main-home ms-1 hover">Alta clientes</p>
+	       </div>
+	       </a>
+	  </div> 
+	  
+	  <div class=" ft">
+	  	        <a  th:href="@{/misconsultas(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
+	  	        <div class="d-flex justify-content-center align-items-center">
+	  	        <img class="iconos" src="../imagenes/icons8-más-50.png" alt="">
+	  	        <p class="texto-tarjetas-main-home ms-1 hover">Alta Profesional</p>
+	  	        </div>
+	  	        </a>
+	  	    </div>
+	  
 
       <div class=" ft">
         <a  th:href="@{/misconsultas(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
@@ -94,6 +114,16 @@
         </div>
         </a>
       </div> 
+	  
+	  
+		<div class=" ft">
+			 <a  th:href="@{/misconsultas(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
+			 <div class="d-flex justify-content-center align-items-center">
+			 <img class="iconos" src="../imagenes/icons8-boleta-de-calificaciones-50.png" alt="">
+			 <p class="texto-tarjetas-main-home ms-1 hover">Estadísticas</p>
+			 </div>
+			 </a>
+		</div> 
 </div>
 </div>
   </main>

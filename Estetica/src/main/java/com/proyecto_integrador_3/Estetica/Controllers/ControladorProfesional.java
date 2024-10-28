@@ -355,8 +355,6 @@ public class ControladorProfesional {
 				
 			}else if(funcionalidadBotones.equalsIgnoreCase("botonGuardarNotas")) {
 				
-				System.out.println("Notas del profesional: " + notas_profesional);
-				
 				//servicio para guardar las notas de un profesional en el perfil del cliente
 				servicioProfesional.guardarNotasProfesional(idCliente, notas_profesional);
 				

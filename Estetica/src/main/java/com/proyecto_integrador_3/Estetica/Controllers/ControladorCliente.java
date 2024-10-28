@@ -94,8 +94,30 @@ public class ControladorCliente {
 			@RequestParam(required = false) String email,
 			@RequestParam(required = false) String idCliente,
 			ModelMap model) throws MiExcepcion {
-		    
 		
+		
+		try {
+			servicioCliente.verificarEmailActual(email, idCliente);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+            model.addAttribute("showModalError", true);
+            return "/login"; // si // si se tira la excepcion del servicio verificarEmailActual, devolvemos al usuario a la pagina de login
+		}
+		    
+		List<Usuario> datosCliente = new ArrayList<>();
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(email);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
+		
+
 		List<Turnos> turnosConMulta = repositorioTurnos.findByClienteIdAndActivoFalseAndMultaTrue(idCliente);
 		int totalCostoMultas = 0;
 		 Map<String, String> turnosConNombreProfesional = new HashMap<>(); //Creamos una lista donde se van a asociar el id del turno con el nombre del profesional
@@ -123,7 +145,6 @@ public class ControladorCliente {
 			 }
 		}
 		//Buscamos los datos del usuario
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		model.addAttribute("turnosConMulta", turnosConMulta);
 		model.addAttribute("totalCostoMultas", totalCostoMultas);
 		model.addAttribute("turnosConNombreProfesional", turnosConNombreProfesional);
@@ -139,10 +160,31 @@ public class ControladorCliente {
 			@RequestParam(required = false) String idCliente,
 			ModelMap model) {
 		
+		try {
+			servicioCliente.verificarEmailActual(email, idCliente);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+            model.addAttribute("showModalError", true);
+            return "/login"; // si // si se tira la excepcion del servicio verificarEmailActual, devolvemos al usuario a la pagina de login
+		}
+		    
+		List<Usuario> datosCliente = new ArrayList<>();
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(email);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
+		
 		//Antes de mostrar los tratamientos disponibles, verificamos que no hay turno antiguos
 		//no asistidos, de ser afirmativo, le colocamos una multa al turno
 		try {
-			servicioTurnos.actualizarTurnosAntiguos(email);
+			servicioTurnos.actualizarTurnosAntiguos(email, idCliente);
 		} catch (MiExcepcion e) {
 			System.out.println("Error en el portal de tratamientos");
 			e.printStackTrace();
@@ -159,7 +201,6 @@ public class ControladorCliente {
 		if (tieneMultas) {
 			return "redirect:/multas?email=" + email + "&idCliente=" + idCliente; 
 		}else {
-			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 			model.addAttribute("datosCliente", datosCliente);
 			return "/pagina_cliente/tratamientos";
 		}
@@ -173,6 +214,27 @@ public class ControladorCliente {
 			@RequestParam String provincia,
 			Model model) throws MiExcepcion {
 		
+		try {
+			servicioCliente.verificarEmailActual(emailCliente, idCliente);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+            model.addAttribute("showModalError", true);
+            return "/login"; // si // si se tira la excepcion del servicio verificarEmailActual, devolvemos al usuario a la pagina de login
+		}
+		    
+		List<Usuario> datosCliente = new ArrayList<>();
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(emailCliente);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
+		
 		Boolean isEspecialidadDisabled = false; // Booleano para habilitar o deshabilitar el input de especialidades
 		Boolean isProfesionalDisabled = false; //Booleano para habilitar o deshabilitar el input de profesional
 		Boolean isFechaDisabled = false; //Booleano para habilitar o deshabilitar el input de fecha
@@ -181,8 +243,7 @@ public class ControladorCliente {
 		
 		//validamos que se seleccione una provincia
 		if (!servicioProfesional.validarProvincia(provincia)) {
-			String error ="<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"+
-					"<span class='fs-6'>Es necesario que seleccione la provincia donde vive para poder ver que"
+			String error ="<span class='fs-6'>Es necesario que seleccione la provincia donde vive para poder ver que"
 					+ " profesionales estan disponibles.</span>";
 			return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, model);
 		}
@@ -191,9 +252,6 @@ public class ControladorCliente {
 		//pasamos la provincia a enum provincia
 		Provincias nuevoRolProvincia = null;
 		nuevoRolProvincia = Provincias.valueOf(provincia);
-	
-		//Buscamos todos los datos del cliente y lo pasamos al html, sirve para visualizar la pagina y pasar los datos del cliente entre controladores
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 
 		//Pasamos los datos a la vista
 		model.addAttribute("datosCliente", datosCliente);
@@ -212,8 +270,7 @@ public class ControladorCliente {
 		
 		//Validamos que existan profesionales disponibles en la provincia seleccionada, sino tiramos un error
 		if (profesionalesDisponiblesEnLaProvincia.isEmpty()) {
-			String error ="<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"+
-			"<span class='fs-6'>No hay profesionales disponibles para la provincia seleccionada.</span>";
+			String error ="<span class='fs-6'>No hay profesionales disponibles para la provincia seleccionada.</span>";
 			return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, model);
 		}
 
@@ -224,8 +281,7 @@ public class ControladorCliente {
 		//Validamos que si la lista de profesionales esta vacia para esa provincia, especialidad y rol
 		//error con un mensaje
 		if (especialidadDisponibles.isEmpty()) {
-			String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-					+"<span class='fs-6'>Lamentamos informarle que no hay profesionales disponibles para la provincia seleccionada.</span>";
+			String error = "<span class='fs-6'>Lamentamos informarle que no hay profesionales disponibles para la provincia seleccionada.</span>";
 			return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, model);
 		}
 		
@@ -255,6 +311,27 @@ public class ControladorCliente {
 			@RequestParam String tipoEspecialidad,
 			Model model) throws MiExcepcion {
 		
+		try {
+			servicioCliente.verificarEmailActual(emailCliente, idCliente);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+            model.addAttribute("showModalError", true);
+            return "/login"; // si // si se tira la excepcion del servicio verificarEmailActual, devolvemos al usuario a la pagina de login
+		}
+		    
+		List<Usuario> datosCliente = new ArrayList<>();
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(emailCliente);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
+		
 			    //pasamos la provincia a enum provincia
 				Provincias nuevoRolProvincia = null;
 				nuevoRolProvincia = Provincias.valueOf(provinciaString);
@@ -263,8 +340,6 @@ public class ControladorCliente {
 		        TipoDeEspecialidad nuevoRolTipoDeEspecialidad = null;
 		        nuevoRolTipoDeEspecialidad = TipoDeEspecialidad.valueOf(tipoEspecialidad);
 		        
-		      //Buscamos todos los datos del cliente y lo pasamos al html, sirve para visualizar la pagina y pasar los datos del cliente entre controladores
-				List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 				Boolean isEspecialidadDisabled = false; // Booleano para habilitar o deshabilitar el input de especialidades
 				Boolean isProfesionalDisabled = false; //Booleano para habilitar o deshabilitar el input de profesional
 				Boolean isFechaDisabled = false; //Booleano para habilitar o deshabilitar el input de fecha
@@ -325,6 +400,26 @@ public class ControladorCliente {
 			@RequestParam (name ="especialidad") String tipoEspecialidad,
 			Model modelo) throws MiExcepcion {	
 		
+		try {
+			servicioCliente.verificarEmailActual(emailCliente, idCliente);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			modelo.addAttribute("error", error);
+            modelo.addAttribute("showModalError", true);
+            return "/login"; // si // si se tira la excepcion del servicio verificarEmailActual, devolvemos al usuario a la pagina de login
+		}
+		    
+		List<Usuario> datosCliente = new ArrayList<>();
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(emailCliente);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
 		
 		//pasamos la provincia a enum provincia
 		Provincias nuevoRolProvincia = null;
@@ -350,8 +445,6 @@ public class ControladorCliente {
 		List<Profesional> profesionalesPorTipoDeEspecialidad = repositorioProfesional.findByRolAndProvinciaAndTipoEspecialidadAndActivo(Rol.PROFESIONAL, nuevoRolProvincia, nuevoRolTipoDeEspecialidad, true);
 
 		
-		//Buscamos los datos del cliente
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 		Boolean isEspecialidadDisabled = true;
 		Boolean isProfesionalDisabled = true; //Mantenemos el input del profesional activo
 		Boolean isFechaDisabled = true; // habilitamos el input de la fecha
@@ -397,6 +490,27 @@ public class ControladorCliente {
 			@RequestParam String nombreDelProfesional,
 			@RequestParam (name ="especialidad") String tipoEspecialidad,
 			Model modelo) throws MiExcepcion{
+		
+		try {
+			servicioCliente.verificarEmailActual(emailCliente, idCliente);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			modelo.addAttribute("error", error);
+            modelo.addAttribute("showModalError", true);
+            return "/login"; // si // si se tira la excepcion del servicio verificarEmailActual, devolvemos al usuario a la pagina de login
+		}
+		    
+		List<Usuario> datosCliente = new ArrayList<>();
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(emailCliente);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
 		 
 		
 				//Si el usuario presiona buscar sin seleccionar una fecha, por defecto toma la fecha actual como valor
@@ -457,9 +571,7 @@ public class ControladorCliente {
 				Boolean isHorarioDisabled = false; //Mantenemos deshabilitado
 				Boolean isTratamientoDisabled = false; //Mantenemos deshabilitado
 				
-				
-				//Buscamos los datos del usuario
-				List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+
 				modelo.addAttribute("datosCliente", datosCliente);
 				modelo.addAttribute("identificador", identificador);
 				modelo.addAttribute("provincias", Provincias.values());
@@ -468,8 +580,7 @@ public class ControladorCliente {
 			
 				//Metodo que recibe una fecha tipo LocalDate y devuelve true si la fecha es anterior a la actual
 				if (servicioHorario.fechaYaPaso(fechaSeleccionadaLocalDate)) {
-					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-							+ "<span fs-6'>No se puede seleccionar una fecha pasada, por favor verifique la fecha"
+					String error = "<span fs-6'>No se puede seleccionar una fecha pasada, por favor verifique la fecha"
 							+ " en la que desea seleccionar el turno.</span>";
 					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
 				}
@@ -478,7 +589,6 @@ public class ControladorCliente {
 				//Metodo que recibe una fecha tipo LocalDate y devuelve true si es fin de semana
 				if (servicioHorario.esFinDeSemana(fechaSeleccionadaLocalDate)) {
 					String error = "<span class='fw-bold fs-5'>Horarios de Atención:</span><br><br>" +
-			                 "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>" +
 			                 "<span class='fs-6'>Queremos informarle que nuestro horario de atención es de lunes a viernes de 9:00 a 18:00 y los sábados de 9:00 a 15:00.<br><br>" +
 			                 "Agradecemos su comprensión y le pedimos disculpas por cualquier inconveniente que esto pueda causar."
 			                 + " Para más información puede comunicarse con nosotros por cualquiera de nuestros canales digitales.</span>";
@@ -487,16 +597,14 @@ public class ControladorCliente {
 				
 				//Metodo que compara la fecha seleccionada con las fechas deshabilitadas del profesional, devuelve true si hay alguna coincidencia
 				if (servicioHorario.compararFechaConFechaDeshabilitada(fechaSeleccionadaLocalDate, idProfesional)) {
-					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-							+ "<span fs-6'>La fecha seleccionada no esta habilitada para seleccionar turnos.</span>";
+					String error = "<span fs-6'>La fecha seleccionada no esta habilitada para seleccionar turnos.</span>";
 					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
 				}
 				
 				//Definimos una fecha maxima de dos meses a partir de la fecha actual
 				//Con esto limitamos al usuario a que no pueda solicitar turnos mas alla de dos meses en adelante de la fecha actual
 				if (fechaSeleccionadaLocalDate.isAfter(fechaMaxima)) {
-					String error = "<span class='fs-6 fw-bold'>Estimado Cliente,</span><br><br>"
-							+ "<span class='fs-6'>Todavía no tenemos turnos habilitados para esta fecha, por favor tenga en cuenta que solo es posible solicitar turnos con un máximo de 30 días a partir"
+					String error = "<span class='fs-6'>Todavía no tenemos turnos habilitados para esta fecha, por favor tenga en cuenta que solo es posible solicitar turnos con un máximo de 30 días a partir"
 							+ " de la fecha actual. Esta política nos permite gestionar y organizar nuestros recursos de manera"
 							+ " eficiente, asegurando un mejor servicio para todos nuestros clientes.<br><br>"
 							+ "Le agradecemos su comprensión y colaboración. Si tiene alguna duda o necesita asistencia, no dude en contactarnos.</span>";
@@ -505,8 +613,7 @@ public class ControladorCliente {
 				
 				//Si la lista de horariosDisponibles esta vacia, devuelve el mensaje de error.
 				if (ObtenerHorariosDisponibles.isEmpty()) {
-					String error = "<span class='fs-6 fw-bold'>Estimado Cliente,</span><br><br>"
-							+ "<span class='fs-6'>Lamentamos informarle que no hay turnos disponibles para la fecha que ha"
+					String error = "<span class='fs-6'>Lamentamos informarle que no hay turnos disponibles para la fecha que ha"
 							+ " seleccionado. Le sugerimos intentar en otro momento o seleccionar una fecha diferente para su turno.<br><br>"
 							+ "Agradecemos su comprensión y le pedimos disculpas por cualquier inconveniente que esto pueda ocasionar.</span>";
 					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
@@ -528,8 +635,7 @@ public class ControladorCliente {
 						horariosLaborales = diasSeleccionados.getHorariosLaborales();
 					}
 		    		
-					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-							+ "<span fs-6'>Lo sentimos, pero el profesional </span> " + "<span class='fw-bold'>"+nombreCompletoProfesional.toUpperCase()+"</span>" + " <span fs-6'>solo presta"
+					String error = "<span fs-6'>Lo sentimos, pero el profesional </span> " + "<span class='fw-bold'>"+nombreCompletoProfesional.toUpperCase()+"</span>" + " <span fs-6'>solo presta"
 									+ " servicios los días:</span><br><br>" + "<span class='fw-bold'>"+diasLaborales+"</span>" + "<br><br><span fs-6'> en los horarios:</span><br><br>" + "<span class='fw-bold'>"+horariosLaborales+"</span><br><br>" + ""
 											+ " Lamentamos las molestias ocasionadas. Si tiene alguna duda o necesita asistencia, no dude en contactarnos.";
 					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
@@ -538,8 +644,7 @@ public class ControladorCliente {
 					
 				//Limitamos a que el usuario solo pueda tener un maximi de tres activos
 				if (servicioTurnos.checkActiveTurnos(emailCliente)) {
-					String error = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-							+ "<span class='fs-6'>Solo se permite tener un máximo de tres turnos activos."
+					String error = "<span class='fs-6'>Solo se permite tener un máximo de tres turnos activos."
 							+ " Si necesita modificar un turno o seleccionar uno nuevo, puede"
 							+ " ir al apartado de \"Mis turnos\" y cancerlar alguno de los turnos activos.</span>";
 					return servicioProfesional.manejoDeErroresControladorProfesional(identificador, error, modelo);
@@ -601,7 +706,27 @@ public class ControladorCliente {
 			@RequestParam(required = false) String horario,
 			ModelMap modelo) throws Exception {
 		
-		System.out.println("Especialidad: " + tipoEspecialidad);
+
+		try {
+			servicioCliente.verificarEmailActual(emailCliente, idCliente);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			modelo.addAttribute("error", error);
+            modelo.addAttribute("showModalError", true);
+            return "/login"; // si // si se tira la excepcion del servicio verificarEmailActual, devolvemos al usuario a la pagina de login
+		}
+		    
+		List<Usuario> datosCliente = new ArrayList<>();
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(emailCliente);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
 		
 		//pasamos la provincia a enum provincia
 		Provincias nuevaProvincia = null;
@@ -633,9 +758,6 @@ public class ControladorCliente {
             List<Tratamiento> tratamientosFiltrados = tratamientosProfesional.stream()
                 .filter(tratamiento -> tratamiento.getNombreTratamientos().toString().contains(nombreEspecialidad))
                 .collect(Collectors.toList());
-            
-		//Buscamos los datos del profesional
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
 		
 		//Pasamos todos los datos necesarios a la vista
 		Boolean isEspecialidadDisabled = true;
@@ -696,6 +818,28 @@ public class ControladorCliente {
 			@RequestParam (name ="especialidad") String tipoEspecialidad,
 			ModelMap model) throws MiExcepcion {
 		
+		
+		try {
+			servicioCliente.verificarEmailActual(emailCliente, idCliente);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+            model.addAttribute("showModalError", true);
+            return "/login"; // si // si se tira la excepcion del servicio verificarEmailActual, devolvemos al usuario a la pagina de login
+		}
+		    
+		List<Usuario> datosCliente = new ArrayList<>();
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(emailCliente);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
+		
 		//usamos un switch que depende si el usuario le da al boton de aceptar o cancelar del formulario
 		switch (action) {
 			
@@ -715,8 +859,7 @@ public class ControladorCliente {
 	        //Creamos una lista de TipoDeEspecialidades vacia para guardar el resultado del filtrado
 	        List<TipoDeEspecialidad> especialidadDisponibles = servicioProfesional.listarEspecialidadesDisponibles(identificador);
 			
-			
-			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+
 			Boolean envioDeMailExitoso = false; //Si el servicio de enviar el email funciona correctamente lo cambiamos a true
 			Boolean turnoGuaradoExitoso = false; // si el turno se guarda exitosamente lo cambiamos a true
 			try {
@@ -769,8 +912,7 @@ public class ControladorCliente {
                 
                 
                 //Se dispara el modal de exito y se redirecciona a la pagina de mis turnos
-                String exito = "<span class='fs-6 fw-bold'>Estimado Cliente,</span><br><br>"
-                		+ "<span class='fs-6'>Gracias por seleccionar un turno con nosotros. Nos complace poder atenderle.<br><br>"
+                String exito = "<span class='fs-6'>Gracias por seleccionar un turno con nosotros. Nos complace poder atenderle.<br><br>"
                 		+ "Es importante informarle que reservar un turno <span class='fw-bold'> no garantiza el precio del mismo</span>, ya que los precios pueden"
                 		+ " variar antes de la fecha seleccionada del turno. En caso de algún aumento, le será notificado con antelación.<br><br>"
                 		+ "Agradecemos su comprensión y quedamos a su disposición para cualquier consulta.<br><br>"
@@ -840,6 +982,26 @@ public class ControladorCliente {
 			@RequestParam String tratamiento,
 			ModelMap model) {
 		
+		try {
+			servicioCliente.verificarEmailActual(email, idCliente);
+		} catch (Exception e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+            model.addAttribute("showModalError", true);
+            return "/login"; // si // si se tira la excepcion del servicio verificarEmailActual, devolvemos al usuario a la pagina de login
+		}
+		    
+		List<Usuario> datosCliente = new ArrayList<>();
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(email);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
 		
 		/*El valor de tratamiento sirve para filtrar que pagina le vamos a mostrar
 		 * al cliente para solicitar turno, puede ser facial o corporal*/
@@ -849,8 +1011,7 @@ public class ControladorCliente {
 			Cliente validarUsoFormulario = formularioDeDatos.get();
 			usoDeFormulario = validarUsoFormulario.getFomularioDatos();
 		}
-					
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+
 		Boolean isDisabled = null;  // esta booleano sirve para validar cuando mostramos el input de la seleccion de fechas, si es true se muestra activo si es false de muestra deshabilitado
 		Boolean isHorarioDisabled = null;
 		model.addAttribute("tratamiento", tratamiento);
@@ -901,45 +1062,67 @@ public class ControladorCliente {
 	public String misconsultas(
 			@RequestParam String email,
 			@RequestParam String idCliente,
-			Model modelo) {
+			Model modelo) throws MiExcepcion {
 		
+		
+		try {
+			
+			//Verificamos que el usuario este usando el mismo email que esta guardado en la base de datos, sino lanzamos una excepcion
+			servicioCliente.verificarEmailActual(email, idCliente);
+			
+		} catch (MiExcepcion e) {
+			
+			String error = e.getMessage();
+			modelo.addAttribute("error", error);
+            modelo.addAttribute("showModalError", true);
+            return "/login"; //Si se lanza la excepcion, devolvemos al usuario al login
+		}
+		
+		
+		List<Usuario> datosCliente = new ArrayList<>();
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(email);
 		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
 		
-		//Buscamos los turnos por el id del cliente y que tengan estado asistido
-		List<Turnos> ultimosTurnosCliente = servicioTurnos.buscarTurnosPorClienteAndoEstadoDelTurno(idCliente, EstadoDelTurno.ASISTIDO);
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
 		
-		//Creamos la lista donde vamos a guardar los turnos filtrados
-		List<Turnos> turnosConRecomendaciones = new ArrayList<>();
-		
-		//Recorremo la lista de turnos asistidos
-		for (Turnos turnos : ultimosTurnosCliente) {
-			//Filtramos por aquellos turnos que tengan contenido en su campo de consulta
-			if (turnos.getConsulta() != null && !turnos.getConsulta().isEmpty()) {
-				turnosConRecomendaciones.add(turnos); //los turnos que pasen el filtro, se guardan en la lista creada anteriormente
+			//Buscamos los turnos por el id del cliente y que tengan estado asistido
+			List<Turnos> ultimosTurnosCliente = servicioTurnos.buscarTurnosPorClienteAndoEstadoDelTurno(idCliente, EstadoDelTurno.ASISTIDO);
+			
+			//Creamos la lista donde vamos a guardar los turnos filtrados
+			List<Turnos> turnosConRecomendaciones = new ArrayList<>();
+			
+			//Recorremo la lista de turnos asistidos
+			for (Turnos turnos : ultimosTurnosCliente) {
+				//Filtramos por aquellos turnos que tengan contenido en su campo de consulta
+				if (turnos.getConsulta() != null && !turnos.getConsulta().isEmpty()) {
+					turnosConRecomendaciones.add(turnos); //los turnos que pasen el filtro, se guardan en la lista creada anteriormente
+				}
 			}
-		}
+			
+			//Creamos la lista donde se va a ir guardando los ultimos tres turnos encontrados
+			List<Turnos> tresUltimosTurnos = new ArrayList<>();
+			
+			//Obetenemos el numero de elemento de la lista
+			int size = turnosConRecomendaciones.size();
+			
+			if (size >= 3) { //Si es mayor o igual a 3, solo guardamos los tres ultimos turnos de la lista turnosConRecomendaciones
+			    tresUltimosTurnos = turnosConRecomendaciones.subList(size - 3, size);
+			} else {
+			    tresUltimosTurnos = turnosConRecomendaciones; // Si hay menos de 3 elementos, tomamos todos
+			}
+			
+			//Pasamos los datos a la vista
+			modelo.addAttribute("email", email);
+			modelo.addAttribute("datosDelTurno", tresUltimosTurnos);
+			modelo.addAttribute("datosCliente", datosCliente);
+		return "/pagina_cliente/misconsultas";
 		
-		//Creamos la lista donde se va a ir guardando los ultimos tres turnos encontrados
-		List<Turnos> tresUltimosTurnos = new ArrayList<>();
-		
-		//Obetenemos el numero de elemento de la lista
-		int size = turnosConRecomendaciones.size();
-		
-		if (size >= 3) { //Si es mayor o igual a 3, solo guardamos los tres ultimos turnos de la lista turnosConRecomendaciones
-		    tresUltimosTurnos = turnosConRecomendaciones.subList(size - 3, size);
-		} else {
-		    tresUltimosTurnos = turnosConRecomendaciones; // Si hay menos de 3 elementos, tomamos todos
-		}
-		
-		LocalDateTime fechaPrueba = LocalDateTime.now();
-		
-		//Pasamos los datos a la vista
-		modelo.addAttribute("email", email);
-		modelo.addAttribute("datosDelTurno", tresUltimosTurnos);
-		modelo.addAttribute("fechaPrueba", fechaPrueba);
-		modelo.addAttribute("datosCliente", datosCliente);
-	return "/pagina_cliente/misconsultas";	
 	}
 	
 	
@@ -947,7 +1130,7 @@ public class ControladorCliente {
 	public String completarDatos(
 			@RequestParam(name = "email") String emailUsuario,
 			@RequestParam(required = false) String error,
-			ModelMap modelo) {
+			ModelMap modelo) throws MiExcepcion {
 		
 		modelo.addAttribute("emailUsuario", emailUsuario);
 		modelo.addAttribute("error", error);
@@ -959,26 +1142,76 @@ public class ControladorCliente {
 	//Devuelve la pagina homeCLiente con los datos del usuario que le pasemos por mmail
 	@GetMapping("/homeCliente")
 	public String homeCliente(
-			@RequestParam String email, Model model) {
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		model.addAttribute("datosCliente", datosCliente);
-		return "/pagina_cliente/homeCliente";	
+			@RequestParam String idCliente,
+			@RequestParam String email,
+			Model model) throws MiExcepcion {
 		
+		List<Usuario> datosCliente = null;
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(email);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
+		
+		try {
+			
+			//Servicio para validar que el mail que esta usando el cliente es el mismo que esta guardado en la base de datos
+			//Esto es por si acaso un colaborador modifica el email del cliente, le mandamos un mensaje de error al cliente
+			servicioCliente.verificarEmailActual(email, idCliente);
+			
+			model.addAttribute("datosCliente", datosCliente);
+			return "/pagina_cliente/homeCliente";	
+			
+		} catch (MiExcepcion e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+            model.addAttribute("showModalError", true);
+            return "/login";	
+		}
 	}
-	
-	
+		
 	
 	//Muestra todos los datos personales de la persona en la pagina misdatosCliente
 	@GetMapping("/misdatosCliente")
 	public String misdatosCliente(
-			@RequestParam(required = false) String email,
-			Model model) { // el valor del parametro email viene del html homeCliente
+			@RequestParam String idCliente,
+			@RequestParam String email,
+			Model model) throws MiExcepcion { // el valor del parametro email viene del html homeCliente
 		
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
-		model.addAttribute("datosCliente", datosCliente);
-		model.addAttribute("sexos", Sexo.values());
-	return "/pagina_cliente/misdatosCliente";	
+		List<Usuario> datosCliente = null;
+		
+		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(email);
+		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
+		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
+			datosCliente = datosClientePorEmail;
+		}else if(datosClientePorId.isEmpty() || datosClientePorId == null) {
+			datosCliente = datosClientePorId;
+		}
+		
+		try {
+			
+			servicioCliente.verificarEmailActual(email, idCliente);
+			
+			model.addAttribute("datosCliente", datosCliente);
+			model.addAttribute("sexos", Sexo.values());
+			return "/pagina_cliente/misdatosCliente";	
+		} catch (MiExcepcion e) {
+			String error = e.getMessage();
+			model.addAttribute("error", error);
+            model.addAttribute("showModalError", true);
+            return "/login"; // si // si se tira la excepcion del servicio verificarEmailActual, devolvemos al usuario a la pagina de login
+		}
+		
 	}
+		
+		
 	
 	
 	@PostMapping("guardarDatosCliente")
@@ -1073,6 +1306,8 @@ public class ControladorCliente {
 		try {
 			//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
 			servicioCliente.modificarCliente(idCliente, ocupacion, email, emailAnterior, domicilio, sexo, telefono );
+			
+			//Buscamos de nuevo los datos actualizados del cliente para pasarlos a la vista
 			List <Usuario> datosClienteActualizados = servicioUsuario.buscarPorEmail(email);
 			String exito = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 							+"<span class='fs-6'>Sus datos han sido actualizados de forma exitosa</span>";

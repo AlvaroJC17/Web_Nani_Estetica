@@ -96,7 +96,7 @@ public class ControladorPagina {
 			Model model) {
 		
 		if (error != null) {
-			String error2 = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><p class='fs-6 text-center'>Ha superado el número máximo de intentos, por favor espere unos minutos y registrese nuevamente para "
+			String error2 = "<p class='fs-6 text-center'>Ha superado el número máximo de intentos, por favor espere unos minutos y registrese nuevamente para "
 					 + "generar un nuevo código de validación.</p>"; 
 			model.addAttribute("error", error2);
 			model.addAttribute("showModalError", true);	
@@ -129,8 +129,7 @@ public class ControladorPagina {
 		
 		try {
 			servicioUsuario.modificarContrasena(idCliente,oldPass, newPass, repeatNewPass);
-			String exito = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-					 +"<span class='fs-6'>Hemos actualizado correctamente tu contraseña. Ahora serás redireccionado a la página principal para que inicies"
+			String exito = "<span class='fs-6'>Hemos actualizado correctamente tu contraseña. Ahora serás redireccionado a la página principal para que inicies"
 					 + " sesión con tus nuevas credenciales.</span>";;
 			model.addAttribute("datosCliente", datosCliente);
 			model.addAttribute("showModalExito", true);
@@ -168,8 +167,7 @@ public class ControladorPagina {
 				model.addAttribute("showModalExito", true);
 				return "olvidocontrasena";
 			}else {
-				String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-						 +"<span class='fs-6'>El correo eléctronico no se encuentra registrado."
+				String error = "<span class='fs-6'>El correo eléctronico no se encuentra registrado."
 						 + " Por favor verifique e intente nuevamente.</span>";
 				model.addAttribute("error", error);
 				model.addAttribute("showModalError", true);
@@ -177,8 +175,7 @@ public class ControladorPagina {
 			}
 		} catch (MiExcepcion e) {
 			
-			String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-					 +"<span class='fs-6'>Hubo un error al enviar el correo eléctronico, por favor intente más tarde";
+			String error = "<span class='fs-6'>Hubo un error al enviar el correo eléctronico, por favor intente más tarde";
 			model.addAttribute("error", error);
 			model.addAttribute("showModalError", true);
 			return "olvidocontrasena";
@@ -240,8 +237,7 @@ public class ControladorPagina {
 			
 			try {
 				servicioUsuario.guardarUsuario(email, password, password2, fechaNacimiento, idUsuarioNoValidado);
-				String exito = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-						 +"<span class='fs-6'>El correo eléctronico ha sido validado exitosamente."
+				String exito = "<span class='fs-6'>El correo eléctronico ha sido validado exitosamente."
 						 + " Por favor inicie sesion en su cuenta para poder disfrutar de nuestros servicios.</span>";
 	        	model.addAttribute("exito", exito);
 	        	model.addAttribute("showModalExito", true);
@@ -268,8 +264,7 @@ public class ControladorPagina {
 					LocalDateTime pasearFecha = servicioHorario.pasarFechaStringToLocalDateTime(fechaExpiracionCodigo);
 					
 					Boolean conteoRegresivo = true; //no muestra el conteo regresivo si hay algun error al ingresar el codigo
-					String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-							 +"<p class='fs-6 text-center'>El codigo ingresado no es valido. Intentos  " + numeroDeIntentos + "/3 </p>" ;
+					String error = "<p class='fs-6 text-center'>El codigo ingresado no es valido. Intentos  " + numeroDeIntentos + "/3 </p>" ;
 					Boolean mostrarEnlace = false;
 					model.addAttribute("error", error);
 					model.addAttribute("mostrarEnlace",mostrarEnlace);
@@ -290,11 +285,10 @@ public class ControladorPagina {
 					
 					//Este metodo solo genera true si el usuario esta bloqueado
 					if (servicioUsuario.verificarYDesbloquearUsuarioValidacion(email)) {
-						   error= "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><p class='fs-6 text-center'>Ha superado el numero máximo de intentos, por favor espere unos minutos y registrese nuevamente para "
+						   error= "<p class='fs-6 text-center'>Ha superado el numero máximo de intentos, por favor espere unos minutos y registrese nuevamente para "
 									 + "generar un nuevo código de validación.</p>";
 					}else {
-					     error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-								 +"<span class='fs-6'>Genere un nuevo código.</span>";
+					     error = "<span class='fs-6'>Genere un nuevo código.</span>";
 					}
 					
 					return "redirect:/registrarse?error=" + error; 
@@ -335,8 +329,7 @@ public class ControladorPagina {
 		try {
 			
 			if (servicioUsuario.verificarYDesbloquearUsuarioValidacion(email)) {				
-				throw new MiExcepcion("<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br>"
-						+ "<p class= 'fs-6 text-center'> Ha superado el número de intentos máximo para validar el correo electrónico, por favor espera unos minutos e intente nuevamente.</p>");
+				throw new MiExcepcion("<p class= 'fs-6 text-center'> Ha superado el número de intentos máximo para validar el correo electrónico, por favor espera unos minutos e intente nuevamente.</p>");
 			}
 	
 				//Validamos que el usuario esta registrado y con el email validado, sino es asi no entra en este condicional
@@ -414,8 +407,7 @@ public class ControladorPagina {
 			//validamos si es un usuario temporal o real a traves de su email, si su email esta validado es un usuario real sino es temporal
 			//Si es temporal tiramos una excepcion porque los usuarios temporales no pueden loguearse
 			if (!servicioUsuario.validarUsuarioRegistradoActivo(emailUsuarioSinEspacios)) {
-				String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br>"
-   					 +"<p class='fs-6 text-center'>Usuario o contraseña incorrectos, por favor intente nuevamente.</p>";
+				String error = "<p class='fs-6 text-center'>Usuario o contraseña incorrectos, por favor intente nuevamente.</p>";
 				
 				model.addAttribute("error", error);
 				modelo.addAttribute("showModalError", true);
@@ -427,8 +419,7 @@ public class ControladorPagina {
 			//Este metodo solo devuelve true si el usuario esta bloqueado, tambien verifica si ya pasaron los 5 min minutos de bloqueo y si es asi lo desbloquea y
 			// devuelve false, si el usuario no estaba bloqueado tambien devuelve false
 			if (servicioUsuario.verificarYDesbloquearUsuarioLogin(emailUsuarioSinEspacios)) {
-				String error = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br>"
-	   					 +"<p class='fs-6 text-center'>Ha superado en número máximo de intentos para iniciar sesión, por favor espera unos minutos e intente nuevamente.</p>";
+				String error = "<p class='fs-6 text-center'>Ha superado en número máximo de intentos para iniciar sesión, por favor espera unos minutos e intente nuevamente.</p>";
 					
 					model.addAttribute("error", error);
 					modelo.addAttribute("showModalError", true);
@@ -457,8 +448,7 @@ public class ControladorPagina {
 		         rol = usuario.getRol();
 		         
 		         //Verificamos que el usuario este activo
-		         String error1 = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-    					 +"<span class='fs-6'>Tu cuenta no se encuentra activa para utilizar nuestros servicios."
+		         String error1 = "<span class='fs-6'>Tu cuenta no se encuentra activa para utilizar nuestros servicios."
     					 + " Por favor, ponte en contacto con nuestro soporte técnico para resolver este problema.</span><br><br>"
     					 + "Gracias.";
 		         if (!activo) {
@@ -470,8 +460,7 @@ public class ControladorPagina {
 			     
 		     // Si usuario no existe en la base de datos, tiramos el error y el mensaje    
 		     }else {
-		    	 String error3 = "<span class= 'fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-    					 +"<span class='fs-6'>Usuario o contraseña incorrectos, por favor intente nuevamente.</span>";
+		    	 String error3 = "<span class='fs-6'>Usuario o contraseña incorrectos, por favor intente nuevamente.</span>";
 		    	 modelo.addAttribute("error", error3);
 		    	 modelo.addAttribute("email", emailUsuarioSinEspacios);
 		    	 modelo.addAttribute("showModalError", true);
@@ -487,7 +476,7 @@ public class ControladorPagina {
 		        		  
 		        		  //Buscamos los datos pertenecientes a ese email en la tabla de persona y los pasamos a homeAdmin
 		        		  //Dependiendo si es admin, profesional o cliente lo direccionamos a su respectivo home
-		        		  List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(emailUsuario);			            
+		        		  List <Usuario> datosPersonaUsuario = servicioUsuario.buscarPorEmail(emailUsuario);
 				             
 				           //Tratar de sacar los validacion form de todos los usuarios, menos del cliente, que es el primer que llena todo sus datos
 				        	  //Cmaboar rl validacionform por registrado, y evitar ese paso de llenar datos repetidos cuando se le cambia un rol a un usuario
@@ -548,7 +537,7 @@ public class ControladorPagina {
 							case "CLIENTE":
 								 if (validarForm) {
 				            		 modelo.addAttribute("datosCliente", datosPersonaUsuario);
-				            		 servicioTurnos.actualizarTurnosAntiguos(emailUsuario); //validamos si el cliente tiene turnos vencidos antes de enviarlo a su home
+				            		 servicioTurnos.actualizarTurnosAntiguos(emailUsuario, idUsuario); //validamos si el cliente tiene turnos vencidos antes de enviarlo a su home
 				            		 return "pagina_cliente/homeCliente";
 				            	 }else if(!validarForm) {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario); //Esta variable envia el email en un input oculto hacia el metodo guardarDatosPersona

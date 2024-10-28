@@ -923,8 +923,7 @@ public class ServicioProfesional {
 		 Matcher matcher = pattern.matcher(telefono);
 		 
 		 if (!matcher.matches()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
 		 } 
 				 
 		 if (provincia == null || provincia.isEmpty() || provincia.trim().isEmpty()) {
@@ -960,8 +959,7 @@ public class ServicioProfesional {
 		 Matcher matcher = pattern.matcher(telefono);
 		 
 		 if (!matcher.matches()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
 		 } 
 		 
 		 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {

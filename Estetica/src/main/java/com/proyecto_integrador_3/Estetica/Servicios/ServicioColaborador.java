@@ -22,6 +22,7 @@ import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
+import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioColaborador;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
@@ -45,10 +46,54 @@ public class ServicioColaborador {
 	public RepositorioPersona repositorioPersona;
 	
 	@Autowired
+	public RepositorioCliente repositorioCliente;
+	
+	@Autowired
 	public ServicioUsuario servicioUsuario;
 	
 	@Autowired
 	public ServicioCodigoDeVerificacion servicioCodigoDeVerificacion;
+
+	@Autowired
+	public ServicioCliente servicioCliente;
+	
+	@Autowired
+	public ServicioHorario servicioHorario;
+	
+	
+	@Transactional
+	public void modificarClienteColaborador(String idCliente, String ocupacion, String email, String emailAnterior, String dniAnterior, String domicilio, String sexo, String telefono, String dni, String fechaNacimiento) throws MiExcepcion {
+		
+		servicioCliente.verificarEmailCliente(email, emailAnterior); //Validamos que el email este correcto y que no este repetido en la base de datos
+		validarDatosClienteColaborador(ocupacion, domicilio, sexo, telefono, dni, dniAnterior, fechaNacimiento);
+		
+		
+		try {
+		Optional<Cliente> identificarCliente = repositorioCliente.findById(idCliente);
+		if (identificarCliente.isPresent()) {
+			Cliente cliente_actualizado = identificarCliente.get(); // Atribuye el objeto presente a esta nueva variable
+			
+			Sexo nuevoSexo = null;
+			nuevoSexo = Sexo.valueOf(sexo.toUpperCase());
+			
+			LocalDate fechaNacimientoLocalDate = null;
+			fechaNacimientoLocalDate = servicioHorario.pasarFechaStringToLocalDateOtroFormato(fechaNacimiento);
+			
+			
+			cliente_actualizado.setOcupacion(ocupacion);
+			cliente_actualizado.setSexo(nuevoSexo);
+			cliente_actualizado.setDomicilio(domicilio);
+			cliente_actualizado.setTelefono(telefono);
+			cliente_actualizado.setDni(dni);
+			cliente_actualizado.setEmail(email);
+			cliente_actualizado.setFechaNacimiento(fechaNacimientoLocalDate);
+			repositorioCliente.save(cliente_actualizado);
+		}
+		} catch (Exception e) {
+			throw new MiExcepcion("Error al modificar los datos del cliente desde el perfil colaborador" + e);
+		}
+		
+	}
 	
 
 	public Colaborador optionalBuscarColaboradorPorId(String idColaborador) throws MiExcepcion{
@@ -190,23 +235,19 @@ public class ServicioColaborador {
 		 Matcher matcher = pattern.matcher(telefono);
 		  
 		 if (!matcher.matches()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
 		 } 
 		 
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
- 					+ "<span class='fs-6'>El campo de la ocupación no puede estar vacío.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El campo de la ocupación no puede estar vacío.</span>");
 		 }
 		 
 		 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
- 								 + "<span class='fs-6'>El campo de la dirección no puede estar vacío.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El campo de la dirección no puede estar vacío.</span>");
 		 }
 		 
 		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
- 					+ "<span class='fs-6'>El campo del teléfono no puede estar vacío.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El campo del teléfono no puede estar vacío.</span>");
 		 }
 		 
 	 }
@@ -223,24 +264,74 @@ public class ServicioColaborador {
 		        Matcher matcher = pattern.matcher(email);
 		        
 		        if (email == null || email.isEmpty() || email.trim().isEmpty()) {
-		            throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-		            					+ "<span class='fs-6'>El email no puede estar vacio.</span>");
+		            throw new MiExcepcion("<span class='fs-6'>El email no puede estar vacio.</span>");
 		        }
 
 		        // Verificar si la cadena cumple con la expresión regular
 		        if (!matcher.matches()) {
-		            throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-        								+ "<span class='fs-6'>El email no es valido, por favor verifique e intente nuevamente.</span>");
+		            throw new MiExcepcion("<span class='fs-6'>El email no es valido, por favor verifique e intente nuevamente.</span>");
 		        } 
 		       
 		        if (!email.equalsIgnoreCase(emailAnterior)) {
 		        	if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
-		        		throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-            								+ "<span class='fs-6'>El email ingresado ya se encuentra registrado.</span>");
+		        		throw new MiExcepcion("<span class='fs-6'>El email ingresado ya se encuentra registrado.</span>");
 		        	}
 	 
 		        }
 	 }
+	 
+	 public void validarDatosClienteColaborador(String ocupacion, String domicilio, String sexo, String telefono, String dni, String dniAnterior, String fechaNacimiento) throws MiExcepcion {
+			
+		 // Expresión regular para validar un telefono
+		 String regex = "\\d{7,10}";
+		 
+		 // Compilar la expresión regular
+		 Pattern pattern = Pattern.compile(regex);
+		 
+		 // Crear un objeto Matcher
+		 Matcher matcher = pattern.matcher(telefono);
+		  
+		 if (!matcher.matches()) {
+			 throw new MiExcepcion("<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+		 } 
+		 
+		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
+			 throw new MiExcepcion("<span class='fs-6'>El campo de la ocupación no puede estar vacío.</span>");
+		 }
+		 
+		 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {
+			 throw new MiExcepcion("<span class='fs-6'>El campo de la dirección no puede estar vacío.</span>");
+		 }
+		 
+		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
+			 throw new MiExcepcion("<span class='fs-6'>El campo del teléfono no puede estar vacío.</span>");
+		 }
+		 
+		 if (dni == null || dni.isEmpty() || dni.trim().isEmpty()) {
+			 throw new MiExcepcion("El dni no puede estar vacio");
+		 }
+		 
+		//Expresion regular para validar el numero de dni		 
+		 String regexDni = "\\d{7,8}";
+		 Pattern patternDni = Pattern.compile(regexDni);
+		 Matcher matcherDni = patternDni.matcher(dni);
+		 
+		 if (!matcherDni.matches()) {
+			 throw new MiExcepcion("<span class='fs-6'>El dni no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+		 } 
+		 if (!dni.equalsIgnoreCase(dniAnterior)) { //solo si el dni ingresado es diferente al actual, hace la validacion si ya esta registrado en la base de datos
+			 if(repositorioPersona.buscarPorDniOptional(dni).isPresent()) {
+				 throw new MiExcepcion("El numero de dni ya está registrado");
+			 }
+		}
+		 
+		 
+		 if (fechaNacimiento == null || fechaNacimiento.isEmpty() || fechaNacimiento.trim().isEmpty()) {
+			 throw new MiExcepcion("La fecha de nacimiento no puedo estar vacía");
+		 }
+		 
+	 }
+	 
 	
 }
 

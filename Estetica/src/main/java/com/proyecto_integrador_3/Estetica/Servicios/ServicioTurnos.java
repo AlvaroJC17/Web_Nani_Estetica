@@ -175,6 +175,10 @@ public class ServicioTurnos {
 		return repositorioTurnos.findByEstadoAndActivoAndMultaAndEmailOrderByFechaCreacion(estado, activo, multa, emailCliente);
 	}
 	
+	public List<Turnos> obetnerTurnosPorEstadoAndActivoAndMultaAndIdCliente(EstadoDelTurno estado, Boolean activo, Boolean multa, String idCliente){
+		return repositorioTurnos.findByEstadoAndActivoAndMultaAndClienteIdOrderByFechaCreacion(estado, activo, multa, idCliente);
+	}
+	
 	public List<Turnos> ObetenerTurnosPorEstadoAndActivoAndMultaAndIdProfesional(EstadoDelTurno estado, Boolean activo, Boolean multa, String idProfesional){
 		return repositorioTurnos.findByEstadoAndActivoAndMultaAndProfesionalIdOrderByFechaCreacion(estado, activo, multa, idProfesional);
 	}
@@ -259,6 +263,15 @@ public class ServicioTurnos {
 		}
 	}
 	
+	//Busca los turnos por id cliente en orden ascendente
+		public List<Turnos> getTurnosByIdCliente(String idCliente) throws MiExcepcion {
+			try {
+				return repositorioTurnos.findByEmailOrderByFechaAsc(idCliente);
+			} catch (Exception e) {
+				throw new MiExcepcion("Error al conectar con el servidor " + e);
+			}
+		}
+	
 	//Busca los turnos por id en orden ascendente
 		public List<Turnos> turnosActivosPorIdClienteFechaAsc(String idCliente) throws MiExcepcion {
 			try {
@@ -319,17 +332,18 @@ public class ServicioTurnos {
     
     //pasa los turnos activos con fecha anterior a la actual a inactivo y les asigna una multa al turno y al cliente
     @Transactional
-    public void actualizarTurnosAntiguos(String emailCliente) throws MiExcepcion {
+    public void actualizarTurnosAntiguos(String emailCliente, String idCliente) throws MiExcepcion {
     	try {
     		List<Turnos> turnos = getTurnosByEmail(emailCliente);
+    		List<Turnos> turnos2 = getTurnosByIdCliente(idCliente);
     		
-    		if (turnos.isEmpty()) {
+    		if (turnos2.isEmpty()) {
 				return;
 			}
     		
     		LocalDateTime fechaActual = LocalDateTime.now();
     		
-    		for (Turnos turno : turnos) {
+    		for (Turnos turno : turnos2) {
     			String fechaTurno = turno.getFecha().toString();
     			String horarioTurno = turno.getHorario().toString();
     			String fechaAndHorario = fechaTurno + " " + horarioTurno + ":00.000001"; //agrego el formato :00.000001 para completar el formato LocalDateTime

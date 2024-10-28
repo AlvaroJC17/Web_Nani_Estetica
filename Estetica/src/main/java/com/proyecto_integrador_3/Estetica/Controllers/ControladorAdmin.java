@@ -327,7 +327,7 @@ public class ControladorAdmin {
 			email = rolUsuarioActual.getEmail();
 		}
 		
-		List<Usuario> usuarios = servicioUsuario.buscarId(id);
+		List<Usuario> usuarios = servicioUsuario.buscarDatosUsuarioPorId(id);
 		if (action.equals("modificarRol") && nuevoRol != null) {
 			if (!rolActual.equals(nuevoRol)) { // si los roles son direfentes ejecuta esto
 				//metodo para moficar el rol

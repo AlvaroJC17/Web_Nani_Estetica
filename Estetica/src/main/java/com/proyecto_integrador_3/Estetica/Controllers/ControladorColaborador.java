@@ -1,5 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -26,6 +27,7 @@ import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioCliente;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioColaborador;
+import com.proyecto_integrador_3.Estetica.Servicios.ServicioHorario;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioPersona;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioProfesional;
 import com.proyecto_integrador_3.Estetica.Servicios.ServicioTurnos;
@@ -51,6 +53,9 @@ public class ControladorColaborador {
 	
 	@Autowired
 	ServicioCliente servicioCliente;
+	
+	@Autowired
+	ServicioHorario servicioHorario;
 	
 	@Autowired
 	RepositorioUsuario repositorioUsuario;
@@ -129,8 +134,7 @@ public class ControladorColaborador {
 				//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
 				servicioColaborador.modificarColaborador(idColaborador, ocupacion, emailColaborador, emailAnterior, domicilio, sexo, telefono );
 				List <Usuario> datosColaboradorActualizados = servicioUsuario.buscarPorEmail(emailColaborador);
-				String exito = "<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-								+"<span class='fs-6'>Sus datos han sido actualizados de forma exitosa</span>";
+				String exito = "<span class='fs-6'>Sus datos han sido actualizados de forma exitosa</span>";
 				model.addAttribute("datosColaborador",datosColaboradorActualizados);
 				model.addAttribute("exito",exito);
 				model.addAttribute("sexos", Sexo.values());
@@ -232,6 +236,7 @@ public class ControladorColaborador {
 				@RequestParam(required = false) String dato,
 				Model modelo) throws MiExcepcion {
 
+			Boolean btnCancelarTurno = false; //boolean para habilitar o deshabilitar el boton para cancelar los turnos
 			
 			//Datos del profesional para los menu de la pagina
 			List <Usuario> datosColaborador = servicioUsuario.buscarPorEmail(emailColaborador);
@@ -265,14 +270,19 @@ public class ControladorColaborador {
 			}
 			
 			List<Turnos> buscarTurnosCliente = servicioTurnos.turnosActivosPorIdClienteFechaAsc(idCliente);
+			if (!buscarTurnosCliente.isEmpty()) {
+				btnCancelarTurno = true;
+			}
 			
 			List<Turnos> tunosConMulta = servicioTurnos.buscarPorIdClienteAndMulta(idCliente);
 			
-			List<Usuario> datosCliente = servicioUsuario.buscarId(idCliente);
+			List<Usuario> datosCliente = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
 	
+			modelo.addAttribute("btnCancelarTurno", btnCancelarTurno);
 			modelo.addAttribute("tunosConMulta", tunosConMulta);
 			modelo.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
 			modelo.addAttribute("datosCliente", datosCliente);
+			modelo.addAttribute("sexos", Sexo.values());
 			modelo.addAttribute("datosColaborador",datosColaborador);
 			return "/pagina_colaborador/perfilCliente";
 		}
@@ -287,11 +297,16 @@ public class ControladorColaborador {
 				@RequestParam Boolean clienteActivo,
 				Model modelo) throws MiExcepcion {
 			
+			Boolean btnCancelarTurno = false;
+			
 			//Datos del colaborador para los menu de la pagina
 			List <Usuario> datosColaborador = servicioUsuario.buscarPorEmail(emailColaborador);
 			
 			//Buscamos los turnos activos del cliente para pasar a la tabla que se encuentra en la vista
 			List<Turnos> buscarTurnosCliente = servicioTurnos.turnosActivosPorIdClienteFechaAsc(idCliente);
+			if (!buscarTurnosCliente.isEmpty()) {
+				btnCancelarTurno = true;
+			}
 			
 			//Buscamos los turnos con multa para pasar a la tabla que esta en la vista
 			List<Turnos> tunosConMulta = servicioTurnos.buscarPorIdClienteAndMulta(idCliente);
@@ -302,20 +317,24 @@ public class ControladorColaborador {
 				servicioUsuario.altaUsuario(idCliente);
 				String exito = "Alta realizada correctamente";
 				modelo.addAttribute("exito", exito);
+				modelo.addAttribute("sexos", Sexo.values());
 				modelo.addAttribute("showModalExito", true);
 			}else {
 				String error = "El usuario ya se encuentra activo";
+				modelo.addAttribute("sexos", Sexo.values());
 				modelo.addAttribute("error", error);
 				modelo.addAttribute("showModalError", true);
 			}
 			
 			//buscamos los datos del cliente para pasar a la vista
-			List<Usuario> datosCliente = servicioUsuario.buscarId(idCliente);
+			List<Usuario> datosCliente = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
 			
+			modelo.addAttribute("btnCancelarTurno", btnCancelarTurno);
 			modelo.addAttribute("tunosConMulta", tunosConMulta);
 			modelo.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
 			modelo.addAttribute("datosColaborador",datosColaborador);
 			modelo.addAttribute("datosCliente", datosCliente);
+			modelo.addAttribute("sexos", Sexo.values());
 			return "/pagina_colaborador/perfilCliente";
 		}
 			
@@ -331,11 +350,16 @@ public class ControladorColaborador {
 				Model modelo) throws MiExcepcion {
 	
 			
+			Boolean btnCancelarTurno = false;
+			
 			//Datos del colaborador para los menu de la pagina
 			List <Usuario> datosColaborador = servicioUsuario.buscarPorEmail(emailColaborador);
 			
 			//Buscamos los turnos activos para pasar a la tabla que esta en la vista
 			List<Turnos> buscarTurnosCliente = servicioTurnos.turnosActivosPorIdClienteFechaAsc(idCliente);
+			if (!buscarTurnosCliente.isEmpty()) {
+				btnCancelarTurno = true;
+			}
 			
 			//Buscamos los turnos con multa para pasar a la tabla que esta en la vista
 			List<Turnos> tunosConMulta = servicioTurnos.buscarPorIdClienteAndMulta(idCliente);
@@ -345,17 +369,21 @@ public class ControladorColaborador {
 				//Servicio para dar de baja
 				servicioUsuario.bajaUsuario(idCliente);
 				String exito = "Baja realizada correctamente";
+				modelo.addAttribute("sexos", Sexo.values());
 				modelo.addAttribute("exito", exito);
 				modelo.addAttribute("showModalExito", true);
 			}else {
 				String error = "El usuario ya se encuentra inactivo";
+				modelo.addAttribute("sexos", Sexo.values());
 				modelo.addAttribute("error", error);
 				modelo.addAttribute("showModalError", true);
 			}
 			
 			//buscamos los datos del cliente para pasar a la vista
-			List<Usuario> datosCliente = servicioUsuario.buscarId(idCliente);
+			List<Usuario> datosCliente = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
 			
+			modelo.addAttribute("sexos", Sexo.values());
+			modelo.addAttribute("btnCancelarTurno", btnCancelarTurno);
 			modelo.addAttribute("tunosConMulta", tunosConMulta);
 			modelo.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
 			modelo.addAttribute("datosColaborador",datosColaborador);
@@ -374,32 +402,42 @@ public class ControladorColaborador {
 				@RequestParam Boolean clienteMulta,
 				Model modelo) throws MiExcepcion {
 			
+			
+			Boolean btnCancelarTurno = false;
+			
 			//Verificamos mediante la variable que viene de la vista si el cliente tiene multas
 			if (clienteMulta) {
 				//Servicio para setear en false el campo multa tanto del cliente como del o de los turnos
 				servicioCliente.quitarMultasCliente(idCliente);
 				String exito = "Las multas fueron blanqueadas correctamente";
+				modelo.addAttribute("sexos", Sexo.values());
 				modelo.addAttribute("exito", exito);
 				modelo.addAttribute("showModalExito", true);
 			}else {
 				String error = "El cliente no tiene multas";
+				modelo.addAttribute("sexos", Sexo.values());
 				modelo.addAttribute("error", error);
 				modelo.addAttribute("showModalError", true);
 			}
 			
 			//Buscamos los turnos activos ordenados por fecha para pasar a la tabla que se encuentra en la vista
 			List<Turnos> buscarTurnosCliente = servicioTurnos.turnosActivosPorIdClienteFechaAsc(idCliente);
+			if (!buscarTurnosCliente.isEmpty()) {
+				btnCancelarTurno = true;
+			}
 			
 			//Buscamos los turnos con multas para pasar a la vista, si el codigo entro en el condicional y en el servicio quitarMultaCliente, esta lista siempre
 			//debe estar vacía
 			List<Turnos> tunosConMulta = servicioTurnos.buscarPorIdClienteAndMulta(idCliente);
 			
 			//Buscamos los datos del cliente para pasar a la vista
-			List<Usuario> datosCliente = servicioUsuario.buscarId(idCliente);
+			List<Usuario> datosCliente = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
 			
 			//Datos del colaborador para los menu de la pagina
 			List <Usuario> datosColaborador = servicioUsuario.buscarPorEmail(emailColaborador);
 			
+			modelo.addAttribute("sexos", Sexo.values());
+			modelo.addAttribute("btnCancelarTurno", btnCancelarTurno);
 			modelo.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
 			modelo.addAttribute("tunosConMulta", tunosConMulta);
 			modelo.addAttribute("datosColaborador",datosColaborador);
@@ -408,7 +446,109 @@ public class ControladorColaborador {
 		}
 			
 			
+		@PostMapping("/actualizarDatosClienteColaborador")
+		public String actualizarDatosClienteColaborador(
+				@RequestParam String idCliente, //este atributo es enviado en un input oculto de la pag misdatosCliente
+				@RequestParam String emailColaborador,
+				@RequestParam(required = false) String ocupacion, // Este y los demas atributos los puse como no requeridos para poder personalizar las excepciones
+			    @RequestParam(required = false) String emailCliente,
+				@RequestParam(required = false) String domicilio,
+				@RequestParam(required = false) String sexo,
+				@RequestParam(required = false) String telefono,
+				@RequestParam(required = false) String dni,
+				@RequestParam(required = false) String fechaNacimiento,
+				ModelMap model) throws MiExcepcion {
 			
+			Boolean btnCancelarTurno = false;
+			
+			//Buscamos los turnos con multas para pasar a la vista, si el codigo entro en el condicional y en el servicio quitarMultaCliente, esta lista siempre
+			//debe estar vacía
+			List<Turnos> tunosConMulta = servicioTurnos.buscarPorIdClienteAndMulta(idCliente);
+			
+			//Datos del colaborador para los menu de la pagina
+			List <Usuario> datosColaborador = servicioUsuario.buscarPorEmail(emailColaborador);
+			
+			//Buscamos los turnos activos ordenados por fecha para pasar a la tabla que se encuentra en la vista
+			List<Turnos> buscarTurnosCliente = servicioTurnos.turnosActivosPorIdClienteFechaAsc(idCliente);
+			if (!buscarTurnosCliente.isEmpty()) {
+				btnCancelarTurno = true;
+			}
+			
+			//Buscamos todos los datos del cliente
+			Cliente cliente = servicioCliente.buscarDatosCliente(idCliente);
+			
+			LocalDate fechaNacimientoCliente = servicioHorario.pasarFechaStringToLocalDateOtroFormato(fechaNacimiento);
+	
+			//Guardamos los datos del cliente en variables las cuales vas a funcionar como variables base u originales, si hay algun error al introducir la nueva modificacion
+			//de datos, entonces mandamos a la vista estos datos originales
+			String ocupacionAnterior = cliente.getOcupacion().toUpperCase();
+			String emailAnterior = cliente.getEmail();
+			String domicilioAnterior = cliente.getDomicilio().toUpperCase();
+			Sexo sexoAnterior = cliente.getSexo();
+			String nuevoSexo = sexoAnterior.toString().toUpperCase();
+			String telefonoAnterior = cliente.getTelefono();
+			String dniAnterior = cliente.getDni();
+			LocalDate fechaNacimientoAnterior = cliente.getFechaNacimiento();
+			
+			//Cuando el cliente le da guardar a los datos sin modificar nada el sexo viene con valor vacioa
+			//por eso armamos este condicional para manejar el error y asignarle un valor a sexo
+			//que es el valor que tiene guardado en cliente en la base
+			if (sexo == null || sexo.isEmpty()) {
+				sexo = nuevoSexo;
+			}
+			
+			if (ocupacionAnterior == null || ocupacionAnterior.isEmpty()) {
+				ocupacionAnterior = ocupacion;
+			}
+			
+			//Buscamos los datos del cliente para pasarlos a la vista
+			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente); 
+			
+			//Comparamos las modificaciones hechas por el usuario con las guardadas en la base de datos, sino hay ninguna modificacion lo mando nuevamente a la
+			//vista sin ningun mensaje
+			if (ocupacionAnterior.equals(ocupacion.toUpperCase()) && domicilioAnterior.equals(domicilio.toUpperCase()) && nuevoSexo.equals(sexo.toUpperCase()) && telefonoAnterior.equals(telefono.toUpperCase())
+					&& dniAnterior.equals(dni) && fechaNacimientoAnterior.equals(fechaNacimientoCliente) && emailAnterior.equals(emailCliente)) {
+				model.addAttribute("sexos", Sexo.values());
+				model.addAttribute("btnCancelarTurno", btnCancelarTurno);
+				model.addAttribute("tunosConMulta", tunosConMulta);
+				model.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
+				model.addAttribute("datosColaborador",datosColaborador);
+				model.addAttribute("datosCliente",datosCliente);
+				return "/pagina_colaborador/perfilCliente";
+			}
+				
+			try {
+
+				//este metodo verifica valida el mail y los nuevos datos del cliente y los remplaza en la base de datos
+				servicioColaborador.modificarClienteColaborador(idCliente, ocupacion, emailCliente, emailAnterior, dniAnterior, domicilio, sexo, telefono, dni, fechaNacimiento);
+				
+				//Buscamos de nuevo los datos actualizados del cliente para pasarlos a la vista
+				List <Usuario> datosClienteActualizados = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+				String exito = "<span class='fs-6'>Sus datos han sido actualizados de forma exitosa</span>";
+				model.addAttribute("datosCliente",datosClienteActualizados);
+				model.addAttribute("btnCancelarTurno", btnCancelarTurno);
+				model.addAttribute("tunosConMulta", tunosConMulta);
+				model.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
+				model.addAttribute("datosColaborador",datosColaborador);
+				model.addAttribute("exito",exito);
+				model.addAttribute("sexos", Sexo.values());
+				model.addAttribute("showModalExito", true);
+				return "/pagina_colaborador/perfilCliente";
+				
+			} catch (MiExcepcion e) {
+				String error = e.getMessage(); // en la exepcion e.getmessage obtenenos el valor de la exepcion personalizada que se de y la enviamos al controlador de misdatosCliente para ser monstrada en pantalla
+				List <Usuario> datosClienteAnterior = servicioUsuario.buscarPorEmail(emailAnterior); //Buscamos los datos ateriores a la excepcion y los mostramos en caso de que haya un error por parte del usuario
+				model.addAttribute("datosCliente",datosClienteAnterior);
+				model.addAttribute("btnCancelarTurno", btnCancelarTurno);
+				model.addAttribute("tunosConMulta", tunosConMulta);
+				model.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
+				model.addAttribute("datosColaborador",datosColaborador);
+				model.addAttribute("sexos", Sexo.values());
+				model.addAttribute("error",error);
+				model.addAttribute("showModalError", true);
+				return "/pagina_colaborador/perfilCliente";
+			}
+		}	
 			
 			
 			

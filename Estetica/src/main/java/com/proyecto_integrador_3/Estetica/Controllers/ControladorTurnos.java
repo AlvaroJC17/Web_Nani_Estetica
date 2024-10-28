@@ -724,21 +724,22 @@ public class ControladorTurnos {
 	@GetMapping("/misturnos")
 	public String misturnos(
 			@RequestParam String email,
+			@RequestParam String idCliente,
 			Model model) throws MiExcepcion {
 		
 		try {
 		//cuando el usuario ingrese a turnos se verifica si algun turno tiene fecha anterior
 		//a la actual y si eso es afirmativo, entonces pasa el turno a cencelado, le coloca una multa y le manda un email
-		servicioTurnos.actualizarTurnosAntiguos(email);
+		servicioTurnos.actualizarTurnosAntiguos(email, idCliente); //MODIFICAR AQUI SI SE EJECUTA BIEN, SOLO DEBE QUEDAR POR ID CLIENTE
 		
 		//datos del cliente y los pasa a la vista, sirve para renderizar la vista
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);
 		
 		//Obtenemos los tunos asistidos, turnos activos, turnos cancelados y turnos con multa.
-		List<Turnos> turnosAsistidos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.ASISTIDO, false, false, email);
-		List<Turnos> turnosActivos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.PENDIENTE, true, false, email);
-		List<Turnos> turnosCancelados = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, false, email);
-		List<Turnos> turnosConMulta = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndEmailCliente(EstadoDelTurno.CANCELADO, false, true, email);
+		List<Turnos> turnosAsistidos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndIdCliente(EstadoDelTurno.ASISTIDO, false, false, idCliente);
+		List<Turnos> turnosActivos = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndIdCliente(EstadoDelTurno.PENDIENTE, true, false, idCliente);
+		List<Turnos> turnosCancelados = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndIdCliente(EstadoDelTurno.CANCELADO, false, false, idCliente);
+		List<Turnos> turnosConMulta = servicioTurnos.obetnerTurnosPorEstadoAndActivoAndMultaAndIdCliente(EstadoDelTurno.CANCELADO, false, true, idCliente);
 		
 		
 		//Filtramos las listas anteriores para que solo muestren los ultimos tres registros guardados
@@ -791,9 +792,9 @@ public class ControladorTurnos {
 		//Si hay una diferencia menor a 24 horas entre la fecha seleccionada y la fecha actual
 		//entra en esta condicion
 		if (servicioHorario.turnoMenorA24Horas(fechaSeleccionadaLocalDateTime, fechaActual)) {
-			//Este servicio se encarga de cancelar y multar el turno y al cliente
 			
-		Turnos turnosMulta = servicioTurnos.multarTurnoAndClienteMenosDe24Horas(emailCliente, idTurno);
+			//Este servicio se encarga de cancelar y multar el turno y al cliente
+			Turnos turnosMulta = servicioTurnos.multarTurnoAndClienteMenosDe24Horas(emailCliente, idTurno);
 			
 			//Creamos el objeto con los datos del email para poder enviarlo
             EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
@@ -851,6 +852,143 @@ public class ControladorTurnos {
 			model.addAttribute("error", error);
 			model.addAttribute("showModalError", true);
 			return "/pagina_cliente/misturnos";
+		}
+	}
+	
+	
+	@PostMapping("/cancelarTurnoColaborador")
+	public String cancelarTurnoColaborador(
+			@RequestParam String emailCliente,
+			@RequestParam String emailColaborador, //Esta variable proviene de homeColaborador
+			@RequestParam String idCliente,
+			@RequestParam String idProfesional,
+			@RequestParam String idColaborador,
+			@RequestParam (required = false) String idTurno, // Solo coloco required false para poder manejar la excepcion si el usuario no selecciona ningun turno de la lista
+			@RequestParam String fecha,
+			@RequestParam String horario,
+			Model model
+			) throws MiExcepcion {
+		
+		Boolean btnCancelarTurno = false; //Boolean para activar y deshactivar de boton de cancelar turno
+		
+		//Datos del colaborador para los menu de la pagina
+		List <Usuario> datosColaborador = servicioUsuario.buscarPorEmail(emailColaborador);
+		
+		//Buscamos los turnos activos del cliente para pasar a la tabla que se encuentra en la vista, este metodo sirve para pasar a la vista si el idTurno es null
+		List<Turnos> buscarTurnosCliente = servicioTurnos.turnosActivosPorIdClienteFechaAsc(idCliente);
+		
+		//Buscamos los turnos con multa para pasar a la tabla que esta en la vista,  este metodo sirve para pasar a la vista si el idTurno es null
+		List<Turnos> tunosConMulta = servicioTurnos.buscarPorIdClienteAndMulta(idCliente);
+		
+		//buscamos los datos del cliente para pasar a la vista,  este metodo sirve para pasar a la vista si el idTurno es null
+		List<Usuario> datosCliente = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		if (idTurno == null) {
+			String error = "Es necesario seleccionar un turno para continuar con la operación";
+			model.addAttribute("btnCancelarTurno", btnCancelarTurno);
+			model.addAttribute("tunosConMulta", tunosConMulta);
+			model.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
+			model.addAttribute("datosColaborador",datosColaborador);
+			model.addAttribute("emailCliente", emailCliente);
+			model.addAttribute("datosCliente", datosCliente);
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+			return "/pagina_colaborador/perfilCliente";
+		}
+		
+		String fechaConHora = fecha + " " + horario + ":00.000001";
+		LocalDateTime fechaSeleccionadaLocalDateTime = servicioHorario.pasarFechaStringToLocalDateTimeOtroFormato(fechaConHora);
+		LocalDateTime fechaActual = LocalDateTime.now();
+		
+		try {
+		//Si hay una diferencia menor a 24 horas entre la fecha seleccionada y la fecha actual
+		//entra en esta condicion
+		if (servicioHorario.turnoMenorA24Horas(fechaSeleccionadaLocalDateTime, fechaActual)) {
+			
+			//Este servicio se encarga de cancelar y multar el turno y al cliente
+			Turnos turnosMulta = servicioTurnos.multarTurnoAndClienteMenosDe24Horas(emailCliente, idTurno);
+			
+			//Creamos el objeto con los datos del email para poder enviarlo
+            EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
+            cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
+            cancelarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
+            
+            //Asiganmos la plantilla html para la cancelacion del turno
+            String plantillaHTML= "emailCancelacionDeTurno"; 
+            
+            //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
+            Boolean multa = true;
+            
+            try {
+            	//Enviamos al servicio para mandar al email con la cancelacion del turno
+            	servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnosMulta, plantillaHTML, multa); 
+            } catch (Exception e) {
+            	throw new MiExcepcion("Error al enviar el email con la cancelacion de turno menor a 24 horas");
+            }
+			
+		}else {
+			//Sirve para pasar el estado de un turno de activo a inactivo, usando el id del turno como parametro
+			Turnos turnos = servicioTurnos.actualizarEstadoDelTurno(idTurno, Rol.CLIENTE, EstadoDelTurno.CANCELADO);
+			
+			 //Creamos el objeto con los datos del email para poder enviarlo
+			 EmailUsuarios cancelarPorEmailTurno = new EmailUsuarios();
+			 cancelarPorEmailTurno.setAsunto("Nani estética - CANCELACIÓN DE TURNO");
+			 cancelarPorEmailTurno.setDestinatario("alvarocortesia@gmail.com");
+			 
+			 //asignamos a la variable el nombre de la plantilla que vamos a utilizar
+			 String plantillaHTML= "emailCancelacionDeTurno";
+			 
+			 //Este boolean sirve para indicar dentro del metodo si se agregar a la plantilla los valos de multa y costo de multa a la plantilla
+			 Boolean multa = false;
+			 
+			 try {
+				 //Llamamos al servicio para enviar el email
+				 servicioEmail.enviarConfirmacionOCancelacionTurno(cancelarPorEmailTurno, turnos, plantillaHTML, multa);
+			 } catch (Exception e) {
+				 throw new MiExcepcion("Error al enviar el email de cancelacion de turno aqui" + e.getMessage() + e.getCause() + e.getLocalizedMessage());
+			 }
+		}
+		
+		//Regresa a la lista de horarios la hora seleccionada en el turno cancelado si el rol es perteneciente a un CLiente
+		servicioHorario.agregarOrBorraHorarioDisponible(fecha, horario, idProfesional, Rol.CLIENTE);
+				
+		//Volvemos a buscar los turnos activos del cliente, despues de haber pasado por el metodo de desactivar y multar turnos, asi obtenemos los turnos mas
+		//actualizados del cliente que vamos a pasar a la vista
+		List<Turnos> buscarTurnosClienteActualizado = servicioTurnos.turnosActivosPorIdClienteFechaAsc(idCliente);
+		
+		if (!buscarTurnosClienteActualizado.isEmpty()) { //Si la lista de turnos NO esta vacía, activamos el boton de cancelar turnos
+			btnCancelarTurno = true;
+		}
+		
+		//Buscamos de vuelta los turnos con multa despues de pasar por el metodo de cancelar y multar turnos, asi obtenemos los mas actualizados para pasar a la vista
+		List<Turnos> tunosConMultaActualizado = servicioTurnos.buscarPorIdClienteAndMulta(idCliente);
+		
+		//Buscamos de vuelta los datos del cliente despues de pasar por el metodo de cancelar y multar turnos, asi obtenemos los mas actualizados para pasar a la vista
+		List<Usuario> datosClienteActualizado = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
+		
+		String exito = "Turno cancelado correctamente";
+		model.addAttribute("exito", exito);
+		model.addAttribute("showModalExito", true);
+		model.addAttribute("btnCancelarTurno", btnCancelarTurno);
+		model.addAttribute("tunosConMulta", tunosConMultaActualizado);
+		model.addAttribute("buscarTurnosCliente", buscarTurnosClienteActualizado);
+		model.addAttribute("datosColaborador",datosColaborador);
+		model.addAttribute("datosCliente", datosClienteActualizado);
+		return "/pagina_colaborador/perfilCliente";
+		
+		} catch (Exception e) {
+	
+			String error = e.getMessage();
+			model.addAttribute("btnCancelarTurno", btnCancelarTurno);
+			model.addAttribute("tunosConMulta", tunosConMulta);
+			model.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
+			model.addAttribute("datosColaborador",datosColaborador);
+			model.addAttribute("emailCliente", emailCliente);
+			model.addAttribute("datosCliente", datosCliente);
+			//model.addAttribute("datosTurno", turnosDisponibles);
+			model.addAttribute("error", error);
+			model.addAttribute("showModalError", true);
+			return "/pagina_colaborador/perfilCliente";
 		}
 	}
 		

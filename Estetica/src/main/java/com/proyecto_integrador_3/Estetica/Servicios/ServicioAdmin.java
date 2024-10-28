@@ -151,8 +151,7 @@ public class ServicioAdmin {
 		 Matcher matcher = pattern.matcher(telefono);
 		 
 		 if (!matcher.matches()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
 		 } 
 	        
 		 if (sexo == null || sexo.isEmpty() || sexo.trim().isEmpty() || sexo.equals("Seleccione")) {
@@ -183,8 +182,7 @@ public class ServicioAdmin {
 		 Matcher matcher = pattern.matcher(telefono);
 		 
 		 if (!matcher.matches()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
 		 } 
 		 
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
@@ -221,8 +219,7 @@ public class ServicioAdmin {
 		        Matcher matcher = pattern.matcher(email);
 		        
 		        if (!matcher.matches()) {
-		            throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado usuario,</span><br><br>"
-        								+ "<span class='fs-6'>El email no es valido, por favor verifique e intente nuevamente.</span>");
+		            throw new MiExcepcion("<span class='fs-6'>El email no es valido, por favor verifique e intente nuevamente.</span>");
 		        } 
 		        
 		        if (email == null || email.isEmpty() || email.trim().isEmpty()) {

@@ -34,10 +34,10 @@
           </a>
           <ul class="navbar-nav navbar4 container-fluid p-0">
 			<li class="nav-item">
-              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/homeCliente(email=${datosCliente.email})}">Home</a>
+              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/homeCliente(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email})}">Mis datos</a> <!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
+              <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosCliente(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Mis datos</a> <!--Le pasamos el mail a la pagina misdatosCliente para que cargue todos los datos-->
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/tratamientos(email=${datosCliente.email}, idCliente=${datosCliente.id})}">Solicitar turno</a>
@@ -58,7 +58,7 @@
   </nav>
 
 
-  <main>
+  <main class="">
     <div class="main-interno">
       <h3>Mis consultas</h3>
 

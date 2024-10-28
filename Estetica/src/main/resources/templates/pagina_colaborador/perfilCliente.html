@@ -72,11 +72,15 @@
   </nav>
 
   <main class="">
-    <h3 class="">Datos personales</h3>
+    <h3 class="">Datos del cliente</h3>
     <section class="">
       <div class="">
 
         <div th:each="datosCliente : ${datosCliente}">
+			
+			<form id="formularioActualizarCliente" class="m-4 rounded-2 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);" th:action="@{/actualizarDatosClienteColaborador}" method="post">
+				
+			<h3 class="fs-1 text-star">Datos personales</h3>
           <div class="row">
             <div class="mb-3 col-lg-4">
               <label for="nombre" class="form-label texto-label" disabled>Nombre</label>
@@ -98,7 +102,7 @@
             <div class="mb-3 col-lg-4">
               <label for="dni" class="form-label texto-label">DNI</label>
               <input type="number" th:value="${#strings.toUpperCase(datosCliente.dni)}" class="form-control" id="dni"
-                placeholder="" disabled>
+                name="dni" disabled>
             </div>
             <div class="mb-3 col-lg-4 ">
               <label for="fechaAltaFormateada" class="form-label texto-label">Fecha de alta</label>
@@ -108,13 +112,13 @@
             <div class="mb-3 col-lg-4 ">
               <label for="nacimiento" class="form-label texto-label">Fecha nacimiento</label>
               <input type="date" th:value="${#strings.toUpperCase(datosCliente.fechaNacimiento)}" class="form-control"
-                id="nacimiento" placeholder="" disabled>
+                id="nacimiento" name="fechaNacimiento" disabled>
             </div>
           </div>
           <div class="row">
             <div class="mb-3 col-lg-4">
               <label for="email" class="form-label texto-label">Email</label>
-              <input type="email" name="email" th:value="${#strings.toUpperCase(datosCliente.email)}"
+              <input type="email" name="emailCliente" th:value="${#strings.toUpperCase(datosCliente.email)}"
                 class="form-control" id="email" placeholder="" disabled>
             </div>
             <div class="mb-3 col-lg-4 ">
@@ -129,19 +133,65 @@
             </div>
           </div>
           <div class="row ">
-            <div class="mb-3 col-lg-6">
-              <label for="sexo" class="form-label texto-label">Sexo</label>
-              <input type="text" name="sexo" th:value="${#strings.toUpperCase(datosCliente.sexo)}" class="form-control"
-                id="sexo" placeholder="" disabled>
-            </div>
+			<div class="mb-3 col-lg-6">
+			    <label for="sexo" class="form-label texto-label">Sexo</label>
+			    <select  name="sexo" class="form-select" id="sexo" aria-label="Default select example" disabled>
+			    <option value=""  th:selected="${datosCliente.sexo}" th:text="${datosCliente.sexo}"></option>
+			    <option th:each="sexo : ${sexos}" th:value="${sexo.name()}" th:text="${sexo.name()}"></option>
+			   </select>
+			</div>
             <div class="mb-3 col-lg-6">
               <label for="telefono" class="form-label texto-label">Teléfono</label>
               <input type="text" name="telefono" th:value="${#strings.toUpperCase(datosCliente.telefono)}"
                 class="form-control" id="telefono" placeholder="" disabled>
             </div>
           </div>
+		  
+		  <div id="divBotonModificar" class="d-flex justify-content-center">
+			<button type="button" id="botonHabilitar" class="bn632-hover bn26 mb-4" onclick="habilitarEdicion()">Modificar</button>
+		  </div>
+		  
+		  <div id="divParDeBotones" class="d-flex justify-content-center">
+			<button style="display: none;" type="button" id="botonGuardar" class="bn632-hover bn26 mb-4" data-bs-target='#guardarDatos' data-bs-toggle="modal">Guardar</button>
+			<button style="display: none;" type="button" id="botonCancelarModificacion" class="bn632-hover bn26 cancelar mb-4" onclick="cancelarEdicion()">Cancelar</button>
+		  </div>
 
-						
+		  <input type="hidden" th:value="${datosCliente.activo}" class="form-control" name="clienteActivo">
+		  <input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente">
+		  <input type="hidden" th:value="${datosColaborador.email}" class="form-control" name="emailColaborador">
+		  <input type="hidden" th:value="${datosColaborador.id}" class="form-control" name="idColaborador">
+		  
+		  
+		  
+		  <!-- Modal para guardar modificacion de los datos del cliente -->
+		  																															  				
+		  													<div class="modal fade" id='guardarDatos' data-bs-backdrop="static" data-bs-keyboard="false"
+		  													tabindex="-1" aria-labelledby="guardarDatosLabel" aria-hidden="true">
+		  													<div class="modal-dialog">
+		  													<div style="background-color: #ebdf9d;" class="modal-content">
+		  													<div class="modal-header d-block text-center border border-0">
+		  													<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+		  													<h1 class="modal-title fs-6 fw-bold mt-4" id="guardarDatosLabel">Estimado usuario</h1>
+		  													</div>
+		  													<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+		  													<p class="text-center fs-6 fw-mediun">
+																¿Estas seguro de continuar con esta modificación?
+		  													</p>
+		  													</div>
+		  													<div class="modal-footer border border-0">
+		  													<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+		  													<!-- Botón que llama al método para aceptar la confirmación -->
+		  													<button  type="submit"  class="btn btn-primary">Aceptar</button>
+		  													</div>
+		  													</div>
+		  													</div>
+		  													</div>
+		  </form>	
+		  
+		
+			
+		  <div class="rounded-2 mx-4 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3); margin-top: 20px; margin-bottom: 20px;">
+		  	<h3 class="fs-1 text-star">Estado del cliente</h3>
 					<div class="row">
 					<div class="col-md-6">
 						<label for="" class="form-label texto-label">Estado</label>
@@ -228,8 +278,8 @@
 					</div>
 					
 					<div class="col-md-4 text-center">
-					<button type="button" th:if="${datosCliente.multa}" style="margin-top: 24px;" class="bn632-hover bn26 mx-0 mb-0" data-bs-target='#confirmarMulta' data-bs-toggle="modal">Blanquear</button>
-					<button type="button" th:unless="${datosCliente.multa}" style="margin-top: 24px;" class="bn632-hover bn26 enviar mx-0 mb-0" disabled>Blanquear</button>
+					<button type="button" th:if="${datosCliente.multa}" style="margin-top: 24px;" class="bn632-hover bn26 mx-0 mb-4" data-bs-target='#confirmarMulta' data-bs-toggle="modal">Blanquear</button>
+					<button type="button" th:unless="${datosCliente.multa}" style="margin-top: 24px;" class="bn632-hover bn26 enviar mx-0 mb-4" disabled>Blanquear</button>
 					</div>
 					
 					<input type="hidden" th:value="${datosCliente.multa}" class="form-control" name="clienteMulta">
@@ -260,14 +310,15 @@
 					</div>
 					</div>
 					</div>
-				</form>	
+				</form>
+				</div>	
         </div>
       </div>
-    </section>
-					           
+    </section>      
 					
-<h3 class="fs-1 text-center mt-5">Turnos activos</h3>
 <section>
+	<form class="m-4 rounded-2 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);" id="formularioCancelarTurno" th:action="@{/cancelarTurnoColaborador}" method="post"> 
+	<h3 class="fs-1 text-star">Turnos activos</h3>
 	<div class="container-fluid">
 								<table id="myTable2" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
 									<thead>
@@ -304,18 +355,53 @@
 											</ul>
 											</span>
 											</td>
+											<input type="hidden" th:value="${turno.cliente.email}" class="form-control" name="emailCliente">
+											<input type="hidden" th:value="${datosColaborador.email}" class="form-control" name="emailColaborador">
+											<input type="hidden" th:value="${turno.cliente.id}" class="form-control" name="idCliente">
+											<input type="hidden" th:value="${turno.profesional.id}" class="form-control" name="idProfesional">
+											<input type="hidden" th:value="${datosColaborador.id}" class="form-control" name="idColaborador">
+											<input type="hidden" th:value="${turno.fecha}" class="form-control" name="fecha">
+											<input type="hidden" th:value="${turno.horario}" class="form-control" name="horario">
 										</tr>    
 									</tbody>
 								</table>
 								<div class="text-center">
-								<button type="button" class="bn632-hover bn26 cancelar mx-0">Cancelar turno</button>									
+								<button id="btnCancelar" type="button" class="bn632-hover bn26 enviar mx-0" data-bs-target='#cancelarTurno' data-bs-toggle="modal" disabled>Cancelar turno</button>									
 								</div>
 							</div>
+							
+							
+							<!-- Modal para cancelar un turno del cliente -->
+																															  				
+													<div class="modal fade" id='cancelarTurno' data-bs-backdrop="static" data-bs-keyboard="false"
+													tabindex="-1" aria-labelledby="cancelarTurnoLabel" aria-hidden="true">
+													<div class="modal-dialog">
+													<div style="background-color: #ebdf9d;" class="modal-content">
+													<div class="modal-header d-block text-center border border-0">
+													<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+													<h1 class="modal-title fs-6 fw-bold mt-4" id="cancelarTurnoLabel">Estimado usuario</h1>
+													</div>
+													<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+													<p class="text-center fs-6 fw-mediun">Los turnos cancelados con menos de 24 horas de anticipación
+														 a la fecha seleccionada generarán una multa para el cliente.<br><br>
+														¿Deseas continuar con la cancelación del turno?
+													</p>
+													</div>
+													<div class="modal-footer border border-0">
+													<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+													<!-- Botón que llama al método para aceptar la confirmación -->
+													<button  type="submit"  class="btn btn-primary">Aceptar</button>
+													</div>
+													</div>
+													</div>
+													</div>
+												</form>
 </section>
 
    
-<h3 class="fs-1 text-center mt-5">Turnos con multa</h3> 
 <section>
+	<div class="m-4 rounded-2 py-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);">
+<h3 class="fs-1 text-star">Turnos con multa</h3> 
 	<div class="container-fluid">
 									<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
 										<thead>
@@ -355,6 +441,7 @@
 									</table>
 											<p>Total costo multas: agregar</p>   
 								</div>
+			</div>
 </section>
 
 <!--Modal mensaje de exito misDatosCliente, el script esta en el archivo datosPersonalesPaciente.js	-->
@@ -387,8 +474,9 @@
           <div class="modal-header border border-0 d-flex justify-content-center ">
             <img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
           </div>
-          <div class="modal-body text-black lh-sm">
-            <p class="text-center" th:utext="${error}"></p>
+		   <h1 class="modal-title fs-6 fw-bold text-center" id="confirmNotasLabel">Estimado usuario</h1>
+           <div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+            <p class="text-center fs-6 fw-mediun" th:utext="${error}"></p>
           </div>
           <div class="modal-footer border border-0">
             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
@@ -450,6 +538,7 @@ acá dentro deñ html y luego pasamos esa variable al archivo .js-->
 <script th:inline="javascript">
 var showModalError = /*[[${showModalError}]]*/ false;
 var showModalExito = /*[[${showModalExito}]]*/ false;
+var botonCancelarTurno = /*[[${btnCancelarTurno}]]*/ false;
 </script>
 
 </body>

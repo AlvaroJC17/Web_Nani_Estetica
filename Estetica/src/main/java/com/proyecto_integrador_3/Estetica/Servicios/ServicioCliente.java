@@ -58,7 +58,15 @@ public class ServicioCliente {
 	
 	
 
-	
+	public void verificarEmailActual(String emailActual, String idUsuario) throws MiExcepcion {
+		
+		Cliente cliente = buscarDatosCliente(idUsuario);
+		String emailGuardado = cliente.getEmail();
+		if (!emailActual.equalsIgnoreCase(emailGuardado)) {
+			throw new MiExcepcion("Su email fue modificado, debe iniciar sesión nuevamente con sus nuevos datos. Si usted no realizo "
+					+ "esta modificación pongase en contacto con nuestro soporte");
+		}
+	}
 
 	
 	  @Transactional
@@ -214,13 +222,11 @@ public class ServicioCliente {
 		 Matcher matcherDni = patternDni.matcher(dni);
 		 
 		 if (!matcher.matches()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
 		 } 
 		 
 		 if (!matcherDni.matches()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-					 + "<span class='fs-6'>El dni no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El dni no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
 		 } 
 		 
 		 if (nombre == null || nombre.isEmpty() || nombre.trim().isEmpty()) {
@@ -262,23 +268,19 @@ public class ServicioCliente {
 		 Matcher matcher = pattern.matcher(telefono);
 		  
 		 if (!matcher.matches()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-					 + "<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
 		 } 
 		 
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
- 					+ "<span class='fs-6'>El campo de la ocupación no puede estar vacío.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El campo de la ocupaciónv no puede estar vacío.</span>");
 		 }
 		 
 		 if (domicilio == null || domicilio.isEmpty() || domicilio.trim().isEmpty()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
- 								 + "<span class='fs-6'>El campo de la dirección no puede estar vacío.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El campo de la dirección no puede estar vacío.</span>");
 		 }
 		 
 		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
-			 throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
- 					+ "<span class='fs-6'>El campo del teléfono no puede estar vacío.</span>");
+			 throw new MiExcepcion("<span class='fs-6'>El campo del teléfono no puede estar vacío.</span>");
 		 }
 		 
 	 }
@@ -295,20 +297,17 @@ public class ServicioCliente {
 		        Matcher matcher = pattern.matcher(email);
 		        
 		        if (email == null || email.isEmpty() || email.trim().isEmpty()) {
-		            throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-		            					+ "<span class='fs-6'>El email no puede estar vacio.</span>");
+		            throw new MiExcepcion("<span class='fs-6'>El email no puede estar vacio.</span>");
 		        }
 
 		        // Verificar si la cadena cumple con la expresión regular
 		        if (!matcher.matches()) {
-		            throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-        								+ "<span class='fs-6'>El email no es valido, por favor verifique e intente nuevamente.</span>");
+		            throw new MiExcepcion("<span class='fs-6'>El email no es valido, por favor verifique e intente nuevamente.</span>");
 		        } 
 		       
 		        if (!email.equalsIgnoreCase(emailAnterior)) {
 		        	if (repositorioUsuario.buscarPorEmailOptional(email).isPresent()) {
-		        		throw new MiExcepcion("<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
-            								+ "<span class='fs-6'>El email ingresado ya se encuentra registrado.</span>");
+		        		throw new MiExcepcion("<span class='fs-6'>El email ingresado ya se encuentra registrado.</span>");
 		        	}
 	 
 		        }
