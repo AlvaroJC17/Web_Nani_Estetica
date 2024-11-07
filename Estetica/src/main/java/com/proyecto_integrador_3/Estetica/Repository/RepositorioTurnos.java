@@ -4,19 +4,14 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.data.jdbc.repository.query.Modifying;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
-import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
-
-import jakarta.transaction.Transactional;
 
 @Repository
 public interface RepositorioTurnos extends JpaRepository<Turnos, String> {
@@ -48,6 +43,8 @@ public interface RepositorioTurnos extends JpaRepository<Turnos, String> {
 	List<Turnos> findByEstadoAndActivoAndMultaAndProfesionalIdOrderByFechaCreacion(EstadoDelTurno estado, Boolean activo, Boolean multa, String idProfesional);
 	
 	List<Turnos> findByActivoAndEmail(Boolean activo, String email);
+	
+	List<Turnos> findByActivoAndClienteId(Boolean activo, String idCliente);
 	
 	List<Turnos> findByEmailOrderByFechaAsc(String email);
 	

@@ -34,16 +34,16 @@
         </a>
         <ul class="navbar-nav navbar4 container-fluid p-0">
 			<li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Home</a>
           </li>
 		  <li class="nav-item">
-		             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis datos</a>
+		             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Mis datos</a>
 		           </li>
 		  	  <li class="nav-item">
 		  	     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
 		  	   </li>
           <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Clientes</a>
           </li>
           <li class="nav-item">
              <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
@@ -84,7 +84,7 @@
 			
 		  <div class="mb-3 col-lg-4 ">
 		      <label for="fechaNacimiento" class="form-label texto-label">Fecha Nacimiento</label>
-		      <input type="text" th:value="${#temporals.format(fechaNacimientoLocalDate, 'dd-MM-yyyy')}" class="form-control" id="fechaNacimiento" placeholder="" disabled>
+		      <input type="text" th:value="${#temporals.format(datosProfesional.fechaNacimiento, 'dd-MM-yyyy')}" class="form-control" id="fechaNacimiento" placeholder="" disabled>
 		  </div>  
 		  
 		  <div class="mb-3 col-lg-4">
@@ -102,14 +102,14 @@
 		<label for="domicilio" class="form-label texto-label">Dirección</label>
 		<input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosProfesional.domicilio)}" class="form-control" id="domicilio" disabled>
 		</div>
-			
+		
 		<div class="mb-3 col-lg-6">
-		            <label for="sexo" class="form-label texto-label">Sexo</label>
-		            <select  name="sexo" class="form-select" id="sexo" aria-label="Default select example" disabled>
-		            <option value=""  th:selected="${datosProfesional.sexo}" th:text="${datosProfesional.sexo}"></option>
-		            <option th:each="sexo : ${sexos}" th:value="${sexo.name()}" th:text="${sexo.name()}"></option>
-		            </select>
-		          </div>
+			<label for="sexo" class="form-label texto-label">Sexo</label>
+			  <select  name="sexo" class="form-select" id="sexo" aria-label="Default select example" disabled>
+			  <option th:value="${datosProfesional.sexo}"  th:selected="${datosProfesional.sexo}" th:text="${datosProfesional.sexo}"></option>
+			  <option th:each="sexo : ${sexos}" th:value="${sexo.name()}" th:text="${sexo.name()}"></option>
+			  </select>
+		    </div>
         </div>
           
         <div class="row ">
@@ -123,10 +123,14 @@
        <input type="hidden" th:value="${datosProfesional.id}" class="form-control" name="idProfesional" id="idProfesional"> <!--input oculto para enviar el id del profesional al controlador actualizarDatosProfesional-->
        <input type="hidden" th:value="${datosProfesional.email}" class="form-control" name="email" id="email">
        
-	   <div class="boton-de-registro mt-4  text-center">
-	   	  <button id="botonHabilitar"  type="button" class="bn632-hover bn26">Habilitar/Deshabilitar</button>
-	      <button data-bs-target='#confirmar' data-bs-toggle="modal" id="botonGuardar" type="button" class="bn632-hover bn26 enviar" disabled>Guardar</button>
-	   </div>
+	   <div id="divBotonModificar" class="d-flex justify-content-center">
+	   		<button type="button" id="botonHabilitar" class="bn632-hover bn26 mb-4" onclick="habilitarEdicion()">Modificar</button>
+	   	</div>
+	   
+		<div id="divParDeBotones" class="d-flex justify-content-center">
+		    <button style="display: none;" data-bs-target='#confirmar' data-bs-toggle="modal" id="botonGuardar" type="button" class="bn632-hover bn26">Guardar</button>
+			<button style="display: none;" type="button" id="botonCancelarModificacion" class="bn632-hover bn26 cancelar mb-4" onclick="cancelarEdicion()">Cancelar</button>
+		</div>
 	   	
 	   	<!-- Modal Confirmar modificacion de formulario, es un modal comun, no necesita script -->
 	   					<div class="modal fade" id='confirmar' data-bs-backdrop="static" data-bs-keyboard="false"

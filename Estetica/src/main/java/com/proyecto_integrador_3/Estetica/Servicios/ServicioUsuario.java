@@ -20,17 +20,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import com.proyecto_integrador_3.Estetica.Entidades.Admin;
-import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
-import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
-import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
-import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCodigoDeVerificacion;
-import com.proyecto_integrador_3.Estetica.Repository.RepositorioTurnos;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioUsuario;
 
 import jakarta.transaction.Transactional;

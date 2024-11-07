@@ -108,7 +108,7 @@
           <div class="mb-3 col-lg-6">
             <label for="sexo" class="form-label texto-label">Sexo</label>
             <select  name="sexo" class="form-select" id="sexo" aria-label="Default select example" disabled>
-            <option value=""  th:selected="${datosCliente.sexo}" th:text="${datosCliente.sexo}"></option>
+            <option th:value="${datosCliente.sexo}"  th:selected="${datosCliente.sexo}" th:text="${datosCliente.sexo}"></option>
             <option th:each="sexo : ${sexos}" th:value="${sexo.name()}" th:text="${sexo.name()}"></option>
             </select>
           </div>
@@ -120,10 +120,14 @@
         
         <input type="hidden" th:value="${datosCliente.id}" class="form-control" name="idCliente" id="idCliente"> <!--input oculto para enviar el id del cliente al controlador actualizarDatosCliente-->
         <input type="hidden" th:value="${datosCliente.email}" class="form-control" name="email" id="email">
+		
+		<div id="divBotonModificar" class="d-flex justify-content-center">
+			<button type="button" id="botonHabilitar" class="bn632-hover bn26 mb-4" onclick="habilitarEdicion()">Modificar</button>
+		</div>
 	 
-        <div class="boton-de-registro mt-4  text-center">
-		  <button id="botonHabilitar"  type="button" class="bn632-hover bn26">Habilitar/Deshabilitar</button>
-          <button data-bs-target='#confirmar' data-bs-toggle="modal" id="botonGuardar" type="button" class="bn632-hover bn26 enviar" disabled>Guardar</button>
+        <div id="divParDeBotones" class="d-flex justify-content-center">
+          <button style="display: none;" data-bs-target='#confirmar' data-bs-toggle="modal" id="botonGuardar" type="button" class="bn632-hover bn26">Guardar</button>
+		  <button style="display: none;" type="button" id="botonCancelarModificacion" class="bn632-hover bn26 cancelar mb-4" onclick="cancelarEdicion()">Cancelar</button>
         </div>
 		
 		<!-- Modal Confirmar modificacion de formulario -->

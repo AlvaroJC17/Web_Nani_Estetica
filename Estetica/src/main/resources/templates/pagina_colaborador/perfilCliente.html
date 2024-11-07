@@ -192,6 +192,17 @@
 			
 		  <div class="rounded-2 mx-4 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3); margin-top: 20px; margin-bottom: 20px;">
 		  	<h3 class="fs-1 text-star">Estado del cliente</h3>
+			
+						<div class="row">
+							<div class="col-md-6">
+							<label for="" class="form-label texto-label">Email</label>
+							<input th:if="${datosCliente.emailValidado}" type="text" name="validado" value="VALIDADO"
+							class="form-control bg-success bg-gradient text-center text-white" id="" disabled>
+							<input th:unless="${datosCliente.emailValidado}" type="text" name="validado" value="NO VALIDADO"
+							class="form-control bg-danger bg-gradient text-center text-white" id="" disabled>
+							</div>
+						</div>
+			
 					<div class="row">
 					<div class="col-md-6">
 						<label for="" class="form-label texto-label">Estado</label>
@@ -271,9 +282,9 @@
 				<form class="row" th:action="@{/quitarMultasCliente}" method="post">
 					<div class="col-md-6">
 						<label for="" class="form-label texto-label">Multas</label>
-						<input th:if="${datosCliente.multa}" type="text" name="multa" value="TIENE MULTAS"
+						<input th:if="${datosCliente.multa}" type="text" name="multa" value="SI"
 						class="form-control bg-danger bg-gradient text-center text-white" id="" disabled>
-						<input th:unless="${datosCliente.multa}" type="text" name="multa" value="NO TIENE MULTAS"
+						<input th:unless="${datosCliente.multa}" type="text" name="multa" value="NO"
 						class="form-control bg-success bg-gradient text-center text-white" id="" disabled>
 					</div>
 					
@@ -311,6 +322,7 @@
 					</div>
 					</div>
 				</form>
+				
 				</div>	
         </div>
       </div>

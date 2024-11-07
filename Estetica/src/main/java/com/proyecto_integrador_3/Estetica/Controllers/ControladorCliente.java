@@ -1,9 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -11,6 +9,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.aspectj.weaver.patterns.IScope;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -27,7 +26,6 @@ import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
-import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
@@ -184,7 +182,7 @@ public class ControladorCliente {
 		//Antes de mostrar los tratamientos disponibles, verificamos que no hay turno antiguos
 		//no asistidos, de ser afirmativo, le colocamos una multa al turno
 		try {
-			servicioTurnos.actualizarTurnosAntiguos(email, idCliente);
+			servicioTurnos.actualizarTurnosAntiguos(idCliente);
 		} catch (MiExcepcion e) {
 			System.out.println("Error en el portal de tratamientos");
 			e.printStackTrace();
@@ -643,7 +641,7 @@ public class ControladorCliente {
 							
 					
 				//Limitamos a que el usuario solo pueda tener un maximi de tres activos
-				if (servicioTurnos.checkActiveTurnos(emailCliente)) {
+				if (servicioTurnos.checkActiveTurnos(idCliente)) {
 					String error = "<span class='fs-6'>Solo se permite tener un máximo de tres turnos activos."
 							+ " Si necesita modificar un turno o seleccionar uno nuevo, puede"
 							+ " ir al apartado de \"Mis turnos\" y cancerlar alguno de los turnos activos.</span>";
@@ -1142,20 +1140,18 @@ public class ControladorCliente {
 	//Devuelve la pagina homeCLiente con los datos del usuario que le pasemos por mmail
 	@GetMapping("/homeCliente")
 	public String homeCliente(
-			@RequestParam String idCliente,
 			@RequestParam String email,
 			Model model) throws MiExcepcion {
 		
-		List<Usuario> datosCliente = null;
+		List<Usuario> datosCliente = new ArrayList<>();
 		
-		List <Usuario> datosClientePorEmail = servicioUsuario.buscarPorEmail(email);
-		//Buscamos los datos del usuario para pasarlo a la vista y renderizar la pagina
-		List <Usuario> datosClientePorId = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
-		
-		if (!datosClientePorEmail.isEmpty() || datosClientePorEmail == null) {
-			datosCliente = datosClientePorEmail;
-		}else if(!datosClientePorId.isEmpty() || datosClientePorId == null) {
-			datosCliente = datosClientePorId;
+		datosCliente = servicioUsuario.buscarPorEmail(email);
+
+		String idCliente = null;
+		if (!datosCliente.isEmpty()) {
+			for (Usuario usuario : datosCliente) {
+				idCliente = usuario.getId();
+			}
 		}
 		
 		try {
@@ -1292,7 +1288,7 @@ public class ControladorCliente {
 			ocupacionAnterior = ocupacion;
 		}
 		
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email); //Buscamos todos los datos pertenecientes al cliente despues de haber sido actualizados en la base de datos y los mostramos en el campo correspondiente
+		List <Usuario> datosCliente = servicioUsuario. buscarDatosUsuarioPorId(idCliente); //Buscamos todos los datos pertenecientes al cliente despues de haber sido actualizados en la base de datos y los mostramos en el campo correspondiente
 		//Teniendo el valor de los datos guardados y los que envian al presionar guardar en el formualario podemos comparar si se hiz alguna modificaicon
 				//de los datos, si presiona guardar y no se modifico nada, recargar la misma pagina y no muestra ningun mensaje
 		if (ocupacionAnterior.equals(ocupacion.toUpperCase()) && domicilioAnterior.equals(domicilio.toUpperCase()) && nuevoSexo.equals(sexo.toUpperCase()) && telefonoAnterior.equals(telefono.toUpperCase())) {
@@ -1308,7 +1304,7 @@ public class ControladorCliente {
 			servicioCliente.modificarCliente(idCliente, ocupacion, email, emailAnterior, domicilio, sexo, telefono );
 			
 			//Buscamos de nuevo los datos actualizados del cliente para pasarlos a la vista
-			List <Usuario> datosClienteActualizados = servicioUsuario.buscarPorEmail(email);
+			List <Usuario> datosClienteActualizados = servicioUsuario. buscarDatosUsuarioPorId(idCliente);
 			String exito = "<span class='fs-6 fw-bold'>Estimado cliente,</span><br><br>"
 							+"<span class='fs-6'>Sus datos han sido actualizados de forma exitosa</span>";
 			model.addAttribute("datosCliente",datosClienteActualizados);

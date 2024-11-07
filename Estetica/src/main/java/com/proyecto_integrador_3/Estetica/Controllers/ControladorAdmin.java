@@ -452,6 +452,7 @@ public class ControladorAdmin {
 			
 			model.addAttribute("email", email);
 			model.addAttribute("datosAdmin",datosAdmin);
+			model.addAttribute("sexos", Sexo.values());
 			return "/pagina_admin/misdatosAdmin";
 		}
 		
@@ -468,6 +469,7 @@ public class ControladorAdmin {
 			String exito = "Datos actualizados correctamente";
 			model.addAttribute("datosAdmin",datosAdminActualizados);
 			model.addAttribute("fechaNacimientoLocalDate", fechaNacimiento);
+			model.addAttribute("sexos", Sexo.values());
 			model.addAttribute("exito",exito);
 			model.addAttribute("showModalExito", true);
 			return "/pagina_admin/misdatosAdmin"; //si todo sale bien redireccionamos al metodo misdatosAdmin con el mail actualizado y un mensaje de exito 
@@ -477,6 +479,7 @@ public class ControladorAdmin {
 			List <Usuario> datosAdminAnterior = servicioUsuario.buscarPorEmail(admin.getEmail().toUpperCase());
 			model.addAttribute("datosAdmin",datosAdminAnterior);
 			model.addAttribute("error",error);
+			model.addAttribute("sexos", Sexo.values());
 			model.addAttribute("showModalError", true);
 			return "/pagina_admin/misdatosAdmin"; // si se produce alguna exepcion en algun campo enviamos el mail anterior del usuario y un mensaje de error al metodo misdatosAdmi
 		}

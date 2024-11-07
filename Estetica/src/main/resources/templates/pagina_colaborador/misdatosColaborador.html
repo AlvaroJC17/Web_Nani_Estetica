@@ -108,7 +108,7 @@
           <div class="mb-3 col-lg-6">
             <label for="sexo" class="form-label texto-label">Sexo</label>
             <select  name="sexo" class="form-select" id="sexo" aria-label="Default select example" disabled>
-            <option value=""  th:selected="${datosColaborador.sexo}" th:text="${datosColaborador.sexo}"></option>
+            <option th:value="${datosColaborador.sexo}"  th:selected="${datosColaborador.sexo}" th:text="${datosColaborador.sexo}"></option>
             <option th:each="sexo : ${sexos}" th:value="${sexo.name()}" th:text="${sexo.name()}"></option>
             </select>
           </div>
@@ -121,10 +121,14 @@
         <input type="hidden" th:value="${datosColaborador.id}" class="form-control" name="idColaborador"> <!--input oculto para enviar el id del cliente al controlador actualizarDatosCliente-->
         <input type="hidden" th:value="${datosColaborador.email}" class="form-control" name="emailColaborador">
 	 
-        <div class="boton-de-registro mt-4  text-center">
-		  <button id="botonHabilitar"  type="button" class="bn632-hover bn26">Habilitar/Deshabilitar</button>
-          <button data-bs-target='#confirmar' data-bs-toggle="modal" id="botonGuardar" type="button" class="bn632-hover bn26 enviar" disabled>Guardar</button>
-        </div>
+		<div id="divBotonModificar" class="d-flex justify-content-center">
+			<button type="button" id="botonHabilitar" class="bn632-hover bn26 mb-4" onclick="habilitarEdicion()">Modificar</button>
+		</div>
+			 
+		  <div id="divParDeBotones" class="d-flex justify-content-center">
+		    <button style="display: none;" data-bs-target='#confirmar' data-bs-toggle="modal" id="botonGuardar" type="button" class="bn632-hover bn26">Guardar</button>
+			<button style="display: none;" type="button" id="botonCancelarModificacion" class="bn632-hover bn26 cancelar mb-4" onclick="cancelarEdicion()">Cancelar</button>
+		  </div>
 		
 		<!-- Modal Confirmar modificacion de formulario -->
 						<div class="modal fade" id='confirmar' data-bs-backdrop="static" data-bs-keyboard="false"

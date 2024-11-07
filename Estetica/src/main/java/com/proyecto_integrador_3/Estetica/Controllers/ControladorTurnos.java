@@ -6,7 +6,6 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -730,7 +729,7 @@ public class ControladorTurnos {
 		try {
 		//cuando el usuario ingrese a turnos se verifica si algun turno tiene fecha anterior
 		//a la actual y si eso es afirmativo, entonces pasa el turno a cencelado, le coloca una multa y le manda un email
-		servicioTurnos.actualizarTurnosAntiguos(email, idCliente); //MODIFICAR AQUI SI SE EJECUTA BIEN, SOLO DEBE QUEDAR POR ID CLIENTE
+		servicioTurnos.actualizarTurnosAntiguos(idCliente); //SI FUNCIONA, MODIFICAR!!
 		
 		//datos del cliente y los pasa a la vista, sirve para renderizar la vista
 		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(email);

@@ -1,6 +1,5 @@
 package com.proyecto_integrador_3.Estetica.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;

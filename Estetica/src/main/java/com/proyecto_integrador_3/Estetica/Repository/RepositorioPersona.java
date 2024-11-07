@@ -9,9 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
-import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
-import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
-import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
 import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 

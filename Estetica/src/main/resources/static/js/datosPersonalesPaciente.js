@@ -119,83 +119,210 @@ if (tunoEstaPresente2) {
   console.log("El contador 2 no esta presente");
 }
 
-// Script para habilitar y deshabilitar el campo de recomendaciones y su boton guardar del primer turno de la columna
-var tunoEstaPresenteOne = document.getElementById("toggleButton0");
-if (tunoEstaPresenteOne) {
+// Script para habilitar y deshabilitar el campo de recomendaciones y su botón guardar del primer turno de la columna
+        // Lista para almacenar los valores iniciales
+const valoresOriginales0 = {};
+document.addEventListener("DOMContentLoaded", function() {
+    // Verifica si el botón "Modificar" existe en la página
+    var turnoEstaPresenteOne = document.getElementById("botonHabilitar0");
+    if (turnoEstaPresenteOne) {
+      
+        // Función para guardar los valores iniciales del textarea
+        function guardarValoresOriginales0() {
+            const consultaTurno0 = document.getElementById("consultaTurno0"); // Cambié "consultaTurno1" a "consultaTurno0"
+            if (consultaTurno0) {
+                valoresOriginales0[consultaTurno0.id] = consultaTurno0.value; // Guarda el valor inicial del textarea
+            }
+        }
 
-  document.getElementById("toggleButton0").addEventListener("click", function () {
-    var campoTexto0 = document.getElementById("consultaTurno0");
-    var guardarButton0 = document.getElementById("guardarButton0");
-
-    // Alterna la propiedad 'disabled' del campo de texto
-    campoTexto0.disabled = !campoTexto0.disabled;
-
-    // Alterna la propiedad 'disabled' del botón 'Guardar'
-    guardarButton0.disabled = !guardarButton0.disabled;
-
-    // Agrega o quita la clase según el estado de deshabilitación
-    if (guardarButton0.disabled) {
-      guardarButton0.classList.add("enviar");
-    } else {
-      guardarButton0.classList.remove("enviar");
+        // Ejecuta la función de guardado de valores originales al cargar la página
+        guardarValoresOriginales0();
     }
-  });
-} else {
-  console.log("Elemento no presente");
+});
+
+// Función para restaurar los valores originales
+function restaurarValores0() {
+    const consultaTurno0 = document.getElementById("consultaTurno0");
+    if (consultaTurno0) {
+        consultaTurno0.value = valoresOriginales0[consultaTurno0.id]; // Restaura el valor inicial del textarea
+        console.log("VALORES3: " + valoresOriginales0[consultaTurno0.id]);
+        console.log("VALORES4: " + consultaTurno0.value);
+    }
 }
 
-// Script para habilitar y deshabilitar el campo de recomendaciones y su boton guardar del segundo turno de la columna 
-var turnoEstaPresenteTwo = document.getElementById("toggleButton1");
-
-if (turnoEstaPresenteTwo) {
-
-  document.getElementById("toggleButton1").addEventListener("click", function () {
-    var campoTexto1 = document.getElementById("consultaTurno1");
-    var guardarButton1 = document.getElementById("guardarButton1");
-
-    // Alterna la propiedad 'disabled' del campo de texto
-    campoTexto1.disabled = !campoTexto1.disabled;
-
-    // Alterna la propiedad 'disabled' del botón 'Guardar'
-    guardarButton1.disabled = !guardarButton1.disabled;
-
-    // Agrega o quita la clase según el estado de deshabilitación
-    if (guardarButton1.disabled) {
-      guardarButton1.classList.add("enviar");
-    } else {
-      guardarButton1.classList.remove("enviar");
+// Script para habilitar el textarea de recomendaciones
+document.getElementById("botonHabilitar0").addEventListener("click", function() { 
+    var consultaTurno0 = document.getElementById("consultaTurno0");
+    if (consultaTurno0) {
+        consultaTurno0.disabled = false; // Habilita el textarea
     }
-  });
-} else {
-  console.log("Elemento dos no presente");
+});
+
+// Función para mostrar los botones de Guardar y Cancelar y ocultar el de Modificar
+function habilitarEdicion0() {
+	cancelarEdicion1();
+	cancelarEdicion2();
+    document.getElementById("guardarButton0").style.display = "inline-block";
+    document.getElementById("botonCancelarModificacion0").style.display = "inline-block";
+    document.getElementById("botonHabilitar0").style.display = "none"; // Oculta el botón "Modificar"
 }
 
-// Script para habilitar y deshabilitar el campo de recomendaciones y su boton guardar del ultimo turno de la columna  
-var turnoEstaPresenteThree = document.getElementById("toggleButton2");
+// Función para cancelar la edición, restaurar valores originales y deshabilitar el textarea
+function cancelarEdicion0() {
+    restaurarValores0(); // Restaura los valores originales del textarea
 
-if (turnoEstaPresenteThree) {
-
-  document.getElementById("toggleButton2").addEventListener("click", function () {
-    var campoTexto2 = document.getElementById("consultaTurno2");
-    var guardarButton2 = document.getElementById("guardarButton2");
-
-    // Alterna la propiedad 'disabled' del campo de texto
-    campoTexto2.disabled = !campoTexto2.disabled;
-
-    // Alterna la propiedad 'disabled' del botón 'Guardar'
-    guardarButton2.disabled = !guardarButton2.disabled;
-
-    // Agrega o quita la clase según el estado de deshabilitación
-    if (guardarButton2.disabled) {
-      guardarButton2.classList.add("enviar");
-    } else {
-      guardarButton2.classList.remove("enviar");
+    var consultaTurno0 = document.getElementById("consultaTurno0");
+    if (consultaTurno0) {
+        consultaTurno0.disabled = true; // Deshabilita el textarea
     }
-  });
 
-} else {
-  console.log("Elemento tres no esta presente");
+    // Oculta los botones de Guardar y Cancelar
+    document.getElementById("guardarButton0").style.display = "none";
+    document.getElementById("botonCancelarModificacion0").style.display = "none";
+
+    // Muestra el botón "Modificar" nuevamente
+    document.getElementById("botonHabilitar0").style.display = "block";
 }
+
+
+// Script para habilitar y deshabilitar el campo de recomendaciones y su botón guardar del segundo turno de la columna
+const valoresOriginales1 = {};
+document.addEventListener("DOMContentLoaded", function() {
+    // Verifica si el botón "Modificar" existe en la página
+    var turnoEstaPresenteTwo = document.getElementById("botonHabilitar1");
+    if (turnoEstaPresenteTwo) {
+      
+        // Lista para almacenar los valores iniciales
+
+        // Función para guardar los valores iniciales del textarea
+        function guardarValoresOriginales1() {
+            const consultaTurno1 = document.getElementById("consultaTurno1"); // Cambié "consultaTurno1" a "consultaTurno0"
+            if (consultaTurno1) {
+                valoresOriginales1[consultaTurno1.id] = consultaTurno1.value; // Guarda el valor inicial del textarea
+            }
+        }
+
+        // Ejecuta la función de guardado de valores originales al cargar la página
+        guardarValoresOriginales1();
+    }
+});
+
+// Función para restaurar los valores originales
+function restaurarValores1() {
+    const consultaTurno1 = document.getElementById("consultaTurno1");
+    if (consultaTurno1) {
+        consultaTurno1.value = valoresOriginales1[consultaTurno1.id]; // Restaura el valor inicial del textarea
+        console.log("VALORES3: " + valoresOriginales1[consultaTurno1.id]);
+        console.log("VALORES4: " + consultaTurno1.value);
+    }
+}
+
+// Script para habilitar el textarea de recomendaciones
+document.getElementById("botonHabilitar1").addEventListener("click", function() { 
+    var consultaTurno1 = document.getElementById("consultaTurno1");
+    if (consultaTurno1) {
+        consultaTurno1.disabled = false; // Habilita el textarea
+    }
+});
+
+// Función para mostrar los botones de Guardar y Cancelar y ocultar el de Modificar
+function habilitarEdicion1() {
+	cancelarEdicion0();
+	cancelarEdicion2();
+    document.getElementById("guardarButton1").style.display = "inline-block";
+    document.getElementById("botonCancelarModificacion1").style.display = "inline-block";
+    document.getElementById("botonHabilitar1").style.display = "none"; // Oculta el botón "Modificar"
+}
+
+// Función para cancelar la edición, restaurar valores originales y deshabilitar el textarea
+function cancelarEdicion1() {
+    restaurarValores1(); // Restaura los valores originales del textarea
+
+    var consultaTurno1 = document.getElementById("consultaTurno1");
+    if (consultaTurno1) {
+        consultaTurno1.disabled = true; // Deshabilita el textarea
+    }
+
+    // Oculta los botones de Guardar y Cancelar
+    document.getElementById("guardarButton1").style.display = "none";
+    document.getElementById("botonCancelarModificacion1").style.display = "none";
+
+    // Muestra el botón "Modificar" nuevamente
+    document.getElementById("botonHabilitar1").style.display = "block";
+}
+
+  
+
+
+// Script para habilitar y deshabilitar el campo de recomendaciones y su botón guardar del primer turno de la columna
+const valoresOriginales2 = {};
+document.addEventListener("DOMContentLoaded", function() {
+    // Verifica si el botón "Modificar" existe en la página
+    var turnoEstaPresenteThree = document.getElementById("botonHabilitar2");
+    if (turnoEstaPresenteThree) {
+      
+        // Lista para almacenar los valores iniciales
+
+        // Función para guardar los valores iniciales del textarea
+        function guardarValoresOriginales2() {
+            const consultaTurno2 = document.getElementById("consultaTurno2"); // Cambié "consultaTurno1" a "consultaTurno0"
+            if (consultaTurno2) {
+                valoresOriginales2[consultaTurno2.id] = consultaTurno2.value; // Guarda el valor inicial del textarea
+                console.log("VALORES1.1: " + valoresOriginales2[consultaTurno2.id]);
+                console.log("VALORES2.1: " + consultaTurno2.value);
+            }
+        }
+
+        // Ejecuta la función de guardado de valores originales al cargar la página
+        guardarValoresOriginales2();
+    }
+});
+
+// Función para restaurar los valores originales
+function restaurarValores2() {
+    const consultaTurno2 = document.getElementById("consultaTurno2");
+    if (consultaTurno2) {
+        consultaTurno2.value = valoresOriginales2[consultaTurno2.id]; // Restaura el valor inicial del textarea
+        console.log("VALORES3: " + valoresOriginales2[consultaTurno2.id]);
+        console.log("VALORES4: " + consultaTurno2.value);
+    }
+}
+
+// Script para habilitar el textarea de recomendaciones
+document.getElementById("botonHabilitar2").addEventListener("click", function() { 
+    var consultaTurno2 = document.getElementById("consultaTurno2");
+    if (consultaTurno2) {
+        consultaTurno2.disabled = false; // Habilita el textarea
+    }
+});
+
+// Función para mostrar los botones de Guardar y Cancelar y ocultar el de Modificar
+function habilitarEdicion2() {
+	cancelarEdicion0();
+	cancelarEdicion1();
+    document.getElementById("guardarButton2").style.display = "inline-block";
+    document.getElementById("botonCancelarModificacion2").style.display = "inline-block";
+    document.getElementById("botonHabilitar2").style.display = "none"; // Oculta el botón "Modificar"
+}
+
+// Función para cancelar la edición, restaurar valores originales y deshabilitar el textarea
+function cancelarEdicion2() {
+    restaurarValores2(); // Restaura los valores originales del textarea
+
+    var consultaTurno2 = document.getElementById("consultaTurno2");
+    if (consultaTurno2) {
+        consultaTurno2.disabled = true; // Deshabilita el textarea
+    }
+
+    // Oculta los botones de Guardar y Cancelar
+    document.getElementById("guardarButton2").style.display = "none";
+    document.getElementById("botonCancelarModificacion2").style.display = "none";
+
+    // Muestra el botón "Modificar" nuevamente
+    document.getElementById("botonHabilitar2").style.display = "block";
+}
+
+  
 
 //script para deshabilitar el formulario de datos cuando se ejecute el submit
 
@@ -283,6 +410,8 @@ var turnoPresente1 = document.getElementById("guardarButton1");
     } else {
       console.log("turno 1 para deshabilitar no encontrado");
     }
+	
+	
 
 //script para deshabilitar el boton guardar del formulario del turno2 cuando se ejecute el submit
 var turnoPresente2 = document.getElementById("guardarButton2");
@@ -308,10 +437,54 @@ var turnoPresente2 = document.getElementById("guardarButton2");
       console.log("turno 2 para deshabilitar no encontrado");
     }
 
-document.getElementById("botonEditar").addEventListener("click", function() {
-	  	var campoFuma = document.getElementById("fuma");
-	  	var campoDrogas = document.getElementById("drogas");
-	    var campoAlcohol = document.getElementById("alcohol");
+
+// Guardar en una lista los valores originales del los select datos personales al cargar la página
+  window.onload = guardarValoresOriginales;
+  
+// Lista para almacenar los valores iniciales
+     const valoresOriginales = {};
+
+// Función para guardar los valores iniciales al cargar la página
+	    function guardarValoresOriginales() {
+			const campos = document.querySelectorAll("#fuma, #drogas, #alcohol, #deportes, #ejercicios, #ciclo_menstrual," +
+					   "#medicamentos, #embarazo, #amamantando, #alteracion_hormonal, #vitaminas, #corticoides, #hormonas, #tiroides," +
+					   "#metodo_anticonceptivo, #sufre_enfermedad, #cual_enfermedad, #paciente_oncologica, #consumo_carbohidratos," +
+					   "#fractura_facial, #tiene_implantes, #cirugia_estetica, #indique_cirugia_estetica, #marca_pasos, #horas_sueno," +
+					   "#exposicion_sol, #protector_solar, #reaplica_protector, #motivo_consulta, #tratamientosFacialesAnteriores," +
+					    "#resultados_tratamiento_anterior, #cuidado_de_piel");
+	      
+	      campos.forEach(campo => {
+	        if (campo.tagName === "SELECT") {
+	          valoresOriginales[campo.id] = campo.value; // Guarda el valor seleccionado en el select
+	        } else {
+	          valoresOriginales[campo.id] = campo.value; // Guarda el valor de los input
+	        }
+	      });
+	    }
+	 
+// Función para restaurar los valores originales, 
+		    function restaurarValores() {
+		      const campos = document.querySelectorAll("#fuma, #drogas, #alcohol, #deportes, #ejercicios, #ciclo_menstrual," +
+			   "#medicamentos, #embarazo, #amamantando, #alteracion_hormonal, #vitaminas, #corticoides, #hormonas, #tiroides," +
+			   "#metodo_anticonceptivo, #sufre_enfermedad, #cual_enfermedad, #paciente_oncologica, #consumo_carbohidratos," +
+			   "#fractura_facial, #tiene_implantes, #cirugia_estetica, #indique_cirugia_estetica, #marca_pasos, #horas_sueno," +
+			   "#exposicion_sol, #protector_solar, #reaplica_protector, #motivo_consulta, #tratamientosFacialesAnteriores," +
+			    "#resultados_tratamiento_anterior, #cuidado_de_piel");
+		      
+		      campos.forEach(campo => {
+		        if (campo.tagName === "SELECT") {
+		          campo.value = valoresOriginales[campo.id]; // Restaura el valor seleccionado en el select
+		        } else {
+		          campo.value = valoresOriginales[campo.id]; // Restaura el valor de los input
+		        }
+		      });
+		    }
+
+//Script para habilitar los select de datos personales
+document.getElementById("botonHabilitarFormulario").addEventListener("click", function() { //La funcion se activa al hacer click en el boton habilitar
+			var campoFuma = document.getElementById("fuma");
+		  	var campoDrogas = document.getElementById("drogas");
+		    var campoAlcohol = document.getElementById("alcohol");
 			var campoDeportes = document.getElementById("deportes");
 			var campoEjercicios = document.getElementById("ejercicios");
 			var campoCicloMenstrual = document.getElementById("ciclo_menstrual");
@@ -343,49 +516,135 @@ document.getElementById("botonEditar").addEventListener("click", function() {
 			var campoResultadoTratamientos = document.getElementById("resultados_tratamiento_anterior");
 			var campoCuidadoPiel = document.getElementById("cuidado_de_piel");
 
-	  	    // Alterna la propiedad 'disabled' del campo
-	  	    campoFuma.disabled = !campoFuma.disabled;
-	  	    campoDrogas.disabled = !campoDrogas.disabled;
-			campoAlcohol.disabled = !campoAlcohol.disabled;
-			campoDeportes.disabled = !campoDeportes.disabled;
-			campoEjercicios.disabled = !campoEjercicios.disabled;
-			campoCicloMenstrual.disabled = !campoCicloMenstrual.disabled;
-			campoMedicamentos.disabled = !campoMedicamentos.disabled;
-			campoNombreMedicamento.disabled = !campoNombreMedicamento.disabled;
-			campoEmbarazo.disabled = !campoEmbarazo.disabled;
-			campoAmamantendo.disabled = !campoAmamantendo.disabled;
-			campoHormonal.disabled = !campoHormonal.disabled;
-			campoVitaminas.disabled = !campoVitaminas.disabled;
-			campoCorticoides.disabled = !campoCorticoides.disabled;
-			campoHormonas.disabled = !campoHormonas.disabled;
-			campoTiroides.disabled = !campoTiroides.disabled;
-			campoAnticonceptivo.disabled = !campoAnticonceptivo.disabled;
-			campoEnfermedad.disabled = !campoEnfermedad.disabled;
-			campoCualEnfermedad.disabled = !campoCualEnfermedad.disabled;
-			campoOncologico.disabled = !campoOncologico.disabled;
-			campoCarbohidratos.disabled = !campoCarbohidratos.disabled;
-			campoFractura.disabled = !campoFractura.disabled;
-			campoImplantes.disabled = !campoImplantes.disabled;
-			campoCirugia.disabled = !campoCirugia.disabled;
-			campoIndiqueCirugia.disabled = !campoIndiqueCirugia.disabled;
-			campoMarcaPasos.disabled = !campoMarcaPasos.disabled;
-			campoSuenos.disabled = !campoSuenos.disabled;
-			campoExposicionSol.disabled = !campoExposicionSol.disabled;
-			campoProtectorSolar.disabled = !campoProtectorSolar.disabled;
-			campoReaplicaProtector.disabled = !campoReaplicaProtector.disabled;
-			campoMotivoConsulta.disabled = !campoMotivoConsulta.disabled;
-			campoTratamientosFacialesAnteriores.disabled = !campoTratamientosFacialesAnteriores.disabled;
-			campoResultadoTratamientos.disabled = !campoResultadoTratamientos.disabled;
-			campoCuidadoPiel.disabled = !campoCuidadoPiel.disabled;
-	  	    
-			botonGuardar.disabled = !botonGuardar.disabled;
-	  		
-	  		// Agrega o quita la clase según el estado de deshabilitación
-	  		if (botonGuardar.disabled) {
-	  		  botonGuardar.classList.add("enviar");
-	  		} else {
-	  		  botonGuardar.classList.remove("enviar");
-	  		}
-	  	  });
+			// Alterna la propiedad 'disabled' del campo
+			  	    campoFuma.disabled = false;
+			  	    campoDrogas.disabled = false;
+					campoAlcohol.disabled = false;
+					campoDeportes.disabled = false;
+					campoEjercicios.disabled = false;
+					campoCicloMenstrual.disabled = false;
+					campoMedicamentos.disabled = false;
+					campoNombreMedicamento.disabled = false;
+					campoEmbarazo.disabled = false;
+					campoAmamantendo.disabled = false;
+					campoHormonal.disabled = false;
+					campoVitaminas.disabled = false;
+					campoCorticoides.disabled = false;
+					campoHormonas.disabled = false;
+					campoTiroides.disabled = false;
+					campoAnticonceptivo.disabled = false;
+					campoEnfermedad.disabled = false;
+					campoCualEnfermedad.disabled = false;
+					campoOncologico.disabled = false;
+					campoCarbohidratos.disabled = false;
+					campoFractura.disabled = false;
+					campoImplantes.disabled = false;
+					campoCirugia.disabled = false;
+					campoIndiqueCirugia.disabled = false;
+					campoMarcaPasos.disabled = false;
+					campoSuenos.disabled = false;
+					campoExposicionSol.disabled = false;
+					campoProtectorSolar.disabled = false;
+					campoReaplicaProtector.disabled = false;
+					campoMotivoConsulta.disabled = false;
+					campoTratamientosFacialesAnteriores.disabled = false;
+					campoResultadoTratamientos.disabled = false;
+					campoCuidadoPiel.disabled = false;
+  });
+  
+  
+// Función para habilitar ocultar el boton habilitar y mostrar los botones Guardar y Cancelar
+  function habilitarEdicion() {
+  	
+  	// Mostrar el botón de Guardar y Cancelar
+  	document.getElementById("botonGuardarFormulario").style.display = "inline-block";
+  	document.getElementById("botonCancelarModificacion").style.display = "inline-block";
+
+  	// Ocultar el botón "Modificar"
+  	document.getElementById("botonHabilitarFormulario").style.display = "none";
+  	
+  }
+  
+// Función para mostrar el boton de Modificar y ocultar los botones de Guardar y Cancelar además deshabilita los select de los datos personales y restaura los
+//valores de los select al original, tomandolo de la lista que se creo al cargar la pagina.
+  function cancelarEdicion() {
 	
+  		restaurarValores(); //Restaura los valores originales de los campos select de datos personales
+	
+		var campoFuma = document.getElementById("fuma");
+				  	var campoDrogas = document.getElementById("drogas");
+				    var campoAlcohol = document.getElementById("alcohol");
+					var campoDeportes = document.getElementById("deportes");
+					var campoEjercicios = document.getElementById("ejercicios");
+					var campoCicloMenstrual = document.getElementById("ciclo_menstrual");
+					var campoMedicamentos = document.getElementById("medicamentos");
+					var campoNombreMedicamento = document.getElementById("nombreMedicamento");
+					var campoEmbarazo = document.getElementById("embarazo");
+					var campoAmamantendo = document.getElementById("amamantando");
+					var campoHormonal = document.getElementById("alteracion_hormonal");
+					var campoVitaminas = document.getElementById("vitaminas");
+					var campoCorticoides = document.getElementById("corticoides");
+					var campoHormonas = document.getElementById("hormonas");
+					var campoTiroides = document.getElementById("tiroides");
+					var campoAnticonceptivo = document.getElementById("metodo_anticonceptivo");
+					var campoEnfermedad = document.getElementById("sufre_enfermedad");
+					var campoCualEnfermedad = document.getElementById("cual_enfermedad");
+					var campoOncologico = document.getElementById("paciente_oncologica");
+					var campoCarbohidratos = document.getElementById("consumo_carbohidratos");
+					var campoFractura = document.getElementById("fractura_facial");
+					var campoImplantes = document.getElementById("tiene_implantes");
+					var campoCirugia = document.getElementById("cirugia_estetica");
+					var campoIndiqueCirugia = document.getElementById("indique_cirugia_estetica");
+					var campoMarcaPasos = document.getElementById("marca_pasos");
+					var campoSuenos = document.getElementById("horas_sueno");
+					var campoExposicionSol = document.getElementById("exposicion_sol");
+					var campoProtectorSolar = document.getElementById("protector_solar");
+					var campoReaplicaProtector = document.getElementById("reaplica_protector");
+					var campoMotivoConsulta = document.getElementById("motivo_consulta");
+					var campoTratamientosFacialesAnteriores = document.getElementById("tratamientosFacialesAnteriores");
+					var campoResultadoTratamientos = document.getElementById("resultados_tratamiento_anterior");
+					var campoCuidadoPiel = document.getElementById("cuidado_de_piel");
+
+		// Deshabilita los campos select de datos personales
+							campoFuma.disabled = true;
+					  	    campoDrogas.disabled = true;
+							campoAlcohol.disabled = true;
+							campoDeportes.disabled = true;
+							campoEjercicios.disabled = true;
+							campoCicloMenstrual.disabled = true;
+							campoMedicamentos.disabled = true;
+							campoNombreMedicamento.disabled = true;
+							campoEmbarazo.disabled = true;
+							campoAmamantendo.disabled = true;
+							campoHormonal.disabled = true;
+							campoVitaminas.disabled = true;
+							campoCorticoides.disabled = true;
+							campoHormonas.disabled = true;
+							campoTiroides.disabled = true;
+							campoAnticonceptivo.disabled = true;
+							campoEnfermedad.disabled = true;
+							campoCualEnfermedad.disabled = true;
+							campoOncologico.disabled = true;
+							campoCarbohidratos.disabled = true;
+							campoFractura.disabled = true;
+							campoImplantes.disabled = true;
+							campoCirugia.disabled = true;
+							campoIndiqueCirugia.disabled = true;
+							campoMarcaPasos.disabled = true;
+							campoSuenos.disabled = true;
+							campoExposicionSol.disabled = true;
+							campoProtectorSolar.disabled = true;
+							campoReaplicaProtector.disabled = true;
+							campoMotivoConsulta.disabled = true;
+							campoTratamientosFacialesAnteriores.disabled = true;
+							campoResultadoTratamientos.disabled = true;
+							campoCuidadoPiel.disabled = true;
+
+  	// Ocultar el botón de Guardar y Cancelar
+  	document.getElementById("botonGuardarFormulario").style.display = "none";
+  	document.getElementById("botonCancelarModificacion").style.display = "none";
+
+  	// Mostrar el botón "Modificar" nuevamente
+  	document.getElementById("botonHabilitarFormulario").style.display = "block";
+  }	
 		  

@@ -9,9 +9,6 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
-import com.proyecto_integrador_3.Estetica.Entidades.Persona;
-import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
-import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 
 
 @Repository
@@ -27,6 +24,8 @@ public interface RepositorioCliente extends JpaRepository<Cliente, String> {
 	Optional <Cliente> findClienteById(String idCliente);
 	
 	Optional <Cliente> findByEmail(String email);
+	
+	Optional <Cliente> findById(String idCliente);
 	
 	
 }

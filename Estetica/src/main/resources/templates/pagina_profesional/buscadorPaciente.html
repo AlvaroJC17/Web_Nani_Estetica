@@ -43,16 +43,16 @@
         </a>
         <ul class="navbar-nav navbar4 container-fluid p-0">
 			<li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/homeProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Home</a>
           </li>
 		  <li class="nav-item">
-		             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis datos</a>
+		             <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/misdatosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Mis datos</a>
 		           </li>
 		  	  <li class="nav-item">
 		  	     <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/datosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Datos profesionales</a>
 		  	   </li>
           <li class="nav-item">
-            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
+            <a class="nav-link py-1 ajuste-texto-menu" th:href="@{/listarPacientesOcultos(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Clientes</a>
           </li>
           <li class="nav-item">
          <a class="nav-link  py-1 ajuste-texto-menu" th:href="@{/misturnosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Turnos</a>
@@ -82,7 +82,8 @@
 							<form id="formularioBuscador" th:action="@{/buscadorPacientes}" method="post">
 								<div>
 									<input  type="text" class="form-control mb-3" id="dato" name="dato" placeholder="Buscar por nombre o DNI">
-									<input  type="hidden" id="email" name="email" th:value="${datosProfesional.email}"></input>
+									<input  type="hidden"  name="email" th:value="${datosProfesional.email}"></input>
+									<input  type="hidden"  name="idProfesional" th:value="${datosProfesional.id}"></input>
 									<!--Obtenemos el valor de la variable usuariosEmail del metodo listarUsuariosOcultos que a su vez la obtenemos de la pagina homeAdmin y darle al boton buscar la pasa al metod buscarPorDni-->
 								</div>
 								<div class="mt-5 text-center">

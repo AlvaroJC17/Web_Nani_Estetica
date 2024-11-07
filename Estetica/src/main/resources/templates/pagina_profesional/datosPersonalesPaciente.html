@@ -40,11 +40,11 @@
           <ul class="navbar-nav navbar4 container-fluid p-0">
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu"
-                th:href="@{/homeProfesional(email=${datosProfesional.email})}">Home</a>
+                th:href="@{/homeProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Home</a>
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu"
-                th:href="@{/misdatosProfesional(email=${datosProfesional.email})}">Mis datos</a>
+                th:href="@{/misdatosProfesional(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Mis datos</a>
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu"
@@ -53,7 +53,7 @@
             </li>
             <li class="nav-item">
               <a class="nav-link py-1 ajuste-texto-menu"
-                th:href="@{/listarPacientesOcultos(email=${datosProfesional.email})}">Clientes</a>
+                th:href="@{/listarPacientesOcultos(email=${datosProfesional.email}, idProfesional=${datosProfesional.id})}">Clientes</a>
             </li>
             <li class="nav-item">
               <a class="nav-link  py-1 ajuste-texto-menu"
@@ -142,17 +142,17 @@
             <div class="mb-3 col-lg-6">
               <label for="multa" class="form-label texto-label">Estado</label>
               <input th:if="${datosCliente.activo}" type="text" name="multa" value="ACTIVO"
-                class="form-control bg-success bg-gradient text-center text-white" id="multa1" placeholder="" disabled>
+                class="form-control bg-success bg-gradient text-center text-white"  placeholder="" disabled>
               <input th:unless="${datosCliente.activo}" type="text" name="multa" value="INACTIVO"
-                class="form-control bg-danger bg-gradient text-center text-white" id="multa2" placeholder="" disabled>
+                class="form-control bg-danger bg-gradient text-center text-white"  placeholder="" disabled>
             </div>
 
             <div class="mb-3 col-lg-6">
               <label for="multa" class="form-label texto-label">Multas</label>
               <input th:if="${datosCliente.multa}" type="text" name="multa" value="EL CLIENTE TIENE MULTAS"
-                class="form-control bg-danger bg-gradient text-center text-white" id="multa1" placeholder="" disabled>
+                class="form-control bg-danger bg-gradient text-center text-white"  placeholder="" disabled>
               <input th:unless="${datosCliente.multa}" type="text" name="multa" value="EL CLIENTE NO TIENE MULTAS"
-                class="form-control bg-success bg-gradient text-center text-white" id="multa2" placeholder="" disabled>
+                class="form-control bg-success bg-gradient text-center text-white"  placeholder="" disabled>
             </div>
         </form>
       </div>
@@ -161,7 +161,7 @@
 
 
 
-    <h3 class="mb-1">Formulario de preguntas</h3>
+    <h3 class="mb-1">Formulario de datos</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos">
 
@@ -596,20 +596,19 @@
               placeholder="">
           </div>
 
-          <div class="d-flex flex-wrap justify-content-center">
-
-            <div class="mt-2 mx-0">
-              <button type="button" id="botonEditar"
+            <div id="divBotonModificar" class="d-flex justify-content-center">
+              <button type="button" id="botonHabilitarFormulario" onclick="habilitarEdicion()"
                 th:class="${isEditarDisabled == null || !isEditarDisabled ? 'bn632-hover bn26 enviar' : 'bn632-hover bn26'}"
                 th:attr="disabled=${isEditarDisabled == null || !isEditarDisabled ? 'disabled' : null}"
-                class="bn632-hover bn26">Habilitar/Deshabilitar</button>
+                class="bn632-hover bn26">Modificar</button>
             </div>
+			
 
-            <div class="mt-2 mx-0">
-              <button data-bs-target='#confirmBackdrop' data-bs-toggle="modal" id="botonGuardar" type="button"
-                class="bn632-hover bn26 enviar" disabled>Guardar</button>
-            </div>
-          </div>
+			<div id="divParDeBotones" class="d-flex justify-content-center">
+			    <button style="display: none;" data-bs-target='#confirmBackdrop' data-bs-toggle="modal" id="botonGuardarFormulario" type="button" class="bn632-hover bn26">Guardar</button>
+				<button style="display: none;" type="button" id="botonCancelarModificacion" class="bn632-hover bn26 cancelar mb-4" onclick="cancelarEdicion()">Cancelar</button>
+			</div>
+          
 
           <!-- Modal Confirmar modificacion de formulario -->
           <div class="modal fade" id='confirmBackdrop' data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -702,12 +701,16 @@
                   disabled> </textarea>
 
                 <div class="d-flex justify-content-center row">
-                  <button class="bn632-hover bn26 col-md-6" type="button" th:id="toggleButton + ${iterStat.index}">
-                    <span class="fs-6">Habilitar/Deshabilitar</span> </button>
-                  <button th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}" data-bs-toggle="modal"
-                    class="bn632-hover bn26 enviar col-md-6" type="button" th:id="guardarButton + ${iterStat.index}"
-                    disabled> <span class="fs-6">Guardar </span> </button>
-                </div>
+                  <button class="bn632-hover bn26 col-md-6" type="button" th:id="botonHabilitar + ${iterStat.index}" th:attr="onclick='habilitarEdicion' + ${iterStat.index} + '()'">
+                    <span class="fs-6">Modificar</span> </button>
+					
+                  <button th:attr="data-bs-target='#confirmBackdrop' + ${iterStat.index}" data-bs-toggle="modal" style="display: none;"
+                    class="bn632-hover bn26 col-md-6" type="button" th:id="guardarButton + ${iterStat.index}"> 
+					<span class="fs-6">Guardar </span> </button>
+				
+				  <button class="bn632-hover bn26 cancelar col-md-6" type="button" style="display: none;" th:id="botonCancelarModificacion + ${iterStat.index}" th:attr="onclick='cancelarEdicion' + ${iterStat.index} + '()'"> 
+					 <span class="fs-6">Cancelar </span> </button>
+                 </div>
 
                 <input type="hidden" class="form-control" name="idTurnoModificado" id="idTurnoModificado"
                   th:value="${ultimosTresTurnos.id}">

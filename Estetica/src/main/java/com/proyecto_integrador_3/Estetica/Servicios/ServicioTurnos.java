@@ -1,17 +1,14 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
+import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-
-import static java.lang.Boolean.FALSE;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,7 +20,6 @@ import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
-import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioPersona;
@@ -193,9 +189,9 @@ public class ServicioTurnos {
 	        }
 	    }
 	
-	 public boolean checkActiveTurnos(String email) throws MiExcepcion {
+	 public boolean checkActiveTurnos(String idCliente) throws MiExcepcion {
 		 try {
-			 List<Turnos> activeTurnos = repositorioTurnos.findByActivoAndEmail(true, email);
+			 List<Turnos> activeTurnos = repositorioTurnos.findByActivoAndClienteId(true, idCliente);
 			 return activeTurnos.size() > 2;
 		 } catch (Exception e) {
 			 throw new MiExcepcion("Error al conectar con el servidor " + e);
@@ -266,7 +262,7 @@ public class ServicioTurnos {
 	//Busca los turnos por id cliente en orden ascendente
 		public List<Turnos> getTurnosByIdCliente(String idCliente) throws MiExcepcion {
 			try {
-				return repositorioTurnos.findByEmailOrderByFechaAsc(idCliente);
+				return repositorioTurnos.findByClienteIdOrderByFechaAsc(idCliente);
 			} catch (Exception e) {
 				throw new MiExcepcion("Error al conectar con el servidor " + e);
 			}
@@ -332,18 +328,18 @@ public class ServicioTurnos {
     
     //pasa los turnos activos con fecha anterior a la actual a inactivo y les asigna una multa al turno y al cliente
     @Transactional
-    public void actualizarTurnosAntiguos(String emailCliente, String idCliente) throws MiExcepcion {
+    public void actualizarTurnosAntiguos(String idCliente) throws MiExcepcion {
     	try {
-    		List<Turnos> turnos = getTurnosByEmail(emailCliente);
-    		List<Turnos> turnos2 = getTurnosByIdCliente(idCliente);
+    		//List<Turnos> turnos = getTurnosByEmail(emailCliente);
+    		List<Turnos> turnos = getTurnosByIdCliente(idCliente);
     		
-    		if (turnos2.isEmpty()) {
+    		if (turnos.isEmpty()) {
 				return;
 			}
     		
     		LocalDateTime fechaActual = LocalDateTime.now();
     		
-    		for (Turnos turno : turnos2) {
+    		for (Turnos turno : turnos) {
     			String fechaTurno = turno.getFecha().toString();
     			String horarioTurno = turno.getHorario().toString();
     			String fechaAndHorario = fechaTurno + " " + horarioTurno + ":00.000001"; //agrego el formato :00.000001 para completar el formato LocalDateTime
@@ -363,7 +359,7 @@ public class ServicioTurnos {
     				turno.setCostoMulta(valorMulta);
     				repositorioTurnos.save(turno);
     				
-    				Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findByEmail(emailCliente);
+    				Optional<Cliente> obtenerDatosDeMultas = repositorioCliente.findById(idCliente);
     				if (obtenerDatosDeMultas.isPresent()) {
     					Cliente multasDelCliente = obtenerDatosDeMultas.get();
     					multasDelCliente.setMulta(TRUE); // Le colocamos una multa al cliente

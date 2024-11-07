@@ -2,10 +2,6 @@ package com.proyecto_integrador_3.Estetica.Controllers;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
@@ -13,18 +9,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Admin;
-import com.proyecto_integrador_3.Estetica.Entidades.Persona;
-import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
-import com.proyecto_integrador_3.Estetica.Entidades.Tratamiento;
-import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
-import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
-import com.proyecto_integrador_3.Estetica.Enums.Especialidad;
-import com.proyecto_integrador_3.Estetica.Enums.EstadoDelTurno;
-import com.proyecto_integrador_3.Estetica.Enums.Provincias;
 import com.proyecto_integrador_3.Estetica.Enums.Rol;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
-import com.proyecto_integrador_3.Estetica.Enums.TipoDeEspecialidad;
-import com.proyecto_integrador_3.Estetica.Enums.TratamientoEnum;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioAdmin;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioCliente;
 import com.proyecto_integrador_3.Estetica.Repository.RepositorioHorariosDisponibles;

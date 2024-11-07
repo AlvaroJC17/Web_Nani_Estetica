@@ -113,7 +113,7 @@ public class ControladorProfesional {
         List<Tratamiento> listaTratamientos = servicioTratamiento.tratamientosActuales(idProfesional);
 		
 		//Buscamos los datos del profesional para pasarlos a la vista
-		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+		List <Usuario> datosProfesional = servicioUsuario.buscarDatosUsuarioPorId(idProfesional);
 		
 		model.addAttribute("datosProfesional", datosProfesional);
 		model.addAttribute("diasLaborales", listaDeDiasOrdenada);
@@ -161,7 +161,7 @@ public class ControladorProfesional {
 		Collections.sort(listaDeDiasOrdenada); //Ordenamos la lista de lunes a viernes
 		
 		//Buscamos los datos del profesional para pasarlos a la vista
-		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+		List <Usuario> datosProfesional = servicioUsuario.buscarDatosUsuarioPorId(idProfesional);
 		
 		//Buscamos solo los tratamientos marcados como actuales en la base de datos, los actuales son los que tienen las ultimas modificaciones de costo
         List<Tratamiento> listaTratamientos = servicioTratamiento.tratamientosActuales(idProfesional);
@@ -201,7 +201,7 @@ public class ControladorProfesional {
 		Profesional profesional = servicioProfesional.obetenerDatosProfesional(idProfesional);
 		
 		//Buscamos los datos del profesional para pasarlos a la vista
-		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+		List <Usuario> datosProfesional = servicioUsuario.buscarDatosUsuarioPorId(idProfesional);
 		
 		//Filtramos la lista de enum por el tipo de especialidad que selecciono el profesional
 		//Esta lista es la que brinda las opciones en el select para modficiar los tratamientos existentes
@@ -260,7 +260,7 @@ public class ControladorProfesional {
         
 		
 		//Pasamos los datos del profesional a la vista
-		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
+        List <Usuario> datosProfesional = servicioUsuario.buscarDatosUsuarioPorId(idProfesional);
 				
 		model.addAttribute("datosProfesional", datosProfesional);
 		model.addAttribute("diasLaborales", listaDeDiasOrdenada);
@@ -391,8 +391,8 @@ public class ControladorProfesional {
 				cienteSinTurnos = true; 
 			}
 			
-			List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
-			List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+			List <Usuario> datosProfesional = servicioUsuario.buscarDatosUsuarioPorId(idProfesional);
+			List <Usuario> datosCliente = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
 			List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idCliente);
 			modelo.addAttribute("isEditarDisabled", isEditarDisabled);
 			modelo.addAttribute("datosProfesional", datosProfesional); //datos para el menu de la pagina
@@ -424,7 +424,7 @@ public class ControladorProfesional {
 
 		
 		//Datos del profesional para los menu de la pagina
-				List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(emailProfesional);
+		List <Usuario> datosProfesional = servicioUsuario.buscarDatosUsuarioPorId(idProfesional);
 				
 		//si el profesional le da al boton ver perfil sin seleccionar un paciente, entra en este codigo
 		//para enviarle un mensaje de error pero siempre mostrandole el resultado de la busqueda previa que
@@ -452,13 +452,13 @@ public class ControladorProfesional {
 			return "/pagina_profesional/buscadorPaciente";
 		}
 			
-		//Buscamos el email del cliente/usuario con el id
-		String emailCliente = null;
-		Optional <Usuario> buscarEmailCliente = repositorioUsuario.buscarPorIdOptional(idCliente);
-		if (buscarEmailCliente.isPresent()) {
-			Usuario emailUsuario = buscarEmailCliente.get();
-			emailCliente = emailUsuario.getEmail();
-		}
+//		//Buscamos el email del cliente/usuario con el id
+//		String emailCliente = null;
+//		Optional <Usuario> buscarEmailCliente = repositorioUsuario.buscarPorIdOptional(idCliente);
+//		if (buscarEmailCliente.isPresent()) {
+//			Usuario emailUsuario = buscarEmailCliente.get();
+//			emailCliente = emailUsuario.getEmail();
+//		}
 		
 		//Buscamos los si el fomrulario de datos fue completado por el cliente
 		Boolean isEditarDisabled = null;
@@ -491,7 +491,7 @@ public class ControladorProfesional {
 		}
 	
 		//Datos del cliente para los datos personales
-		List <Usuario> datosCliente = servicioUsuario.buscarPorEmail(emailCliente);
+		List <Usuario> datosCliente = servicioUsuario.buscarDatosUsuarioPorId(idCliente);
 		
 		//datos del cliente/paciente para las respuestas del formulario
 		List<Cliente> datosPaciente = servicioCliente.buscarPacientePorId(idCliente);
@@ -510,10 +510,11 @@ public class ControladorProfesional {
 
 	@GetMapping("/listarPacientesOcultos")
     public String listarUsuarios(
-    		@RequestParam String email, //Esta variable proviene de homeAdmin
+    		@RequestParam String email, //Esta variable proviene de Profesional
+    		@RequestParam String idProfesional, //Esta variable proviene de Profesional
     		Model model) throws MiExcepcion {
 
-		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
+		List <Usuario> datosProfesional = servicioUsuario.buscarDatosUsuarioPorId(idProfesional);
 		model.addAttribute("datosProfesional", datosProfesional);
 		return "/pagina_profesional/buscadorPaciente";
 	}
@@ -522,10 +523,11 @@ public class ControladorProfesional {
 	public String buscadorPacientes(
 			@RequestParam(required = false) String dato,  //la variable dato puede ser un nombre, dni o mail
 			@RequestParam String email,
+			@RequestParam String idProfesional, //Esta variable proviene de Profesional
 			Model model) throws MiExcepcion {
 		
 							
-		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
+		List <Usuario> datosProfesional = servicioUsuario.buscarDatosUsuarioPorId(idProfesional);
 		String error = null;
 		String datoSinEspacios = dato.trim(); //Le quitamos los espacios en blanco al principio y final de la palabra
 
@@ -583,8 +585,13 @@ public class ControladorProfesional {
 		
 		
 	@GetMapping("/homeProfesional")
-	public String homeProfesional(@RequestParam String email, Model model) {
-		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
+	public String homeProfesional(
+			@RequestParam String email,
+			@RequestParam String idProfesional, //Esta variable proviene de Profesional
+			Model model) throws MiExcepcion {
+		
+		List <Usuario> datosProfesional = servicioUsuario.buscarDatosUsuarioPorId(idProfesional);
+		
 		model.addAttribute("datosProfesional", datosProfesional);
 		return "/pagina_profesional/homeProfesional";	
 	}
@@ -592,9 +599,10 @@ public class ControladorProfesional {
 	@GetMapping("/misdatosProfesional")
 	public String misdatosProfesional(
 			@RequestParam String email,
-			ModelMap model) {
+			@RequestParam String idProfesional, //Esta variable proviene de Profesional
+			ModelMap model) throws MiExcepcion {
 		
-		List <Usuario> datosProfesional = servicioUsuario.buscarPorEmail(email);
+		List <Usuario> datosProfesional = servicioUsuario.buscarDatosUsuarioPorId(idProfesional);
 		LocalDate fechaNacimiento = null;
 		
 		for (Usuario profesional : datosProfesional) {
@@ -921,6 +929,7 @@ public class ControladorProfesional {
 				&& profesional.getTelefono().toUpperCase().equals(telefono.toUpperCase())) {
 			
 			model.addAttribute("email", email);
+			model.addAttribute("sexos", Sexo.values());
 			model.addAttribute("datosProfesional",datosProfesional);
 			return "/pagina_profesional/misdatosProfesional";
 			
@@ -931,14 +940,9 @@ public class ControladorProfesional {
 			servicioProfesional.modificarProfesional(idProfesional, email, profesional.getEmail().toUpperCase(), domicilio, sexo, telefono );
 			List <Usuario> datosProfesionalActualizado = servicioUsuario.buscarPorEmail(email);
 			
-			LocalDate fechaNacimiento = null;
-			for (Usuario profesionalFechaNacimiento : datosProfesional) {
-				fechaNacimiento = profesionalFechaNacimiento.getFechaNacimiento();
-			}
-			
 			String exito = "Datos actualizados correctamente";
 			model.addAttribute("datosProfesional",datosProfesionalActualizado);
-			model.addAttribute("fechaNacimientoLocalDate", fechaNacimiento);
+			model.addAttribute("sexos", Sexo.values());
 			model.addAttribute("exito",exito);
 			model.addAttribute("showModalExito", true);
 			return "/pagina_profesional/misdatosProfesional"; //si todo sale bien redireccionamos al metodo misdatosProfesional con el mail actualizado y un mensaje de exito
@@ -948,6 +952,7 @@ public class ControladorProfesional {
 			String error = e.getMessage(); // en la exepcion e.getmessage obtenenos el valor de la exepcion personalizada que se de y la enviamos al controlador de misdatosProfesional para ser monstrada en pantalla
 			List <Usuario> datosProfesionalAnterior = servicioUsuario.buscarPorEmail(profesional.getEmail().toUpperCase());
 			model.addAttribute("datosProfesional",datosProfesionalAnterior);
+			model.addAttribute("sexos", Sexo.values());
 			model.addAttribute("error",error);
 			model.addAttribute("showModalError", true);
 			return "/pagina_profesional/misdatosProfesional"; // si se produce alguna exepcion en algun campo enviamos el mail anterior del usuario y un mensaje de error al metodo misdatosProfesional

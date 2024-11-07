@@ -1,11 +1,9 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
+import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.time.LocalDateTime;
-
-import static java.lang.Boolean.FALSE;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
@@ -16,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
-import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Turnos;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;

@@ -1,8 +1,6 @@
 package com.proyecto_integrador_3.Estetica.Controllers;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,9 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
-import com.proyecto_integrador_3.Estetica.Entidades.Colaborador;
 import com.proyecto_integrador_3.Estetica.Entidades.EmailUsuarios;
-import com.proyecto_integrador_3.Estetica.Entidades.Persona;
 import com.proyecto_integrador_3.Estetica.Entidades.TokenUsuario;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.DiasDeLaSemana;
@@ -537,7 +533,7 @@ public class ControladorPagina {
 							case "CLIENTE":
 								 if (validarForm) {
 				            		 modelo.addAttribute("datosCliente", datosPersonaUsuario);
-				            		 servicioTurnos.actualizarTurnosAntiguos(emailUsuario, idUsuario); //validamos si el cliente tiene turnos vencidos antes de enviarlo a su home
+				            		 servicioTurnos.actualizarTurnosAntiguos(idUsuario); //validamos si el cliente tiene turnos vencidos antes de enviarlo a su home
 				            		 return "pagina_cliente/homeCliente";
 				            	 }else if(!validarForm) {
 				            		 modelo.addAttribute("emailUsuario", emailUsuario); //Esta variable envia el email en un input oculto hacia el metodo guardarDatosPersona

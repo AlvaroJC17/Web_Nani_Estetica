@@ -1,12 +1,9 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
-import static java.lang.Boolean.FALSE;
 import static java.lang.Boolean.TRUE;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -18,7 +15,6 @@ import com.proyecto_integrador_3.Estetica.Entidades.Cliente;
 import com.proyecto_integrador_3.Estetica.Entidades.CodigoDeVerificacion;
 import com.proyecto_integrador_3.Estetica.Entidades.Colaborador;
 import com.proyecto_integrador_3.Estetica.Entidades.Persona;
-import com.proyecto_integrador_3.Estetica.Entidades.Profesional;
 import com.proyecto_integrador_3.Estetica.Entidades.Usuario;
 import com.proyecto_integrador_3.Estetica.Enums.Sexo;
 import com.proyecto_integrador_3.Estetica.MiExcepcion.MiExcepcion;
@@ -233,10 +229,6 @@ public class ServicioColaborador {
 		 
 		 // Crear un objeto Matcher
 		 Matcher matcher = pattern.matcher(telefono);
-		  
-		 if (!matcher.matches()) {
-			 throw new MiExcepcion("<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
-		 } 
 		 
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
 			 throw new MiExcepcion("<span class='fs-6'>El campo de la ocupación no puede estar vacío.</span>");
@@ -249,6 +241,10 @@ public class ServicioColaborador {
 		 if (telefono == null || telefono.toString().isEmpty() || telefono.toString().isEmpty()) {
 			 throw new MiExcepcion("<span class='fs-6'>El campo del teléfono no puede estar vacío.</span>");
 		 }
+		 
+		 if (!matcher.matches()) {
+			 throw new MiExcepcion("<span class='fs-6'>El teléfono no cumple con el formato solicitado. Por favor, verifique e intente nuevamente.</span>");
+		 } 
 		 
 	 }
 	 
@@ -264,12 +260,12 @@ public class ServicioColaborador {
 		        Matcher matcher = pattern.matcher(email);
 		        
 		        if (email == null || email.isEmpty() || email.trim().isEmpty()) {
-		            throw new MiExcepcion("<span class='fs-6'>El email no puede estar vacio.</span>");
+		            throw new MiExcepcion("<span class='fs-6'>El email no puede estar vacío.</span>");
 		        }
 
 		        // Verificar si la cadena cumple con la expresión regular
 		        if (!matcher.matches()) {
-		            throw new MiExcepcion("<span class='fs-6'>El email no es valido, por favor verifique e intente nuevamente.</span>");
+		            throw new MiExcepcion("<span class='fs-6'>El email no es válido. Por favor, verifique e intente nuevamente.</span>");
 		        } 
 		       
 		        if (!email.equalsIgnoreCase(emailAnterior)) {
@@ -291,10 +287,7 @@ public class ServicioColaborador {
 		 // Crear un objeto Matcher
 		 Matcher matcher = pattern.matcher(telefono);
 		  
-		 if (!matcher.matches()) {
-			 throw new MiExcepcion("<span class='fs-6'>El telefono no cumple con el formato solicitado, por favor verifique e intente nuevamente.</span>");
-		 } 
-		 
+		
 		 if (ocupacion == null || ocupacion.isEmpty() || ocupacion.trim().isEmpty()) {
 			 throw new MiExcepcion("<span class='fs-6'>El campo de la ocupación no puede estar vacío.</span>");
 		 }
@@ -307,8 +300,12 @@ public class ServicioColaborador {
 			 throw new MiExcepcion("<span class='fs-6'>El campo del teléfono no puede estar vacío.</span>");
 		 }
 		 
+		 if (!matcher.matches()) {
+			 throw new MiExcepcion("<span class='fs-6'>El teléfono no cumple con el formato solicitado. Por favor, verifique e intente nuevamente.</span>");
+		 } 
+		 
 		 if (dni == null || dni.isEmpty() || dni.trim().isEmpty()) {
-			 throw new MiExcepcion("El dni no puede estar vacio");
+			 throw new MiExcepcion("El dni no puede estar vacío");
 		 }
 		 
 		//Expresion regular para validar el numero de dni		 
@@ -321,13 +318,13 @@ public class ServicioColaborador {
 		 } 
 		 if (!dni.equalsIgnoreCase(dniAnterior)) { //solo si el dni ingresado es diferente al actual, hace la validacion si ya esta registrado en la base de datos
 			 if(repositorioPersona.buscarPorDniOptional(dni).isPresent()) {
-				 throw new MiExcepcion("El numero de dni ya está registrado");
+				 throw new MiExcepcion("El número de DNI ya está registrado.");
 			 }
 		}
 		 
 		 
 		 if (fechaNacimiento == null || fechaNacimiento.isEmpty() || fechaNacimiento.trim().isEmpty()) {
-			 throw new MiExcepcion("La fecha de nacimiento no puedo estar vacía");
+			 throw new MiExcepcion("La fecha de nacimiento no puede estar vacía.");
 		 }
 		 
 	 }
