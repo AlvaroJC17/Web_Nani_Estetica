@@ -73,14 +73,14 @@
       <!-- Mostrar los turnos si la lista no está vacía -->
       <div th:if="${!#lists.isEmpty(datosDelTurno)}">
         <div th:each="datosTurno : ${datosDelTurno}" class="container-fluid row">
-          <div class="col-sm-12">
-            <div class="bg-success bg-gradient text-white fs-5 ps-2">
+          <div class="col-sm-12 px-0 rounded-2" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3); margin-top: 20px; margin-bottom: 20px;">
+            <div class="bg-success bg-gradient fs-5 ps-2">
               <span class="text-black">Profesional:</span>
-              <span th:text="${datosTurno.profesional.nombre + ' ' + datosTurno.profesional.apellido}"></span>
+              <span th:text="${datosTurno.profesional.nombre + ' ' + datosTurno.profesional.apellido}"></span><br>
               <span class="text-black"> Fecha:</span>
-              <span th:text="${#temporals.format(datosTurno.fecha, 'dd-MM-yyyy')}"></span> <!--Esta es la forma de formatear fechas con thymeleaf-->
+              <span th:text="${#temporals.format(datosTurno.fecha, 'dd-MM-yyyy')}"></span><br> <!--Esta es la forma de formatear fechas con thymeleaf-->
               <span class="text-black">Tratamiento:</span>
-              <span th:each="tratamientosTurno : ${datosTurno.tratamientos}" th:text="${tratamientosTurno}"></span>
+              <span th:each="tratamientosTurno : ${datosTurno.tratamientos}" th:text="${tratamientosTurno}"></span><br>
             </div>
             <p th:text="${datosTurno.consulta}" style="text-align: justify;" class="p-2"></p>
           </div>

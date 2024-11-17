@@ -18,9 +18,9 @@ public class Colaborador extends Persona{
 	
 	public Colaborador(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, 
 			String dni, String nombre, String apellido, String ocupacion, Sexo sexo, LocalDate fechaNacimiento,
-			String domicilio, Integer telefono, Boolean emailValidado, LocalDateTime fechaCreacion, int intentosValidacion,
+			String domicilio, Integer telefono, Boolean emailValidado, Boolean revalidarEmail, LocalDateTime fechaCreacion, int intentosValidacion,
 			Boolean bloqueoValidacion, LocalDateTime horaDeBloqueoValidacion,  int intentosLogin, Boolean bloqueoLogin, LocalDateTime horaBloqueoLogin ) {
-		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento, emailValidado, fechaCreacion, intentosValidacion,  
+		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento, emailValidado, revalidarEmail, fechaCreacion, intentosValidacion,  
 				bloqueoValidacion,  horaDeBloqueoValidacion, intentosLogin, bloqueoLogin, horaBloqueoLogin);
 	}
 }

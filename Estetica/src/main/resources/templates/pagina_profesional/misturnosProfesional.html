@@ -96,7 +96,9 @@ tener el mismo ID-->
 		
 		</div>
 			
-		<p style="border-bottom: solid 5px;" class="fs-4 border-warning mt-5">Turnos activos desde el <span th:text="${fechaActualProximosTurnos}"></span>
+		
+		<div class="rounded-2 mx-4 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3); margin-top: 20px; margin-bottom: 20px;">
+		<p style="border-bottom: solid 5px;" class="fs-4 border-warning">Turnos activos desde el <span th:text="${fechaActualProximosTurnos}"></span>
 			 hasta el <span th:text="${fechaLimiteProximosTurnos}"></span></p>
 		
 		
@@ -216,8 +218,11 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			</form>
 			</div>
 			  </div>
-			  </div>  
+			  </div> 
+			  </div>
+			  
 			
+			  <div class="rounded-2 mx-4 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3); margin-top: 20px; margin-bottom: 20px;">
 			  <p style="border-bottom: 5px solid;" class="fs-4 border-success">Turnos asistidos desde el <span th:text="${fechaLimiteTurnosAnteriores}"></span>
 			   hasta el <span th:text="${fechaActualTurnosAnteriores}"></span></p>
 				
@@ -251,13 +256,14 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			  </div>
 			   </div>
 			   </div>
-						  
+			   </div>		  
 			   
 			
+			<div class="rounded-2 mx-4 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3); margin-top: 20px; margin-bottom: 20px;">
 			<p style="border-bottom: 5px solid;" class="fs-4 border-danger">Turnos con multa desde el <span th:text="${fechaLimiteTurnosAnteriores}"></span>
 				 hasta el <span th:text="${fechaActualTurnosAnteriores}"></span></p>
-			 <div class="d-flex flex-wrap justify-content-center">		  
 				
+			 <div class="d-flex flex-wrap justify-content-center">		  
 			<div class="text-center" th:if="${#lists.isEmpty(turnosConMulta)}">
 			<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-danger bg-gradient text-white px-1">En este momento no posee turnos en esta categoria</p>
 			</div>
@@ -291,13 +297,14 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			</div>
 			</div>
 			</div>
+			</div>
 			
 			
-			
+			<div class="rounded-2 mx-4 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3); margin-top: 20px; margin-bottom: 20px;">
 			<p style="border-bottom: 5px solid;" class="fs-4 border-dark">Turnos cancelados desde el <span th:text="${fechaLimiteTurnosAnteriores}"></span>
 				 hasta el <span th:text="${fechaActualTurnosAnteriores}"></span></p>
-			<div class="d-flex flex-wrap justify-content-center">
 				
+			<div class="d-flex flex-wrap justify-content-center">
 			<div class="text-center" th:if="${#lists.isEmpty(turnosCancelados)}">
 			<p style="box-shadow: 7px 7px 15px rgba(0, 0, 0, 0.500);" class="fs-3 fw-light bg-dark bg-gradient text-white px-1">En este momento no posee turnos en esta categoria</p>
 			</div>
@@ -328,6 +335,9 @@ tabindex="-1" aria-labelledby="confirmBackdropLabel" aria-hidden="true">
 			</div>
 			</div>
 			</div>
+			</div>
+			
+			
 	        </div>			
           
 		

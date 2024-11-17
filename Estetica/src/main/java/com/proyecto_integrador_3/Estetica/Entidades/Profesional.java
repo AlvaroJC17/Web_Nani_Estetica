@@ -104,10 +104,10 @@ public class Profesional extends Persona implements Serializable {
 	}
 
 	public Profesional(String id, List<TokenUsuario> tokens, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm,
-			String nombre, String apellido, String ocupacion, Sexo sexo, LocalDate fechaNacimiento, Boolean emailValidado, LocalDateTime fechaCreacion,
+			String nombre, String apellido, String ocupacion, Sexo sexo, LocalDate fechaNacimiento, Boolean emailValidado, Boolean revalidarEmail, LocalDateTime fechaCreacion,
 			int intentosValidacion,  Boolean bloqueoValidacion, LocalDateTime horaDeBloqueoValidacion, int intentosLogin, Boolean bloqueoLogin,
 			LocalDateTime horaBloqueoLogin, String domicilio, String telefono) {
-		super(id, tokens, dni, contrasena, email, rol, activo, ValidacionForm, nombre, apellido, ocupacion, sexo, fechaNacimiento, emailValidado,
+		super(id, tokens, dni, contrasena, email, rol, activo, ValidacionForm, nombre, apellido, ocupacion, sexo, fechaNacimiento, emailValidado, revalidarEmail,
 				fechaCreacion, intentosValidacion, bloqueoValidacion, horaDeBloqueoValidacion, intentosLogin, bloqueoLogin, horaBloqueoLogin, domicilio, telefono);
 
 	}

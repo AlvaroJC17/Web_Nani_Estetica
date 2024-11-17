@@ -82,14 +82,47 @@ public class ServicioUsuario {
 			}
 	    }
 	  
-	
+	  public void revalidarEmailNuevo(String emailUsuario) throws MiExcepcion{
+		  // Buscar usuario por email
+	      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+	      if (encontrarUsuario.isPresent()) {
+			Usuario usuario = encontrarUsuario.get();
+			
+			if (usuario.getRevalidarEmail()) {
+				usuario.setRevalidarEmail(FALSE);
+				usuario.setEmailValidado(TRUE);
+				repositorioUsuario.save(usuario);
+			}else {
+				return;
+			}
+		}
+	  }
+	  
+	  
+	  public Boolean revalidarEmailUsuario(String emailUsuario) throws MiExcepcion {
+		  // Buscar usuario por email
+	      Optional<Usuario> encontrarUsuario = repositorioUsuario.findByEmail(emailUsuario);
+	      if (encontrarUsuario.isPresent()) {
+			Usuario usuario = encontrarUsuario.get();
+			
+			if (usuario.getRevalidarEmail()) {
+				return true;
+			}else {
+				return false;
+			}
+		}
+	      return false;
+	  }
+	  
+		  
+		  	
 	  public Usuario buscarDatosUsuario(String idUsuario) throws MiExcepcion {
 		  Optional<Usuario> buscarUsuario = repositorioUsuario.findById(idUsuario);
 			if (buscarUsuario.isPresent()) {
 				Usuario datosDelUsuario = buscarUsuario.get();
 				return datosDelUsuario;
 			}else {
-				throw new MiExcepcion("No se encontro al usuario+");
+				throw new MiExcepcion("No se encontro al usuario");
 			}
 	  }
 	  

@@ -60,12 +60,13 @@
 </nav>
 
 <main class="main-misdatos">
-  <h3 class="">Datos profesionales</h3>
+  <h3 class="">Datos laborales</h3>
     <section class=" section-misdatos">
-      <div class="container-fluid form-misdatos ">
+      <div class="">
          
-			<div class="row">
-				
+		<div class="m-4 rounded-2 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);">
+		<h3 class="fs-1 text-star">Datos personales</h3>
+		<div class="row">
           <div class="mb-3 col-lg-12">
             <label for="idProfesional" class="form-label texto-label" disabled >ID profesional</label>
             <input id="idProfesional" type="text" th:value="${#strings.toUpperCase(datosProfesional.id)}" class="form-control"  placeholder="Nombre" disabled >
@@ -81,9 +82,11 @@
 		  <input id="especialidadProfesional" type="text" th:value="${#strings.toUpperCase(datosProfesional.tipoEspecialidad.displayName)}" class="form-control" placeholder="Nombre" disabled >
 		  </div>
 		  </div>
-		  
+		  </div>
 
-<h4 class="text-center mt-5">Modificar datos laborales</h4>
+		 
+<div class="m-4 rounded-2 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);">
+<h3 class="fs-1 text-star">Modificar datos laborales</h3>
 <p class="text-center fs-6">Para modificar los elementos, primero debes presionar el botón <span class="fw-bold">"Modificar"</span> en cada casilla,
 	 lo que habilitará la edición. Una vez habilitada, podrás seleccionar un nuevo elemento de la lista y agregarlo
 	  a la casilla pulsando el botón <span class="fw-bold">"Agregar"</span>. Si deseas eliminar un elemento, selecciona el que está en la casilla
@@ -403,6 +406,8 @@
 		
 		</form>
 	   </div>
+	   </div>
+	   
       </div>
     </section>
  </div>

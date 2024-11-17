@@ -77,7 +77,15 @@ public class ControladorPagina {
 	
 	
 	@GetMapping("/login")
-	public String login() {
+	public String login(
+			@RequestParam (required = false) String error,
+			Model modelo) throws MiExcepcion {
+		
+		if (error != null) {
+			modelo.addAttribute("error", error);
+			modelo.addAttribute("showModalError", true);	
+		}
+		
 		return "login";
 	}
 	
@@ -309,8 +317,146 @@ public class ControladorPagina {
 			}
 		}
 	}
+	
+	
+	@PostMapping("/revalidarCodigo")
+	public String revalidarCodigo(
+			@RequestParam String codigoUsuario,
+			@RequestParam String email,
+			@RequestParam String fechaExpiracionCodigo,
+			Model model) throws MiExcepcion {
+		
+		//evitamos que el usuario deje espacios en blanco al inicio o final del string
+				String codigoUsuarioSinEspacios = codigoUsuario.trim();
+					
+					//Llamamos al metodo para verificar el codigo y guardamos el resultado booleano en una variable
+				Boolean isValido = servicioCodigoDeVerificacion.validarCodigoIngresado(codigoUsuarioSinEspacios);
+				
+				
+				//Si el codigo es valido, llamamos al metodo que guarda a los usuarios en la tabla
+				if (isValido) {
+					
+					try {
+						servicioUsuario.revalidarEmailNuevo(email);
+						String exito = "<span class='fs-6'>El correo eléctronico ha sido validado exitosamente."
+								 + " Por favor inicie sesion en su cuenta para poder disfrutar de nuestros servicios.</span>";
+			        	model.addAttribute("exito", exito);
+			        	model.addAttribute("showModalExito", true);
+			        	return "login";
+					} catch (MiExcepcion e) {
+						
+						String error = e.getMessage();
+			            model.addAttribute("error", error);
+			        	model.addAttribute("showModalError", true);
+			            return "login";
+					}
+		        	
+					//Sino es valido lanzamos un error
+				}else {	
+					
+					try {
+						
+						//Sumamos y obtenemos el numero de intentos del usuario a traves del email
+						int numeroDeIntentos = servicioUsuario.validarIntentosVerificacion(email);
+						
+						//Mientras los intentos sean menores a 4 seguira mostrando este mensaje de error, luego del 4to intento pasara al else
+						if (numeroDeIntentos <= 3) {
+							
+							LocalDateTime pasearFecha = servicioHorario.pasarFechaStringToLocalDateTime(fechaExpiracionCodigo);
+							
+							Boolean conteoRegresivo = true; //no muestra el conteo regresivo si hay algun error al ingresar el codigo
+							String error = "<p class='fs-6 text-center'>El codigo ingresado no es valido. Intentos  " + numeroDeIntentos + "/3 </p>" ;
+							Boolean mostrarEnlace = false;
+							model.addAttribute("error", error);
+							model.addAttribute("mostrarEnlace",mostrarEnlace);
+							model.addAttribute("conteoRegresivo", conteoRegresivo);
+							model.addAttribute("expiracionCodigo", pasearFecha);
+							model.addAttribute("email", email);
+				        	model.addAttribute("showModalError", true);
+							return "revalidarCodigo";
+						}else {
+							
+							String error = null;
+							//Bloqueamos al usuario porque supero el numero de intentos
+							servicioUsuario.bloquearUsuarioPorIntentosValidacion(email);
+							
+							//Este metodo solo genera true si el usuario esta bloqueado
+							if (servicioUsuario.verificarYDesbloquearUsuarioValidacion(email)) {
+								   error= "<p class='fs-6 text-center'>Ha superado el numero máximo de intentos, por favor espere unos minutos y registrese nuevamente para "
+											 + "generar un nuevo código de validación.</p>";
+							}else {
+							     error = "<span class='fs-6'>Genere un nuevo código.</span>";
+							}
+							
+							return "redirect:/login?error=" + error; 
+				        	
+						}
+						
+						
+					} catch (MiExcepcion e) {
+						String error = e.getMessage();
+						Boolean conteoRegresivo = false; //no muestra el conteo regresivo si hay algun error al ingresar el codigo 
+						Boolean mostrarEnlace = true;
+						model.addAttribute("mostrarEnlace",mostrarEnlace);
+						model.addAttribute("email", email);
+						model.addAttribute("conteoRegresivo", conteoRegresivo);
+						model.addAttribute("error", error);
+			        	model.addAttribute("showModalError", true);
+						return "revalidarCodigo";
+					}
+				}
+	}
+	
+	@GetMapping("/revalidarEmail")
+	public String revalidarEmail(
+			@RequestParam String email,
+			@RequestParam String idUsuario,
+			Model modelo) throws MiExcepcion {
+		
+			
+		try {
+			if (servicioUsuario.verificarYDesbloquearUsuarioValidacion(email)) {				
+				throw new MiExcepcion("<p class= 'fs-6 text-center'> Ha superado el número de intentos máximo para validar el correo electrónico, por favor espera unos minutos e intente nuevamente.</p>");
+			}
+				
+			//creamos un usuario temporal para poder validar los intentos de validacion de codigo, si este usuario no completa su validacion sera borrado
+			//por el metodo para limpiar la base da datos. El email que se guarda acá tampoco influye en los intentos para registrarse
+			//Este metodo registra un nuevo usuario si no estaba registrado el email, caso contrario devuelve los datos del usuario registrado
+			Usuario usuarioTemporal = servicioUsuario.buscarDatosUsuario(idUsuario);
+			
+			//Llamamos al metodo que genera el codigo y lo manda por email
+			CodigoDeVerificacion idCodigo = servicioCodigoDeVerificacion.generarGuardarYEnviarCodigo(usuarioTemporal);
+			
+			LocalDateTime fechaExpiracionCodigo = null;
+			Optional<CodigoDeVerificacion> buscarCodigo = repositorioCodigoDeVerificacion.findById(idCodigo.getId());
+			if (buscarCodigo.isPresent()) {
+				CodigoDeVerificacion codigo = buscarCodigo.get();
+				fechaExpiracionCodigo = codigo.getExpiracion();
+			}else {
+				throw new MiExcepcion("No se encontraron codigos registrados");
+			}
 			
 			
+			Boolean conteoRegresivo = true; //Si el codigo se envia bien, entonces creamos esta variable para mostrar el contador en el html
+			Boolean mostrarEnlace = false;		
+			//Retornamos la plantilla donde se va a ingresar el codigo
+			modelo.addAttribute("email",email);
+			modelo.addAttribute("conteoRegresivo", conteoRegresivo);
+			modelo.addAttribute("mostrarEnlace", mostrarEnlace);
+			modelo.addAttribute("idUsuario", usuarioTemporal.getId());
+			modelo.addAttribute("expiracionCodigo", fechaExpiracionCodigo);
+			return "revalidarCodigo";
+			
+		} catch (MiExcepcion e) {
+			String error = e.getMessage();
+        	modelo.addAttribute("email", email);
+            modelo.addAttribute("error", error);
+        	modelo.addAttribute("showModalError", true);
+            return "login";
+		}
+	}
+	
+	
 
 	//Valida los datos del usuario al registrarse, genera un codigo y lo envia por email
 	@PostMapping("/validarEmail")
@@ -400,30 +546,7 @@ public class ControladorPagina {
 				return "login";
 			}
 			
-			//validamos si es un usuario temporal o real a traves de su email, si su email esta validado es un usuario real sino es temporal
-			//Si es temporal tiramos una excepcion porque los usuarios temporales no pueden loguearse
-			if (!servicioUsuario.validarUsuarioRegistradoActivo(emailUsuarioSinEspacios)) {
-				String error = "<p class='fs-6 text-center'>Usuario o contraseña incorrectos, por favor intente nuevamente.</p>";
-				
-				model.addAttribute("error", error);
-				modelo.addAttribute("showModalError", true);
-				modelo.addAttribute("email", emailUsuarioSinEspacios);
-				return "login";
-			}
 			
-			
-			//Este metodo solo devuelve true si el usuario esta bloqueado, tambien verifica si ya pasaron los 5 min minutos de bloqueo y si es asi lo desbloquea y
-			// devuelve false, si el usuario no estaba bloqueado tambien devuelve false
-			if (servicioUsuario.verificarYDesbloquearUsuarioLogin(emailUsuarioSinEspacios)) {
-				String error = "<p class='fs-6 text-center'>Ha superado en número máximo de intentos para iniciar sesión, por favor espera unos minutos e intente nuevamente.</p>";
-					
-					model.addAttribute("error", error);
-					modelo.addAttribute("showModalError", true);
-					modelo.addAttribute("email", emailUsuarioSinEspacios);
-					return "login";
-			}
-			
-				
 			//Validamos con el mail ingresado si el usuario existe en la base de datos
 			// Si existe entonces le buscamos todos los valores de las variables mostradas abajo
 			Usuario usuario;
@@ -461,8 +584,35 @@ public class ControladorPagina {
 		    	 modelo.addAttribute("email", emailUsuarioSinEspacios);
 		    	 modelo.addAttribute("showModalError", true);
 		     }
-
-		     
+			
+			if (servicioUsuario.revalidarEmailUsuario(emailUsuarioSinEspacios)) {
+				return "redirect:/revalidarEmail?email=" + email + "&idUsuario=" + idUsuario;
+			}
+			
+			//validamos si es un usuario temporal o real a traves de su email, si su email esta validado es un usuario real sino es temporal
+			//Si es temporal tiramos una excepcion porque los usuarios temporales no pueden loguearse
+			if (!servicioUsuario.validarUsuarioRegistradoActivo(emailUsuarioSinEspacios)) {
+				String error = "<p class='fs-6 text-center'>Usuario o contraseña incorrectos, por favor intente nuevamente.</p>";
+				
+				model.addAttribute("error", error);
+				modelo.addAttribute("showModalError", true);
+				modelo.addAttribute("email", emailUsuarioSinEspacios);
+				return "login";
+			}
+			
+			
+			//Este metodo solo devuelve true si el usuario esta bloqueado, tambien verifica si ya pasaron los 5 min minutos de bloqueo y si es asi lo desbloquea y
+			// devuelve false, si el usuario no estaba bloqueado tambien devuelve false
+			if (servicioUsuario.verificarYDesbloquearUsuarioLogin(emailUsuarioSinEspacios)) {
+				String error = "<p class='fs-6 text-center'>Ha superado en número máximo de intentos para iniciar sesión, por favor espera unos minutos e intente nuevamente.</p>";
+					
+					model.addAttribute("error", error);
+					modelo.addAttribute("showModalError", true);
+					modelo.addAttribute("email", emailUsuarioSinEspacios);
+					return "login";
+			}
+			
+				
 		         try {
 		        	// validamos que las contraseña ingresada coincida con la registrada en la base de datos
 		        	  if (servicioUsuario.verificarPasswordLogin(passwordSinEspacios, passwordRegistrado)) {

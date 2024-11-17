@@ -1,7 +1,7 @@
 package com.proyecto_integrador_3.Estetica.Servicios;
 
 import static java.lang.Boolean.TRUE;
-
+import static java.lang.Boolean.FALSE;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -82,6 +82,10 @@ public class ServicioColaborador {
 			cliente_actualizado.setTelefono(telefono);
 			cliente_actualizado.setDni(dni);
 			cliente_actualizado.setEmail(email);
+			if (!email.equalsIgnoreCase(emailAnterior)) {
+			cliente_actualizado.setEmailValidado(FALSE);
+			cliente_actualizado.setRevalidarEmail(TRUE);
+			}
 			cliente_actualizado.setFechaNacimiento(fechaNacimientoLocalDate);
 			repositorioCliente.save(cliente_actualizado);
 		}

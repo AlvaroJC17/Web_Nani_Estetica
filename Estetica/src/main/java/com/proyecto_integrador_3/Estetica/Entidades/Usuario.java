@@ -63,6 +63,9 @@ public class Usuario implements Serializable {
 	@Column(name="email_validado")
 	protected Boolean emailValidado = false;
 	
+	@Column(name="revalidar_email")
+	protected Boolean revalidarEmail = false;
+	
 	@Column(name="fecha_creacion")
 	protected LocalDateTime fechaCreacion;
 	
@@ -99,7 +102,7 @@ public class Usuario implements Serializable {
 	
 	
 	public Usuario(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, LocalDate fechaNacimiento,
-			Boolean emailValidado, LocalDateTime fechaCreacion, int intentosValidacion, Boolean bloqueoValidacion,  LocalDateTime horaDeBloqueoValidacion,
+			Boolean emailValidado, Boolean revalidarEmail, LocalDateTime fechaCreacion, int intentosValidacion, Boolean bloqueoValidacion,  LocalDateTime horaDeBloqueoValidacion,
 			int intentosLogin, Boolean bloqueoLogin, LocalDateTime horaBloqueoLogin) {
 		this.id = id;
 		this.tokens = tokens;
@@ -110,6 +113,7 @@ public class Usuario implements Serializable {
 		this.ValidacionForm = ValidacionForm;
 		this.fechaNacimiento = fechaNacimiento;
 		this.emailValidado = emailValidado;
+		this.revalidarEmail = revalidarEmail;
 		this.fechaCreacion = fechaCreacion;
 		this.intentosValidacion = intentosValidacion;
 		this.bloqueoValidacion = bloqueoValidacion;
@@ -124,6 +128,14 @@ public class Usuario implements Serializable {
 
 
 
+
+	public Boolean getRevalidarEmail() {
+		return revalidarEmail;
+	}
+
+	public void setRevalidarEmail(Boolean revalidarEmail) {
+		this.revalidarEmail = revalidarEmail;
+	}
 
 	public Boolean getBloqueoValidacion() {
 		return bloqueoValidacion;

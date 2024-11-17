@@ -20,27 +20,71 @@ $(document).ready(function () {
   });
 });
 
-//Scrip para habilitar y deshabilitar elementos
-//Script para habilitar y deshabilitar las notas del profesional y su boton de guardar
-document.getElementById("botonNotas").addEventListener("click", function () {
-  var campoTexto = document.getElementById("notas_profesional");
-  var guardarButton = document.getElementById("guardarButton");
 
-  // Alterna la propiedad 'disabled' del campo de texto
-  campoTexto.disabled = !campoTexto.disabled;
+// Script para habilitar y deshabilitar el campo de recomendaciones y para manejar los botones de modificar, guardar y cancelar del turno 0
+const valoresOriginalesNotas = {};
+document.addEventListener("DOMContentLoaded", function() {
+    // Verifica si el botón "modificar" existe en la página
+    var botonNotas = document.getElementById("botonNotas");
+    if (botonNotas) {
+      
+        // Función para guardar los valores iniciales del textarea
+        function guardarValoresOriginalesNotas() {
+            const notas_profesional = document.getElementById("notas_profesional");
+            if (notas_profesional) {
+                valoresOriginalesNotas[notas_profesional.id] = notas_profesional.value; // Guarda el valor inicial del textarea
+            }
+        }
 
-  // Alterna la propiedad 'disabled' del botón 'Guardar'
-  guardarButton.disabled = !guardarButton.disabled;
-
-  // Agrega o quita la clase según el estado de deshabilitación
-  if (guardarButton.disabled) {
-    guardarButton.classList.add("enviar");
-  } else {
-    guardarButton.classList.remove("enviar");
-  }
+        // Ejecuta la función de guardado de valores originales al cargar la página
+        guardarValoresOriginalesNotas();
+    }
 });
 
-//Contador de caracteres notas profesional
+// Función para restaurar los valores originales
+function restaurarValoresNotas() {
+    const notas_profesional = document.getElementById("notas_profesional");
+    if (notas_profesional) {
+        notas_profesional.value = valoresOriginalesNotas[notas_profesional.id]; // Restaura el valor inicial del textarea
+    }
+}
+
+// Script para habilitar el textarea de notas del profesional
+document.getElementById("botonNotas").addEventListener("click", function() { 
+    var notas_profesional = document.getElementById("notas_profesional");
+    if (notas_profesional) {
+        notas_profesional.disabled = false; // Habilita el textarea
+    }
+});
+
+// Función para mostrar los botones de Guardar y Cancelar y ocultar el de Modificar
+function habilitarEdicionNotas() {
+
+    document.getElementById("botonGuardarNotas").style.display = "inline-block"; //muestra el boton
+    document.getElementById("botonCancelarNotas").style.display = "inline-block"; //muestra el boton
+    document.getElementById("botonNotas").style.display = "none"; // Oculta el botón "Modificar"
+}
+
+// Función para cancelar la edición, restaurar valores originales y deshabilitar el textarea
+function cancelarEdicionNotas() {
+	
+    restaurarValoresNotas(); // Restaura los valores originales del textarea
+
+    var notas_profesional = document.getElementById("notas_profesional");
+    if (notas_profesional) {
+        notas_profesional.disabled = true; // Deshabilita el textarea
+    }
+
+    // Oculta los botones de Guardar y Cancelar
+    document.getElementById("botonGuardarNotas").style.display = "none";
+    document.getElementById("botonCancelarNotas").style.display = "none";
+
+    // Muestra el botón "Modificar" nuevamente
+    document.getElementById("botonNotas").style.display = "block";
+}
+
+
+//Contador de caracteres del campo cuidados de la piel
 document.addEventListener("DOMContentLoaded", function () {
   const maxCaracteresPiel = 500;
   const textareaPiel = document.getElementById('cuidado_de_piel');
@@ -119,8 +163,9 @@ if (tunoEstaPresente2) {
   console.log("El contador 2 no esta presente");
 }
 
-// Script para habilitar y deshabilitar el campo de recomendaciones y su botón guardar del primer turno de la columna
-        // Lista para almacenar los valores iniciales
+
+// Script para manejar los botones de modificar, guardar y cancelar del turno 0
+// Lista para almacenar los valores iniciales
 const valoresOriginales0 = {};
 document.addEventListener("DOMContentLoaded", function() {
     // Verifica si el botón "Modificar" existe en la página
@@ -129,7 +174,7 @@ document.addEventListener("DOMContentLoaded", function() {
       
         // Función para guardar los valores iniciales del textarea
         function guardarValoresOriginales0() {
-            const consultaTurno0 = document.getElementById("consultaTurno0"); // Cambié "consultaTurno1" a "consultaTurno0"
+            const consultaTurno0 = document.getElementById("consultaTurno0"); 
             if (consultaTurno0) {
                 valoresOriginales0[consultaTurno0.id] = consultaTurno0.value; // Guarda el valor inicial del textarea
             }
@@ -145,8 +190,6 @@ function restaurarValores0() {
     const consultaTurno0 = document.getElementById("consultaTurno0");
     if (consultaTurno0) {
         consultaTurno0.value = valoresOriginales0[consultaTurno0.id]; // Restaura el valor inicial del textarea
-        console.log("VALORES3: " + valoresOriginales0[consultaTurno0.id]);
-        console.log("VALORES4: " + consultaTurno0.value);
     }
 }
 
@@ -162,8 +205,8 @@ document.getElementById("botonHabilitar0").addEventListener("click", function() 
 function habilitarEdicion0() {
 	cancelarEdicion1();
 	cancelarEdicion2();
-    document.getElementById("guardarButton0").style.display = "inline-block";
-    document.getElementById("botonCancelarModificacion0").style.display = "inline-block";
+    document.getElementById("guardarButton0").style.display = "inline-block"; //muestra el boton
+    document.getElementById("botonCancelarModificacion0").style.display = "inline-block"; //muestra el boton
     document.getElementById("botonHabilitar0").style.display = "none"; // Oculta el botón "Modificar"
 }
 
@@ -185,7 +228,7 @@ function cancelarEdicion0() {
 }
 
 
-// Script para habilitar y deshabilitar el campo de recomendaciones y su botón guardar del segundo turno de la columna
+// Script para habilitar y deshabilitar el campo de recomendaciones y para manejar los botones de modificar, guardar y cancelar del turno 1
 const valoresOriginales1 = {};
 document.addEventListener("DOMContentLoaded", function() {
     // Verifica si el botón "Modificar" existe en la página
@@ -196,7 +239,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Función para guardar los valores iniciales del textarea
         function guardarValoresOriginales1() {
-            const consultaTurno1 = document.getElementById("consultaTurno1"); // Cambié "consultaTurno1" a "consultaTurno0"
+            const consultaTurno1 = document.getElementById("consultaTurno1"); 
             if (consultaTurno1) {
                 valoresOriginales1[consultaTurno1.id] = consultaTurno1.value; // Guarda el valor inicial del textarea
             }
@@ -212,8 +255,6 @@ function restaurarValores1() {
     const consultaTurno1 = document.getElementById("consultaTurno1");
     if (consultaTurno1) {
         consultaTurno1.value = valoresOriginales1[consultaTurno1.id]; // Restaura el valor inicial del textarea
-        console.log("VALORES3: " + valoresOriginales1[consultaTurno1.id]);
-        console.log("VALORES4: " + consultaTurno1.value);
     }
 }
 
@@ -254,7 +295,7 @@ function cancelarEdicion1() {
   
 
 
-// Script para habilitar y deshabilitar el campo de recomendaciones y su botón guardar del primer turno de la columna
+// Script para habilitar y deshabilitar el campo de recomendaciones y para manejar los botones de modificar, guardar y cancelar del turno 2
 const valoresOriginales2 = {};
 document.addEventListener("DOMContentLoaded", function() {
     // Verifica si el botón "Modificar" existe en la página
@@ -265,11 +306,9 @@ document.addEventListener("DOMContentLoaded", function() {
 
         // Función para guardar los valores iniciales del textarea
         function guardarValoresOriginales2() {
-            const consultaTurno2 = document.getElementById("consultaTurno2"); // Cambié "consultaTurno1" a "consultaTurno0"
+            const consultaTurno2 = document.getElementById("consultaTurno2"); 
             if (consultaTurno2) {
                 valoresOriginales2[consultaTurno2.id] = consultaTurno2.value; // Guarda el valor inicial del textarea
-                console.log("VALORES1.1: " + valoresOriginales2[consultaTurno2.id]);
-                console.log("VALORES2.1: " + consultaTurno2.value);
             }
         }
 
@@ -283,8 +322,6 @@ function restaurarValores2() {
     const consultaTurno2 = document.getElementById("consultaTurno2");
     if (consultaTurno2) {
         consultaTurno2.value = valoresOriginales2[consultaTurno2.id]; // Restaura el valor inicial del textarea
-        console.log("VALORES3: " + valoresOriginales2[consultaTurno2.id]);
-        console.log("VALORES4: " + consultaTurno2.value);
     }
 }
 

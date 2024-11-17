@@ -69,7 +69,9 @@
   </nav>
 
   <main class="main-interno">
-    <h3 class="">Datos personales</h3>
+	<h3 class="">Perfil del cliente</h3>
+	<div  class="m-4 rounded-2 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);">
+    <h3 class="fs-1 text-star">Datos personales</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos ">
 
@@ -157,11 +159,11 @@
         </form>
       </div>
     </section>
+	</div>
 
 
-
-
-    <h3 class="mb-1">Formulario de datos</h3>
+<div class="m-4 rounded-2 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);">
+    <h3 class="fs-1 text-star">Formulario de datos</h3>
     <section class=" section-misdatos">
       <div class="container-fluid form-misdatos">
 
@@ -640,8 +642,10 @@
         </form>
       </div>
     </section>
+	</div>
 
-    <h3 class="mb-0">Últimos tres turnos asistidos</h3>
+	<div class="m-4 rounded-2 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);">
+    <h3 class="fs-1 text-star">Últimos tres turnos asistidos</h3>
     <section class="section-misdatos">
       <div class="form-misdatos">
 
@@ -764,11 +768,13 @@
         </div>
       </div>
     </section>
+	</div>
 
-
-    <h3 class="mb-0">Notas del paciente</h3>
+	<div class="m-4 rounded-2 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3);">
+    <h3 class="fs-1 text-star">Notas del paciente</h3>
     <section class="section-misdatos">
       <div class="container-fluid form-misdatos ">
+		
         <form id="formularioNotas" th:action="@{/guardarDatosPacienteEditado}" method="post"
           th:each="datosPaciente : ${datosPaciente}">
 
@@ -789,18 +795,18 @@
                 th:text="${datosPaciente.notas_profesional}"
                 name="notas_profesional" class="form-control" disabled>
             </textarea>
+			
+			<div id="divBotonModificar" class="d-flex justify-content-center">
+				<button type="button" id="botonNotas" class="bn632-hover bn26 mb-4" onclick="habilitarEdicionNotas()">Modificar</button>
+			</div>
+				 
+			<div id="divParDeBotones" class="d-flex justify-content-center">
+			  <button style="display: none;" data-bs-target='#confirmNotas' data-bs-toggle="modal" id="botonGuardarNotas" type="button" class="bn632-hover bn26">Guardar</button>
+				<button style="display: none;" type="button" id="botonCancelarNotas" class="bn632-hover bn26 cancelar mb-4" onclick="cancelarEdicionNotas()">Cancelar</button>
+		 </div>
 
 
-              <div class="d-flex flex-wrap justify-content-center">
-                <div class="mt-2 mx-0">
-                  <button id="botonNotas" type="button" class="bn632-hover bn26">Habilitar/Deshabilitar</button>
-                </div>
-
-                <div class="mt-2 mx-0">
-                  <button data-bs-target='#confirmNotas' data-bs-toggle="modal" class="bn632-hover bn26 enviar"
-                    type="button" id="guardarButton" disabled>Guardar</button>
-                </div>
-              </div>
+             
             </div>
           </div>
 
@@ -840,8 +846,10 @@
             </div>
           </div>
         </form>
+		
       </div>
     </section>
+	</div>
 
 <!--Modal mensaje de exito misDatosCliente, el script esta en el archivo datosPersonalesPaciente.js	-->
     <div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"

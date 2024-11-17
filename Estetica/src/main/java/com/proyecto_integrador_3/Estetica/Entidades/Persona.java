@@ -54,10 +54,10 @@ public class Persona extends Usuario implements Serializable{
 	}
 
 	public Persona(String id, List<TokenUsuario> tokens, String dni, String contrasena, String email, Rol rol, Boolean activo, Boolean ValidacionForm,
-			String nombre, String apellido, String ocupacion, Sexo sexo, LocalDate fechaNacimiento, Boolean emailValidado, LocalDateTime fechaCreacion,
+			String nombre, String apellido, String ocupacion, Sexo sexo, LocalDate fechaNacimiento, Boolean emailValidado, Boolean revalidarEmail, LocalDateTime fechaCreacion,
 			int intentosValidacion, Boolean bloqueoValidacion, LocalDateTime horaDeBloqueoValidacion, int intentosLogin, Boolean bloqueoLogin,
 			LocalDateTime horaDeBloqueoLogin, String domicilio, String telefono) {
-		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento, emailValidado, fechaCreacion, intentosValidacion, 
+		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento, emailValidado, revalidarEmail, fechaCreacion, intentosValidacion, 
 				bloqueoValidacion,  horaDeBloqueoValidacion,  intentosLogin, bloqueoLogin, horaDeBloqueoLogin);
 		this.dni = dni;
 		this.nombre = nombre;
@@ -81,17 +81,17 @@ public class Persona extends Usuario implements Serializable{
 	}
 
 	public Persona(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean ValidacionForm, LocalDate fechaNacimiento,
-			Boolean emailValidado, LocalDateTime fechaCreacion, int intentosValidacion,  Boolean bloqueoValidacion, LocalDateTime horaDeBloqueoValidacion, int intentosLogin,
+			Boolean emailValidado, Boolean revalidarEmail, LocalDateTime fechaCreacion, int intentosValidacion,  Boolean bloqueoValidacion, LocalDateTime horaDeBloqueoValidacion, int intentosLogin,
 			Boolean bloqueoLogin, LocalDateTime horaDeBloqueoLogin) {
-		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento,  emailValidado,  fechaCreacion,  intentosValidacion,  
+		super(id, tokens, email, contrasena, rol, activo, ValidacionForm, fechaNacimiento,  emailValidado, revalidarEmail,  fechaCreacion,  intentosValidacion,  
 				bloqueoValidacion,  horaDeBloqueoValidacion, intentosLogin, bloqueoLogin, horaDeBloqueoLogin );
 	}
 		
 	public Persona(String id, List<TokenUsuario> tokens, String email, String contrasena, Rol rol, Boolean activo, Boolean validacionForm,
-			Boolean emailValidado, LocalDateTime fechaCreacion, int intentosValidacion,  Boolean bloqueoValidacion, LocalDateTime horaDeBloqueoValidacion,
+			Boolean emailValidado, Boolean revalidarEmail, LocalDateTime fechaCreacion, int intentosValidacion,  Boolean bloqueoValidacion, LocalDateTime horaDeBloqueoValidacion,
 			int intentosLogin, Boolean bloqueoLogin, LocalDateTime horaDeBloqueoLogin, String dni, String nombre, String apellido, String ocupacion, Sexo sexo,
 			LocalDate fechaNacimiento, String domicilio, String telefono) {
-		super(id, tokens, email, contrasena, rol, activo, validacionForm, fechaNacimiento, emailValidado, fechaCreacion, intentosValidacion,  
+		super(id, tokens, email, contrasena, rol, activo, validacionForm, fechaNacimiento, emailValidado, revalidarEmail, fechaCreacion, intentosValidacion,  
 				bloqueoValidacion,  horaDeBloqueoValidacion, intentosLogin, bloqueoLogin, horaDeBloqueoLogin);
 		this.dni = dni;
 		this.nombre = nombre;
