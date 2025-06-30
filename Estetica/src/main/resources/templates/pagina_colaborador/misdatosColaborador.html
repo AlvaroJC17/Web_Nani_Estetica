@@ -81,11 +81,15 @@
           </div>
         </div>
         <div class="row">
-          <div class="mb-3 col-lg-6 ">
+		<div class="mb-3 col-lg-4">
+			<label for="rol" class="form-label texto-label">Rol</label>
+			<input type="text" name="email" th:value="${#strings.toUpperCase(datosColaborador.rol)}" class="form-control" id="rol" placeholder="" disabled>
+		</div>
+          <div class="mb-3 col-lg-4">
             <label for="nacimiento" class="form-label texto-label">Fecha Nacimiento</label>
             <input type="date" th:value="${#strings.toUpperCase(datosColaborador.fechaNacimiento)}"  class="form-control" id="nacimiento" placeholder="" disabled>
           </div>
-          <div class="mb-3 col-lg-6 ">
+          <div class="mb-3 col-lg-4">
 			<label for="email" class="form-label texto-label">Email</label>
             <input type="email" name="email" th:value="${#strings.toUpperCase(datosColaborador.email)}" class="form-control" id="email" placeholder="" disabled>
           </div>

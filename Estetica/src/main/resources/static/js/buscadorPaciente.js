@@ -1,6 +1,18 @@
 
 //Este jquery lo saque de chatgp, cumple la funcion de abrir el modal al recibir la variable de 
 //showModal y tambien se encarga de cerrar el modal cuando le damos al boton cerrar
+
+//Script para modal de exito
+$(document).ready(function () {
+  if (showModalExito) {
+    $('#exitoModal').modal('show');
+  }
+
+  $('#exitoModal').on('hidden.bs.modal', function () {
+    $(this).remove();
+  });
+});
+
 //Scrip para el modal de mensaje de error-->
 $(document).ready(function() {
 	if (showModalError) {

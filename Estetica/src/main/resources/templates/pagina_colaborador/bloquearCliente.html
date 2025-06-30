@@ -11,7 +11,7 @@
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/5.1.3/js/bootstrap.bundle.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <link rel="stylesheet" href="./css/styles.css">
-  <title>Buscar clientes</title>
+  <title>Gestión clientes</title>
   <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4=" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdn.datatables.net/2.1.0/css/dataTables.dataTables.css" />
   <link rel="stylesheet" href="https://cdn.datatables.net/responsive/3.0.2/css/responsive.dataTables.css">
@@ -70,10 +70,7 @@
 
 	<main class="">
 		<div class="main-interno">
-			<h3>Clientes</h3>
-			
-			<div class="rounded-2 mx-4 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3); margin-top: 20px; margin-bottom: 20px;">
-				<h3 class="fs-1 text-star">Bucar clientes</h3>
+			<h3>Bloquear clientes</h3>
 			<section class=" section-misdatos">
 				<div class="container-fluid form-misdatos d-block  justify-content-center align-items-center ">
 					<div>
@@ -86,6 +83,7 @@
 								<div>
 									<input  type="text" class="form-control mb-3" id="dato" name="dato" placeholder="Buscar por nombre, dni o email">
 									<input  type="hidden" id="email" name="emailColaborador" th:value="${datosColaborador.email}"></input>
+									<input hidden type="text"  name="action" value="bloquearCliente"></input>
 									<!--Obtenemos el valor de la variable usuariosEmail del metodo listarUsuariosOcultos que a su vez la obtenemos de la pagina homeAdmin y darle al boton buscar la pasa al metod buscarPorDni-->
 								</div>
 								<div class="mt-5 text-center container">
@@ -98,7 +96,7 @@
 				</section>
 								
 			<section th:if="${usuarios}">
-				<form id="formularioTabla" class="alinear-tabla" th:action="@{/datosPersonalesPacienteColaborador}" method="post">
+				<form id="formularioTabla" class="alinear-tabla" th:action="@{/bajaUsuario}" method="post">
 					
 					<div class="container-fluid">
 												<table id="myTable" class="table table-striped display responsive nowrap tablaUsuario" style="width:100%">
@@ -132,8 +130,8 @@
 															<td class="text-center" th:text="${usuarios.rol}"></td>
 															<td class="text-center" th:text="${usuarios.activo ? 'SI' : 'NO'}"></td>
 															<td class="text-center" th:text="${usuarios.multa ? 'SI' : 'NO'}"></td>
-															<input hidden type="text" id="usuarioEmail" name="usuarioEmail"
-															th:value="${usuarios.email}"></input>
+															<input hidden type="text" id="usuarioEmail" name="emailCliente" th:value="${usuarios.email}"></input>
+															<input hidden type="text" id="usuarioEmail" name="clienteActivo" th:value="${usuarios.activo}"></input>
 														</tr>    
 													</tbody>
 												</table>
@@ -141,73 +139,38 @@
 								
 					
 					<div class="text-center container">
-							<button id="submitVerPerfil" type="submit" class="bn632-hover bn26">Ver perfil</button>
+							<button id="submitVerPerfil" type="button" class="bn632-hover bn26 cancelar" data-bs-target='#confirmar' data-bs-toggle="modal">Bloquear</button>
 						</div>
 						<input hidden type="text"  name="emailColaborador" th:value="${datosColaborador.email}"></input> <!--El valor de la variable viene del metodo listarUsuariosOcultos que a su vez viene del homeAdmin-->
-						<input hidden type="text"  name="dato" th:value="${dato}"></input>
 						<input hidden type="text"  name="idColaborador" th:value="${datosColaborador.id}"></input>
+						<input hidden type="text"  name="dato" th:value="${dato}"></input>
+						<input hidden type="text"  name="action" value="bloquearCliente"></input>
+						
+		
+						<!-- Modal Confirmar 2 modificacion para bloquear o desbloquear un cliente -->
+												<div class="modal fade" id='confirmar' data-bs-backdrop="static" data-bs-keyboard="false"
+												tabindex="-1" aria-labelledby="confirmarLabel" aria-hidden="true">
+												<div class="modal-dialog">
+												<div style="background-color: #ebdf9d;" class="modal-content">
+												<div class="modal-header d-block text-center border border-0">
+												<img src="../imagenes/icons8-emoji-de-advertencia-48.png" alt="">
+												<h1 class="modal-title fs-6 fw-bold mt-4" id="confirmarLabel">Estimado usuario</h1>
+												</div>
+												<div style="text-align: justify;" class="modal-body fs-6 lh-sm">
+												<p class="text-center fs-6 fw-mediun">¿Estas seguro que quieres bloquear al cliente?</p>
+												</div>
+												<div class="modal-footer border border-0">
+												<button type="button"  class="btn btn-danger" data-bs-dismiss="modal">Cerrar</button>
+												<!-- Botón que llama al método para aceptar la confirmación -->
+												<button  type="submit"  class="btn btn-primary">Aceptar</button>
+												</div>
+												</div>
+												</div>
+												</div>	
+						
 				</form>
 			</section>
-			</div>
 			
-			<div class="rounded-2 mx-4 pt-4" style="box-shadow: 10px 10px 20px rgba(0, 0, 0, 0.3); margin-top: 20px; margin-bottom: 20px;">
-				<h3 class="fs-1 text-star">Gestión de clientes</h3>
-				
-				<div class="container">
-					
-				<div class="ft2">
-				      <a th:href="@{/misturnos(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
-				        <div class="d-block justify-content-center align-items-center">
-							<div class="text-center">
-				          	<img class="w-50 text-center" src="../imagenes/Add-User--Streamline-Block-Free.png" alt="">
-							</div>
-				          <p class="ms-1 hover text-center">Agregar cliente</p>
-				        </div>
-				      </a>
-				    </div>
-						
-					<div class="ft2">
-						<div class="d-block justify-content-center align-items-center">
-							<form th:action="@{/bloquearCliente(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}" method="post">
-								<div class="text-center">
-									<img class=" w-75 text-center" src="../imagenes/Delete-User--Streamline-Block-Free.png" alt="">
-								</div>
-								<div class="text-center">
-									<button type="submit" style="background: none; color: blue; border: none; padding: 0; font: inherit; cursor: pointer;">Bloquear</button>
-								</div>
-							</form>
-						</div>
-					</div>
-								
-					
-					
-				
-				<div class="ft2">
-				<a th:href="@{/misturnos(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
-					<div class="d-block justify-content-center align-items-center">
-						<div class="text-center">
-							<img style="width: 40%;" class="text-center" src="../imagenes/Confirm-User--Streamline-Block-Free.png" alt="">
-						</div>
-						<p class="ms-1 hover text-center">Desbloquear cliente</p>
-						</div>
-					</a>
-				</div>
-				
-				<div class="ft2">
-				<a th:href="@{/misturnos(emailColaborador=${datosColaborador.email}, idColaborador=${datosColaborador.id})}">
-					<div class="d-block justify-content-center align-items-center">
-						<div class="text-center">
-							<img class="w-50 text-center" src="../imagenes/Remove-User--Streamline-Block-Free.png" alt="">
-						</div>
-						<p class="ms-1 hover text-center">Eliminar cliente</p>
-						</div>
-					</a>
-				</div>
-					
-					
-				</div>				
-				
-			</div>
 			
 		</div>
 		
@@ -230,6 +193,27 @@
         </div>
     </div>
 </div>
+
+
+<!--Modal mensaje de exito misDatosCliente, el script esta en el archivo datosPersonalesPaciente.js	-->
+    <div class="modal fade" id="exitoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+      aria-labelledby="exitoModalLabel" aria-hidden="true" th:classappend="${showModalExito} ? 'show d-block' : ''"
+      th:style="${showModalExito} ? 'display: block;' : 'display: none;'">
+      <div class="modal-dialog">
+        <div style="background-color: #ebdf9d;" class="modal-content">
+          <div class="modal-header border border-0 d-flex justify-content-center">
+            <img style="height: 70px; width: 70px;" class="" src="../imagenes/icons8-aprobado2 (1).gif"
+              alt="imagen de aprobado">
+          </div>
+          <div class="modal-body text-black lh-sm">
+            <p class="text-center" th:utext="${exito}"></p>
+          </div>
+          <div class="modal-footer border border-0">
+            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
 
 </main>
 

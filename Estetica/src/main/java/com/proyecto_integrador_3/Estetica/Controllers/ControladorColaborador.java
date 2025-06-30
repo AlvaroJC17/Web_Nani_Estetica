@@ -55,6 +55,19 @@ public class ControladorColaborador {
 	@Autowired
 	RepositorioUsuario repositorioUsuario;
 	
+	@PostMapping("/bloquearCliente")
+	public String bloquearCliente(
+			@RequestParam String idColaborador,
+			@RequestParam String emailColaborador,
+			Model modelo) throws MiExcepcion {
+		
+		List <Usuario> datosColaborador = servicioUsuario.buscarPorEmail(emailColaborador);
+	
+		modelo.addAttribute("datosColaborador", datosColaborador);
+		return "/pagina_colaborador/bloquearCliente";
+	}
+	
+	
 
 	//Devuelve la pagina homeColaborador con los datos del usuario que le pasemos por mmail
 		@GetMapping("/homeColaborador")
@@ -151,8 +164,12 @@ public class ControladorColaborador {
 		public String buscadorPacientesColaborador(
 				@RequestParam(required = false) String dato,  //la variable dato puede ser un nombre, dni o mail
 				@RequestParam String emailColaborador,
+				@RequestParam (required = false) String action,
 				Model model) throws MiExcepcion {
 			
+			if (action == null) {
+				action = "nulo";
+			}
 								
 			List <Usuario> datosColaborador = servicioUsuario.buscarPorEmail(emailColaborador);
 			String error = null;
@@ -164,6 +181,9 @@ public class ControladorColaborador {
 				model.addAttribute("datosColaborador", datosColaborador);
 				model.addAttribute("error", error);
 				model.addAttribute("showModalError", true);
+				if (action.equalsIgnoreCase("bloquearCliente")) {
+				return "/pagina_colaborador/bloquearCliente";
+				}
 				return "/pagina_colaborador/buscadorPacienteColaborador";
 			}
 			
@@ -172,9 +192,12 @@ public class ControladorColaborador {
 			if (!servicioUsuario.buscarPorDniOptional(datoSinEspacios).isPresent() &&  !servicioUsuario.buscarPorEmailOptional(datoSinEspacios).isPresent() && servicioUsuario.buscarNombre(datoSinEspacios).isEmpty()) {
 				error = "Usuario no se encuentra registrado";
 				model.addAttribute("datosColaborador", datosColaborador);
-					model.addAttribute("error", error);
-					model.addAttribute("showModalError", true);
-					return "/pagina_colaborador/buscadorPacienteColaborador";
+				model.addAttribute("error", error);
+				model.addAttribute("showModalError", true);
+				if (action.equalsIgnoreCase("bloquearCliente")) {
+					return "/pagina_colaborador/bloquearCliente";
+				}
+				return "/pagina_colaborador/buscadorPacienteColaborador";
 			}
 			// Si cumple las condiciones para pasar los condicionales de arriba, entonces
 			//usamos el valor de dato, segun corresponda
@@ -191,6 +214,9 @@ public class ControladorColaborador {
 				model.addAttribute("datosColaborador", datosColaborador);
 				model.addAttribute("error", error);
 				model.addAttribute("showModalError", true);
+				if (action.equalsIgnoreCase("bloquearCliente")) {
+					return "/pagina_colaborador/bloquearCliente";
+					}
 				return "/pagina_colaborador/buscadorPacienteColaborador";
 			}
 			
@@ -206,6 +232,9 @@ public class ControladorColaborador {
 			model.addAttribute("usuarios", datosPaciente); // asignamos el valor de la variable administradoresDni a la variable html administradores y asi poder iterarla en el documento
 			model.addAttribute("datosColaborador", datosColaborador);
 			model.addAttribute("dato", dato); // le pasamos el valor de dato a la variable dato del formulario modificarUsuario, para despues usarla en el metodo mensajeErrorNoId
+			if (action.equalsIgnoreCase("bloquearCliente")) {
+				return "/pagina_colaborador/bloquearCliente";
+				}
 			return "/pagina_colaborador/buscadorPacienteColaborador";
 		}
 		
@@ -334,21 +363,55 @@ public class ControladorColaborador {
 		}
 			
 			
-		
+		//controlador para bloquear a un usuario, se usa tanto en la pagina de perfil del cliente y en la pagina de bloquear cliente
 		@PostMapping("/bajaUsuario")
 		public String bajaUsuario(
 				@RequestParam String emailColaborador, //Esta variable proviene de homeColaborador
 				@RequestParam String idColaborador,
-				@RequestParam String idCliente,
+				@RequestParam (required = false) String idCliente, //lo coloque no requeerido para manejar la excepcion
 				@RequestParam String emailCliente,
 				@RequestParam Boolean clienteActivo,
+				@RequestParam (required = false) String action,
+				@RequestParam (required = false) String dato,
 				Model modelo) throws MiExcepcion {
 	
+			if (action == null) {
+				action = "nulo";
+			}
 			
 			Boolean btnCancelarTurno = false;
 			
 			//Datos del colaborador para los menu de la pagina
 			List <Usuario> datosColaborador = servicioUsuario.buscarPorEmail(emailColaborador);
+			
+			//si el colaborador le da al boton ver perfil sin seleccionar un paciente, entra en este codigo
+			//para enviarle un mensaje de error pero siempre mostrandole el resultado de la busqueda previa que
+			//realizo. La variable dato es la misma del metodo /buscadorPaciente
+			if (idCliente == null || idCliente.isEmpty()) {
+				String datoSinEspacios = dato.trim();
+				List<Persona> pacienteDni = servicioPersona.buscarPacienteByRolAndDni(datoSinEspacios, Rol.CLIENTE);
+				List<Persona> pacienteNombre = servicioPersona.buscarPacienteByRolAndNombre(datoSinEspacios, Rol.CLIENTE);
+				List<Persona> pacienteEmail = servicioPersona.buscarPacienteByRolAndEmail2(datoSinEspacios, Rol.CLIENTE);
+				List<Persona> datosPaciente = null;
+				
+				// En este codigo buscamos asignarle el valor de la lista que no venga vacia a una variable general llamada datosPaciente
+				if (!pacienteDni.isEmpty()) {
+					datosPaciente = pacienteDni;
+				}else if(!pacienteNombre.isEmpty()) {
+					datosPaciente = pacienteNombre;
+				}else if(!pacienteEmail.isEmpty()) {
+					datosPaciente = pacienteEmail;
+				}
+				
+				String error = "Debe seleccionar un cliente";
+				modelo.addAttribute("datosColaborador",datosColaborador);
+				modelo.addAttribute("usuarios", datosPaciente);
+				modelo.addAttribute("showModalError", true);
+				modelo.addAttribute("error", error);
+				modelo.addAttribute("dato", dato);
+				return "/pagina_colaborador/bloquearCliente";
+			}
+			
 			
 			//Buscamos los turnos activos para pasar a la tabla que esta en la vista
 			List<Turnos> buscarTurnosCliente = servicioTurnos.turnosActivosPorIdClienteFechaAsc(idCliente);
@@ -383,6 +446,9 @@ public class ControladorColaborador {
 			modelo.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
 			modelo.addAttribute("datosColaborador",datosColaborador);
 			modelo.addAttribute("datosCliente", datosCliente);
+			if (action.equalsIgnoreCase("bloquearCliente")) {
+				return "/pagina_colaborador/bloquearCliente";
+				}
 			return "/pagina_colaborador/perfilCliente";
 		}
 		
@@ -460,6 +526,14 @@ public class ControladorColaborador {
 			//debe estar vacía
 			List<Turnos> tunosConMulta = servicioTurnos.buscarPorIdClienteAndMulta(idCliente);
 			
+			int totalTurnosMulta = 0;
+			for (Turnos turnos : tunosConMulta) {
+				for (String turnos2 : turnos.getTratamientos()) {
+					totalTurnosMulta =+ servicioTurnos.extraerValorTratamiento(turnos2);
+				}
+			}
+					
+			
 			//Datos del colaborador para los menu de la pagina
 			List <Usuario> datosColaborador = servicioUsuario.buscarPorEmail(emailColaborador);
 			
@@ -506,6 +580,7 @@ public class ControladorColaborador {
 				model.addAttribute("sexos", Sexo.values());
 				model.addAttribute("btnCancelarTurno", btnCancelarTurno);
 				model.addAttribute("tunosConMulta", tunosConMulta);
+				model.addAttribute("totalTurnosMulta", totalTurnosMulta);
 				model.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
 				model.addAttribute("datosColaborador",datosColaborador);
 				model.addAttribute("datosCliente",datosCliente);
@@ -523,6 +598,7 @@ public class ControladorColaborador {
 				model.addAttribute("datosCliente",datosClienteActualizados);
 				model.addAttribute("btnCancelarTurno", btnCancelarTurno);
 				model.addAttribute("tunosConMulta", tunosConMulta);
+				model.addAttribute("totalTurnosMulta", totalTurnosMulta);
 				model.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
 				model.addAttribute("datosColaborador",datosColaborador);
 				model.addAttribute("exito",exito);
@@ -536,6 +612,7 @@ public class ControladorColaborador {
 				model.addAttribute("datosCliente",datosClienteAnterior);
 				model.addAttribute("btnCancelarTurno", btnCancelarTurno);
 				model.addAttribute("tunosConMulta", tunosConMulta);
+				model.addAttribute("totalTurnosMulta", totalTurnosMulta);
 				model.addAttribute("buscarTurnosCliente", buscarTurnosCliente);
 				model.addAttribute("datosColaborador",datosColaborador);
 				model.addAttribute("sexos", Sexo.values());

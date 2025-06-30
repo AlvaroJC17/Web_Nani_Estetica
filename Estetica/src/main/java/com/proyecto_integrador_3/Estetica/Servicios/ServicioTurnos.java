@@ -52,8 +52,15 @@ public class ServicioTurnos {
 	@Autowired
 	ServicioEmail servicioEmail;
 	
-	public List<Integer> costoDeTurnosPorFecha(List<Turnos> listaDeTurnos) {
+	public int extraerValorTratamiento(String input) {
+        // Usar expresión regular para encontrar solo los números
+        String valorNumerico = input.replaceAll("[^0-9]", "");
+        // Convertir el resultado a int, devuelve 0 si no hay numeros en el string
+        return valorNumerico.isEmpty() ? 0 : Integer.parseInt(valorNumerico);
+    }
+	
 	    
+	public List<Integer> costoDeTurnosPorFecha(List<Turnos> listaDeTurnos) {
 	    List<Integer> valoresYCantidadesDeTurnos = new ArrayList<>();
 	    
 	    int montoDeTurnosAsistidos = 0;
@@ -219,9 +226,9 @@ public class ServicioTurnos {
 					 actualizarTurnoActivo.setEstado(EstadoDelTurno.ASISTIDO);
 				 }
 				 
-//				 else if(estadoTurno == EstadoDelTurno.ASISTIDO && fechaActual != fechaDelTurno) {
-//					 throw new MiExcepcion("El turno solo puede ser confirmado en la misma fecha para el cual fue reservado");
-//				 }
+				 else if(estadoTurno == EstadoDelTurno.ASISTIDO && fechaActual != fechaDelTurno) {
+					 throw new MiExcepcion("El turno solo puede ser confirmado en la misma fecha para el cual fue reservado");
+				 }
 					
 				 if (rol == Rol.CLIENTE ) {
 					 actualizarTurnoActivo.setCanceladoPor(Rol.CLIENTE);

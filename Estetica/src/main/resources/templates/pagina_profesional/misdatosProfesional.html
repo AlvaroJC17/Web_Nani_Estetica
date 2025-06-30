@@ -98,24 +98,30 @@
         <form id="formularioDatosPersonales" th:action="@{/actualizarDatosProfesional}" method="post">
 			
         <div class="row">
-		<div class="mb-3 col-lg-6">
+		<div class="mb-3 col-lg-4">
 		<label for="domicilio" class="form-label texto-label">Dirección</label>
 		<input type="text" name="domicilio" th:value="${#strings.toUpperCase(datosProfesional.domicilio)}" class="form-control" id="domicilio" disabled>
 		</div>
 		
-		<div class="mb-3 col-lg-6">
+		<div class="mb-3 col-lg-4">
 			<label for="sexo" class="form-label texto-label">Sexo</label>
 			  <select  name="sexo" class="form-select" id="sexo" aria-label="Default select example" disabled>
 			  <option th:value="${datosProfesional.sexo}"  th:selected="${datosProfesional.sexo}" th:text="${datosProfesional.sexo}"></option>
 			  <option th:each="sexo : ${sexos}" th:value="${sexo.name()}" th:text="${sexo.name()}"></option>
 			  </select>
 		    </div>
+		
+		<div class="mb-3 col-lg-4">
+			<label for="telefono" class="form-label texto-label">Teléfono</label>
+			<input type="text" name="telefono" th:value="${#strings.toUpperCase(datosProfesional.telefono)}" class="form-control" id="telefono" disabled>
+		</div>
+			
         </div>
           
         <div class="row ">
-			<div class="mb-3 col-lg-6">
-			<label for="telefono" class="form-label texto-label">Teléfono</label>
-			<input type="text" name="telefono" th:value="${#strings.toUpperCase(datosProfesional.telefono)}" class="form-control" id="telefono" disabled>
+			<div class="mb-3 col-lg-4">
+			<label for="rol" class="form-label texto-label">Rol</label>
+			<input type="text" name="telefono" th:value="${#strings.toUpperCase(datosProfesional.rol)}" class="form-control" id="rol" disabled>
 			</div>
         </div>
          
